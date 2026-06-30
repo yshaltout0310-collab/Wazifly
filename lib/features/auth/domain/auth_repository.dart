@@ -9,8 +9,8 @@ typedef PhoneAutoVerified = void Function(AppUser user);
 /// Authentication contract.
 ///
 /// The app depends only on this interface; the concrete implementation
-/// ([FirebaseAuthRepository], or [UnconfiguredAuthRepository] until credentials
-/// exist) is selected at runtime. This keeps feature code backend-agnostic.
+/// ([FirebaseAuthRepository]) is injected via Riverpod, and a fake is swapped in
+/// for tests. This keeps feature code backend-agnostic.
 abstract interface class AuthRepository {
   /// Emits the current user (or null) and every subsequent change.
   Stream<AppUser?> authStateChanges();

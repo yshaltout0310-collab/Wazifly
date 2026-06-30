@@ -15,6 +15,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'support/fake_auth.dart';
+
 /// Renders the screens that are only reachable after real auth, so they're
 /// covered even when Firebase isn't configured. Verifies they build without
 /// throwing and show their key copy.
@@ -25,7 +27,10 @@ Future<LocalStorageService> _storage([Map<String, Object> seed = const {}]) {
 
 Widget _host(LocalStorageService storage, Widget child, {Locale? locale}) {
   return ProviderScope(
-    overrides: [localStorageProvider.overrideWithValue(storage)],
+    overrides: [
+      localStorageProvider.overrideWithValue(storage),
+      fakeAuthOverride(),
+    ],
     child: MaterialApp(
       locale: locale,
       localizationsDelegates: const [

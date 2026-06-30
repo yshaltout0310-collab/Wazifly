@@ -214,10 +214,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get termsNote => 'بالمتابعة، أنت توافق على الشروط وسياسة الخصوصية.';
 
   @override
-  String get demoModeNotice =>
-      'قم بربط Firebase لتفعيل تسجيل الدخول (البريد وGoogle والهاتف).';
-
-  @override
   String get signIn => 'تسجيل الدخول';
 
   @override
@@ -373,10 +369,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get errCancelled => 'تم إلغاء تسجيل الدخول.';
-
-  @override
-  String get errNotConfigured =>
-      'تسجيل الدخول غير متاح بعد — قم بربط Firebase لتفعيله.';
 
   @override
   String get passwordResetSent =>

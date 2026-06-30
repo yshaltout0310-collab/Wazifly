@@ -215,10 +215,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'By continuing you agree to our Terms & Privacy Policy.';
 
   @override
-  String get demoModeNotice =>
-      'Connect Firebase to enable sign-in (Email, Google & Phone).';
-
-  @override
   String get signIn => 'Sign In';
 
   @override
@@ -378,10 +374,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errCancelled => 'Sign-in was cancelled.';
-
-  @override
-  String get errNotConfigured =>
-      'Sign-in isn\'t available yet — connect Firebase to enable it.';
 
   @override
   String get passwordResetSent => 'Password reset link sent to your email.';

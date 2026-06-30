@@ -76,7 +76,6 @@
   "continueWithPhone": "المتابعة برقم الهاتف",
   "authOr": "أو",
   "termsNote": "بالمتابعة، أنت توافق على الشروط وسياسة الخصوصية.",
-  "demoModeNotice": "قم بربط Firebase لتفعيل تسجيل الدخول (البريد وGoogle والهاتف).",
 
   "signIn": "تسجيل الدخول",
   "signUp": "إنشاء حساب",
@@ -135,7 +134,6 @@
   "errInvalidOtpCode": "الرمز غير صحيح. يرجى المحاولة مرة أخرى.",
   "errOperationNotAllowed": "طريقة تسجيل الدخول هذه غير مفعّلة بعد.",
   "errCancelled": "تم إلغاء تسجيل الدخول.",
-  "errNotConfigured": "تسجيل الدخول غير متاح بعد — قم بربط Firebase لتفعيله.",
 
   "passwordResetSent": "تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك.",
   "loadingSigningIn": "جارٍ تسجيل دخولك…",

@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/localization/generated/app_localizations.dart';
 import '../../../core/navigation/route_names.dart';
-import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/responsive.dart';
 import '../../../shared/widgets/app_logo.dart';
@@ -45,7 +44,6 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
-    final notConfigured = ref.watch(firebaseNotConfiguredProvider);
 
     return Scaffold(
       body: AuroraBackground(
@@ -100,11 +98,6 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                     icon: Icons.phone_outlined,
                     onPressed: () => context.pushNamed(RouteNames.phoneAuth),
                   ).animate(delay: 520.ms).fadeIn().moveY(begin: 16, end: 0),
-                  const SizedBox(height: AppSpacing.lg),
-                  if (notConfigured)
-                    _SetupNotice(message: l10n.demoModeNotice)
-                        .animate(delay: 600.ms)
-                        .fadeIn(),
                   const Spacer(flex: 1),
                   Text(
                     l10n.termsNote,
@@ -150,35 +143,6 @@ class _OrDivider extends StatelessWidget {
         ),
         Expanded(child: Divider(color: color, thickness: 1)),
       ],
-    );
-  }
-}
-
-/// Informational banner shown only until real Firebase credentials are added.
-class _SetupNotice extends StatelessWidget {
-  const _SetupNotice({required this.message});
-  final String message;
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: AppColors.emerald.withValues(alpha: 0.10),
-        borderRadius: BorderRadius.circular(AppRadius.md),
-        border: Border.all(color: AppColors.emerald.withValues(alpha: 0.25)),
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.info_outline_rounded, size: 20, color: scheme.primary),
-          const SizedBox(width: AppSpacing.sm),
-          Expanded(
-            child: Text(message,
-                style: Theme.of(context).textTheme.bodySmall),
-          ),
-        ],
-      ),
     );
   }
 }

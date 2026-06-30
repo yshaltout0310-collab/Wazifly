@@ -10,7 +10,6 @@ enum AuthErrorCode {
   invalidOtp,
   operationNotAllowed,
   cancelled,
-  notConfigured,
   unknown,
 }
 

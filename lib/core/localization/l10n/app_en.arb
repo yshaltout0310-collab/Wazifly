@@ -83,7 +83,6 @@
   "continueWithPhone": "Continue with Phone",
   "authOr": "or",
   "termsNote": "By continuing you agree to our Terms & Privacy Policy.",
-  "demoModeNotice": "Connect Firebase to enable sign-in (Email, Google & Phone).",
 
   "signIn": "Sign In",
   "signUp": "Sign Up",
@@ -142,7 +141,6 @@
   "errInvalidOtpCode": "That code isn't correct. Please try again.",
   "errOperationNotAllowed": "This sign-in method isn't enabled yet.",
   "errCancelled": "Sign-in was cancelled.",
-  "errNotConfigured": "Sign-in isn't available yet — connect Firebase to enable it.",
 
   "passwordResetSent": "Password reset link sent to your email.",
   "loadingSigningIn": "Signing you in…",

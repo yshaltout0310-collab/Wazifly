@@ -7,6 +7,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'support/fake_auth.dart';
+
 /// Smoke test: the app builds, shows the splash, then routes onward without
 /// throwing. Validates the bootstrap wiring (storage override + router + theme).
 void main() {
@@ -19,7 +21,10 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [localStorageProvider.overrideWithValue(storage)],
+        overrides: [
+          localStorageProvider.overrideWithValue(storage),
+          fakeAuthOverride(),
+        ],
         child: const CareerBridgeApp(),
       ),
     );

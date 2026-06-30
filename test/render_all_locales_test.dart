@@ -21,6 +21,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'support/fake_auth.dart';
+
 /// Renders every screen in both English (LTR) and Arabic (RTL) and asserts they
 /// build with no exceptions or layout overflow, and pick up the right text
 /// direction. This is the durable backbone of the QA pass — it covers screens
@@ -33,7 +35,10 @@ Future<LocalStorageService> _storage([Map<String, Object> seed = const {}]) {
 
 Widget _host(LocalStorageService storage, Widget child, Locale locale) {
   return ProviderScope(
-    overrides: [localStorageProvider.overrideWithValue(storage)],
+    overrides: [
+      localStorageProvider.overrideWithValue(storage),
+      fakeAuthOverride(),
+    ],
     child: MaterialApp(
       locale: locale,
       localizationsDelegates: const [

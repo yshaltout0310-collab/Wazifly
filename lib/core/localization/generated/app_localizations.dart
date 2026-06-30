@@ -488,12 +488,6 @@ abstract class AppLocalizations {
   /// **'By continuing you agree to our Terms & Privacy Policy.'**
   String get termsNote;
 
-  /// No description provided for @demoModeNotice.
-  ///
-  /// In en, this message translates to:
-  /// **'Connect Firebase to enable sign-in (Email, Google & Phone).'**
-  String get demoModeNotice;
-
   /// No description provided for @signIn.
   ///
   /// In en, this message translates to:
@@ -805,12 +799,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sign-in was cancelled.'**
   String get errCancelled;
-
-  /// No description provided for @errNotConfigured.
-  ///
-  /// In en, this message translates to:
-  /// **'Sign-in isn\'t available yet — connect Firebase to enable it.'**
-  String get errNotConfigured;
 
   /// No description provided for @passwordResetSent.
   ///
