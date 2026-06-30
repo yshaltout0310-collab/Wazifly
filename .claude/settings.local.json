@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter --version)",
+      "Bash(dart --version)",
+      "Bash(git --version)",
+      "Bash(git init *)",
+      "Bash(git symbolic-ref *)",
+      "Bash(git add *)",
+      "Bash(flutter doctor *)",
+      "PowerShell($f = Get-Command flutter -ErrorAction SilentlyContinue; if \\($f\\) { \"flutter: $\\($f.Source\\)\" } else { \"flutter NOT on PATH\" }; $d = Get-Command dart -ErrorAction SilentlyContinue; if \\($d\\) { \"dart: $\\($d.Source\\)\" } else { \"dart NOT on PATH\" })",
+      "Bash(flutter devices *)",
+      "Bash(flutter run *)",
+      "Bash(tee /c/Users/yshal/AppData/Local/Temp/claude/C--project-CareerBridge/a54d5886-9870-460e-b015-8b805a5782e3/scratchpad/flutter_run.log)",
+      "Read(//c/Users/yshal/AppData/Local/Temp/claude/C--project-CareerBridge/a54d5886-9870-460e-b015-8b805a5782e3/tasks/**)",
+      "Bash(adb -s emulator-5554 exec-out screencap -p)",
+      "Read(//c/Users/yshal/AppData/Local/Temp/claude/C--project-CareerBridge/a54d5886-9870-460e-b015-8b805a5782e3/scratchpad/**)",
+      "Bash(flutter analyze *)",
+      "Bash(tee /c/Users/yshal/AppData/Local/Temp/claude/C--project-CareerBridge/a54d5886-9870-460e-b015-8b805a5782e3/scratchpad/run2.log)",
+      "Bash(python -c \"import PIL; print\\('PIL ok', PIL.__version__\\)\")",
+      "Bash(cat)",
+      "Bash(python /c/Users/yshal/AppData/Local/Temp/claude/C--project-CareerBridge/a54d5886-9870-460e-b015-8b805a5782e3/scratchpad/shot.py /c/Users/yshal/AppData/Local/Temp/claude/C--project-CareerBridge/a54d5886-9870-460e-b015-8b805a5782e3/scratchpad/v_back2_s.png)",
+      "Bash(flutter test *)",
+      "PowerShell(Get-CimInstance Win32_Process -Filter \"name='dart.exe'\" | Select-Object ProcessId, @{n='cmd';e={$_.CommandLine.Substring\\(0,[Math]::Min\\(80,$_.CommandLine.Length\\)\\)}})",
+      "PowerShell(@\\(5728,10148,15272\\) | ForEach-Object { try { Stop-Process -Id $_ -Force -ErrorAction Stop; \"killed $_\" } catch { \"skip $_\" } })",
+      "Bash(tee /c/Users/yshal/AppData/Local/Temp/claude/C--project-CareerBridge/a54d5886-9870-460e-b015-8b805a5782e3/scratchpad/run3.log)",
+      "Bash(tee /c/Users/yshal/AppData/Local/Temp/claude/C--project-CareerBridge/a54d5886-9870-460e-b015-8b805a5782e3/scratchpad/run4.log)"
+    ]
+  }
+}

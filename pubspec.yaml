@@ -1,0 +1,142 @@
+name: careerbridge
+description: "Career Bridge — an AI-powered global job platform."
+publish_to: "none"
+
+# Application version. Format: <semantic-version>+<build-number>
+version: 1.0.0+1
+
+environment:
+  # Targets a recent stable Flutter so the latest Material 3 APIs are available
+  # (Color.withValues, CardThemeData, etc.).
+  sdk: ">=3.6.0 <4.0.0"
+  flutter: ">=3.27.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # ---------------------------------------------------------------------------
+  # Localization
+  # ---------------------------------------------------------------------------
+  # flutter_localizations: official Flutter localization delegates (Material,
+  # Cupertino, Widgets). Required for RTL/LTR direction handling and translated
+  # framework widgets (date pickers, dialogs, etc.).
+  flutter_localizations:
+    sdk: flutter
+  # intl: message formatting + locale utilities. Used by the generated
+  # AppLocalizations (gen-l10n) and for any future date/number formatting.
+  intl: any
+
+  # ---------------------------------------------------------------------------
+  # State management
+  # ---------------------------------------------------------------------------
+  # flutter_riverpod: compile-safe, testable, scalable state management. Chosen
+  # over setState/Provider because it decouples state from the widget tree,
+  # which keeps a large production app maintainable (theme, locale, country,
+  # onboarding, and future auth/job state all live in independent providers).
+  flutter_riverpod: ^2.5.1
+
+  # ---------------------------------------------------------------------------
+  # Navigation
+  # ---------------------------------------------------------------------------
+  # go_router: declarative, URL-based routing maintained by the Flutter team.
+  # Centralizes the whole navigation graph (Splash → Language → Country →
+  # Onboarding → Auth) and supports deep links, guards, and nested routes as the
+  # app grows.
+  go_router: ^14.2.0
+
+  # ---------------------------------------------------------------------------
+  # Persistence
+  # ---------------------------------------------------------------------------
+  # shared_preferences: lightweight key/value storage. Used to persist the
+  # selected theme, language, country, and onboarding-completed flag across
+  # launches without pulling in a full database.
+  shared_preferences: ^2.2.3
+
+  # ---------------------------------------------------------------------------
+  # UI / Design system
+  # ---------------------------------------------------------------------------
+  # google_fonts: ships premium typefaces (Inter for LTR, Cairo for Arabic)
+  # without bundling font files manually and keeps the design system consistent.
+  google_fonts: ^6.2.1
+  # flutter_animate: concise, high-performance animation API. Powers the splash
+  # reveal, page/card/button micro-interactions, and list entrance animations.
+  flutter_animate: ^4.5.0
+
+  # ---------------------------------------------------------------------------
+  # Models
+  # ---------------------------------------------------------------------------
+  # equatable: value equality for immutable models (Country, Language) so they
+  # compare by value — useful for state diffing and tests.
+  equatable: ^2.0.5
+
+  # ---------------------------------------------------------------------------
+  # Firebase (architecture prepared — not initialized with real config yet)
+  # ---------------------------------------------------------------------------
+  # firebase_core: required base for every Firebase plugin; initializes the app.
+  firebase_core: ^3.1.0
+  # firebase_auth: authentication backend (wired in a later phase).
+  firebase_auth: ^5.1.0
+  # cloud_firestore: primary NoSQL datastore for user profiles & (later) jobs.
+  cloud_firestore: ^5.0.1
+  # firebase_storage: file/object storage for resumes & profile media.
+  firebase_storage: ^12.0.1
+  # firebase_messaging: push notifications (plumbing prepared this phase).
+  firebase_messaging: ^15.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  # flutter_lints: the official recommended lint set for idiomatic Dart/Flutter.
+  flutter_lints: ^4.0.0
+  # flutter_launcher_icons: generates branded adaptive launcher icons for all
+  # platforms/densities from a single source image.
+  flutter_launcher_icons: ^0.14.1
+  # flutter_native_splash: generates a branded OS splash (incl. Android 12+) so
+  # there is no white flash before the app's animated splash appears.
+  flutter_native_splash: ^2.4.3
+
+flutter:
+  uses-material-design: true
+
+  # Enables code generation for ARB localization files (gen-l10n). The
+  # AppLocalizations class is generated automatically on build from l10n.yaml.
+  generate: true
+
+  assets:
+    - assets/images/
+    - assets/icons/
+
+# -----------------------------------------------------------------------------
+# Branded launcher icons (run: dart run flutter_launcher_icons)
+# -----------------------------------------------------------------------------
+flutter_launcher_icons:
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  min_sdk_android: 23
+  image_path: "assets/icon/app_icon.png"
+  adaptive_icon_background: "assets/icon/ic_background.png"
+  adaptive_icon_foreground: "assets/icon/ic_foreground.png"
+  web:
+    generate: true
+    image_path: "assets/icon/app_icon.png"
+    background_color: "#0E9F6E"
+    theme_color: "#0E9F6E"
+
+# -----------------------------------------------------------------------------
+# Branded native splash (run: dart run flutter_native_splash:create)
+# -----------------------------------------------------------------------------
+flutter_native_splash:
+  color: "#0B7D57"
+  color_dark: "#101413"
+  image: "assets/icon/splash_logo.png"
+  image_dark: "assets/icon/splash_logo.png"
+  android_12:
+    color: "#0B7D57"
+    color_dark: "#101413"
+    image: "assets/icon/splash_logo.png"
+    image_dark: "assets/icon/splash_logo.png"
+  android: true
+  ios: true
+  web: false

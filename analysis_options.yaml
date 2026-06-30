@@ -1,0 +1,19 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  exclude:
+    # Generated localization output — not hand-edited, skip linting.
+    - lib/core/localization/generated/**
+  errors:
+    # Treat missing required params and dead code as errors in CI.
+    missing_required_param: error
+    dead_code: error
+
+linter:
+  rules:
+    prefer_const_constructors: true
+    prefer_const_constructors_in_immutables: true
+    prefer_final_locals: true
+    avoid_print: true
+    sort_child_properties_last: true
+    use_key_in_widget_constructors: true

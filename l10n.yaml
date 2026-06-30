@@ -1,0 +1,10 @@
+# Configuration for Flutter's gen-l10n tool.
+# Running `flutter pub get` / `flutter run` auto-generates AppLocalizations
+# from the .arb files. Adding a new language = drop a new app_<code>.arb file
+# here; no architecture changes required.
+arb-dir: lib/core/localization/l10n
+template-arb-file: app_en.arb
+output-localization-file: app_localizations.dart
+output-class: AppLocalizations
+output-dir: lib/core/localization/generated
+nullable-getter: false
