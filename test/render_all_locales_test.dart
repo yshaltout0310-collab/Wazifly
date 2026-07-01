@@ -9,6 +9,7 @@ import 'package:careerbridge/features/auth/presentation/phone_auth_screen.dart';
 import 'package:careerbridge/features/auth/presentation/welcome_screen.dart';
 import 'package:careerbridge/features/country_selection/presentation/country_selection_screen.dart';
 import 'package:careerbridge/features/home/presentation/home_screen.dart';
+import 'package:careerbridge/features/job_matching/presentation/job_matching_screen.dart';
 import 'package:careerbridge/features/language_selection/presentation/language_selection_screen.dart';
 import 'package:careerbridge/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:careerbridge/features/profile/presentation/profile_screen.dart';
@@ -77,6 +78,7 @@ void main() {
     'Settings': () => const SettingsScreen(),
     'Profile': () => const ProfileScreen(),
     'ResumeAnalyzer': () => const ResumeAnalyzerScreen(),
+    'JobMatching': () => const JobMatchingScreen(),
   };
 
   for (final locale in const [Locale('en'), Locale('ar')]) {

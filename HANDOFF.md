@@ -1,7 +1,7 @@
 # Career Bridge — Session Handoff
 
 > Living handoff doc so a fresh Claude session can continue immediately.
-> Last updated: end of Phase 2 · Milestone 1 (AI Resume Analyzer) implementation.
+> Last updated: end of Phase 2 · Milestone 2 (AI Job Matching) implementation.
 
 ---
 
@@ -57,8 +57,9 @@ Shared widgets: `PrimaryButton`, `SearchField`, `AppLogo`, `AuroraBackground`,
 
 **Error handling convention:** typed exceptions with a stable, localizable `code`
 enum (`AuthException`/`AuthErrorCode`, `AiException`/`AiErrorCode`,
-`ResumeAnalyzerException`/`ResumeErrorCode`); presentation maps the code → l10n
-string. Branded snackbars via `showAuthSnack`/`showAuthError`.
+`ResumeAnalyzerException`/`ResumeErrorCode`, `JobMatchingException`/`JobMatchErrorCode`);
+presentation maps the code → a UI-facing failure enum → l10n string. Branded
+snackbars via `showAuthSnack`/`showAuthError`.
 
 ---
 
@@ -66,8 +67,9 @@ string. Branded snackbars via `showAuthSnack`/`showAuthError`.
 
 `Splash → Language → Country → Onboarding → Welcome → (Email | Google | Phone→OTP)
 → User Type (Job Seeker/Employer) → Home`. Settings + Profile reachable from Home.
-Home shows an "AI toolkit" grid of feature cards; the **Resume Analyzer** card is now
-live (routes to the analyzer), others show a "Soon" badge + coming-soon snackbar.
+Home shows an "AI toolkit" grid of feature cards; the **Resume Analyzer** and
+**AI Job Matching** cards are now live (route to their screens), the other four show a
+"Soon" badge + coming-soon snackbar.
 
 ---
 
@@ -103,6 +105,13 @@ logcat + Firestore REST + screenshots.
 ### Phase 2 · Milestone 1 — AI Resume Analyzer ✅ COMPLETE (committed `bf469e6`)
 See §7. Fully implemented, tested, and **verified live end-to-end on the emulator in
 both English and Arabic** with real Gemini output. No open blockers.
+
+### Phase 2 · Milestone 2 — AI Job Matching ✅ COMPLETE (committed on `feature/resume-analyzer`)
+See §7.5. Ranks a bundled seed job dataset against the analyzed resume via the same
+`AiService.generateJson`. Uses the cached resume analysis when present; otherwise prompts
+to upload one, analyzes it (reusing the M1 pipeline), caches it, and matches
+automatically. **Verified live end-to-end on the emulator in both English and Arabic**
+with real Gemini output. `flutter analyze` clean; **59 tests pass**. No open blockers.
 
 ---
 
@@ -232,37 +241,102 @@ Arabic "AI Job Matching" label (lowered grid `childAspectRatio` 1.55 → 1.42).
 
 ---
 
-## 8. Exact next steps — begin Milestone 2 (AI Job Matching)
+## 7.5 Milestone 2 — AI Job Matching ✅ COMPLETE & VERIFIED
 
-Milestone 1 is done, verified, and committed (`bf469e6`). **Do NOT start coding M2
-until the user approves the plan** (workflow rule).
+**Scope (approved — Option 3):** rank jobs against the analyzed resume; ranked list with
+per-job **match score (%)** + a short **"why it matches"** explanation. **Use the cached
+resume analysis if it exists; otherwise prompt to upload one, analyze it (reusing the M1
+pipeline), cache it, and continue to matching automatically.** Architected so a real jobs
+API can replace the seed source later with no refactor. Provider = **Firebase AI Logic
+(Gemini)** via the same `AiService.generateJson`.
 
-1. **Present the Milestone 2 implementation plan** and wait for approval. Suggested shape:
-   - Reuse the resume analysis (persist the last `ResumeAnalysis` in a provider, or
-     re-derive it) as matching input.
-   - Define a `JobsRepository` interface + a **seed/local job source** now (a small
-     bundled dataset) so real job APIs can plug in later with no refactor.
-   - Rank via the existing `AiService.generateJson`: feed the resume analysis + job list,
-     get back per-job `matchScore` (%) + a short "why it matches" explanation.
-   - Feature module `lib/features/job_matching/` (domain/data/application/presentation),
-     `RouteNames.jobMatching` + GoRoute, wire the Home "AI Job Matching" card (make it
-     `available` + drop its "Soon" badge, like the analyzer card), EN + AR l10n.
-   - Tests: model parsing, repository ranking with a fake `AiService`, screen render
-     EN + AR. `flutter analyze` + `flutter test` green. One commit for the milestone.
+**Persistence-ready resume cache (the seam the user asked for):**
+- `lib/core/services/resume_store/resume_analysis_store.dart` — `ResumeAnalysisStore`
+  interface + `InMemoryResumeAnalysisStore` (session-scoped) + `resumeAnalysisStoreProvider`
+  (the swap point) + `LastResumeAnalysisController`/`lastResumeAnalysisProvider` (reactive
+  `StateNotifier<ResumeAnalysis?>` that mirrors writes into the store).
+- The M1 `ResumeAnalyzerController` now writes its result here on success.
+- **To add durable persistence later (Firestore `users/{uid}` or a local cache): write a
+  new `ResumeAnalysisStore` and rebind `resumeAnalysisStoreProvider` — no feature changes.**
+
+**DONE (code complete):**
+- Domain `lib/features/job_matching/domain/`: `Job` + `JobMatch` (Equatable, defensive
+  `fromJson`/`fromRanking` — clamps score 0–100, tolerates snake_case/missing fields),
+  `JobsRepository` interface, `JobMatchingRepository` interface, `JobMatchingException`/
+  `JobMatchErrorCode`.
+- Data: `SeedJobsRepository` (loads `assets/data/seed_jobs.json` — 14 realistic roles —
+  via `rootBundle`, cached; the jobs-source swap point), `JobMatchingRepositoryImpl`
+  (fetch jobs → build localized ranking prompt → `generateJson` → map ids→jobs → sort
+  desc; throws `JobMatchingException(noJobs)` / `AiException(invalidResponse)`).
+  `jobsRepositoryProvider` + `jobMatchingRepositoryProvider`.
+- Application: `JobMatchingController` (`StateNotifier<JobMatchingState>`; states
+  needsResume/analyzingResume/matching/success/error). **Decides the initial state in its
+  constructor** (cached analysis → matching immediately via `Future.microtask`; else
+  needsResume) — mirrors how `LocaleController` hydrates on creation, and avoids a
+  post-frame state change that leaked a `flutter_animate` timer in tests.
+  `pickAnalyzeAndMatch()` reuses `resumeAnalyzerRepositoryProvider.analyze`, `retry()`,
+  `useAnotherResume()` (clears cache), `@visibleForTesting .seeded()`. `JobMatchFailure`
+  enum → localized message.
+- UI: `JobMatchingScreen` (`ConsumerWidget`, AnimatedSwitcher over the states),
+  `JobMatchCard` (compact animated score ring + band, meta chips, reason, matching/missing
+  skill chips). Material 3, RTL-aware, branded.
+- l10n: ~24 `jobMatch*` keys in EN + AR (incl. a **pluralized** results header
+  `jobMatchResultsHeader(int count)`). AI is asked to write the reason in the user's
+  language.
+- Wiring: `RouteNames.jobMatching` (`/job-matching`) + GoRoute; Home "AI Job Matching"
+  card is now `available` (↗, `pushNamed`s). `assets/data/` registered in `pubspec.yaml`.
+- Tests: **59 total pass** (was 45; +14). New: `job_match_model_test` (4),
+  `job_matching_repository_test` (6 — ranking/sort/lang/invalid ids/noJobs/invalidResponse/
+  error propagation with fake `AiService`+`JobsRepository`), `job_matching_screen_test`
+  (2, EN+AR results render), + JobMatching added to the locale sweep. `flutter analyze` clean.
+
+**VERIFIED live on emulator with REAL Gemini — both English and Arabic:**
+Home card → Job Matching → (no cache) needs-resume prompt → "Upload resume" → SAF picker
+(PDF-filtered) → select `sample_resume.pdf` → analyze (M1 reuse) → rank → results:
+- **English:** "14 jobs ranked for you"; Flutter Mobile Engineer **95% (Strong match)** with
+  an English reason + matching-skill chips; ranked desc down to Fair (40%, orange) and 20%
+  (red); "Skills to add" chips render on partial fits.
+- **Arabic (RTL):** same flow after switching Settings → Language → العربية; header
+  "14 وظيفة مرتّبة لك", all reasons **in Arabic**, correct RTL layout (score ring/left,
+  chips flow RTL).
+- **Cache path:** leaving and re-entering Job Matching returns straight to results (no
+  re-upload). "Use another resume" clears the cache → needs-resume prompt.
+
+**No open blockers.** `flutter analyze` clean; **59 tests pass.**
+
+---
+
+## 8. Exact next steps — begin Milestone 3 (AI Career Coach)
+
+Milestones 1 & 2 are done, verified, and committed. **Do NOT start coding M3 until the
+user approves the plan** (workflow rule).
+
+1. **Present the Milestone 3 implementation plan** and wait for approval. Suggested shape:
+   - In-app chat assistant with conversation history: career guidance, learning roadmaps,
+     interview advice, skill recommendations.
+   - **Architecture already prepared:** `AiService.streamText` exists; `firebase_ai`
+     exposes `model.startChat()` + `chat.sendMessageStream()` for streaming + history.
+     Extend `FirebaseAiService`/`AiService` with a chat/session abstraction if needed,
+     keeping vendor types from leaking.
+   - Optionally seed the coach with the cached `ResumeAnalysis` (via
+     `lastResumeAnalysisProvider`) for personalized advice.
+   - Feature module `lib/features/career_coach/`, `RouteNames.careerCoach` + GoRoute, wire
+     the Home "Career Coach" card (`available`), EN + AR l10n. Stream tokens into the UI.
+   - Tests: message/state model, a fake streaming `AiService`, screen render EN + AR.
+     `flutter analyze` + `flutter test` green. One commit for the milestone.
 2. Implement one milestone at a time; verify on the emulator (both languages) before
-   committing; **one commit per completed milestone**; then M3 (AI Career Coach —
-   `AiService.streamText` + `firebase_ai` `startChat()`/`sendMessageStream()` already
-   prepared for streaming + history).
+   committing; **one commit per completed milestone**.
 
 ---
 
 ## 9. Phase 2 roadmap
 
 - **M1 — AI Resume Analyzer** ✅ *complete & verified (`bf469e6`)*.
-- **M2 — AI Job Matching:** use the analyzed resume to match jobs; ranked list with %
-  scores + per-job "why it matches" explanation. Architect so real job APIs can plug in
-  later (define a `JobsRepository` interface + a seed/local source now; AI ranks via the
-  same `AiService.generateJson`). No major refactor to swap in a real API.
+- **M2 — AI Job Matching** ✅ *complete & verified* (see §7.5). Ranks a seed job dataset
+  against the analyzed resume via `AiService.generateJson`; ranked list with % scores +
+  per-job "why it matches". `JobsRepository` interface + `SeedJobsRepository` now; swap in
+  a real jobs API with no refactor. Resume analysis reused via `lastResumeAnalysisProvider`
+  (persistence-ready store seam).
 - **M3 — AI Career Coach:** in-app chat assistant with conversation history; career
   guidance, learning roadmaps, interview advice, skill recommendations. **Architecture
   already prepared:** `AiService.streamText` exists; `firebase_ai` exposes
@@ -352,6 +426,16 @@ python "$SP/shot.py" "$SP/out.png"
 `application/`: `resume_analyzer_controller.dart` (state + controller + provider).
 `presentation/`: `resume_analyzer_screen.dart`, `widgets/{ats_score_gauge,analysis_section}.dart`.
 
+**Job Matching** `lib/features/job_matching/`
+`domain/`: `job.dart`, `job_match.dart`, `jobs_repository.dart`,
+`job_matching_repository.dart`, `job_matching_exception.dart`.
+`data/`: `seed_jobs_repository.dart`, `job_matching_repository_impl.dart` (+ providers,
+prompt). Seed data: `assets/data/seed_jobs.json`.
+`application/`: `job_matching_controller.dart` (state + controller + provider).
+`presentation/`: `job_matching_screen.dart`, `widgets/job_match_card.dart`.
+**Resume cache seam** `lib/core/services/resume_store/resume_analysis_store.dart`
+(`ResumeAnalysisStore` + in-memory impl + `lastResumeAnalysisProvider`).
+
 **Firebase** `lib/core/services/firebase/{firebase_service,firebase_options}.dart` ·
 `firebase.json` · `firestore.rules` · `firestore.indexes.json`.
 
@@ -403,9 +487,10 @@ python "$SP/shot.py" "$SP/out.png"
 
 ## 14. TL;DR for the next session
 
-**Milestone 1 (AI Resume Analyzer) is DONE, verified live in EN + AR with real Gemini,
-and committed as `bf469e6`** on `feature/resume-analyzer`. `flutter analyze` clean,
-45 tests pass, repo clean. Firebase AI Logic is enabled + provisioned (§5).
-**Next:** present the **Milestone 2 (AI Job Matching)** plan (§8) and **wait for the
+**Milestones 1 & 2 are DONE, verified live in EN + AR with real Gemini, and committed** on
+`feature/resume-analyzer` (M1 `bf469e6`; M2 is the latest commit — see §6). `flutter
+analyze` clean, **59 tests pass**, repo clean. Firebase AI Logic is enabled + provisioned (§5).
+**Next:** present the **Milestone 3 (AI Career Coach)** plan (§8) and **wait for the
 user's approval before coding**. Keep the conventions in §13; run with
 `--no-enable-impeller`; the test account session is persisted so the app opens to Home.
+(Note: the persisted app language is currently English after M2 verification.)

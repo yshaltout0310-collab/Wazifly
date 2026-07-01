@@ -177,5 +177,33 @@
   "resumeErrQuota": "The AI service is busy right now. Please try again shortly.",
   "resumeErrInvalid": "The AI returned an unexpected result. Please try again.",
   "resumeErrBlocked": "This content couldn't be analyzed.",
-  "resumeErrUnknown": "Something went wrong. Please try again."
+  "resumeErrUnknown": "Something went wrong. Please try again.",
+
+  "jobMatchTitle": "Job Matching",
+  "jobMatchNeedsResumeTitle": "Match jobs to your resume",
+  "jobMatchNeedsResumeBody": "Upload your resume and we'll rank jobs by how well they fit — with an AI explanation for each.",
+  "jobMatchUploadResume": "Upload resume",
+  "jobMatchMatching": "Finding your best matches…",
+  "jobMatchMatchingHint": "Ranking jobs against your resume.",
+  "jobMatchAnalyzingResume": "Analyzing your resume…",
+  "jobMatchAnalyzingResumeHint": "This usually takes a few seconds.",
+  "jobMatchResultsHeader": "{count, plural, =1{1 job ranked for you} other{{count} jobs ranked for you}}",
+  "@jobMatchResultsHeader": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "jobMatchUseAnother": "Match a different resume",
+  "jobMatchRetry": "Try again",
+  "jobMatchMatchingSkills": "Matching skills",
+  "jobMatchMissingSkills": "Skills to add",
+  "jobMatchStrong": "Strong match",
+  "jobMatchGood": "Good match",
+  "jobMatchFair": "Fair match",
+  "jobMatchWeak": "Low match",
+  "jobMatchErrNoJobs": "No jobs are available to match right now. Please try again later.",
+  "jobMatchErrNotConfigured": "AI isn't enabled yet. Enable Firebase AI Logic to match jobs.",
+  "jobMatchErrNetwork": "Network error. Check your connection and try again.",
+  "jobMatchErrQuota": "The AI service is busy right now. Please try again shortly.",
+  "jobMatchErrInvalid": "The AI returned an unexpected result. Please try again.",
+  "jobMatchErrBlocked": "This content couldn't be analyzed.",
+  "jobMatchErrUnknown": "Something went wrong. Please try again."
 }

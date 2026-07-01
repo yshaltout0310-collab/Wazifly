@@ -1009,6 +1009,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Something went wrong. Please try again.'**
   String get resumeErrUnknown;
+
+  /// No description provided for @jobMatchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Job Matching'**
+  String get jobMatchTitle;
+
+  /// No description provided for @jobMatchNeedsResumeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Match jobs to your resume'**
+  String get jobMatchNeedsResumeTitle;
+
+  /// No description provided for @jobMatchNeedsResumeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload your resume and we\'ll rank jobs by how well they fit — with an AI explanation for each.'**
+  String get jobMatchNeedsResumeBody;
+
+  /// No description provided for @jobMatchUploadResume.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload resume'**
+  String get jobMatchUploadResume;
+
+  /// No description provided for @jobMatchMatching.
+  ///
+  /// In en, this message translates to:
+  /// **'Finding your best matches…'**
+  String get jobMatchMatching;
+
+  /// No description provided for @jobMatchMatchingHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Ranking jobs against your resume.'**
+  String get jobMatchMatchingHint;
+
+  /// No description provided for @jobMatchAnalyzingResume.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyzing your resume…'**
+  String get jobMatchAnalyzingResume;
+
+  /// No description provided for @jobMatchAnalyzingResumeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'This usually takes a few seconds.'**
+  String get jobMatchAnalyzingResumeHint;
+
+  /// No description provided for @jobMatchResultsHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 job ranked for you} other{{count} jobs ranked for you}}'**
+  String jobMatchResultsHeader(int count);
+
+  /// No description provided for @jobMatchUseAnother.
+  ///
+  /// In en, this message translates to:
+  /// **'Match a different resume'**
+  String get jobMatchUseAnother;
+
+  /// No description provided for @jobMatchRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get jobMatchRetry;
+
+  /// No description provided for @jobMatchMatchingSkills.
+  ///
+  /// In en, this message translates to:
+  /// **'Matching skills'**
+  String get jobMatchMatchingSkills;
+
+  /// No description provided for @jobMatchMissingSkills.
+  ///
+  /// In en, this message translates to:
+  /// **'Skills to add'**
+  String get jobMatchMissingSkills;
+
+  /// No description provided for @jobMatchStrong.
+  ///
+  /// In en, this message translates to:
+  /// **'Strong match'**
+  String get jobMatchStrong;
+
+  /// No description provided for @jobMatchGood.
+  ///
+  /// In en, this message translates to:
+  /// **'Good match'**
+  String get jobMatchGood;
+
+  /// No description provided for @jobMatchFair.
+  ///
+  /// In en, this message translates to:
+  /// **'Fair match'**
+  String get jobMatchFair;
+
+  /// No description provided for @jobMatchWeak.
+  ///
+  /// In en, this message translates to:
+  /// **'Low match'**
+  String get jobMatchWeak;
+
+  /// No description provided for @jobMatchErrNoJobs.
+  ///
+  /// In en, this message translates to:
+  /// **'No jobs are available to match right now. Please try again later.'**
+  String get jobMatchErrNoJobs;
+
+  /// No description provided for @jobMatchErrNotConfigured.
+  ///
+  /// In en, this message translates to:
+  /// **'AI isn\'t enabled yet. Enable Firebase AI Logic to match jobs.'**
+  String get jobMatchErrNotConfigured;
+
+  /// No description provided for @jobMatchErrNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'Network error. Check your connection and try again.'**
+  String get jobMatchErrNetwork;
+
+  /// No description provided for @jobMatchErrQuota.
+  ///
+  /// In en, this message translates to:
+  /// **'The AI service is busy right now. Please try again shortly.'**
+  String get jobMatchErrQuota;
+
+  /// No description provided for @jobMatchErrInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'The AI returned an unexpected result. Please try again.'**
+  String get jobMatchErrInvalid;
+
+  /// No description provided for @jobMatchErrBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'This content couldn\'t be analyzed.'**
+  String get jobMatchErrBlocked;
+
+  /// No description provided for @jobMatchErrUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong. Please try again.'**
+  String get jobMatchErrUnknown;
 }
 
 class _AppLocalizationsDelegate

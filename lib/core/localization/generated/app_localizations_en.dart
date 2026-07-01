@@ -487,4 +487,90 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get resumeErrUnknown => 'Something went wrong. Please try again.';
+
+  @override
+  String get jobMatchTitle => 'Job Matching';
+
+  @override
+  String get jobMatchNeedsResumeTitle => 'Match jobs to your resume';
+
+  @override
+  String get jobMatchNeedsResumeBody =>
+      'Upload your resume and we\'ll rank jobs by how well they fit — with an AI explanation for each.';
+
+  @override
+  String get jobMatchUploadResume => 'Upload resume';
+
+  @override
+  String get jobMatchMatching => 'Finding your best matches…';
+
+  @override
+  String get jobMatchMatchingHint => 'Ranking jobs against your resume.';
+
+  @override
+  String get jobMatchAnalyzingResume => 'Analyzing your resume…';
+
+  @override
+  String get jobMatchAnalyzingResumeHint => 'This usually takes a few seconds.';
+
+  @override
+  String jobMatchResultsHeader(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count jobs ranked for you',
+      one: '1 job ranked for you',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get jobMatchUseAnother => 'Match a different resume';
+
+  @override
+  String get jobMatchRetry => 'Try again';
+
+  @override
+  String get jobMatchMatchingSkills => 'Matching skills';
+
+  @override
+  String get jobMatchMissingSkills => 'Skills to add';
+
+  @override
+  String get jobMatchStrong => 'Strong match';
+
+  @override
+  String get jobMatchGood => 'Good match';
+
+  @override
+  String get jobMatchFair => 'Fair match';
+
+  @override
+  String get jobMatchWeak => 'Low match';
+
+  @override
+  String get jobMatchErrNoJobs =>
+      'No jobs are available to match right now. Please try again later.';
+
+  @override
+  String get jobMatchErrNotConfigured =>
+      'AI isn\'t enabled yet. Enable Firebase AI Logic to match jobs.';
+
+  @override
+  String get jobMatchErrNetwork =>
+      'Network error. Check your connection and try again.';
+
+  @override
+  String get jobMatchErrQuota =>
+      'The AI service is busy right now. Please try again shortly.';
+
+  @override
+  String get jobMatchErrInvalid =>
+      'The AI returned an unexpected result. Please try again.';
+
+  @override
+  String get jobMatchErrBlocked => 'This content couldn\'t be analyzed.';
+
+  @override
+  String get jobMatchErrUnknown => 'Something went wrong. Please try again.';
 }

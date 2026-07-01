@@ -8,6 +8,7 @@ import '../../features/auth/presentation/phone_auth_screen.dart';
 import '../../features/auth/presentation/welcome_screen.dart';
 import '../../features/country_selection/presentation/country_selection_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
+import '../../features/job_matching/presentation/job_matching_screen.dart';
 import '../../features/language_selection/presentation/language_selection_screen.dart';
 import '../../features/onboarding/presentation/onboarding_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
@@ -96,6 +97,11 @@ abstract final class AppRouter {
         path: RouteNames.resumeAnalyzerPath,
         name: RouteNames.resumeAnalyzer,
         pageBuilder: _fade(const ResumeAnalyzerScreen()),
+      ),
+      GoRoute(
+        path: RouteNames.jobMatchingPath,
+        name: RouteNames.jobMatching,
+        pageBuilder: _fade(const JobMatchingScreen()),
       ),
       GoRoute(
         path: RouteNames.settingsPath,

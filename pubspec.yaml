@@ -120,6 +120,7 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - assets/data/
 
 # -----------------------------------------------------------------------------
 # Branded launcher icons (run: dart run flutter_launcher_icons)

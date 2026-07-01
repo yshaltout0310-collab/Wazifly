@@ -482,4 +482,90 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get resumeErrUnknown => 'حدث خطأ ما. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get jobMatchTitle => 'مطابقة الوظائف';
+
+  @override
+  String get jobMatchNeedsResumeTitle => 'طابق الوظائف مع سيرتك الذاتية';
+
+  @override
+  String get jobMatchNeedsResumeBody =>
+      'ارفع سيرتك الذاتية وسنرتّب الوظائف حسب مدى ملاءمتها لك — مع شرح من الذكاء الاصطناعي لكل وظيفة.';
+
+  @override
+  String get jobMatchUploadResume => 'رفع السيرة الذاتية';
+
+  @override
+  String get jobMatchMatching => 'جارٍ إيجاد أفضل الوظائف لك…';
+
+  @override
+  String get jobMatchMatchingHint => 'جارٍ ترتيب الوظائف حسب سيرتك الذاتية.';
+
+  @override
+  String get jobMatchAnalyzingResume => 'جارٍ تحليل سيرتك الذاتية…';
+
+  @override
+  String get jobMatchAnalyzingResumeHint => 'يستغرق ذلك عادةً بضع ثوانٍ.';
+
+  @override
+  String jobMatchResultsHeader(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count وظيفة مرتّبة لك',
+      one: 'وظيفة واحدة مرتّبة لك',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get jobMatchUseAnother => 'طابق سيرة ذاتية أخرى';
+
+  @override
+  String get jobMatchRetry => 'حاول مرة أخرى';
+
+  @override
+  String get jobMatchMatchingSkills => 'المهارات المتطابقة';
+
+  @override
+  String get jobMatchMissingSkills => 'مهارات لإضافتها';
+
+  @override
+  String get jobMatchStrong => 'تطابق قوي';
+
+  @override
+  String get jobMatchGood => 'تطابق جيد';
+
+  @override
+  String get jobMatchFair => 'تطابق مقبول';
+
+  @override
+  String get jobMatchWeak => 'تطابق منخفض';
+
+  @override
+  String get jobMatchErrNoJobs =>
+      'لا توجد وظائف متاحة للمطابقة حاليًا. يرجى المحاولة لاحقًا.';
+
+  @override
+  String get jobMatchErrNotConfigured =>
+      'الذكاء الاصطناعي غير مُفعّل بعد. فعّل Firebase AI Logic لمطابقة الوظائف.';
+
+  @override
+  String get jobMatchErrNetwork =>
+      'خطأ في الشبكة. تحقق من اتصالك وحاول مجددًا.';
+
+  @override
+  String get jobMatchErrQuota =>
+      'خدمة الذكاء الاصطناعي مشغولة حاليًا. يرجى المحاولة بعد قليل.';
+
+  @override
+  String get jobMatchErrInvalid =>
+      'أرجع الذكاء الاصطناعي نتيجة غير متوقعة. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get jobMatchErrBlocked => 'تعذّر تحليل هذا المحتوى.';
+
+  @override
+  String get jobMatchErrUnknown => 'حدث خطأ ما. يرجى المحاولة مرة أخرى.';
 }

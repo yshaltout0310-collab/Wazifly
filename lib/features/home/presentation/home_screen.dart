@@ -38,7 +38,11 @@ class HomeScreen extends ConsumerWidget {
         label: l10n.featResumeAnalyzer,
         route: RouteNames.resumeAnalyzer,
       ),
-      (icon: Icons.bolt_outlined, label: l10n.featJobMatching, route: null),
+      (
+        icon: Icons.bolt_outlined,
+        label: l10n.featJobMatching,
+        route: RouteNames.jobMatching,
+      ),
       (icon: Icons.psychology_outlined, label: l10n.featCareerCoach, route: null),
       (icon: Icons.edit_document, label: l10n.featCvBuilder, route: null),
       (

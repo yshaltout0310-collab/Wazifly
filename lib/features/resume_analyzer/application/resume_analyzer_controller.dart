@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/localization/locale_controller.dart';
 import '../../../core/services/ai/ai_exception.dart';
+import '../../../core/services/resume_store/resume_analysis_store.dart';
 import '../data/resume_analyzer_repository_impl.dart';
 import '../domain/resume_analysis.dart';
 import '../domain/resume_analyzer_exception.dart';
@@ -107,6 +108,9 @@ class ResumeAnalyzerController extends StateNotifier<ResumeAnalyzerState> {
             languageCode: languageCode,
             fileName: fileName,
           );
+      // Cache the result so other features (e.g. Job Matching) can reuse it
+      // without a re-upload. Persistence strategy lives behind the store.
+      await _ref.read(lastResumeAnalysisProvider.notifier).set(analysis);
       if (!mounted) return;
       state = ResumeAnalyzerState(
         status: ResumeStatus.success,

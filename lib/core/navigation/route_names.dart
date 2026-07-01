@@ -15,6 +15,7 @@ abstract final class RouteNames {
   static const String settings = 'settings';
   static const String profile = 'profile';
   static const String resumeAnalyzer = 'resumeAnalyzer';
+  static const String jobMatching = 'jobMatching';
 
   static const String splashPath = '/';
   static const String languagePath = '/language';
@@ -29,4 +30,5 @@ abstract final class RouteNames {
   static const String settingsPath = '/settings';
   static const String profilePath = '/settings/profile';
   static const String resumeAnalyzerPath = '/resume-analyzer';
+  static const String jobMatchingPath = '/job-matching';
 }

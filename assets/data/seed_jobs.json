@@ -1,0 +1,156 @@
+[
+  {
+    "id": "flutter-mobile-eng",
+    "title": "Flutter Mobile Engineer",
+    "company": "Northwind Apps",
+    "location": "Doha, Qatar",
+    "employmentType": "Full-time",
+    "seniority": "Mid",
+    "remote": false,
+    "requiredSkills": ["Flutter", "Dart", "Firebase", "REST APIs", "Git"],
+    "description": "Build and ship cross-platform mobile apps in Flutter. Integrate Firebase (Auth, Firestore, Storage) and RESTful backends, and collaborate with designers on polished, responsive UI."
+  },
+  {
+    "id": "senior-mobile-lead",
+    "title": "Senior Mobile Engineer",
+    "company": "Cedar Labs",
+    "location": "Dubai, UAE",
+    "employmentType": "Full-time",
+    "seniority": "Senior",
+    "remote": true,
+    "requiredSkills": ["Flutter", "Dart", "State Management", "CI/CD", "Testing", "Mentorship"],
+    "description": "Lead the architecture of a large Flutter codebase, drive testing and CI/CD practices, and mentor junior engineers. Experience with Riverpod or Bloc and native platform channels is a plus."
+  },
+  {
+    "id": "android-native-dev",
+    "title": "Android Developer (Kotlin)",
+    "company": "BluePeak",
+    "location": "Riyadh, Saudi Arabia",
+    "employmentType": "Full-time",
+    "seniority": "Mid",
+    "remote": false,
+    "requiredSkills": ["Kotlin", "Android SDK", "Jetpack Compose", "Coroutines", "REST APIs"],
+    "description": "Develop native Android applications with Kotlin and Jetpack Compose. Own features end-to-end from design to release on Google Play."
+  },
+  {
+    "id": "backend-node-eng",
+    "title": "Backend Engineer (Node.js)",
+    "company": "Northwind Apps",
+    "location": "Remote",
+    "employmentType": "Full-time",
+    "seniority": "Mid",
+    "remote": true,
+    "requiredSkills": ["Node.js", "TypeScript", "PostgreSQL", "REST APIs", "Docker"],
+    "description": "Design and build scalable backend services in Node.js and TypeScript. Model data in PostgreSQL, expose clean REST APIs, and deploy with Docker."
+  },
+  {
+    "id": "fullstack-react-eng",
+    "title": "Full-Stack Engineer (React/Node)",
+    "company": "Cedar Labs",
+    "location": "Cairo, Egypt",
+    "employmentType": "Full-time",
+    "seniority": "Mid",
+    "remote": true,
+    "requiredSkills": ["React", "TypeScript", "Node.js", "GraphQL", "AWS"],
+    "description": "Work across the stack building web features with React and Node. Comfortable with GraphQL and deploying to AWS."
+  },
+  {
+    "id": "cloud-firebase-eng",
+    "title": "Cloud & Firebase Engineer",
+    "company": "Skyline Systems",
+    "location": "Remote",
+    "employmentType": "Contract",
+    "seniority": "Mid",
+    "remote": true,
+    "requiredSkills": ["Firebase", "Cloud Functions", "Firestore", "GCP", "Security Rules"],
+    "description": "Design serverless backends on Firebase and Google Cloud. Write Cloud Functions, secure Firestore with rules, and optimize for cost and scale."
+  },
+  {
+    "id": "junior-flutter-dev",
+    "title": "Junior Flutter Developer",
+    "company": "Oasis Digital",
+    "location": "Amman, Jordan",
+    "employmentType": "Full-time",
+    "seniority": "Junior",
+    "remote": false,
+    "requiredSkills": ["Flutter", "Dart", "Git", "REST APIs"],
+    "description": "Join a growing mobile team to build Flutter apps. Great for early-career engineers eager to learn clean architecture and testing."
+  },
+  {
+    "id": "qa-automation-eng",
+    "title": "QA Automation Engineer",
+    "company": "BluePeak",
+    "location": "Doha, Qatar",
+    "employmentType": "Full-time",
+    "seniority": "Mid",
+    "remote": false,
+    "requiredSkills": ["Test Automation", "Appium", "CI/CD", "Selenium", "Dart"],
+    "description": "Build automated test suites for mobile and web. Integrate tests into CI/CD and champion quality across the engineering org."
+  },
+  {
+    "id": "devops-engineer",
+    "title": "DevOps Engineer",
+    "company": "Skyline Systems",
+    "location": "Remote",
+    "employmentType": "Full-time",
+    "seniority": "Senior",
+    "remote": true,
+    "requiredSkills": ["Kubernetes", "Docker", "Terraform", "CI/CD", "AWS", "Monitoring"],
+    "description": "Own infrastructure as code, container orchestration, and CI/CD pipelines. Keep production reliable, observable, and secure."
+  },
+  {
+    "id": "data-engineer",
+    "title": "Data Engineer",
+    "company": "Cedar Labs",
+    "location": "Dubai, UAE",
+    "employmentType": "Full-time",
+    "seniority": "Mid",
+    "remote": true,
+    "requiredSkills": ["Python", "SQL", "Airflow", "Spark", "GCP"],
+    "description": "Build reliable data pipelines and warehouses. Model data for analytics and machine learning teams."
+  },
+  {
+    "id": "ml-engineer",
+    "title": "Machine Learning Engineer",
+    "company": "Northwind Apps",
+    "location": "Remote",
+    "employmentType": "Full-time",
+    "seniority": "Senior",
+    "remote": true,
+    "requiredSkills": ["Python", "TensorFlow", "PyTorch", "MLOps", "SQL"],
+    "description": "Design, train, and deploy ML models to production. Own the full lifecycle from experimentation to serving and monitoring."
+  },
+  {
+    "id": "product-designer",
+    "title": "Product Designer (UI/UX)",
+    "company": "Oasis Digital",
+    "location": "Cairo, Egypt",
+    "employmentType": "Full-time",
+    "seniority": "Mid",
+    "remote": true,
+    "requiredSkills": ["Figma", "UI Design", "UX Research", "Prototyping", "Design Systems"],
+    "description": "Craft intuitive product experiences from research to high-fidelity design. Maintain and evolve the design system alongside engineering."
+  },
+  {
+    "id": "ios-swift-dev",
+    "title": "iOS Developer (Swift)",
+    "company": "BluePeak",
+    "location": "Dubai, UAE",
+    "employmentType": "Full-time",
+    "seniority": "Mid",
+    "remote": false,
+    "requiredSkills": ["Swift", "SwiftUI", "UIKit", "Combine", "REST APIs"],
+    "description": "Build native iOS apps with Swift and SwiftUI. Ship features to the App Store and collaborate closely with backend and design."
+  },
+  {
+    "id": "engineering-manager",
+    "title": "Engineering Manager (Mobile)",
+    "company": "Skyline Systems",
+    "location": "Doha, Qatar",
+    "employmentType": "Full-time",
+    "seniority": "Lead",
+    "remote": false,
+    "requiredSkills": ["Leadership", "Mobile", "Agile", "Mentorship", "System Design"],
+    "description": "Lead a mobile engineering team: hiring, mentoring, delivery, and technical direction. Strong mobile background (Flutter or native) required."
+  }
+]
