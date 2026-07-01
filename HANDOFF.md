@@ -165,13 +165,14 @@ $env:Path = "C:\Program Files\nodejs;" + $env:Path
 main                         6f860fe  Phase 1 production foundation completed
 firebase-auth-integration    aa9b7d2  Add Cloud Firestore security rules  (branched from main)
                              2af451d  Integrate real Firebase Authentication and remove demo mode
-feature/resume-analyzer  *  bf469e6  feat: AI Resume Analyzer (Phase 2, Milestone 1)  <-- current HEAD
+feature/resume-analyzer  *  8f2101f  feat: AI Job Matching (Phase 2, Milestone 2)  <-- current HEAD
+                             bf469e6  feat: AI Resume Analyzer (Phase 2, Milestone 1)
                             (+ a follow-up docs commit updating this HANDOFF.md)
                              branched from firebase-auth-integration
 ```
-- **Milestone 1 is COMMITTED (`bf469e6`).** Neither `firebase-auth-integration` nor
-  `feature/resume-analyzer` is merged to `main`, and nothing is pushed to any remote.
-  (No PRs opened.)
+- **Milestone 1 is COMMITTED (`bf469e6`); Milestone 2 is COMMITTED (`8f2101f`).** Neither
+  `firebase-auth-integration` nor `feature/resume-analyzer` is merged to `main`, and
+  nothing is pushed to any remote. (No PRs opened.)
 - Commit message convention: end with
   `Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>`.
 - **Do NOT commit** `.claude/settings.local.json` (local). Exclude it from `git add`.
