@@ -389,4 +389,102 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loadingVerifying => 'Verifying…';
+
+  @override
+  String get resumeAnalyzerTitle => 'Resume Analyzer';
+
+  @override
+  String get resumeAnalyzerIntro =>
+      'Upload your resume as a PDF and get instant, AI-powered feedback.';
+
+  @override
+  String get resumeUploadTitle => 'Upload your resume';
+
+  @override
+  String get resumeUploadHint => 'PDF file';
+
+  @override
+  String get resumeChoosePdf => 'Choose PDF';
+
+  @override
+  String get resumeAnalyzeAnother => 'Analyze another resume';
+
+  @override
+  String get resumeAnalyzing => 'Analyzing your resume…';
+
+  @override
+  String get resumeAnalyzingHint => 'This usually takes a few seconds.';
+
+  @override
+  String get resumeAtsScore => 'ATS Score';
+
+  @override
+  String get resumeScoreExcellent => 'Excellent';
+
+  @override
+  String get resumeScoreGood => 'Good';
+
+  @override
+  String get resumeScoreFair => 'Fair';
+
+  @override
+  String get resumeScoreNeedsWork => 'Needs work';
+
+  @override
+  String get resumeSectionSummary => 'Summary';
+
+  @override
+  String get resumeSectionStrengths => 'Strengths';
+
+  @override
+  String get resumeSectionWeaknesses => 'Weaknesses';
+
+  @override
+  String get resumeSectionMissingSkills => 'Missing Skills';
+
+  @override
+  String get resumeSectionGrammar => 'Grammar & Writing';
+
+  @override
+  String get resumeSectionSuggestions => 'Improvement Suggestions';
+
+  @override
+  String get resumeGrammarFix => 'Suggestion';
+
+  @override
+  String get resumeRetry => 'Try again';
+
+  @override
+  String get resumeErrNoText =>
+      'We couldn\'t read any text from this PDF. If it\'s a scanned image, please upload a text-based PDF.';
+
+  @override
+  String get resumeErrExtraction =>
+      'We couldn\'t open this PDF. Please try another file.';
+
+  @override
+  String get resumeErrTooLarge =>
+      'This file is too large. Please choose a smaller PDF.';
+
+  @override
+  String get resumeErrNotConfigured =>
+      'AI isn\'t enabled yet. Enable Firebase AI Logic to use the analyzer.';
+
+  @override
+  String get resumeErrNetwork =>
+      'Network error. Check your connection and try again.';
+
+  @override
+  String get resumeErrQuota =>
+      'The AI service is busy right now. Please try again shortly.';
+
+  @override
+  String get resumeErrInvalid =>
+      'The AI returned an unexpected result. Please try again.';
+
+  @override
+  String get resumeErrBlocked => 'This content couldn\'t be analyzed.';
+
+  @override
+  String get resumeErrUnknown => 'Something went wrong. Please try again.';
 }

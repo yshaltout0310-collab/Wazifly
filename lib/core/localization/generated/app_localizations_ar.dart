@@ -385,4 +385,101 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get loadingVerifying => 'جارٍ التحقق…';
+
+  @override
+  String get resumeAnalyzerTitle => 'محلل السيرة الذاتية';
+
+  @override
+  String get resumeAnalyzerIntro =>
+      'ارفع سيرتك الذاتية بصيغة PDF واحصل على تحليل فوري مدعوم بالذكاء الاصطناعي.';
+
+  @override
+  String get resumeUploadTitle => 'ارفع سيرتك الذاتية';
+
+  @override
+  String get resumeUploadHint => 'ملف PDF';
+
+  @override
+  String get resumeChoosePdf => 'اختيار ملف PDF';
+
+  @override
+  String get resumeAnalyzeAnother => 'تحليل سيرة أخرى';
+
+  @override
+  String get resumeAnalyzing => 'جارٍ تحليل سيرتك الذاتية…';
+
+  @override
+  String get resumeAnalyzingHint => 'يستغرق ذلك عادةً بضع ثوانٍ.';
+
+  @override
+  String get resumeAtsScore => 'درجة التوافق ATS';
+
+  @override
+  String get resumeScoreExcellent => 'ممتاز';
+
+  @override
+  String get resumeScoreGood => 'جيد';
+
+  @override
+  String get resumeScoreFair => 'مقبول';
+
+  @override
+  String get resumeScoreNeedsWork => 'يحتاج تحسينًا';
+
+  @override
+  String get resumeSectionSummary => 'ملخص';
+
+  @override
+  String get resumeSectionStrengths => 'نقاط القوة';
+
+  @override
+  String get resumeSectionWeaknesses => 'نقاط الضعف';
+
+  @override
+  String get resumeSectionMissingSkills => 'مهارات ناقصة';
+
+  @override
+  String get resumeSectionGrammar => 'اللغة والكتابة';
+
+  @override
+  String get resumeSectionSuggestions => 'اقتراحات التحسين';
+
+  @override
+  String get resumeGrammarFix => 'الاقتراح';
+
+  @override
+  String get resumeRetry => 'حاول مرة أخرى';
+
+  @override
+  String get resumeErrNoText =>
+      'تعذّر قراءة أي نص من ملف PDF هذا. إذا كان صورة ممسوحة ضوئيًا، فيرجى رفع ملف PDF نصي.';
+
+  @override
+  String get resumeErrExtraction =>
+      'تعذّر فتح ملف PDF هذا. يرجى تجربة ملف آخر.';
+
+  @override
+  String get resumeErrTooLarge =>
+      'هذا الملف كبير جدًا. يرجى اختيار ملف PDF أصغر.';
+
+  @override
+  String get resumeErrNotConfigured =>
+      'الذكاء الاصطناعي غير مُفعّل بعد. فعّل Firebase AI Logic لاستخدام المحلّل.';
+
+  @override
+  String get resumeErrNetwork => 'خطأ في الشبكة. تحقق من اتصالك وحاول مجددًا.';
+
+  @override
+  String get resumeErrQuota =>
+      'خدمة الذكاء الاصطناعي مشغولة حاليًا. يرجى المحاولة بعد قليل.';
+
+  @override
+  String get resumeErrInvalid =>
+      'أرجع الذكاء الاصطناعي نتيجة غير متوقعة. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get resumeErrBlocked => 'تعذّر تحليل هذا المحتوى.';
+
+  @override
+  String get resumeErrUnknown => 'حدث خطأ ما. يرجى المحاولة مرة أخرى.';
 }

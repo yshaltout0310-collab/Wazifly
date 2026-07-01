@@ -30,13 +30,23 @@ class HomeScreen extends ConsumerWidget {
       null => '',
     };
 
-    final features = <({IconData icon, String label})>[
-      (icon: Icons.description_outlined, label: l10n.featResumeAnalyzer),
-      (icon: Icons.bolt_outlined, label: l10n.featJobMatching),
-      (icon: Icons.psychology_outlined, label: l10n.featCareerCoach),
-      (icon: Icons.edit_document, label: l10n.featCvBuilder),
-      (icon: Icons.record_voice_over_outlined, label: l10n.featInterviewPrep),
-      (icon: Icons.recommend_outlined, label: l10n.featRecommendations),
+    // `route` is non-null once a feature is live; null features still show the
+    // "Soon" badge and a coming-soon toast.
+    final features = <({IconData icon, String label, String? route})>[
+      (
+        icon: Icons.description_outlined,
+        label: l10n.featResumeAnalyzer,
+        route: RouteNames.resumeAnalyzer,
+      ),
+      (icon: Icons.bolt_outlined, label: l10n.featJobMatching, route: null),
+      (icon: Icons.psychology_outlined, label: l10n.featCareerCoach, route: null),
+      (icon: Icons.edit_document, label: l10n.featCvBuilder, route: null),
+      (
+        icon: Icons.record_voice_over_outlined,
+        label: l10n.featInterviewPrep,
+        route: null,
+      ),
+      (icon: Icons.recommend_outlined, label: l10n.featRecommendations, route: null),
     ];
 
     return Scaffold(
@@ -121,25 +131,34 @@ class HomeScreen extends ConsumerWidget {
                     crossAxisCount: 2,
                     mainAxisSpacing: AppSpacing.md,
                     crossAxisSpacing: AppSpacing.md,
-                    childAspectRatio: 1.55,
+                    // Slightly taller cards so longer labels (e.g. the Arabic
+                    // "AI Job Matching") fit on two lines without overflowing.
+                    childAspectRatio: 1.42,
                   ),
                   delegate: SliverChildBuilderDelegate(
-                    (context, i) => _FeatureCard(
-                      icon: features[i].icon,
-                      label: features[i].label,
-                      soonLabel: l10n.comingSoonBadge,
-                      onTap: () => ScaffoldMessenger.of(context)
-                        ..hideCurrentSnackBar()
-                        ..showSnackBar(
-                          SnackBar(
-                            behavior: SnackBarBehavior.floating,
-                            content: Text(l10n.homeComingSoon),
-                          ),
-                        ),
-                    )
-                        .animate(delay: (120 + i * 70).ms)
-                        .fadeIn()
-                        .moveY(begin: 14, end: 0),
+                    (context, i) {
+                      final feature = features[i];
+                      final route = feature.route;
+                      return _FeatureCard(
+                        icon: feature.icon,
+                        label: feature.label,
+                        soonLabel: l10n.comingSoonBadge,
+                        available: route != null,
+                        onTap: route != null
+                            ? () => context.pushNamed(route)
+                            : () => ScaffoldMessenger.of(context)
+                              ..hideCurrentSnackBar()
+                              ..showSnackBar(
+                                SnackBar(
+                                  behavior: SnackBarBehavior.floating,
+                                  content: Text(l10n.homeComingSoon),
+                                ),
+                              ),
+                      )
+                          .animate(delay: (120 + i * 70).ms)
+                          .fadeIn()
+                          .moveY(begin: 14, end: 0);
+                    },
                     childCount: features.length,
                   ),
                 ),
@@ -314,12 +333,16 @@ class _FeatureCard extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.soonLabel,
+    required this.available,
     required this.onTap,
   });
 
   final IconData icon;
   final String label;
   final String soonLabel;
+
+  /// Live feature → show an open affordance; otherwise show the "Soon" badge.
+  final bool available;
   final VoidCallback onTap;
 
   @override
@@ -356,21 +379,25 @@ class _FeatureCard extends StatelessWidget {
                     child: Icon(icon, color: scheme.primary, size: 22),
                   ),
                   const Spacer(),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8, vertical: 3),
-                    decoration: BoxDecoration(
-                      color: scheme.surfaceContainerHighest,
-                      borderRadius: BorderRadius.circular(AppRadius.pill),
-                    ),
-                    child: Text(
-                      soonLabel,
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: scheme.onSurface.withValues(alpha: 0.6),
-                        fontWeight: FontWeight.w600,
+                  if (available)
+                    Icon(Icons.arrow_outward_rounded,
+                        size: 20, color: scheme.primary)
+                  else
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: scheme.surfaceContainerHighest,
+                        borderRadius: BorderRadius.circular(AppRadius.pill),
+                      ),
+                      child: Text(
+                        soonLabel,
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: scheme.onSurface.withValues(alpha: 0.6),
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
-                  ),
                 ],
               ),
               const Spacer(),

@@ -84,6 +84,20 @@ dependencies:
   # firebase_messaging: push notifications (plumbing prepared this phase).
   firebase_messaging: ^15.0.0
 
+  # ---------------------------------------------------------------------------
+  # Phase 2 — AI features
+  # ---------------------------------------------------------------------------
+  # firebase_ai: Firebase AI Logic (Gemini) client. No API key ships in the app
+  # — requests are authenticated through Firebase. Powers the AiService.
+  firebase_ai: ^2.3.0
+  # syncfusion_flutter_pdf: pure-Dart PDF text extraction for resume parsing
+  # (works on-device and in unit tests, no platform channel).
+  syncfusion_flutter_pdf: ^33.2.15
+  # file_selector: Flutter-team file picker (used to choose a resume PDF).
+  # Chosen over file_picker, which applies its own Kotlin Gradle Plugin and is
+  # incompatible with Flutter's built-in Kotlin.
+  file_selector: ^1.1.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -829,6 +829,186 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Verifying…'**
   String get loadingVerifying;
+
+  /// No description provided for @resumeAnalyzerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume Analyzer'**
+  String get resumeAnalyzerTitle;
+
+  /// No description provided for @resumeAnalyzerIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload your resume as a PDF and get instant, AI-powered feedback.'**
+  String get resumeAnalyzerIntro;
+
+  /// No description provided for @resumeUploadTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload your resume'**
+  String get resumeUploadTitle;
+
+  /// No description provided for @resumeUploadHint.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF file'**
+  String get resumeUploadHint;
+
+  /// No description provided for @resumeChoosePdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose PDF'**
+  String get resumeChoosePdf;
+
+  /// No description provided for @resumeAnalyzeAnother.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyze another resume'**
+  String get resumeAnalyzeAnother;
+
+  /// No description provided for @resumeAnalyzing.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyzing your resume…'**
+  String get resumeAnalyzing;
+
+  /// No description provided for @resumeAnalyzingHint.
+  ///
+  /// In en, this message translates to:
+  /// **'This usually takes a few seconds.'**
+  String get resumeAnalyzingHint;
+
+  /// No description provided for @resumeAtsScore.
+  ///
+  /// In en, this message translates to:
+  /// **'ATS Score'**
+  String get resumeAtsScore;
+
+  /// No description provided for @resumeScoreExcellent.
+  ///
+  /// In en, this message translates to:
+  /// **'Excellent'**
+  String get resumeScoreExcellent;
+
+  /// No description provided for @resumeScoreGood.
+  ///
+  /// In en, this message translates to:
+  /// **'Good'**
+  String get resumeScoreGood;
+
+  /// No description provided for @resumeScoreFair.
+  ///
+  /// In en, this message translates to:
+  /// **'Fair'**
+  String get resumeScoreFair;
+
+  /// No description provided for @resumeScoreNeedsWork.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs work'**
+  String get resumeScoreNeedsWork;
+
+  /// No description provided for @resumeSectionSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Summary'**
+  String get resumeSectionSummary;
+
+  /// No description provided for @resumeSectionStrengths.
+  ///
+  /// In en, this message translates to:
+  /// **'Strengths'**
+  String get resumeSectionStrengths;
+
+  /// No description provided for @resumeSectionWeaknesses.
+  ///
+  /// In en, this message translates to:
+  /// **'Weaknesses'**
+  String get resumeSectionWeaknesses;
+
+  /// No description provided for @resumeSectionMissingSkills.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing Skills'**
+  String get resumeSectionMissingSkills;
+
+  /// No description provided for @resumeSectionGrammar.
+  ///
+  /// In en, this message translates to:
+  /// **'Grammar & Writing'**
+  String get resumeSectionGrammar;
+
+  /// No description provided for @resumeSectionSuggestions.
+  ///
+  /// In en, this message translates to:
+  /// **'Improvement Suggestions'**
+  String get resumeSectionSuggestions;
+
+  /// No description provided for @resumeGrammarFix.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggestion'**
+  String get resumeGrammarFix;
+
+  /// No description provided for @resumeRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get resumeRetry;
+
+  /// No description provided for @resumeErrNoText.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t read any text from this PDF. If it\'s a scanned image, please upload a text-based PDF.'**
+  String get resumeErrNoText;
+
+  /// No description provided for @resumeErrExtraction.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t open this PDF. Please try another file.'**
+  String get resumeErrExtraction;
+
+  /// No description provided for @resumeErrTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'This file is too large. Please choose a smaller PDF.'**
+  String get resumeErrTooLarge;
+
+  /// No description provided for @resumeErrNotConfigured.
+  ///
+  /// In en, this message translates to:
+  /// **'AI isn\'t enabled yet. Enable Firebase AI Logic to use the analyzer.'**
+  String get resumeErrNotConfigured;
+
+  /// No description provided for @resumeErrNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'Network error. Check your connection and try again.'**
+  String get resumeErrNetwork;
+
+  /// No description provided for @resumeErrQuota.
+  ///
+  /// In en, this message translates to:
+  /// **'The AI service is busy right now. Please try again shortly.'**
+  String get resumeErrQuota;
+
+  /// No description provided for @resumeErrInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'The AI returned an unexpected result. Please try again.'**
+  String get resumeErrInvalid;
+
+  /// No description provided for @resumeErrBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'This content couldn\'t be analyzed.'**
+  String get resumeErrBlocked;
+
+  /// No description provided for @resumeErrUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong. Please try again.'**
+  String get resumeErrUnknown;
 }
 
 class _AppLocalizationsDelegate

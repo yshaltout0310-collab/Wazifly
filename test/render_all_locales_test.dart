@@ -12,6 +12,7 @@ import 'package:careerbridge/features/home/presentation/home_screen.dart';
 import 'package:careerbridge/features/language_selection/presentation/language_selection_screen.dart';
 import 'package:careerbridge/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:careerbridge/features/profile/presentation/profile_screen.dart';
+import 'package:careerbridge/features/resume_analyzer/presentation/resume_analyzer_screen.dart';
 import 'package:careerbridge/features/settings/presentation/settings_screen.dart';
 import 'package:careerbridge/features/user_type/presentation/user_type_selection_screen.dart';
 import 'package:flutter/material.dart';
@@ -75,6 +76,7 @@ void main() {
     'Home': () => const HomeScreen(),
     'Settings': () => const SettingsScreen(),
     'Profile': () => const ProfileScreen(),
+    'ResumeAnalyzer': () => const ResumeAnalyzerScreen(),
   };
 
   for (final locale in const [Locale('en'), Locale('ar')]) {

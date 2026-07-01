@@ -11,6 +11,7 @@ import '../../features/home/presentation/home_screen.dart';
 import '../../features/language_selection/presentation/language_selection_screen.dart';
 import '../../features/onboarding/presentation/onboarding_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
+import '../../features/resume_analyzer/presentation/resume_analyzer_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/splash/presentation/splash_screen.dart';
 import '../../features/user_type/presentation/user_type_selection_screen.dart';
@@ -90,6 +91,11 @@ abstract final class AppRouter {
         path: RouteNames.homePath,
         name: RouteNames.home,
         pageBuilder: _fade(const HomeScreen()),
+      ),
+      GoRoute(
+        path: RouteNames.resumeAnalyzerPath,
+        name: RouteNames.resumeAnalyzer,
+        pageBuilder: _fade(const ResumeAnalyzerScreen()),
       ),
       GoRoute(
         path: RouteNames.settingsPath,
