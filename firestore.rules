@@ -1,0 +1,18 @@
+rules_version = '2';
+
+// Cloud Firestore security rules for Career Bridge.
+//
+// Deploy with:  firebase deploy --only firestore:rules
+// (or paste into Firebase Console → Firestore Database → Rules).
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // A user may read and write only their own profile document at
+    // users/{uid}. The app writes users/<auth uid> from UserProfileRepository.
+    match /users/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // Everything else is denied by default (no fall-through match).
+  }
+}
