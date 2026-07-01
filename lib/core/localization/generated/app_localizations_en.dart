@@ -573,4 +573,59 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get jobMatchErrUnknown => 'Something went wrong. Please try again.';
+
+  @override
+  String get coachTitle => 'Career Coach';
+
+  @override
+  String get coachIntroTitle => 'Your AI Career Coach';
+
+  @override
+  String get coachIntroBody =>
+      'Ask about career paths, learning roadmaps, interview prep, or how to grow your skills. Tailored to your resume when you\'ve analyzed one.';
+
+  @override
+  String get coachInputHint => 'Ask your career coach…';
+
+  @override
+  String get coachSend => 'Send';
+
+  @override
+  String get coachClear => 'Clear chat';
+
+  @override
+  String get coachRetry => 'Retry';
+
+  @override
+  String get coachPrompt1 => 'How can I improve my resume?';
+
+  @override
+  String get coachPrompt2 => 'What skills should I learn next?';
+
+  @override
+  String get coachPrompt3 => 'Help me prepare for an interview.';
+
+  @override
+  String get coachPrompt4 => 'Suggest a learning roadmap for my career.';
+
+  @override
+  String get coachErrNotConfigured =>
+      'AI isn\'t enabled yet. Enable Firebase AI Logic to use the coach.';
+
+  @override
+  String get coachErrNetwork =>
+      'Network error. Check your connection and try again.';
+
+  @override
+  String get coachErrQuota =>
+      'The AI service is busy right now. Please try again shortly.';
+
+  @override
+  String get coachErrBlocked => 'This message couldn\'t be answered.';
+
+  @override
+  String get coachErrEmpty => 'The coach didn\'t respond. Please try again.';
+
+  @override
+  String get coachErrUnknown => 'Something went wrong. Please try again.';
 }

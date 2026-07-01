@@ -205,5 +205,23 @@
   "jobMatchErrQuota": "The AI service is busy right now. Please try again shortly.",
   "jobMatchErrInvalid": "The AI returned an unexpected result. Please try again.",
   "jobMatchErrBlocked": "This content couldn't be analyzed.",
-  "jobMatchErrUnknown": "Something went wrong. Please try again."
+  "jobMatchErrUnknown": "Something went wrong. Please try again.",
+
+  "coachTitle": "Career Coach",
+  "coachIntroTitle": "Your AI Career Coach",
+  "coachIntroBody": "Ask about career paths, learning roadmaps, interview prep, or how to grow your skills. Tailored to your resume when you've analyzed one.",
+  "coachInputHint": "Ask your career coach…",
+  "coachSend": "Send",
+  "coachClear": "Clear chat",
+  "coachRetry": "Retry",
+  "coachPrompt1": "How can I improve my resume?",
+  "coachPrompt2": "What skills should I learn next?",
+  "coachPrompt3": "Help me prepare for an interview.",
+  "coachPrompt4": "Suggest a learning roadmap for my career.",
+  "coachErrNotConfigured": "AI isn't enabled yet. Enable Firebase AI Logic to use the coach.",
+  "coachErrNetwork": "Network error. Check your connection and try again.",
+  "coachErrQuota": "The AI service is busy right now. Please try again shortly.",
+  "coachErrBlocked": "This message couldn't be answered.",
+  "coachErrEmpty": "The coach didn't respond. Please try again.",
+  "coachErrUnknown": "Something went wrong. Please try again."
 }

@@ -568,4 +568,58 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get jobMatchErrUnknown => 'حدث خطأ ما. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get coachTitle => 'المدرب المهني';
+
+  @override
+  String get coachIntroTitle => 'مدرّبك المهني بالذكاء الاصطناعي';
+
+  @override
+  String get coachIntroBody =>
+      'اسأل عن المسارات المهنية، وخطط التعلّم، والتحضير للمقابلات، أو كيفية تطوير مهاراتك. ويُخصَّص حسب سيرتك الذاتية عند تحليلها.';
+
+  @override
+  String get coachInputHint => 'اسأل مدرّبك المهني…';
+
+  @override
+  String get coachSend => 'إرسال';
+
+  @override
+  String get coachClear => 'مسح المحادثة';
+
+  @override
+  String get coachRetry => 'إعادة المحاولة';
+
+  @override
+  String get coachPrompt1 => 'كيف يمكنني تحسين سيرتي الذاتية؟';
+
+  @override
+  String get coachPrompt2 => 'ما المهارات التي ينبغي أن أتعلّمها تاليًا؟';
+
+  @override
+  String get coachPrompt3 => 'ساعدني في التحضير لمقابلة عمل.';
+
+  @override
+  String get coachPrompt4 => 'اقترح خطة تعلّم لمساري المهني.';
+
+  @override
+  String get coachErrNotConfigured =>
+      'الذكاء الاصطناعي غير مُفعّل بعد. فعّل Firebase AI Logic لاستخدام المدرب.';
+
+  @override
+  String get coachErrNetwork => 'خطأ في الشبكة. تحقق من اتصالك وحاول مجددًا.';
+
+  @override
+  String get coachErrQuota =>
+      'خدمة الذكاء الاصطناعي مشغولة حاليًا. يرجى المحاولة بعد قليل.';
+
+  @override
+  String get coachErrBlocked => 'تعذّرت الإجابة عن هذه الرسالة.';
+
+  @override
+  String get coachErrEmpty => 'لم يستجب المدرب. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get coachErrUnknown => 'حدث خطأ ما. يرجى المحاولة مرة أخرى.';
 }

@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:careerbridge/core/services/ai/ai_exception.dart';
+import 'package:careerbridge/core/services/ai/ai_message.dart';
 import 'package:careerbridge/core/services/ai/ai_service.dart';
 import 'package:careerbridge/features/resume_analyzer/data/resume_analyzer_repository_impl.dart';
 import 'package:careerbridge/features/resume_analyzer/domain/pdf_text_extractor.dart';
@@ -37,6 +38,11 @@ class _FakeAi implements AiService {
 
   @override
   Stream<String> streamText(String prompt, {String? systemInstruction}) =>
+      const Stream.empty();
+
+  @override
+  Stream<String> streamChat(List<AiMessage> history,
+          {String? systemInstruction}) =>
       const Stream.empty();
 }
 

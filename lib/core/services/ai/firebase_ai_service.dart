@@ -4,6 +4,7 @@ import 'package:firebase_ai/firebase_ai.dart';
 import 'package:flutter/foundation.dart';
 
 import 'ai_exception.dart';
+import 'ai_message.dart';
 import 'ai_service.dart';
 
 /// [AiService] backed by **Firebase AI Logic** using the Gemini Developer API
@@ -72,6 +73,30 @@ class FirebaseAiService implements AiService {
   Stream<String> streamText(String prompt, {String? systemInstruction}) async* {
     final stream = _model(systemInstruction: systemInstruction)
         .generateContentStream([Content.text(prompt)]);
+    try {
+      await for (final chunk in stream) {
+        final text = chunk.text;
+        if (text != null && text.isNotEmpty) yield text;
+      }
+    } catch (e) {
+      throw _map(e);
+    }
+  }
+
+  @override
+  Stream<String> streamChat(
+    List<AiMessage> history, {
+    String? systemInstruction,
+  }) async* {
+    // Map the provider-neutral turns to Gemini Content (user vs model roles).
+    final contents = [
+      for (final m in history)
+        m.role == AiRole.model
+            ? Content.model([TextPart(m.text)])
+            : Content.text(m.text),
+    ];
+    final stream = _model(systemInstruction: systemInstruction)
+        .generateContentStream(contents);
     try {
       await for (final chunk in stream) {
         final text = chunk.text;

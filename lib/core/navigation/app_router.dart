@@ -7,6 +7,7 @@ import '../../features/auth/presentation/otp_verification_screen.dart';
 import '../../features/auth/presentation/phone_auth_screen.dart';
 import '../../features/auth/presentation/welcome_screen.dart';
 import '../../features/country_selection/presentation/country_selection_screen.dart';
+import '../../features/career_coach/presentation/career_coach_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/job_matching/presentation/job_matching_screen.dart';
 import '../../features/language_selection/presentation/language_selection_screen.dart';
@@ -102,6 +103,11 @@ abstract final class AppRouter {
         path: RouteNames.jobMatchingPath,
         name: RouteNames.jobMatching,
         pageBuilder: _fade(const JobMatchingScreen()),
+      ),
+      GoRoute(
+        path: RouteNames.careerCoachPath,
+        name: RouteNames.careerCoach,
+        pageBuilder: _fade(const CareerCoachScreen()),
       ),
       GoRoute(
         path: RouteNames.settingsPath,

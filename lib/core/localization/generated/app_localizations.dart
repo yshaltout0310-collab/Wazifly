@@ -1153,6 +1153,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Something went wrong. Please try again.'**
   String get jobMatchErrUnknown;
+
+  /// No description provided for @coachTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Career Coach'**
+  String get coachTitle;
+
+  /// No description provided for @coachIntroTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your AI Career Coach'**
+  String get coachIntroTitle;
+
+  /// No description provided for @coachIntroBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask about career paths, learning roadmaps, interview prep, or how to grow your skills. Tailored to your resume when you\'ve analyzed one.'**
+  String get coachIntroBody;
+
+  /// No description provided for @coachInputHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask your career coach…'**
+  String get coachInputHint;
+
+  /// No description provided for @coachSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get coachSend;
+
+  /// No description provided for @coachClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear chat'**
+  String get coachClear;
+
+  /// No description provided for @coachRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get coachRetry;
+
+  /// No description provided for @coachPrompt1.
+  ///
+  /// In en, this message translates to:
+  /// **'How can I improve my resume?'**
+  String get coachPrompt1;
+
+  /// No description provided for @coachPrompt2.
+  ///
+  /// In en, this message translates to:
+  /// **'What skills should I learn next?'**
+  String get coachPrompt2;
+
+  /// No description provided for @coachPrompt3.
+  ///
+  /// In en, this message translates to:
+  /// **'Help me prepare for an interview.'**
+  String get coachPrompt3;
+
+  /// No description provided for @coachPrompt4.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggest a learning roadmap for my career.'**
+  String get coachPrompt4;
+
+  /// No description provided for @coachErrNotConfigured.
+  ///
+  /// In en, this message translates to:
+  /// **'AI isn\'t enabled yet. Enable Firebase AI Logic to use the coach.'**
+  String get coachErrNotConfigured;
+
+  /// No description provided for @coachErrNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'Network error. Check your connection and try again.'**
+  String get coachErrNetwork;
+
+  /// No description provided for @coachErrQuota.
+  ///
+  /// In en, this message translates to:
+  /// **'The AI service is busy right now. Please try again shortly.'**
+  String get coachErrQuota;
+
+  /// No description provided for @coachErrBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'This message couldn\'t be answered.'**
+  String get coachErrBlocked;
+
+  /// No description provided for @coachErrEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'The coach didn\'t respond. Please try again.'**
+  String get coachErrEmpty;
+
+  /// No description provided for @coachErrUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong. Please try again.'**
+  String get coachErrUnknown;
 }
 
 class _AppLocalizationsDelegate

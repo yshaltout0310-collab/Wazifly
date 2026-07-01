@@ -1,7 +1,8 @@
 # Career Bridge — Session Handoff
 
 > Living handoff doc so a fresh Claude session can continue immediately.
-> Last updated: end of Phase 2 · Milestone 2 (AI Job Matching) implementation.
+> Last updated: end of Phase 2 · Milestone 3 (AI Career Coach) implementation.
+> **Phase 2 (M1 Resume Analyzer + M2 Job Matching + M3 Career Coach) is COMPLETE.**
 
 ---
 
@@ -57,9 +58,16 @@ Shared widgets: `PrimaryButton`, `SearchField`, `AppLogo`, `AuroraBackground`,
 
 **Error handling convention:** typed exceptions with a stable, localizable `code`
 enum (`AuthException`/`AuthErrorCode`, `AiException`/`AiErrorCode`,
-`ResumeAnalyzerException`/`ResumeErrorCode`, `JobMatchingException`/`JobMatchErrorCode`);
-presentation maps the code → a UI-facing failure enum → l10n string. Branded
-snackbars via `showAuthSnack`/`showAuthError`.
+`ResumeAnalyzerException`/`ResumeErrorCode`, `JobMatchingException`/`JobMatchErrorCode`;
+the Career Coach reuses `AiException` mapped to a `CoachFailure` enum); presentation
+maps the code → a UI-facing failure enum → l10n string. Branded snackbars via
+`showAuthSnack`/`showAuthError`.
+
+**AI abstraction (`AiService`):** `generateText`, `generateJson`, `streamText`, and
+**`streamChat(List<AiMessage>, {systemInstruction})`** (multi-turn streaming for the
+coach). Only plain Dart crosses the interface (`String`/`Map`/`Stream<String>`/the
+plain-value `AiMessage`) — no vendor types leak. `FirebaseAiService` is the only file
+importing `firebase_ai`; swap providers by rebinding `aiServiceProvider`.
 
 ---
 
@@ -67,9 +75,10 @@ snackbars via `showAuthSnack`/`showAuthError`.
 
 `Splash → Language → Country → Onboarding → Welcome → (Email | Google | Phone→OTP)
 → User Type (Job Seeker/Employer) → Home`. Settings + Profile reachable from Home.
-Home shows an "AI toolkit" grid of feature cards; the **Resume Analyzer** and
-**AI Job Matching** cards are now live (route to their screens), the other four show a
-"Soon" badge + coming-soon snackbar.
+Home shows an "AI toolkit" grid of feature cards; the **Resume Analyzer**, **AI Job
+Matching**, and **Career Coach** cards are now live (route to their screens), the
+remaining three (CV Builder, Interview Prep, For You) show a "Soon" badge +
+coming-soon snackbar.
 
 ---
 
@@ -106,12 +115,19 @@ logcat + Firestore REST + screenshots.
 See §7. Fully implemented, tested, and **verified live end-to-end on the emulator in
 both English and Arabic** with real Gemini output. No open blockers.
 
-### Phase 2 · Milestone 2 — AI Job Matching ✅ COMPLETE (committed on `feature/resume-analyzer`)
+### Phase 2 · Milestone 2 — AI Job Matching ✅ COMPLETE (committed `8f2101f`)
 See §7.5. Ranks a bundled seed job dataset against the analyzed resume via the same
 `AiService.generateJson`. Uses the cached resume analysis when present; otherwise prompts
 to upload one, analyzes it (reusing the M1 pipeline), caches it, and matches
 automatically. **Verified live end-to-end on the emulator in both English and Arabic**
 with real Gemini output. `flutter analyze` clean; **59 tests pass**. No open blockers.
+
+### Phase 2 · Milestone 3 — AI Career Coach ✅ COMPLETE (committed on `feature/resume-analyzer`)
+See §7.6. Streaming chat assistant (`AiService.streamChat`) with multi-turn history,
+personalized with the cached resume analysis when available, history behind a
+`ChatHistoryStore` seam. **Verified live end-to-end on the emulator in both English and
+Arabic** with real streaming Gemini output (incl. multi-turn context). `flutter analyze`
+clean; **76 tests pass**. No open blockers. **Phase 2 is now complete.**
 
 ---
 
@@ -307,26 +323,80 @@ Home card → Job Matching → (no cache) needs-resume prompt → "Upload resume
 
 ---
 
-## 8. Exact next steps — begin Milestone 3 (AI Career Coach)
+## 7.6 Milestone 3 — AI Career Coach ✅ COMPLETE & VERIFIED
 
-Milestones 1 & 2 are done, verified, and committed. **Do NOT start coding M3 until the
-user approves the plan** (workflow rule).
+**Scope (approved):** streaming in-app chat assistant for career guidance, learning
+roadmaps, interview prep, and skill advice. **Personalized with the cached resume analysis
+when available** (generic + suggests the Analyzer otherwise). History **in-memory behind a
+swappable `ChatHistoryStore` seam**. Provider-agnostic through `AiService`.
 
-1. **Present the Milestone 3 implementation plan** and wait for approval. Suggested shape:
-   - In-app chat assistant with conversation history: career guidance, learning roadmaps,
-     interview advice, skill recommendations.
-   - **Architecture already prepared:** `AiService.streamText` exists; `firebase_ai`
-     exposes `model.startChat()` + `chat.sendMessageStream()` for streaming + history.
-     Extend `FirebaseAiService`/`AiService` with a chat/session abstraction if needed,
-     keeping vendor types from leaking.
-   - Optionally seed the coach with the cached `ResumeAnalysis` (via
-     `lastResumeAnalysisProvider`) for personalized advice.
-   - Feature module `lib/features/career_coach/`, `RouteNames.careerCoach` + GoRoute, wire
-     the Home "Career Coach" card (`available`), EN + AR l10n. Stream tokens into the UI.
-   - Tests: message/state model, a fake streaming `AiService`, screen render EN + AR.
-     `flutter analyze` + `flutter test` green. One commit for the milestone.
-2. Implement one milestone at a time; verify on the emulator (both languages) before
-   committing; **one commit per completed milestone**.
+**AI-layer extension (the only change there):**
+- `lib/core/services/ai/ai_message.dart` — plain `AiMessage`/`AiRole` value types.
+- `AiService.streamChat(List<AiMessage> history, {systemInstruction}) → Stream<String>`
+  (single method added); `FirebaseAiService` maps turns → `Content` (user/model) and reuses
+  the existing `_model`/`_map`. `streamText` stays for single-shot. No vendor types leak.
+
+**Chat history seam:** `lib/core/services/chat_store/chat_history_store.dart` —
+`ChatHistoryStore` interface + `InMemoryChatHistoryStore` + `chatHistoryStoreProvider`
+(mirrors the resume store; rebind for Firestore/local persistence later, no feature changes).
+
+**DONE (code complete):**
+- Domain `lib/features/career_coach/domain/`: `ChatMessage` (Equatable, `ChatRole`,
+  `ChatMessageStatus {complete,streaming,failed}`, `copyWith`), `CareerCoachRepository`
+  interface. Failures reuse `AiException`.
+- Data: `CareerCoachRepositoryImpl` (+ provider) builds the coach persona system
+  instruction (+ resume profile when present; **instructs plain text / no Markdown**),
+  maps `ChatMessage`→`AiMessage`, delegates to `streamChat`.
+- Application: `CareerCoachController` (`StateNotifier<CareerCoachState>`) — appends the
+  user turn + a streaming placeholder, **accumulates tokens into the assistant message**,
+  marks complete/failed, persists via the store; `clearChat()`, `retryLast()`,
+  `@visibleForTesting .seeded()`; `CoachFailure` enum → localized. Hydrates history from
+  the store in its constructor.
+- UI: `CareerCoachScreen` (chat list + input bar, empty-state with 4 starter-prompt chips,
+  auto-scroll, failure snackbar), `widgets/chat_bubble.dart` (user/assistant bubbles +
+  animated typing indicator + retry), `widgets/chat_input.dart` (multiline composer +
+  send). Material 3, RTL-aware, branded.
+- l10n: ~18 `coach*` keys in EN + AR. Wiring: `RouteNames.careerCoach` (`/career-coach`)
+  + GoRoute; Home "Career Coach" card now live.
+- Tests: **76 total pass** (was 59; +17). New: `career_coach_repository_test` (6 —
+  streaming, history mapping, EN/AR persona, resume personalization, error propagation with
+  a fake streaming `AiService`), `career_coach_controller_test` (5 — token accumulation,
+  error/empty failure, blank-ignored, clear), `career_coach_screen_test` (4 — conversation
+  + empty-state render EN+AR), + CareerCoach in the locale sweep. `flutter analyze` clean.
+
+**VERIFIED live on emulator with REAL streaming Gemini — both English and Arabic:**
+Home card → coach → empty state with starter chips → tap a prompt → user bubble + typing
+indicator → tokens stream into the assistant bubble → complete reply.
+- **English:** in-persona reply (asks a clarifying question); **multi-turn** confirmed —
+  after "I aim for senior Flutter roles" the coach gave Flutter/senior-specific guidance
+  (architecture, `flutter_test`/`integration_test`, CI/CD, platform channels, mentorship).
+- **Arabic (RTL):** replies in Arabic with correct RTL layout; empty state + starter chips
+  mirrored. Clear-chat works.
+- **Plain-text fix:** an early run showed literal Markdown (`**`, `*`); resolved by
+  instructing the model to write plain text (dashes for lists) — re-verified clean, no new
+  dependency.
+
+**No open blockers.** `flutter analyze` clean; **76 tests pass.**
+
+---
+
+## 8. Next steps — Phase 2 complete
+
+Milestones 1, 2 & 3 are done, verified, and committed. **Phase 2 (AI Resume Analyzer +
+AI Job Matching + AI Career Coach) is COMPLETE.** Nothing is in progress. **Do NOT start a
+new milestone until the user approves a plan** (workflow rule).
+
+Candidate future work (all still "Soon" on Home), pending user direction:
+- **CV Builder** — guided resume/CV creation (could reuse the `ResumeAnalysis` + `AiService`).
+- **Interview Prep** — mock-interview practice (a natural fit for `streamChat`, like the coach).
+- **For You / Recommendations** — personalized content from the resume + matches.
+- **Durable persistence** — implement a Firestore/local `ResumeAnalysisStore` and
+  `ChatHistoryStore` (both seams already exist; just rebind the providers).
+- **Markdown rendering** in chat (optional polish; currently the coach is prompted to emit
+  plain text instead).
+
+Per the workflow: present a plan, wait for approval, one milestone at a time, verify on the
+emulator (both languages), one commit per milestone.
 
 ---
 
@@ -338,10 +408,11 @@ user approves the plan** (workflow rule).
   per-job "why it matches". `JobsRepository` interface + `SeedJobsRepository` now; swap in
   a real jobs API with no refactor. Resume analysis reused via `lastResumeAnalysisProvider`
   (persistence-ready store seam).
-- **M3 — AI Career Coach:** in-app chat assistant with conversation history; career
-  guidance, learning roadmaps, interview advice, skill recommendations. **Architecture
-  already prepared:** `AiService.streamText` exists; `firebase_ai` exposes
-  `model.startChat()` + `chat.sendMessageStream()` for streaming + history.
+- **M3 — AI Career Coach** ✅ *complete & verified* (see §7.6). Streaming chat via
+  `AiService.streamChat` (multi-turn history), personalized with the cached resume analysis,
+  history behind a `ChatHistoryStore` seam. Provider stays swappable through `AiService`.
+
+**Phase 2 is complete.** See §8 for candidate future work.
 
 **Workflow rules (user-mandated):** present a plan per milestone and **wait for
 approval before writing code**; implement one milestone at a time; small tasks;
@@ -437,6 +508,16 @@ prompt). Seed data: `assets/data/seed_jobs.json`.
 **Resume cache seam** `lib/core/services/resume_store/resume_analysis_store.dart`
 (`ResumeAnalysisStore` + in-memory impl + `lastResumeAnalysisProvider`).
 
+**Career Coach** `lib/features/career_coach/`
+`domain/`: `chat_message.dart`, `career_coach_repository.dart`.
+`data/`: `career_coach_repository_impl.dart` (+ provider, persona/system instruction).
+`application/`: `career_coach_controller.dart` (state + controller + provider).
+`presentation/`: `career_coach_screen.dart`, `widgets/{chat_bubble,chat_input}.dart`.
+**Chat history seam** `lib/core/services/chat_store/chat_history_store.dart`
+(`ChatHistoryStore` + in-memory impl + `chatHistoryStoreProvider`).
+**AI multi-turn** `lib/core/services/ai/ai_message.dart` (`AiMessage`/`AiRole`) +
+`AiService.streamChat` (impl in `firebase_ai_service.dart`).
+
 **Firebase** `lib/core/services/firebase/{firebase_service,firebase_options}.dart` ·
 `firebase.json` · `firestore.rules` · `firestore.indexes.json`.
 
@@ -488,10 +569,11 @@ prompt). Seed data: `assets/data/seed_jobs.json`.
 
 ## 14. TL;DR for the next session
 
-**Milestones 1 & 2 are DONE, verified live in EN + AR with real Gemini, and committed** on
-`feature/resume-analyzer` (M1 `bf469e6`; M2 is the latest commit — see §6). `flutter
-analyze` clean, **59 tests pass**, repo clean. Firebase AI Logic is enabled + provisioned (§5).
-**Next:** present the **Milestone 3 (AI Career Coach)** plan (§8) and **wait for the
-user's approval before coding**. Keep the conventions in §13; run with
-`--no-enable-impeller`; the test account session is persisted so the app opens to Home.
-(Note: the persisted app language is currently English after M2 verification.)
+**Milestones 1, 2 & 3 are DONE, verified live in EN + AR with real Gemini, and committed**
+on `feature/resume-analyzer` (M1 `bf469e6`; M2 `8f2101f`; M3 is the latest commit — see §6).
+**Phase 2 is COMPLETE.** `flutter analyze` clean, **76 tests pass**, repo clean. Firebase AI
+Logic is enabled + provisioned (§5). **Next:** nothing is in progress — present a plan for
+any new milestone (§8 lists candidates) and **wait for the user's approval before coding**.
+Keep the conventions in §13; run with `--no-enable-impeller`; the test account session is
+persisted so the app opens to Home. (Note: the persisted app language is currently Arabic
+after M3 verification.)
