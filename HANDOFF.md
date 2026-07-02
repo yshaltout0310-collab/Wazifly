@@ -1,8 +1,9 @@
 # Career Bridge — Session Handoff
 
 > Living handoff doc so a fresh Claude session can continue immediately.
-> Last updated: end of Phase 2 · Milestone 3 (AI Career Coach) implementation.
-> **Phase 2 (M1 Resume Analyzer + M2 Job Matching + M3 Career Coach) is COMPLETE.**
+> Last updated: end of Phase 3 · Milestone 1 (Jobs Platform) implementation.
+> **Phase 2 COMPLETE** (M1 Resume Analyzer + M2 Job Matching + M3 Career Coach).
+> **Phase 3 · M1 (Jobs Platform) COMPLETE** (committed; see §7.7).
 
 ---
 
@@ -122,12 +123,19 @@ to upload one, analyzes it (reusing the M1 pipeline), caches it, and matches
 automatically. **Verified live end-to-end on the emulator in both English and Arabic**
 with real Gemini output. `flutter analyze` clean; **59 tests pass**. No open blockers.
 
-### Phase 2 · Milestone 3 — AI Career Coach ✅ COMPLETE (committed on `feature/resume-analyzer`)
+### Phase 2 · Milestone 3 — AI Career Coach ✅ COMPLETE (committed `89ee1a1`)
 See §7.6. Streaming chat assistant (`AiService.streamChat`) with multi-turn history,
 personalized with the cached resume analysis when available, history behind a
 `ChatHistoryStore` seam. **Verified live end-to-end on the emulator in both English and
 Arabic** with real streaming Gemini output (incl. multi-turn context). `flutter analyze`
 clean; **76 tests pass**. No open blockers. **Phase 2 is now complete.**
+
+### Phase 3 · Milestone 1 — Jobs Platform ✅ COMPLETE (committed `6a6a72c`)
+See §7.7. Browsable jobs experience (search/filter, detail, save, mock apply) over the
+shared jobs foundation, integrating Resume Analyzer, Job Matching, and Career Coach.
+`flutter analyze` clean; **99 tests pass**. Partially verified live (Arabic browse); the
+full both-language on-device pass was curtailed by an emulator GPU/input failure — see
+§7.7 and §10.
 
 ---
 
@@ -181,13 +189,14 @@ $env:Path = "C:\Program Files\nodejs;" + $env:Path
 main                         6f860fe  Phase 1 production foundation completed
 firebase-auth-integration    aa9b7d2  Add Cloud Firestore security rules  (branched from main)
                              2af451d  Integrate real Firebase Authentication and remove demo mode
-feature/resume-analyzer  *  89ee1a1  feat: AI Career Coach (Phase 2, Milestone 3)  <-- current HEAD
+feature/resume-analyzer  *  6a6a72c  feat: Jobs Platform (Phase 3, Milestone 1)  <-- current HEAD
+                             89ee1a1  feat: AI Career Coach (Phase 2, Milestone 3)
                              8f2101f  feat: AI Job Matching (Phase 2, Milestone 2)
                              bf469e6  feat: AI Resume Analyzer (Phase 2, Milestone 1)
                             (each milestone: 1 feat commit + a follow-up docs commit updating this file)
                              branched from firebase-auth-integration
 ```
-- **M1 COMMITTED (`bf469e6`); M2 COMMITTED (`8f2101f`); M3 COMMITTED (`89ee1a1`).** Neither
+- **P2 M1 `bf469e6`; M2 `8f2101f`; M3 `89ee1a1`; P3 M1 `6a6a72c` (Jobs Platform).** Neither
   `firebase-auth-integration` nor `feature/resume-analyzer` is merged to `main`, and
   nothing is pushed to any remote. (No PRs opened.)
 - Commit message convention: end with
@@ -381,13 +390,75 @@ indicator → tokens stream into the assistant bubble → complete reply.
 
 ---
 
+## 7.7 Phase 3 · Milestone 1 — Jobs Platform ✅ COMPLETE (`6a6a72c`)
+
+**Scope (approved):** make jobs first-class — **browse/search/filter, job detail, save,
+mock apply** — over a shared, repository-based jobs foundation (real API swappable later),
+integrated with Resume Analyzer, Job Matching, and Career Coach.
+
+**Shared jobs foundation (refactor — extracted from `job_matching`):**
+- `Job` model → `lib/shared/models/job.dart`.
+- `JobsRepository` + new `JobQuery` + `SeedJobsRepository` + `jobsRepositoryProvider` →
+  `lib/core/services/jobs/`. `JobsRepository` gained `fetchJobById(id)` and
+  `searchJobs(JobQuery)` (text + type/seniority/remote filters + offset/limit), applied
+  in-memory by the seed repo; a `RemoteJobsRepository` drops in unchanged.
+- `JobInteractionsStore` seam (`lib/core/services/jobs/job_interactions_store.dart`):
+  saved + applied job-id sets, in-memory now, rebindable to Firestore/local (mirrors the
+  resume/chat store seams). `jobInteractionsProvider` (reactive).
+- **Intentional one-directional dependency:** `job_matching` and `jobs` both depend on
+  this shared foundation; additionally `jobs` depends on `job_matching` for the AI match
+  pieces (`JobMatch`, `jobMatchingRepositoryProvider`, `JobMatchingController`) — the Jobs
+  platform is a *consumer* of the matching capability. Documented, not accidental.
+
+**Feature `lib/features/jobs/`:**
+- `application/`: `JobsBrowseController` (live `JobQuery` search/filter + derived filter
+  options), `JobDetailController` (`.family` by id; loads job + on-demand per-job match).
+- `presentation/`: `JobsScreen` — **segmented** All / Best matches / Saved (segmented, not
+  TabBarView, so the Best-matches AI ranking only runs when that segment is opened);
+  `JobDetailScreen`; widgets `job_list_tile`, `job_filter_sheet`.
+- **Integrations:** detail shows an on-demand resume **match** (new
+  `JobMatchingRepository.matchJob()` scores a single job; falls back to a "analyze your
+  resume" prompt when none cached); **Best matches** reuses `JobMatchingController`
+  unchanged; **"Ask the coach about this job"** deep-links to `/career-coach` with a seeded
+  prompt via GoRoute `extra` (Career Coach now accepts an optional `seedPrompt`).
+- **Mock Apply:** records an in-app "Applied" state via `JobInteractionsStore`.
+- Wiring: `RouteNames.jobs` (`/jobs`) + `jobDetail` (`/jobs/:id`); a **"Browse Jobs" CTA**
+  on Home; ~25 `jobs*` EN+AR keys (incl. pluralized counts).
+- Tests: **99 total pass** (was 76; +23): `seed_jobs_repository_test` (7 — search/filter/
+  by-id/pagination via a fake `AssetBundle`), `jobs_browse_controller_test` (3),
+  `job_detail_controller_test` (3), `job_interactions_test` (3), `matchJob` (1),
+  `jobs_screen_test` (2 EN+AR), `job_detail_screen_test` (2 EN+AR), + Jobs in the locale
+  sweep. `flutter analyze` clean.
+
+**Verification status (READ THIS):**
+- **Live-verified (Arabic, Skia):** Home "Browse Jobs" CTA renders; the **Jobs browse
+  screen** renders fully — 14 seed jobs, All/Best-matches/Saved segments, search field,
+  filter button, tiles (title/company/meta-chips/bookmark). Navigation Home→Jobs→detail
+  works.
+- **Bug found on-device & FIXED:** the job **detail** screen crashed layout with an
+  unbounded-width button (`Column(Expanded(ListView) + action bar)` gave the bottom bar
+  infinite width). **Fix:** moved the action bar to the Scaffold `bottomNavigationBar`
+  slot (bounded) and made the body just the scrollable. Verified: no layout errors in
+  logcat post-fix; covered by the EN+AR `job_detail_screen_test`.
+- **Not cleanly captured live:** detail render post-fix, English UI, save/apply/coach
+  deep-link — the emulator degraded mid-session (wedged Home input, then a corrupted GPU
+  surface → all-black; a `-gpu host` cold-boot restored rendering but the Home "Browse
+  Jobs" CTA still dropped taps intermittently). This is the documented emulator quirk
+  (§10), **not an app defect** — app-side correctness is backed by the 99-test suite
+  (which renders both `JobsScreen` and `JobDetailScreen` in EN + AR). **A fresh session
+  should re-verify the detail + integrations on a healthy `-gpu host` emulator.**
+
+---
+
 ## 8. Next steps — Phase 2 complete
 
-Milestones 1, 2 & 3 are done, verified, and committed. **Phase 2 (AI Resume Analyzer +
-AI Job Matching + AI Career Coach) is COMPLETE.** Nothing is in progress. **Do NOT start a
-new milestone until the user approves a plan** (workflow rule).
+**Phase 2 (Resume Analyzer + Job Matching + Career Coach) is COMPLETE**, and **Phase 3 · M1
+(Jobs Platform) is COMPLETE** (`6a6a72c`, §7.7). Nothing is in progress. **Do NOT start a
+new milestone until the user approves a plan** (workflow rule). **First recommended action
+for the next session: re-verify Phase 3 · M1's job detail + integrations on a healthy
+`-gpu host` emulator** (they were test-verified but not cleanly captured live — §7.7).
 
-Candidate future work (all still "Soon" on Home), pending user direction:
+Candidate future work (the three remaining "Soon" cards on Home), pending user direction:
 - **CV Builder** — guided resume/CV creation (could reuse the `ResumeAnalysis` + `AiService`).
 - **Interview Prep** — mock-interview practice (a natural fit for `streamChat`, like the coach).
 - **For You / Recommendations** — personalized content from the resume + matches.
@@ -413,7 +484,17 @@ emulator (both languages), one commit per milestone.
   `AiService.streamChat` (multi-turn history), personalized with the cached resume analysis,
   history behind a `ChatHistoryStore` seam. Provider stays swappable through `AiService`.
 
-**Phase 2 is complete.** See §8 for candidate future work.
+**Phase 2 is complete.**
+
+## Phase 3 roadmap
+- **M1 — Jobs Platform** ✅ *complete* (see §7.7). Browse/search/filter, job detail, save,
+  mock apply; shared jobs foundation (`Job` in `shared/models`, repo/stores in
+  `core/services/jobs`) with `fetchJobById`/`searchJobs(JobQuery)` so a real jobs API swaps
+  in unchanged. Integrates resume match, Best-matches (reuses M2), and a coach deep-link.
+  Test-verified (99 pass); live-verified Arabic browse; detail+integrations pending a clean
+  live re-check (§7.7).
+
+See §8 for candidate future work.
 
 **Workflow rules (user-mandated):** present a plan per milestone and **wait for
 approval before writing code**; implement one milestone at a time; small tasks;
@@ -430,6 +511,14 @@ next milestone until the current is verified. Prefer real integrations over mock
   `--no-enable-impeller`** (Skia) for reliable screenshots.
 - **Software GPU (`-gpu swiftshader_indirect`) is unusably slow / crashes.** Launch the
   emulator with **`-gpu host`**.
+- **Input can wedge / the GPU surface can corrupt (all-black) mid-session** — seen badly
+  in Phase 3 · M1: Home taps stopped registering, then a rotation/`adb reboot` left the
+  display all-black. **`adb reboot` did NOT fix it; a full cold-boot did:**
+  `adb -s emulator-5554 emu kill` then relaunch with
+  `emulator.exe -avd careerbridge_pixel -gpu host -no-snapshot-load -no-boot-anim`.
+  After that the display renders again. The **Home "Browse Jobs" CTA** was especially
+  tap-resistant (dropped taps intermittently even when healthy) — the Jobs list *tiles*
+  and other screens tapped fine, so it's an input artifact, not a wiring bug.
 - **Blur screens** (`AuroraBackground`: Splash/Welcome/Onboarding/UserType) can produce
   stale captures and a **touch offset** (tap target ≈ 2× the rendered y). Even the plain
   **Home** grid needed a mild offset (card was live ~1.2× its drawn y). If a tap "does
@@ -519,6 +608,16 @@ prompt). Seed data: `assets/data/seed_jobs.json`.
 **AI multi-turn** `lib/core/services/ai/ai_message.dart` (`AiMessage`/`AiRole`) +
 `AiService.streamChat` (impl in `firebase_ai_service.dart`).
 
+**Jobs Platform** `lib/features/jobs/`
+`application/`: `jobs_browse_controller.dart`, `job_detail_controller.dart`.
+`presentation/`: `jobs_screen.dart`, `job_detail_screen.dart`,
+`widgets/{job_list_tile,job_filter_sheet}.dart`.
+**Shared jobs foundation** `lib/shared/models/job.dart` (Job) ·
+`lib/core/services/jobs/` (`jobs_repository.dart` = `JobsRepository`+`JobQuery`,
+`seed_jobs_repository.dart` = `SeedJobsRepository`+`jobsRepositoryProvider`,
+`job_interactions_store.dart` = saved/applied seam). Seed data `assets/data/seed_jobs.json`.
+Per-job match: `JobMatchingRepository.matchJob()` (in `job_matching`).
+
 **Firebase** `lib/core/services/firebase/{firebase_service,firebase_options}.dart` ·
 `firebase.json` · `firestore.rules` · `firestore.indexes.json`.
 
@@ -570,11 +669,21 @@ prompt). Seed data: `assets/data/seed_jobs.json`.
 
 ## 14. TL;DR for the next session
 
-**Milestones 1, 2 & 3 are DONE, verified live in EN + AR with real Gemini, and committed**
-on `feature/resume-analyzer` (M1 `bf469e6`; M2 `8f2101f`; M3 is the latest commit — see §6).
-**Phase 2 is COMPLETE.** `flutter analyze` clean, **76 tests pass**, repo clean. Firebase AI
-Logic is enabled + provisioned (§5). **Next:** nothing is in progress — present a plan for
-any new milestone (§8 lists candidates) and **wait for the user's approval before coding**.
-Keep the conventions in §13; run with `--no-enable-impeller`; the test account session is
-persisted so the app opens to Home. (Note: the persisted app language is currently Arabic
-after M3 verification.)
+**Phase 2 (Resume Analyzer + Job Matching + Career Coach) is COMPLETE and verified live in
+EN + AR.** **Phase 3 · M1 (Jobs Platform) is COMPLETE and committed** (`6a6a72c`, latest on
+`feature/resume-analyzer` — see §6, §7.7). `flutter analyze` clean, **99 tests pass**, repo
+clean (only `.claude/settings.local.json` intentionally uncommitted). Firebase AI Logic is
+enabled + provisioned (§5).
+
+**Caveat for P3 · M1:** the Jobs *browse* screen is verified live (Arabic); the Jobs
+*detail* screen + integrations (resume match, Best-matches, coach deep-link, save/apply)
+are **test-verified (99 tests incl. EN+AR renders) but not cleanly captured live** — the
+emulator's GPU/input degraded mid-session (§10). A found-and-fixed detail layout bug
+(unbounded button width → moved action bar to `bottomNavigationBar`) is covered by tests.
+**Recommended first action next session: re-verify P3·M1 detail + integrations on a fresh
+`-gpu host` cold-booted emulator.**
+
+**Next:** nothing is in progress — present a plan for any new milestone (§8 lists
+candidates) and **wait for the user's approval before coding**. Keep the conventions in §13;
+run with `--no-enable-impeller` and `-gpu host`; the test account session is persisted so
+the app opens to Home. (Persisted app language is currently Arabic.)
