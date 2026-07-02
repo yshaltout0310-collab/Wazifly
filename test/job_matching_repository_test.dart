@@ -2,9 +2,9 @@ import 'package:careerbridge/core/services/ai/ai_exception.dart';
 import 'package:careerbridge/core/services/ai/ai_message.dart';
 import 'package:careerbridge/core/services/ai/ai_service.dart';
 import 'package:careerbridge/features/job_matching/data/job_matching_repository_impl.dart';
-import 'package:careerbridge/features/job_matching/domain/job.dart';
+import 'package:careerbridge/core/services/jobs/jobs_repository.dart';
 import 'package:careerbridge/features/job_matching/domain/job_matching_exception.dart';
-import 'package:careerbridge/features/job_matching/domain/jobs_repository.dart';
+import 'package:careerbridge/shared/models/job.dart';
 import 'package:careerbridge/features/resume_analyzer/domain/resume_analysis.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -14,6 +14,16 @@ class _FakeJobs implements JobsRepository {
   final List<Job> jobs;
   @override
   Future<List<Job>> fetchJobs() async => jobs;
+  @override
+  Future<Job?> fetchJobById(String id) async {
+    for (final j in jobs) {
+      if (j.id == id) return j;
+    }
+    return null;
+  }
+
+  @override
+  Future<List<Job>> searchJobs(JobQuery query) async => jobs;
 }
 
 /// Records the prompt and returns a canned JSON map (or throws).
@@ -152,5 +162,23 @@ void main() {
       throwsA(isA<AiException>()
           .having((e) => e.code, 'code', AiErrorCode.network)),
     );
+  });
+
+  test('matchJob scores a single job from a flat JSON object', () async {
+    final ai = _FakeAi(json: const {
+      'matchScore': 77,
+      'reason': 'Solid fit',
+      'matchingSkills': ['Flutter'],
+      'missingSkills': ['Kotlin'],
+    });
+    final repo = JobMatchingRepositoryImpl(ai: ai, jobs: _FakeJobs(jobs));
+
+    final m = await repo.matchJob(
+        analysis: _analysis, job: jobs.first, languageCode: 'en');
+
+    expect(m.matchScore, 77);
+    expect(m.job.id, 'a');
+    expect(m.missingSkills, ['Kotlin']);
+    expect(ai.lastPrompt, contains('English'));
   });
 }

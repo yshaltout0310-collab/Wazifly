@@ -3,13 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/services/ai/ai_exception.dart';
 import '../../../core/services/ai/ai_providers.dart';
 import '../../../core/services/ai/ai_service.dart';
+import '../../../core/services/jobs/jobs_repository.dart';
+import '../../../core/services/jobs/seed_jobs_repository.dart';
+import '../../../shared/models/job.dart';
 import '../../resume_analyzer/domain/resume_analysis.dart';
-import '../domain/job.dart';
 import '../domain/job_match.dart';
 import '../domain/job_matching_exception.dart';
 import '../domain/job_matching_repository.dart';
-import '../domain/jobs_repository.dart';
-import 'seed_jobs_repository.dart';
 
 /// Orchestrates job matching: fetch the available jobs, ask the [AiService] to
 /// rank them against the analyzed resume, and map the result to sorted
@@ -69,6 +69,58 @@ class JobMatchingRepositoryImpl implements JobMatchingRepository {
     return matches;
   }
 
+  @override
+  Future<JobMatch> matchJob({
+    required ResumeAnalysis analysis,
+    required Job job,
+    required String languageCode,
+  }) async {
+    final json = await _ai.generateJson(
+      _buildSingleJobPrompt(analysis, job, languageCode),
+      systemInstruction: _systemInstruction,
+    );
+    // The single-job prompt returns the match object directly (no wrapper).
+    return JobMatch.fromRanking(json, job);
+  }
+
+  String _buildSingleJobPrompt(
+    ResumeAnalysis analysis,
+    Job job,
+    String languageCode,
+  ) {
+    final language = languageCode == 'ar' ? 'Arabic' : 'English';
+    return '''
+Assess how well ONE candidate fits ONE job.
+
+CANDIDATE PROFILE (derived from their resume):
+- Summary: ${analysis.summary}
+- Strengths: ${_join(analysis.strengths)}
+- Weaknesses: ${_join(analysis.weaknesses)}
+- Skills to develop: ${_join(analysis.missingSkills)}
+
+JOB:
+- title: ${job.title}
+- company: ${job.company}
+- location: ${job.location}${job.remote ? ' (remote)' : ''}
+- employmentType: ${job.employmentType}
+- seniority: ${job.seniority}
+- requiredSkills: ${job.requiredSkills.join(', ')}
+- description: ${job.description}
+
+Return a JSON object with EXACTLY this shape:
+{
+  "matchScore": integer 0-100 (how well the candidate fits this job),
+  "reason": one or two sentences explaining the fit,
+  "matchingSkills": array of skills the candidate has that this job needs,
+  "missingSkills": array of skills this job needs that the candidate lacks
+}
+
+Rules:
+- Write "reason" and all text values in $language. Keep skill names as-is.
+- Base everything only on the candidate profile and job details above.
+- Return ONLY the JSON object — no markdown, no commentary.''';
+  }
+
   String _buildPrompt(
     ResumeAnalysis analysis,
     List<Job> jobs,
@@ -124,13 +176,8 @@ Rules:
       items.isEmpty ? 'none' : items.join(', ');
 }
 
-/// The app-wide jobs source. Bundled seed data today; swap the binding to plug
-/// in a real jobs API later.
-final jobsRepositoryProvider =
-    Provider<JobsRepository>((ref) => SeedJobsRepository());
-
 /// The app-wide job matching repository (uses the bound [aiServiceProvider]
-/// and [jobsRepositoryProvider]).
+/// and the shared [jobsRepositoryProvider]).
 final jobMatchingRepositoryProvider = Provider<JobMatchingRepository>(
   (ref) => JobMatchingRepositoryImpl(
     ai: ref.watch(aiServiceProvider),

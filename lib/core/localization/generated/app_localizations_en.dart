@@ -628,4 +628,132 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get coachErrUnknown => 'Something went wrong. Please try again.';
+
+  @override
+  String get homeBrowseJobs => 'Browse Jobs';
+
+  @override
+  String get homeBrowseJobsSubtitle =>
+      'Search roles, see your matches, save favorites';
+
+  @override
+  String get jobsTitle => 'Jobs';
+
+  @override
+  String get jobsTabAll => 'All';
+
+  @override
+  String get jobsTabMatches => 'Best matches';
+
+  @override
+  String get jobsTabSaved => 'Saved';
+
+  @override
+  String get jobsSearchHint => 'Search jobs, companies, skills';
+
+  @override
+  String get jobsFilters => 'Filters';
+
+  @override
+  String get jobsClearFilters => 'Clear';
+
+  @override
+  String get jobsRemoteOnly => 'Remote only';
+
+  @override
+  String get jobsEmploymentType => 'Employment type';
+
+  @override
+  String get jobsSeniority => 'Seniority';
+
+  @override
+  String jobsShowResults(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Show $count results',
+      one: 'Show 1 result',
+      zero: 'No results',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String jobsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count jobs',
+      one: '1 job',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get jobsLoadError => 'Couldn\'t load jobs. Please try again.';
+
+  @override
+  String get jobsNoResults => 'No jobs match your search.';
+
+  @override
+  String get jobsNoSaved =>
+      'No saved jobs yet. Tap the bookmark on a job to save it.';
+
+  @override
+  String get jobsMatchesNeedResume =>
+      'Analyze your resume to see your best-matched jobs.';
+
+  @override
+  String get jobsAnalyzeResume => 'Analyze resume';
+
+  @override
+  String get jobsSave => 'Save';
+
+  @override
+  String get jobsUnsave => 'Remove';
+
+  @override
+  String get jobsApplied => 'Applied';
+
+  @override
+  String get jobsDetailTitle => 'Job details';
+
+  @override
+  String get jobsNotFound => 'This job is no longer available.';
+
+  @override
+  String get jobsRemote => 'Remote';
+
+  @override
+  String get jobsDescription => 'Description';
+
+  @override
+  String get jobsRequiredSkills => 'Required skills';
+
+  @override
+  String get jobsMatchNoResume =>
+      'See how well you match — analyze your resume first.';
+
+  @override
+  String get jobsMatchPrompt => 'Check how well your resume matches this job.';
+
+  @override
+  String get jobsSeeMatch => 'See match';
+
+  @override
+  String get jobsMatchLoading => 'Checking your match…';
+
+  @override
+  String get jobsAskCoach => 'Ask coach';
+
+  @override
+  String get jobsApply => 'Apply';
+
+  @override
+  String get jobsApplyConfirm => 'Application submitted. Good luck!';
+
+  @override
+  String jobsCoachSeed(String title, String company) {
+    return 'I\'m interested in the $title role at $company. How well does it fit my background, and how should I prepare?';
+  }
 }

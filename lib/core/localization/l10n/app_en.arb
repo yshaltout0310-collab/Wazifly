@@ -223,5 +223,54 @@
   "coachErrQuota": "The AI service is busy right now. Please try again shortly.",
   "coachErrBlocked": "This message couldn't be answered.",
   "coachErrEmpty": "The coach didn't respond. Please try again.",
-  "coachErrUnknown": "Something went wrong. Please try again."
+  "coachErrUnknown": "Something went wrong. Please try again.",
+
+  "homeBrowseJobs": "Browse Jobs",
+  "homeBrowseJobsSubtitle": "Search roles, see your matches, save favorites",
+
+  "jobsTitle": "Jobs",
+  "jobsTabAll": "All",
+  "jobsTabMatches": "Best matches",
+  "jobsTabSaved": "Saved",
+  "jobsSearchHint": "Search jobs, companies, skills",
+  "jobsFilters": "Filters",
+  "jobsClearFilters": "Clear",
+  "jobsRemoteOnly": "Remote only",
+  "jobsEmploymentType": "Employment type",
+  "jobsSeniority": "Seniority",
+  "jobsShowResults": "{count, plural, =0{No results} =1{Show 1 result} other{Show {count} results}}",
+  "@jobsShowResults": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "jobsCount": "{count, plural, =1{1 job} other{{count} jobs}}",
+  "@jobsCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "jobsLoadError": "Couldn't load jobs. Please try again.",
+  "jobsNoResults": "No jobs match your search.",
+  "jobsNoSaved": "No saved jobs yet. Tap the bookmark on a job to save it.",
+  "jobsMatchesNeedResume": "Analyze your resume to see your best-matched jobs.",
+  "jobsAnalyzeResume": "Analyze resume",
+  "jobsSave": "Save",
+  "jobsUnsave": "Remove",
+  "jobsApplied": "Applied",
+  "jobsDetailTitle": "Job details",
+  "jobsNotFound": "This job is no longer available.",
+  "jobsRemote": "Remote",
+  "jobsDescription": "Description",
+  "jobsRequiredSkills": "Required skills",
+  "jobsMatchNoResume": "See how well you match — analyze your resume first.",
+  "jobsMatchPrompt": "Check how well your resume matches this job.",
+  "jobsSeeMatch": "See match",
+  "jobsMatchLoading": "Checking your match…",
+  "jobsAskCoach": "Ask coach",
+  "jobsApply": "Apply",
+  "jobsApplyConfirm": "Application submitted. Good luck!",
+  "jobsCoachSeed": "I'm interested in the {title} role at {company}. How well does it fit my background, and how should I prepare?",
+  "@jobsCoachSeed": {
+    "placeholders": {
+      "title": { "type": "String" },
+      "company": { "type": "String" }
+    }
+  }
 }

@@ -622,4 +622,132 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get coachErrUnknown => 'حدث خطأ ما. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get homeBrowseJobs => 'تصفّح الوظائف';
+
+  @override
+  String get homeBrowseJobsSubtitle =>
+      'ابحث عن الوظائف، وشاهد تطابقك، واحفظ المفضّلة';
+
+  @override
+  String get jobsTitle => 'الوظائف';
+
+  @override
+  String get jobsTabAll => 'الكل';
+
+  @override
+  String get jobsTabMatches => 'أفضل تطابق';
+
+  @override
+  String get jobsTabSaved => 'المحفوظة';
+
+  @override
+  String get jobsSearchHint => 'ابحث عن وظائف أو شركات أو مهارات';
+
+  @override
+  String get jobsFilters => 'عوامل التصفية';
+
+  @override
+  String get jobsClearFilters => 'مسح';
+
+  @override
+  String get jobsRemoteOnly => 'عن بُعد فقط';
+
+  @override
+  String get jobsEmploymentType => 'نوع التوظيف';
+
+  @override
+  String get jobsSeniority => 'المستوى';
+
+  @override
+  String jobsShowResults(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'عرض $count نتيجة',
+      one: 'عرض نتيجة واحدة',
+      zero: 'لا نتائج',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String jobsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count وظيفة',
+      one: 'وظيفة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get jobsLoadError => 'تعذّر تحميل الوظائف. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get jobsNoResults => 'لا توجد وظائف تطابق بحثك.';
+
+  @override
+  String get jobsNoSaved =>
+      'لا توجد وظائف محفوظة بعد. اضغط على علامة الحفظ في أي وظيفة لحفظها.';
+
+  @override
+  String get jobsMatchesNeedResume =>
+      'حلّل سيرتك الذاتية لرؤية أفضل الوظائف المطابقة لك.';
+
+  @override
+  String get jobsAnalyzeResume => 'تحليل السيرة';
+
+  @override
+  String get jobsSave => 'حفظ';
+
+  @override
+  String get jobsUnsave => 'إزالة';
+
+  @override
+  String get jobsApplied => 'تم التقديم';
+
+  @override
+  String get jobsDetailTitle => 'تفاصيل الوظيفة';
+
+  @override
+  String get jobsNotFound => 'هذه الوظيفة لم تعد متاحة.';
+
+  @override
+  String get jobsRemote => 'عن بُعد';
+
+  @override
+  String get jobsDescription => 'الوصف';
+
+  @override
+  String get jobsRequiredSkills => 'المهارات المطلوبة';
+
+  @override
+  String get jobsMatchNoResume => 'اعرف مدى تطابقك — حلّل سيرتك الذاتية أولًا.';
+
+  @override
+  String get jobsMatchPrompt =>
+      'تحقّق من مدى تطابق سيرتك الذاتية مع هذه الوظيفة.';
+
+  @override
+  String get jobsSeeMatch => 'عرض التطابق';
+
+  @override
+  String get jobsMatchLoading => 'جارٍ التحقق من تطابقك…';
+
+  @override
+  String get jobsAskCoach => 'اسأل المدرب';
+
+  @override
+  String get jobsApply => 'تقديم';
+
+  @override
+  String get jobsApplyConfirm => 'تم إرسال طلبك. بالتوفيق!';
+
+  @override
+  String jobsCoachSeed(String title, String company) {
+    return 'أنا مهتم بوظيفة $title في $company. ما مدى ملاءمتها لخلفيتي، وكيف ينبغي أن أستعد؟';
+  }
 }

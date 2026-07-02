@@ -2,7 +2,7 @@
 import 'package:careerbridge/core/localization/generated/app_localizations.dart';
 import 'package:careerbridge/core/localization/locale_controller.dart';
 import 'package:careerbridge/features/job_matching/application/job_matching_controller.dart';
-import 'package:careerbridge/features/job_matching/domain/job.dart';
+import 'package:careerbridge/shared/models/job.dart';
 import 'package:careerbridge/features/job_matching/domain/job_match.dart';
 import 'package:careerbridge/features/job_matching/presentation/job_matching_screen.dart';
 import 'package:flutter/material.dart';

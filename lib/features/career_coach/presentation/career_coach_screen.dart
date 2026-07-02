@@ -14,7 +14,11 @@ import 'widgets/chat_input.dart';
 /// roadmaps, interview prep, and skill advice. Personalized with the user's
 /// analyzed resume when one is available.
 class CareerCoachScreen extends ConsumerStatefulWidget {
-  const CareerCoachScreen({super.key});
+  const CareerCoachScreen({this.seedPrompt, super.key});
+
+  /// Optional initial user message to send on open (e.g. deep-linked from a
+  /// job's "Ask the coach about this job"). Ignored while a reply is streaming.
+  final String? seedPrompt;
 
   @override
   ConsumerState<CareerCoachScreen> createState() => _CareerCoachScreenState();
@@ -22,6 +26,17 @@ class CareerCoachScreen extends ConsumerStatefulWidget {
 
 class _CareerCoachScreenState extends ConsumerState<CareerCoachScreen> {
   final _scroll = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    final seed = widget.seedPrompt?.trim();
+    if (seed != null && seed.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(careerCoachControllerProvider.notifier).sendMessage(seed);
+      });
+    }
+  }
 
   @override
   void dispose() {

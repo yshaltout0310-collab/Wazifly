@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import 'job.dart';
+import '../../../shared/models/job.dart';
 
 /// A [Job] paired with the AI's assessment of how well it fits the user's
 /// analyzed resume: a [matchScore] (0–100), a short "why it matches" [reason],

@@ -10,6 +10,8 @@ import '../../features/country_selection/presentation/country_selection_screen.d
 import '../../features/career_coach/presentation/career_coach_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/job_matching/presentation/job_matching_screen.dart';
+import '../../features/jobs/presentation/job_detail_screen.dart';
+import '../../features/jobs/presentation/jobs_screen.dart';
 import '../../features/language_selection/presentation/language_selection_screen.dart';
 import '../../features/onboarding/presentation/onboarding_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
@@ -107,7 +109,25 @@ abstract final class AppRouter {
       GoRoute(
         path: RouteNames.careerCoachPath,
         name: RouteNames.careerCoach,
-        pageBuilder: _fade(const CareerCoachScreen()),
+        // Optional String `extra` seeds an initial user message (e.g. from a
+        // job's "Ask the coach about this job").
+        pageBuilder: (context, state) => _fadePage(
+          CareerCoachScreen(seedPrompt: state.extra as String?),
+          state.pageKey,
+        ),
+      ),
+      GoRoute(
+        path: RouteNames.jobsPath,
+        name: RouteNames.jobs,
+        pageBuilder: _fade(const JobsScreen()),
+      ),
+      GoRoute(
+        path: RouteNames.jobDetailPath,
+        name: RouteNames.jobDetail,
+        pageBuilder: (context, state) => _fadePage(
+          JobDetailScreen(jobId: state.pathParameters['id'] ?? ''),
+          state.pageKey,
+        ),
       ),
       GoRoute(
         path: RouteNames.settingsPath,

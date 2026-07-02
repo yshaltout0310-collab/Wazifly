@@ -1255,6 +1255,216 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Something went wrong. Please try again.'**
   String get coachErrUnknown;
+
+  /// No description provided for @homeBrowseJobs.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse Jobs'**
+  String get homeBrowseJobs;
+
+  /// No description provided for @homeBrowseJobsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Search roles, see your matches, save favorites'**
+  String get homeBrowseJobsSubtitle;
+
+  /// No description provided for @jobsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Jobs'**
+  String get jobsTitle;
+
+  /// No description provided for @jobsTabAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get jobsTabAll;
+
+  /// No description provided for @jobsTabMatches.
+  ///
+  /// In en, this message translates to:
+  /// **'Best matches'**
+  String get jobsTabMatches;
+
+  /// No description provided for @jobsTabSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get jobsTabSaved;
+
+  /// No description provided for @jobsSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search jobs, companies, skills'**
+  String get jobsSearchHint;
+
+  /// No description provided for @jobsFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Filters'**
+  String get jobsFilters;
+
+  /// No description provided for @jobsClearFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get jobsClearFilters;
+
+  /// No description provided for @jobsRemoteOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote only'**
+  String get jobsRemoteOnly;
+
+  /// No description provided for @jobsEmploymentType.
+  ///
+  /// In en, this message translates to:
+  /// **'Employment type'**
+  String get jobsEmploymentType;
+
+  /// No description provided for @jobsSeniority.
+  ///
+  /// In en, this message translates to:
+  /// **'Seniority'**
+  String get jobsSeniority;
+
+  /// No description provided for @jobsShowResults.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No results} =1{Show 1 result} other{Show {count} results}}'**
+  String jobsShowResults(int count);
+
+  /// No description provided for @jobsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 job} other{{count} jobs}}'**
+  String jobsCount(int count);
+
+  /// No description provided for @jobsLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load jobs. Please try again.'**
+  String get jobsLoadError;
+
+  /// No description provided for @jobsNoResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No jobs match your search.'**
+  String get jobsNoResults;
+
+  /// No description provided for @jobsNoSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'No saved jobs yet. Tap the bookmark on a job to save it.'**
+  String get jobsNoSaved;
+
+  /// No description provided for @jobsMatchesNeedResume.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyze your resume to see your best-matched jobs.'**
+  String get jobsMatchesNeedResume;
+
+  /// No description provided for @jobsAnalyzeResume.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyze resume'**
+  String get jobsAnalyzeResume;
+
+  /// No description provided for @jobsSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get jobsSave;
+
+  /// No description provided for @jobsUnsave.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get jobsUnsave;
+
+  /// No description provided for @jobsApplied.
+  ///
+  /// In en, this message translates to:
+  /// **'Applied'**
+  String get jobsApplied;
+
+  /// No description provided for @jobsDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Job details'**
+  String get jobsDetailTitle;
+
+  /// No description provided for @jobsNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This job is no longer available.'**
+  String get jobsNotFound;
+
+  /// No description provided for @jobsRemote.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote'**
+  String get jobsRemote;
+
+  /// No description provided for @jobsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get jobsDescription;
+
+  /// No description provided for @jobsRequiredSkills.
+  ///
+  /// In en, this message translates to:
+  /// **'Required skills'**
+  String get jobsRequiredSkills;
+
+  /// No description provided for @jobsMatchNoResume.
+  ///
+  /// In en, this message translates to:
+  /// **'See how well you match — analyze your resume first.'**
+  String get jobsMatchNoResume;
+
+  /// No description provided for @jobsMatchPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Check how well your resume matches this job.'**
+  String get jobsMatchPrompt;
+
+  /// No description provided for @jobsSeeMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'See match'**
+  String get jobsSeeMatch;
+
+  /// No description provided for @jobsMatchLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking your match…'**
+  String get jobsMatchLoading;
+
+  /// No description provided for @jobsAskCoach.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask coach'**
+  String get jobsAskCoach;
+
+  /// No description provided for @jobsApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get jobsApply;
+
+  /// No description provided for @jobsApplyConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Application submitted. Good luck!'**
+  String get jobsApplyConfirm;
+
+  /// No description provided for @jobsCoachSeed.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'m interested in the {title} role at {company}. How well does it fit my background, and how should I prepare?'**
+  String jobsCoachSeed(String title, String company);
 }
 
 class _AppLocalizationsDelegate

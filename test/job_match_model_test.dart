@@ -1,4 +1,4 @@
-import 'package:careerbridge/features/job_matching/domain/job.dart';
+import 'package:careerbridge/shared/models/job.dart';
 import 'package:careerbridge/features/job_matching/domain/job_match.dart';
 import 'package:flutter_test/flutter_test.dart';
 

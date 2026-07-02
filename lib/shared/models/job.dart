@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-/// A job posting the user can be matched against.
+/// A job posting — the core jobs-platform model, shared across features
+/// (browse/detail in `jobs`, ranking in `job_matching`).
 ///
 /// Sourced today from a bundled seed dataset (see `SeedJobsRepository`), but the
 /// shape is deliberately generic so a real jobs API can populate the same model

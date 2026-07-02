@@ -1,3 +1,4 @@
+import '../../../shared/models/job.dart';
 import '../../resume_analyzer/domain/resume_analysis.dart';
 import 'job_match.dart';
 
@@ -15,6 +16,15 @@ abstract interface class JobMatchingRepository {
   /// `AiException` if the AI call fails or returns an unusable result.
   Future<List<JobMatch>> matchJobs({
     required ResumeAnalysis analysis,
+    required String languageCode,
+  });
+
+  /// Scores a single [job] against [analysis] — used by the Jobs platform's
+  /// detail screen for an on-demand "why it matches" without ranking the whole
+  /// list. Throws `AiException` on failure.
+  Future<JobMatch> matchJob({
+    required ResumeAnalysis analysis,
+    required Job job,
     required String languageCode,
   });
 }
