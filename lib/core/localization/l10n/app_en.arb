@@ -272,5 +272,47 @@
       "title": { "type": "String" },
       "company": { "type": "String" }
     }
-  }
+  },
+  "jobsViewApplication": "View application",
+  "jobsMyApplications": "My applications",
+
+  "homeMyApplications": "My Applications",
+  "homeMyApplicationsSubtitle": "Track your applications, status, and stats",
+
+  "appsTitle": "Applications",
+  "appsTabApplications": "Applications",
+  "appsTabSaved": "Saved",
+  "appsSearchHint": "Search applications",
+  "appsEmpty": "You haven't applied to any jobs yet.",
+  "appsBrowseJobs": "Browse jobs",
+  "appsNoResults": "No applications match your filters.",
+  "appsFilterByStatus": "Filter by status",
+  "appsAppliedOn": "Applied {date}",
+  "@appsAppliedOn": {
+    "placeholders": { "date": { "type": "String" } }
+  },
+  "appsDetailTitle": "Application",
+  "appsNotFound": "This application no longer exists.",
+  "appsUpdateStatus": "Update status",
+  "appsHistory": "Status history",
+  "appsViewJob": "View job",
+  "appsWithdraw": "Withdraw",
+  "appsWithdrawConfirm": "Withdraw this application? This can't be undone.",
+  "appsPrepareInterview": "Prepare for your interview",
+  "appsInterviewCoachSeed": "I have an interview for the {title} role at {company}. Help me prepare — likely questions and how to stand out.",
+  "@appsInterviewCoachSeed": {
+    "placeholders": {
+      "title": { "type": "String" },
+      "company": { "type": "String" }
+    }
+  },
+  "statusPending": "Pending",
+  "statusReviewed": "Reviewed",
+  "statusInterview": "Interview",
+  "statusAccepted": "Accepted",
+  "statusRejected": "Rejected",
+  "statApplied": "Applied",
+  "statSaved": "Saved",
+  "statInterviews": "Interviews",
+  "statOffers": "Offers"
 }

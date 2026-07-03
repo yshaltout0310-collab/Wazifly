@@ -4,7 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/localization/generated/app_localizations.dart';
 import '../../../core/navigation/route_names.dart';
-import '../../../core/services/jobs/job_interactions_store.dart';
+import '../../../core/services/applications/in_memory_applications_repository.dart';
+import '../../../core/services/jobs/saved_jobs_store.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/responsive.dart';
 import '../../../shared/models/job.dart';
@@ -37,7 +38,16 @@ class _JobsScreenState extends ConsumerState<JobsScreen> {
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.jobsTitle)),
+      appBar: AppBar(
+        title: Text(l10n.jobsTitle),
+        actions: [
+          IconButton(
+            tooltip: l10n.jobsMyApplications,
+            onPressed: () => context.pushNamed(RouteNames.applications),
+            icon: const Icon(Icons.assignment_turned_in_outlined),
+          ),
+        ],
+      ),
       body: SafeArea(
         top: false,
         child: ResponsiveCenter(
@@ -198,7 +208,7 @@ class _SavedView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final savedIds = ref.watch(jobInteractionsProvider).saved;
+    final savedIds = ref.watch(savedJobsProvider);
     final all = ref.watch(jobsBrowseControllerProvider).allJobs;
     final saved =
         all.where((j) => savedIds.contains(j.id)).toList(growable: false);
@@ -232,8 +242,9 @@ class _JobList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final interactions = ref.watch(jobInteractionsProvider);
-    final controller = ref.read(jobInteractionsProvider.notifier);
+    final saved = ref.watch(savedJobsProvider);
+    final applied = ref.watch(appliedJobIdsProvider);
+    final controller = ref.read(savedJobsProvider.notifier);
 
     return ListView.builder(
       padding: EdgeInsets.fromLTRB(context.horizontalGutter, 0,
@@ -256,10 +267,10 @@ class _JobList extends ConsumerWidget {
         final job = jobs[i - 1];
         return JobListTile(
           job: job,
-          saved: interactions.saved.contains(job.id),
-          applied: interactions.applied.contains(job.id),
+          saved: saved.contains(job.id),
+          applied: applied.contains(job.id),
           onTap: () => onOpen(job.id),
-          onToggleSave: () => controller.toggleSaved(job.id),
+          onToggleSave: () => controller.toggle(job.id),
         );
       },
     );

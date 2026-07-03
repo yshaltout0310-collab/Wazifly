@@ -4,7 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/localization/generated/app_localizations.dart';
 import '../../../core/navigation/route_names.dart';
-import '../../../core/services/jobs/job_interactions_store.dart';
+import '../../../core/services/applications/in_memory_applications_repository.dart';
+import '../../../core/services/jobs/saved_jobs_store.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/responsive.dart';
@@ -30,12 +31,11 @@ class JobDetailScreen extends ConsumerWidget {
         actions: [
           if (state.status == JobDetailStatus.ready)
             Consumer(builder: (context, ref, _) {
-              final saved =
-                  ref.watch(jobInteractionsProvider).saved.contains(jobId);
+              final saved = ref.watch(savedJobsProvider).contains(jobId);
               return IconButton(
                 tooltip: saved ? l10n.jobsUnsave : l10n.jobsSave,
                 onPressed: () =>
-                    ref.read(jobInteractionsProvider.notifier).toggleSaved(jobId),
+                    ref.read(savedJobsProvider.notifier).toggle(jobId),
                 icon: Icon(saved
                     ? Icons.bookmark_rounded
                     : Icons.bookmark_border_rounded),
@@ -307,7 +307,7 @@ class _ActionBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
-    final applied = ref.watch(jobInteractionsProvider).applied.contains(jobId);
+    final applied = ref.watch(appliedJobIdsProvider).contains(jobId);
 
     return Container(
       padding: EdgeInsets.fromLTRB(context.horizontalGutter, AppSpacing.sm,
@@ -335,15 +335,26 @@ class _ActionBar extends ConsumerWidget {
               child: FilledButton.icon(
                 onPressed: applied
                     ? null
-                    : () {
-                        ref
-                            .read(jobInteractionsProvider.notifier)
-                            .markApplied(jobId);
+                    : () async {
+                        // Mock apply creates an Application (Pending) in the
+                        // shared applications repository — the single source of
+                        // truth the Applications Center reads.
+                        final app = await ref
+                            .read(applicationsRepositoryProvider)
+                            .apply(job: job);
+                        if (!context.mounted) return;
                         ScaffoldMessenger.of(context)
                           ..hideCurrentSnackBar()
                           ..showSnackBar(SnackBar(
                             behavior: SnackBarBehavior.floating,
                             content: Text(l10n.jobsApplyConfirm),
+                            action: SnackBarAction(
+                              label: l10n.jobsViewApplication,
+                              onPressed: () => context.pushNamed(
+                                RouteNames.applicationDetail,
+                                pathParameters: {'id': app.id},
+                              ),
+                            ),
                           ));
                       },
                 icon: Icon(

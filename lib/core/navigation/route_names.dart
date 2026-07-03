@@ -19,6 +19,8 @@ abstract final class RouteNames {
   static const String careerCoach = 'careerCoach';
   static const String jobs = 'jobs';
   static const String jobDetail = 'jobDetail';
+  static const String applications = 'applications';
+  static const String applicationDetail = 'applicationDetail';
 
   static const String splashPath = '/';
   static const String languagePath = '/language';
@@ -37,4 +39,6 @@ abstract final class RouteNames {
   static const String careerCoachPath = '/career-coach';
   static const String jobsPath = '/jobs';
   static const String jobDetailPath = '/jobs/:id';
+  static const String applicationsPath = '/applications';
+  static const String applicationDetailPath = '/applications/:id';
 }

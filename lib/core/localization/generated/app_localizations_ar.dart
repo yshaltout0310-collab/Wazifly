@@ -750,4 +750,102 @@ class AppLocalizationsAr extends AppLocalizations {
   String jobsCoachSeed(String title, String company) {
     return 'أنا مهتم بوظيفة $title في $company. ما مدى ملاءمتها لخلفيتي، وكيف ينبغي أن أستعد؟';
   }
+
+  @override
+  String get jobsViewApplication => 'عرض الطلب';
+
+  @override
+  String get jobsMyApplications => 'طلباتي';
+
+  @override
+  String get homeMyApplications => 'طلباتي';
+
+  @override
+  String get homeMyApplicationsSubtitle => 'تابع طلباتك وحالتها وإحصاءاتك';
+
+  @override
+  String get appsTitle => 'الطلبات';
+
+  @override
+  String get appsTabApplications => 'الطلبات';
+
+  @override
+  String get appsTabSaved => 'المحفوظة';
+
+  @override
+  String get appsSearchHint => 'ابحث في الطلبات';
+
+  @override
+  String get appsEmpty => 'لم تتقدم إلى أي وظيفة بعد.';
+
+  @override
+  String get appsBrowseJobs => 'تصفّح الوظائف';
+
+  @override
+  String get appsNoResults => 'لا توجد طلبات تطابق عوامل التصفية.';
+
+  @override
+  String get appsFilterByStatus => 'تصفية حسب الحالة';
+
+  @override
+  String appsAppliedOn(String date) {
+    return 'تم التقديم في $date';
+  }
+
+  @override
+  String get appsDetailTitle => 'الطلب';
+
+  @override
+  String get appsNotFound => 'هذا الطلب لم يعد موجودًا.';
+
+  @override
+  String get appsUpdateStatus => 'تحديث الحالة';
+
+  @override
+  String get appsHistory => 'سجل الحالة';
+
+  @override
+  String get appsViewJob => 'عرض الوظيفة';
+
+  @override
+  String get appsWithdraw => 'سحب';
+
+  @override
+  String get appsWithdrawConfirm =>
+      'هل تريد سحب هذا الطلب؟ لا يمكن التراجع عن ذلك.';
+
+  @override
+  String get appsPrepareInterview => 'استعد لمقابلتك';
+
+  @override
+  String appsInterviewCoachSeed(String title, String company) {
+    return 'لديّ مقابلة لوظيفة $title في $company. ساعدني على الاستعداد — الأسئلة المحتملة وكيف أتميّز.';
+  }
+
+  @override
+  String get statusPending => 'قيد الانتظار';
+
+  @override
+  String get statusReviewed => 'تمت المراجعة';
+
+  @override
+  String get statusInterview => 'مقابلة';
+
+  @override
+  String get statusAccepted => 'مقبول';
+
+  @override
+  String get statusRejected => 'مرفوض';
+
+  @override
+  String get statApplied => 'المتقدَّم لها';
+
+  @override
+  String get statSaved => 'المحفوظة';
+
+  @override
+  String get statInterviews => 'المقابلات';
+
+  @override
+  String get statOffers => 'العروض';
 }

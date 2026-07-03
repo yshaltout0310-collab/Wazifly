@@ -106,11 +106,24 @@ class HomeScreen extends ConsumerWidget {
                   0,
                 ),
                 sliver: SliverToBoxAdapter(
-                  child: _BrowseJobsCta(
-                    title: l10n.homeBrowseJobs,
-                    subtitle: l10n.homeBrowseJobsSubtitle,
-                    onTap: () => context.pushNamed(RouteNames.jobs),
-                  ).animate(delay: 160.ms).fadeIn().moveY(begin: 10, end: 0),
+                  child: Column(
+                    children: [
+                      _PlatformCta(
+                        icon: Icons.work_outline_rounded,
+                        title: l10n.homeBrowseJobs,
+                        subtitle: l10n.homeBrowseJobsSubtitle,
+                        onTap: () => context.pushNamed(RouteNames.jobs),
+                      ).animate(delay: 160.ms).fadeIn().moveY(begin: 10, end: 0),
+                      const SizedBox(height: AppSpacing.sm),
+                      _PlatformCta(
+                        icon: Icons.assignment_turned_in_outlined,
+                        title: l10n.homeMyApplications,
+                        subtitle: l10n.homeMyApplicationsSubtitle,
+                        onTap: () =>
+                            context.pushNamed(RouteNames.applications),
+                      ).animate(delay: 210.ms).fadeIn().moveY(begin: 10, end: 0),
+                    ],
+                  ),
                 ),
               ),
               SliverPadding(
@@ -351,14 +364,16 @@ class _WelcomeBanner extends StatelessWidget {
   }
 }
 
-/// Full-width entry into the Jobs platform (browse + AI matches + saved).
-class _BrowseJobsCta extends StatelessWidget {
-  const _BrowseJobsCta({
+/// Full-width entry into a platform surface (Jobs, Applications, …).
+class _PlatformCta extends StatelessWidget {
+  const _PlatformCta({
+    required this.icon,
     required this.title,
     required this.subtitle,
     required this.onTap,
   });
 
+  final IconData icon;
   final String title;
   final String subtitle;
   final VoidCallback onTap;
@@ -392,8 +407,7 @@ class _BrowseJobsCta extends StatelessWidget {
                   borderRadius: BorderRadius.circular(AppRadius.md),
                   boxShadow: AppShadows.brandGlow,
                 ),
-                child: const Icon(Icons.work_outline_rounded,
-                    color: AppColors.white, size: 24),
+                child: Icon(icon, color: AppColors.white, size: 24),
               ),
               const SizedBox(width: AppSpacing.md),
               Expanded(

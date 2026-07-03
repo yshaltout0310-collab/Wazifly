@@ -1465,6 +1465,192 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'I\'m interested in the {title} role at {company}. How well does it fit my background, and how should I prepare?'**
   String jobsCoachSeed(String title, String company);
+
+  /// No description provided for @jobsViewApplication.
+  ///
+  /// In en, this message translates to:
+  /// **'View application'**
+  String get jobsViewApplication;
+
+  /// No description provided for @jobsMyApplications.
+  ///
+  /// In en, this message translates to:
+  /// **'My applications'**
+  String get jobsMyApplications;
+
+  /// No description provided for @homeMyApplications.
+  ///
+  /// In en, this message translates to:
+  /// **'My Applications'**
+  String get homeMyApplications;
+
+  /// No description provided for @homeMyApplicationsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Track your applications, status, and stats'**
+  String get homeMyApplicationsSubtitle;
+
+  /// No description provided for @appsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Applications'**
+  String get appsTitle;
+
+  /// No description provided for @appsTabApplications.
+  ///
+  /// In en, this message translates to:
+  /// **'Applications'**
+  String get appsTabApplications;
+
+  /// No description provided for @appsTabSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get appsTabSaved;
+
+  /// No description provided for @appsSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search applications'**
+  String get appsSearchHint;
+
+  /// No description provided for @appsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'You haven\'t applied to any jobs yet.'**
+  String get appsEmpty;
+
+  /// No description provided for @appsBrowseJobs.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse jobs'**
+  String get appsBrowseJobs;
+
+  /// No description provided for @appsNoResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No applications match your filters.'**
+  String get appsNoResults;
+
+  /// No description provided for @appsFilterByStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by status'**
+  String get appsFilterByStatus;
+
+  /// No description provided for @appsAppliedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Applied {date}'**
+  String appsAppliedOn(String date);
+
+  /// No description provided for @appsDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Application'**
+  String get appsDetailTitle;
+
+  /// No description provided for @appsNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This application no longer exists.'**
+  String get appsNotFound;
+
+  /// No description provided for @appsUpdateStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Update status'**
+  String get appsUpdateStatus;
+
+  /// No description provided for @appsHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Status history'**
+  String get appsHistory;
+
+  /// No description provided for @appsViewJob.
+  ///
+  /// In en, this message translates to:
+  /// **'View job'**
+  String get appsViewJob;
+
+  /// No description provided for @appsWithdraw.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw'**
+  String get appsWithdraw;
+
+  /// No description provided for @appsWithdrawConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw this application? This can\'t be undone.'**
+  String get appsWithdrawConfirm;
+
+  /// No description provided for @appsPrepareInterview.
+  ///
+  /// In en, this message translates to:
+  /// **'Prepare for your interview'**
+  String get appsPrepareInterview;
+
+  /// No description provided for @appsInterviewCoachSeed.
+  ///
+  /// In en, this message translates to:
+  /// **'I have an interview for the {title} role at {company}. Help me prepare — likely questions and how to stand out.'**
+  String appsInterviewCoachSeed(String title, String company);
+
+  /// No description provided for @statusPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get statusPending;
+
+  /// No description provided for @statusReviewed.
+  ///
+  /// In en, this message translates to:
+  /// **'Reviewed'**
+  String get statusReviewed;
+
+  /// No description provided for @statusInterview.
+  ///
+  /// In en, this message translates to:
+  /// **'Interview'**
+  String get statusInterview;
+
+  /// No description provided for @statusAccepted.
+  ///
+  /// In en, this message translates to:
+  /// **'Accepted'**
+  String get statusAccepted;
+
+  /// No description provided for @statusRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected'**
+  String get statusRejected;
+
+  /// No description provided for @statApplied.
+  ///
+  /// In en, this message translates to:
+  /// **'Applied'**
+  String get statApplied;
+
+  /// No description provided for @statSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get statSaved;
+
+  /// No description provided for @statInterviews.
+  ///
+  /// In en, this message translates to:
+  /// **'Interviews'**
+  String get statInterviews;
+
+  /// No description provided for @statOffers.
+  ///
+  /// In en, this message translates to:
+  /// **'Offers'**
+  String get statOffers;
 }
 
 class _AppLocalizationsDelegate

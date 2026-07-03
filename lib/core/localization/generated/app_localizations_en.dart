@@ -756,4 +756,103 @@ class AppLocalizationsEn extends AppLocalizations {
   String jobsCoachSeed(String title, String company) {
     return 'I\'m interested in the $title role at $company. How well does it fit my background, and how should I prepare?';
   }
+
+  @override
+  String get jobsViewApplication => 'View application';
+
+  @override
+  String get jobsMyApplications => 'My applications';
+
+  @override
+  String get homeMyApplications => 'My Applications';
+
+  @override
+  String get homeMyApplicationsSubtitle =>
+      'Track your applications, status, and stats';
+
+  @override
+  String get appsTitle => 'Applications';
+
+  @override
+  String get appsTabApplications => 'Applications';
+
+  @override
+  String get appsTabSaved => 'Saved';
+
+  @override
+  String get appsSearchHint => 'Search applications';
+
+  @override
+  String get appsEmpty => 'You haven\'t applied to any jobs yet.';
+
+  @override
+  String get appsBrowseJobs => 'Browse jobs';
+
+  @override
+  String get appsNoResults => 'No applications match your filters.';
+
+  @override
+  String get appsFilterByStatus => 'Filter by status';
+
+  @override
+  String appsAppliedOn(String date) {
+    return 'Applied $date';
+  }
+
+  @override
+  String get appsDetailTitle => 'Application';
+
+  @override
+  String get appsNotFound => 'This application no longer exists.';
+
+  @override
+  String get appsUpdateStatus => 'Update status';
+
+  @override
+  String get appsHistory => 'Status history';
+
+  @override
+  String get appsViewJob => 'View job';
+
+  @override
+  String get appsWithdraw => 'Withdraw';
+
+  @override
+  String get appsWithdrawConfirm =>
+      'Withdraw this application? This can\'t be undone.';
+
+  @override
+  String get appsPrepareInterview => 'Prepare for your interview';
+
+  @override
+  String appsInterviewCoachSeed(String title, String company) {
+    return 'I have an interview for the $title role at $company. Help me prepare — likely questions and how to stand out.';
+  }
+
+  @override
+  String get statusPending => 'Pending';
+
+  @override
+  String get statusReviewed => 'Reviewed';
+
+  @override
+  String get statusInterview => 'Interview';
+
+  @override
+  String get statusAccepted => 'Accepted';
+
+  @override
+  String get statusRejected => 'Rejected';
+
+  @override
+  String get statApplied => 'Applied';
+
+  @override
+  String get statSaved => 'Saved';
+
+  @override
+  String get statInterviews => 'Interviews';
+
+  @override
+  String get statOffers => 'Offers';
 }
