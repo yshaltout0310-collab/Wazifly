@@ -521,23 +521,65 @@ env, not app). **Next session: re-verify Applications live on a healthy `-gpu ho
 ## 8. Next steps
 
 **Phase 2 COMPLETE.** **Phase 3 · M1 (Jobs Platform) `6a6a72c` and M2 (Applications Center)
-`b7e4b53` COMPLETE.** Nothing is in progress. **Do NOT start a new milestone until the user
-approves a plan** (workflow rule). **First recommended action for the next session: on a
-healthy `-gpu host` cold-booted emulator, re-verify (EN+AR) the P3·M1 job detail +
-integrations AND the P3·M2 Applications hub/detail/apply flow** (all test-verified but not
-cleanly captured live — §7.7, §7.8, §10).
+`b7e4b53` COMPLETE.** Nothing is in progress / no code written toward M3.
 
-Candidate future work (the three remaining "Soon" cards on Home), pending user direction:
-- **CV Builder** — guided resume/CV creation (could reuse the `ResumeAnalysis` + `AiService`).
-- **Interview Prep** — mock-interview practice (a natural fit for `streamChat`, like the coach).
-- **For You / Recommendations** — personalized content from the resume + matches.
-- **Durable persistence** — implement a Firestore/local `ResumeAnalysisStore` and
-  `ChatHistoryStore` (both seams already exist; just rebind the providers).
-- **Markdown rendering** in chat (optional polish; currently the coach is prompted to emit
-  plain text instead).
+**Two open items for the next session (in order):**
+
+1. **Live re-verification (blocked by env last time, not app):** on a healthy `-gpu host`
+   cold-booted emulator, re-verify (EN+AR) the **P3·M1 job detail + integrations** AND the
+   **P3·M2 Applications hub/detail/apply flow** — all test-verified but not cleanly captured
+   live (§7.7, §7.8, §10). Launch: `emu kill` → `emulator.exe -avd careerbridge_pixel
+   -gpu host -no-snapshot-load -no-boot-anim` → `flutter run --no-enable-impeller`.
+
+2. **Recommended next milestone — Phase 3 · M3 (User Profile & Settings) — APPROVED, NOT
+   STARTED.** The plan below was approved by the user (present it again / confirm before
+   coding, per the workflow rule):
+   - **Scope (9 items):** Profile screen · Edit Profile · profile completion indicator ·
+     upload/change profile photo (Firebase Storage) · language selection · notification
+     preferences (architecture-ready) · change password (email users) · logout · Settings.
+   - **Shared foundation (core/shared, no feature coupling):** `UserProfile` model →
+     `shared/models/user_profile.dart` (fields: displayName, photoUrl, headline, location,
+     bio, `userType?`, **plus the approved optional fields: skills `List<String>`,
+     `experienceLevel` (enum, e.g. entry/junior/mid/senior/lead), and portfolio/github/
+     linkedin URLs** — all optional, all feed the completion %, and designed to be reused by
+     AI features + a future Employer Dashboard). `UserProfileRepository` **interface** in
+     `core/services/user_profile/` with `watchProfile(uid)` (Firestore `.snapshots()`) +
+     `saveProfile` + `ensureProfile` + `setPhotoUrl`; **Firestore + in-memory impls** +
+     `userProfileRepositoryProvider` (swap point) + `userProfileProvider` (StreamProvider).
+     Thin testable `ProfileImageStorage` seam (Firebase impl delegates to the existing
+     `CloudStorageService`; in-memory fake for tests). `NotificationPreferences` model
+     (master + jobAlerts + applicationUpdates + coachTips) behind a repository seam.
+   - **Auth contract extension (reuse existing auth infra):** add `changePassword(
+     {currentPassword, newPassword})` (email reauth) + `updateProfile({displayName?,
+     photoUrl?})` to `AuthRepository` + `FirebaseAuthRepository` + the test `FakeAuthRepository`.
+   - **Feature `lib/features/profile/`:** controllers (profile edit, photo, change-password,
+     completion) + enhanced `ProfileScreen`, new `EditProfileScreen`, new
+     `ChangePasswordScreen`, enhanced `SettingsScreen` (granular notifications + change-password
+     entry). Routes `RouteNames.editProfile` (`/settings/profile/edit`) +
+     `changePassword` (`/settings/change-password`). EN+AR l10n.
+   - **Integrations (core providers + navigation → zero feature-to-feature deps):** Auth
+     (identity, changePassword, updateProfile, signOut) · Firestore (`users/{uid}` via the
+     repo; rules already allow own-doc access) · Storage (`users/{uid}/profile.jpg` — **needs
+     a `storage.rules` allowing the authed user to write their own path; deploy it like
+     `firestore.rules`**; the service degrades to a localized error otherwise) · Resume
+     Analyzer (`lastResumeAnalysisProvider` chip/nudge) · Applications + Jobs (counts via the
+     **core** `applicationsProvider` / `savedJobsProvider`; links to `/applications`, `/jobs`)
+     · Career Coach (link to `/career-coach`). Profile reuses the foundational **auth** +
+     **user_type** providers (the required "reuse existing auth infrastructure").
+   - Model round-trip/completion tests, in-memory repo tests, change-password validation,
+     EN+AR screen renders + locale sweep; `flutter analyze` + `flutter test` green; one
+     milestone commit + docs commit.
+
+**Later candidates** (the three remaining "Soon" cards on Home + polish), pending direction:
+- **CV Builder** (reuse `ResumeAnalysis` + `AiService`) · **Interview Prep** (fits `streamChat`)
+  · **For You / Recommendations** (from resume + matches).
+- **Durable persistence** — implement Firestore/local impls for the existing seams
+  (`ResumeAnalysisStore`, `ChatHistoryStore`, `SavedJobsStore`, `ApplicationsRepository`,
+  and the M3 `UserProfileRepository`); just rebind the providers.
+- **Markdown rendering** in the coach chat (currently prompted to emit plain text instead).
 
 Per the workflow: present a plan, wait for approval, one milestone at a time, verify on the
-emulator (both languages), one commit per milestone.
+emulator (both languages), `analyze`+`test` before committing, one commit per milestone.
 
 ---
 
@@ -609,7 +651,7 @@ built-in Kotlin and breaks `assembleDebug` (`FilePickerPlugin` symbol not found)
 **`file_selector`** (already done). If you re-add a plugin and the build fails on
 `GeneratedPluginRegistrant`, suspect a KGP conflict.
 
-**No functional app bugs open.** `flutter analyze` clean; 45 tests pass.
+**No functional app bugs open.** `flutter analyze` clean; **118 tests pass** (as of P3·M2).
 
 ---
 
@@ -711,7 +753,63 @@ status/history) · `lib/core/services/applications/` (`applications_repository.d
 **Navigation** `lib/core/navigation/{app_router,route_names}.dart`.
 **l10n** `lib/core/localization/l10n/app_{en,ar}.arb` (+ generated).
 **Tests** `test/` (`support/fake_auth.dart`, `render_all_locales_test.dart`,
-`resume_*` tests, `screens_render_test.dart`, `widget_smoke_test.dart`).
+`resume_*` tests, `job_*`/`applications_*`/`saved_jobs_*` tests, `career_coach_*` tests,
+`screens_render_test.dart`, `widget_smoke_test.dart`).
+
+---
+
+## 12.5 Routes & provider/repository reference (quick map)
+
+**All routes** (`route_names.dart`; `push*` = forward, `go*` = reset):
+| Name | Path | Screen |
+|---|---|---|
+| `splash` | `/` | Splash |
+| `language` | `/language` | Language picker |
+| `country` | `/country` | Country picker |
+| `onboarding` | `/onboarding` | Onboarding (`?replay=true`) |
+| `welcome` | `/welcome` | Welcome / auth entry |
+| `emailAuth` / `phoneAuth` / `otp` | `/auth/email` · `/auth/phone` · `/auth/otp` | Auth |
+| `userType` | `/user-type` | Job Seeker / Employer |
+| `home` | `/home` | Home dashboard |
+| `settings` / `profile` | `/settings` · `/settings/profile` | Settings · Profile |
+| `resumeAnalyzer` | `/resume-analyzer` | AI Resume Analyzer (P2·M1) |
+| `jobMatching` | `/job-matching` | AI Job Matching (P2·M2) |
+| `careerCoach` | `/career-coach` | AI Career Coach (P2·M3); optional `extra` = seed prompt |
+| `jobs` / `jobDetail` | `/jobs` · `/jobs/:id` | Jobs Platform (P3·M1) |
+| `applications` / `applicationDetail` | `/applications` · `/applications/:id` | Applications Center (P3·M2) |
+
+*(M3 will add `editProfile` `/settings/profile/edit` and `changePassword` `/settings/change-password`.)*
+
+**Core services & swap-point providers** (`lib/core/services/…`; each is the single binding
+to rebind for a real backend — in-memory/local today):
+| Provider | Interface / type | Backed by / swap to |
+|---|---|---|
+| `aiServiceProvider` | `AiService` | `FirebaseAiService` (Gemini) → Vertex/other |
+| `resumeAnalysisStoreProvider` · `lastResumeAnalysisProvider` | `ResumeAnalysisStore` | in-memory → Firestore/local |
+| `chatHistoryStoreProvider` | `ChatHistoryStore` | in-memory → Firestore/local |
+| `jobsRepositoryProvider` | `JobsRepository` (`fetchJobs`/`fetchJobById`/`searchJobs`) | `SeedJobsRepository` (asset) → real jobs API |
+| `savedJobsStoreProvider` · `savedJobsProvider` | `SavedJobsStore` | in-memory → Firestore/local |
+| `applicationsRepositoryProvider` · `applicationsProvider` (Stream) · `appliedJobIdsProvider` | `ApplicationsRepository` (`watchApplications`/`apply`/`updateStatus`/`withdraw`/`findByJobId`) | `InMemoryApplicationsRepository` → Firestore `users/{uid}/applications` |
+| `cloudStorageServiceProvider` | `CloudStorageService` | Firebase Storage (`users/{uid}/…`) — ready |
+| `userProfileRepositoryProvider` | (concrete `UserProfileRepository`, write-only today) | Firestore `users/{uid}` — **M3 evolves to a read/watch interface** |
+
+**Feature controllers / providers** (per feature `application/`): `authStateProvider` +
+`authRepositoryProvider` (auth) · `localeControllerProvider` · `themeControllerProvider` ·
+`userTypeControllerProvider` · `notificationsControllerProvider` ·
+`resumeAnalyzerControllerProvider` · `jobMatchingControllerProvider` +
+`jobMatchingRepositoryProvider` · `careerCoachControllerProvider` +
+`careerCoachRepositoryProvider` · `jobsBrowseControllerProvider` ·
+`jobDetailControllerProvider(id)` · `applicationsFilterProvider` +
+`filteredApplicationsProvider` + `applicationStatsProvider` + `applicationByIdProvider(id)` +
+`savedJobsListProvider`.
+
+**Integration map (who reads what — all via core providers + navigation, no feature→feature
+imports among the product features):** Job Matching reads the resume via
+`lastResumeAnalysisProvider`; Jobs detail computes a per-job match via
+`JobMatchingRepository.matchJob` and deep-links the coach via `careerCoach` `extra`; Career
+Coach personalizes from `lastResumeAnalysisProvider`; Applications' mock Apply writes the
+shared `ApplicationsRepository`, the "applied" badge derives via `appliedJobIdsProvider`,
+and it links to `/jobs/:id` (matching) + `/career-coach` (interview prep).
 
 ---
 
