@@ -1,10 +1,11 @@
 # Career Bridge — Session Handoff
 
 > Living handoff doc so a fresh Claude session can continue immediately.
-> Last updated: end of Phase 3 · Milestone 2 (Applications Center) implementation.
+> Last updated: end of Phase 3 · Milestone 3 (User Profile & Settings) implementation.
 > **Phase 2 COMPLETE** (M1 Resume Analyzer + M2 Job Matching + M3 Career Coach).
 > **Phase 3 · M1 (Jobs Platform) COMPLETE** (`6a6a72c`, §7.7).
 > **Phase 3 · M2 (Applications Center) COMPLETE** (`b7e4b53`, §7.8).
+> **Phase 3 · M3 (User Profile & Settings) COMPLETE** (`071902c`, §7.9) — live-verified EN+AR.
 
 ---
 
@@ -146,6 +147,17 @@ dependencies**. `flutter analyze` clean; **118 tests pass**. Live-verified: Home
 both CTAs (Arabic); the Applications hub/detail are test-verified but not cleanly captured
 live (same emulator quirk — §10).
 
+### Phase 3 · Milestone 3 — User Profile & Settings ✅ COMPLETE (committed `071902c`)
+See §7.9. Extended `UserProfile` (headline/location/bio/photo + **skills, experience
+level (Entry→Lead), preferred job titles, portfolio/github/linkedin links**), a profile
+**completion indicator**, Edit Profile, change/upload photo (via `ProfileImageStorage` →
+Firebase Storage), change password (email reauth), granular notification preferences, and
+an enhanced Settings — over a Stream-based, Firestore-ready `UserProfileRepository` with
+**zero feature-to-feature dependencies**. `flutter analyze` clean; **153 tests pass**.
+**Live-verified EN+AR** incl. a functional Edit→Save (Firestore persist, completion
+10%→50%). One env caveat: **Firebase Storage isn't provisioned yet** (photo upload degrades
+to a localized error until the console "Get Started" is run + `storage.rules` deployed).
+
 ---
 
 ## 5. Firebase setup & required console configuration
@@ -198,7 +210,8 @@ $env:Path = "C:\Program Files\nodejs;" + $env:Path
 main                         6f860fe  Phase 1 production foundation completed
 firebase-auth-integration    aa9b7d2  Add Cloud Firestore security rules  (branched from main)
                              2af451d  Integrate real Firebase Authentication and remove demo mode
-feature/resume-analyzer  *  b7e4b53  feat: Applications Center (Phase 3, Milestone 2)  <-- current HEAD
+feature/resume-analyzer  *  071902c  feat: User Profile & Settings (Phase 3, Milestone 3)  <-- current HEAD
+                             b7e4b53  feat: Applications Center (Phase 3, Milestone 2)
                              6a6a72c  feat: Jobs Platform (Phase 3, Milestone 1)
                              89ee1a1  feat: AI Career Coach (Phase 2, Milestone 3)
                              8f2101f  feat: AI Job Matching (Phase 2, Milestone 2)
@@ -207,7 +220,8 @@ feature/resume-analyzer  *  b7e4b53  feat: Applications Center (Phase 3, Milesto
                              branched from firebase-auth-integration
 ```
 - **P2 M1 `bf469e6`; M2 `8f2101f`; M3 `89ee1a1`; P3 M1 `6a6a72c` (Jobs Platform);
-  P3 M2 `b7e4b53` (Applications Center).** Neither `firebase-auth-integration` nor
+  P3 M2 `b7e4b53` (Applications Center); P3 M3 `071902c` (User Profile & Settings).**
+  Neither `firebase-auth-integration` nor
   `feature/resume-analyzer` is merged to `main`, and nothing is pushed to any remote.
   (No PRs opened.)
 - Commit message convention: end with
@@ -518,22 +532,109 @@ env, not app). **Next session: re-verify Applications live on a healthy `-gpu ho
 
 ---
 
+## 7.9 Phase 3 · Milestone 3 — User Profile & Settings ✅ COMPLETE (`071902c`)
+
+**Scope (approved):** Profile screen · Edit Profile · profile **completion indicator** ·
+upload/change profile photo (Firebase Storage) · language selection · granular notification
+preferences · change password (email users) · logout · Settings — plus the approved optional
+fields **skills**, **experience level** (enum Entry/Junior/Mid/Senior/Lead), **preferred job
+titles**, and **portfolio/github/linkedin links** (all optional, all feed the completion %,
+all shaped to be reused by AI features + a future Employer Dashboard). Repository-based,
+Firestore-ready, **no feature-to-feature dependencies**.
+
+**Shared profile foundation (core/services + shared/models):**
+- `lib/shared/models/user_profile.dart` — `UserProfile` (Equatable, `copyWith`, defensive
+  `toJson`/`fromJson` tolerating snake_case / list-or-comma-string / bad enums / ISO+millis+
+  Timestamp dates) + `ProfileField` enum. `completion`/`completionPercent`/`missingFields`
+  over 10 tracked fields. `ExperienceLevel` enum in `features/profile/domain/`.
+- `lib/core/services/user_profile/` — `UserProfileRepository` **interface** (`watchProfile`
+  Stream + `fetchProfile`/`saveProfile`/`ensureProfile`/`setUserType`/`setPhotoUrl`);
+  `FirestoreUserProfileRepository` (default, `.doc(uid).snapshots()`, degrades to no-op/empty
+  when Firebase not ready) + `InMemoryUserProfileRepository` (tests). Providers:
+  `userProfileRepositoryProvider` (swap point) + `userProfileProvider` (StreamProvider,
+  tracks the auth uid). The **old** concrete `features/profile/data/user_profile_repository.dart`
+  was promoted to this interface; the two call sites (`auth_navigation.ensureProfile`,
+  `user_type_selection.setUserType`) updated to the new import.
+- `profile_image_storage.dart` — `ProfileImageStorage` seam (Firebase impl delegates to the
+  existing `CloudStorageService.uploadBytes` + `profilePhotoPath`; fake for tests).
+- Photo picking reuses **`file_selector`** (image type group) — **no new plugin** (§10 KGP).
+
+**Notification preferences:** `features/settings/domain/notification_preferences.dart`
+(`NotificationPreferences` master+jobAlerts+applicationUpdates+coachTips, with `effective*`
+getters gating on master) behind a `NotificationPreferencesStore` seam (`notification_preferences_store.dart`,
+local storage). `NotificationsController` now holds the model (`setMaster`/`setJobAlerts`/…).
+
+**Auth contract extension (reused existing infra):** `changePassword({currentPassword,
+newPassword})` (EmailAuthProvider reauth → updatePassword) + `updateProfile({displayName?,
+photoUrl?})` on `AuthRepository` + `FirebaseAuthRepository` + `FakeAuthRepository`.
+
+**Feature `lib/features/profile/`:**
+- `application/`: `ProfileEditController` (save → `saveProfile` + auth `updateProfile`),
+  `ProfilePhotoController` (pick→`uploadBytes` seam→`setPhotoUrl`+auth; `uploadBytes` is
+  `@visibleForTesting`), `ChangePasswordController` (local validation emptyFields/tooShort/
+  mismatch, then auth), `currentUserProfileProvider` (stored merged with auth fallback) +
+  `profileCompletionProvider`.
+- `presentation/`: enhanced `ProfileScreen` (avatar/headline/location + completion ring +
+  Edit button + info card with experience level + Skills/Preferred-titles/Links sections),
+  new `EditProfileScreen` (photo editor + fields + `ChipInput` for skills & preferred titles
+  + experience `ChoiceChip`s + links + save), new `ChangePasswordScreen`; enhanced
+  `SettingsScreen` (granular notification switches + change-password entry for email users).
+  Widgets `completion_indicator.dart`, `chip_input.dart`; `profile_l10n.dart` maps the enums.
+- Routes: `RouteNames.editProfile` (`/settings/profile/edit`, nested under profile) +
+  `changePassword` (`/settings/change-password`). ~35 EN+AR l10n keys.
+
+**Firebase / Storage:** extended fields live in the existing `users/{uid}` doc — **no
+Firestore rules change** (own-doc access already allowed). **`storage.rules` added** (authed
+user r/w `users/{uid}/**`) + wired into `firebase.json`. ⚠️ **Firebase Storage is NOT
+provisioned yet** — `firebase deploy --only storage` fails with "Storage has not been set up";
+needs the Console → Storage → **Get Started** (default `.firebasestorage.app` bucket, may need
+Blaze), then deploy the rules. Until then the photo upload returns null → a localized
+"couldn't upload your photo" error; **all other M3 features work on live Firestore + Auth.**
+
+**Tests: 153 total pass** (was 118; +35): `user_profile_model_test` (7 — completion math,
+missing fields, round-trip, snake_case/comma-string, bad-value tolerance, dates),
+`user_profile_repository_test` (4), `change_password_controller_test` (5), `profile_photo_controller_test`
+(3), `notification_preferences_test` (3), `profile_screen_test` (2 EN+AR),
+`edit_profile_screen_test` (2 EN+AR), `change_password_screen_test` (4 EN+AR render+mismatch);
+EditProfile+ChangePassword added to the locale sweep. `flutter analyze` clean.
+
+**VERIFIED live on emulator — both English and Arabic:** Settings (granular notifications +
+change-password entry), Profile (completion ring, Edit button, info card), Edit Profile (all
+fields incl. Skills/Experience level/Preferred job titles/Links) with a **functional
+Edit→Save** — snackbar "Profile saved", **completion 10%→50%**, experience level + chips
+persisted to Firestore and re-rendered after a language switch — and Change Password
+(mismatch validation snackbar). Reached Settings via `flutter run --route=/settings` because
+the documented Home app-bar tap-drop quirk (§10) blocked the gear; body taps worked fine.
+
+**Note for verification:** `flutter run --route=/settings` (or any deep route) is a handy
+workaround for the flaky Home app-bar — but Git Bash mangles the path; prefix the command
+with `MSYS_NO_PATHCONV=1 MSYS2_ARG_CONV_EXCL="*"`.
+
+---
+
 ## 8. Next steps
 
-**Phase 2 COMPLETE.** **Phase 3 · M1 (Jobs Platform) `6a6a72c` and M2 (Applications Center)
-`b7e4b53` COMPLETE.** Nothing is in progress / no code written toward M3.
+**Phase 2 COMPLETE.** **Phase 3 · M1 (Jobs Platform) `6a6a72c`, M2 (Applications Center)
+`b7e4b53`, and M3 (User Profile & Settings) `071902c` COMPLETE.** Nothing is in progress.
 
-**Two open items for the next session (in order):**
+**Open items for the next session:**
 
-1. **Live re-verification (blocked by env last time, not app):** on a healthy `-gpu host`
-   cold-booted emulator, re-verify (EN+AR) the **P3·M1 job detail + integrations** AND the
-   **P3·M2 Applications hub/detail/apply flow** — all test-verified but not cleanly captured
-   live (§7.7, §7.8, §10). Launch: `emu kill` → `emulator.exe -avd careerbridge_pixel
-   -gpu host -no-snapshot-load -no-boot-anim` → `flutter run --no-enable-impeller`.
+1. **Provision Firebase Storage (unblocks profile-photo upload):** Console → Storage →
+   **Get Started** (creates the default bucket; may need Blaze), then deploy the already-authored
+   `storage.rules` (`firebase deploy --only storage`). Until then the photo upload degrades to a
+   localized error (§7.9); everything else in M3 works on live Firestore + Auth.
 
-2. **Recommended next milestone — Phase 3 · M3 (User Profile & Settings) — APPROVED, NOT
-   STARTED.** The plan below was approved by the user (present it again / confirm before
-   coding, per the workflow rule):
+2. **Live re-verification of earlier milestones (blocked by env before, not app):** on a
+   healthy `-gpu host` emulator, re-verify (EN+AR) the **P3·M1 job detail + integrations** AND
+   the **P3·M2 Applications hub/detail/apply flow** — test-verified but not cleanly captured
+   live (§7.7, §7.8, §10). Tip: `flutter run --route=/jobs` / `--route=/applications`
+   (with `MSYS_NO_PATHCONV=1 MSYS2_ARG_CONV_EXCL="*"`) sidesteps the flaky Home app-bar.
+
+3. **Candidate next milestones** (present a plan + wait for approval, per the workflow):
+   the three remaining "Soon" Home cards — **CV Builder**, **Interview Prep**, **For You** —
+   or **durable persistence** for the existing seams. See "Later candidates" below.
+
+<details><summary>Historical: the (now completed) approved Phase 3 · M3 plan</summary>
    - **Scope (9 items):** Profile screen · Edit Profile · profile completion indicator ·
      upload/change profile photo (Firebase Storage) · language selection · notification
      preferences (architecture-ready) · change password (email users) · logout · Settings.
@@ -569,6 +670,8 @@ env, not app). **Next session: re-verify Applications live on a healthy `-gpu ho
    - Model round-trip/completion tests, in-memory repo tests, change-password validation,
      EN+AR screen renders + locale sweep; `flutter analyze` + `flutter test` green; one
      milestone commit + docs commit.
+
+</details>
 
 **Later candidates** (the three remaining "Soon" cards on Home + polish), pending direction:
 - **CV Builder** (reuse `ResumeAnalysis` + `AiService`) · **Interview Prep** (fits `streamChat`)
@@ -609,6 +712,11 @@ emulator (both languages), `analyze`+`test` before committing, one commit per mi
   creates an `Application`; integrates all four earlier features with **zero feature-to-
   feature dependencies**. Test-verified (118 pass); Home CTAs live-verified (Arabic);
   hub/detail pending a clean live re-check (§7.8).
+- **M3 — User Profile & Settings** ✅ *complete* (see §7.9). Extended `UserProfile` (skills,
+  experience level, preferred job titles, links) + completion indicator, Edit Profile, photo
+  upload, change password, granular notifications, over a Stream-based, Firestore-ready
+  `UserProfileRepository` with **zero feature-to-feature dependencies**. **Live-verified EN+AR**
+  (153 pass). Only pending item: provision Firebase Storage for photo upload (§7.9).
 
 See §8 for candidate future work.
 
@@ -651,7 +759,7 @@ built-in Kotlin and breaks `assembleDebug` (`FilePickerPlugin` symbol not found)
 **`file_selector`** (already done). If you re-add a plugin and the build fails on
 `GeneratedPluginRegistrant`, suspect a KGP conflict.
 
-**No functional app bugs open.** `flutter analyze` clean; **118 tests pass** (as of P3·M2).
+**No functional app bugs open.** `flutter analyze` clean; **153 tests pass** (as of P3·M3).
 
 ---
 
@@ -743,6 +851,20 @@ status/history) · `lib/core/services/applications/` (`applications_repository.d
 `in_memory_applications_repository.dart` = impl + `applicationsRepositoryProvider` +
 `applicationsProvider` + `appliedJobIdsProvider`). Firestore-ready: rebind the provider.
 
+**User Profile & Settings** `lib/features/profile/`
+`domain/`: `experience_level.dart`, `profile_failure.dart`.
+`application/`: `profile_edit_controller.dart`, `profile_photo_controller.dart`,
+`change_password_controller.dart`, `profile_completion_provider.dart`
+(`currentUserProfileProvider` + `profileCompletionProvider`).
+`presentation/`: `profile_screen.dart` (enhanced), `edit_profile_screen.dart`,
+`change_password_screen.dart`, `profile_l10n.dart`, `widgets/{completion_indicator,chip_input}.dart`.
+**Shared profile foundation** `lib/shared/models/user_profile.dart` (`UserProfile` +
+`ProfileField`) · `lib/core/services/user_profile/` (`user_profile_repository.dart` interface +
+providers, `firestore_user_profile_repository.dart`, `in_memory_user_profile_repository.dart`,
+`profile_image_storage.dart`). **Notifications** `lib/features/settings/domain/notification_preferences.dart`
++ `application/{notification_preferences_store,notifications_controller}.dart`.
+Auth extension: `changePassword`/`updateProfile` on the `AuthRepository` (§7.9). `storage.rules`.
+
 **Firebase** `lib/core/services/firebase/{firebase_service,firebase_options}.dart` ·
 `firebase.json` · `firestore.rules` · `firestore.indexes.json`.
 
@@ -777,8 +899,8 @@ status/history) · `lib/core/services/applications/` (`applications_repository.d
 | `careerCoach` | `/career-coach` | AI Career Coach (P2·M3); optional `extra` = seed prompt |
 | `jobs` / `jobDetail` | `/jobs` · `/jobs/:id` | Jobs Platform (P3·M1) |
 | `applications` / `applicationDetail` | `/applications` · `/applications/:id` | Applications Center (P3·M2) |
-
-*(M3 will add `editProfile` `/settings/profile/edit` and `changePassword` `/settings/change-password`.)*
+| `editProfile` | `/settings/profile/edit` | Edit Profile (P3·M3) |
+| `changePassword` | `/settings/change-password` | Change Password (P3·M3) |
 
 **Core services & swap-point providers** (`lib/core/services/…`; each is the single binding
 to rebind for a real backend — in-memory/local today):
@@ -790,8 +912,10 @@ to rebind for a real backend — in-memory/local today):
 | `jobsRepositoryProvider` | `JobsRepository` (`fetchJobs`/`fetchJobById`/`searchJobs`) | `SeedJobsRepository` (asset) → real jobs API |
 | `savedJobsStoreProvider` · `savedJobsProvider` | `SavedJobsStore` | in-memory → Firestore/local |
 | `applicationsRepositoryProvider` · `applicationsProvider` (Stream) · `appliedJobIdsProvider` | `ApplicationsRepository` (`watchApplications`/`apply`/`updateStatus`/`withdraw`/`findByJobId`) | `InMemoryApplicationsRepository` → Firestore `users/{uid}/applications` |
-| `cloudStorageServiceProvider` | `CloudStorageService` | Firebase Storage (`users/{uid}/…`) — ready |
-| `userProfileRepositoryProvider` | (concrete `UserProfileRepository`, write-only today) | Firestore `users/{uid}` — **M3 evolves to a read/watch interface** |
+| `cloudStorageServiceProvider` | `CloudStorageService` | Firebase Storage (`users/{uid}/…`) — ready; **bucket not provisioned yet (§7.9)** |
+| `userProfileRepositoryProvider` · `userProfileProvider` (Stream) | `UserProfileRepository` (`watchProfile`/`fetchProfile`/`saveProfile`/`ensureProfile`/`setUserType`/`setPhotoUrl`) | `FirestoreUserProfileRepository` (live) ↔ in-memory (tests) |
+| `profileImageStorageProvider` | `ProfileImageStorage` | `FirebaseProfileImageStorage` → `CloudStorageService` |
+| `notificationPreferencesStoreProvider` | `NotificationPreferencesStore` | local storage → remote/FCM later |
 
 **Feature controllers / providers** (per feature `application/`): `authStateProvider` +
 `authRepositoryProvider` (auth) · `localeControllerProvider` · `themeControllerProvider` ·
@@ -801,7 +925,8 @@ to rebind for a real backend — in-memory/local today):
 `careerCoachRepositoryProvider` · `jobsBrowseControllerProvider` ·
 `jobDetailControllerProvider(id)` · `applicationsFilterProvider` +
 `filteredApplicationsProvider` + `applicationStatsProvider` + `applicationByIdProvider(id)` +
-`savedJobsListProvider`.
+`savedJobsListProvider` · `profileEditControllerProvider` · `profilePhotoControllerProvider` ·
+`changePasswordControllerProvider` · `currentUserProfileProvider` + `profileCompletionProvider`.
 
 **Integration map (who reads what — all via core providers + navigation, no feature→feature
 imports among the product features):** Job Matching reads the resume via
@@ -850,27 +975,29 @@ and it links to `/jobs/:id` (matching) + `/career-coach` (interview prep).
 
 ## 14. TL;DR for the next session
 
-**Phase 2 COMPLETE (verified live EN+AR).** **Phase 3 · M1 (Jobs Platform) `6a6a72c` and
-M2 (Applications Center) `b7e4b53` are COMPLETE and committed** (latest on
-`feature/resume-analyzer` — see §6, §7.7, §7.8). `flutter analyze` clean, **118 tests pass**,
-repo clean (only `.claude/settings.local.json` intentionally uncommitted). Firebase AI Logic
-is enabled + provisioned (§5).
+**Phase 2 COMPLETE (verified live EN+AR).** **Phase 3 · M1 (Jobs Platform) `6a6a72c`,
+M2 (Applications Center) `b7e4b53`, and M3 (User Profile & Settings) `071902c` are COMPLETE
+and committed** (latest on `feature/resume-analyzer` — see §6, §7.7–§7.9). `flutter analyze`
+clean, **153 tests pass**, repo clean (only `.claude/settings.local.json` intentionally
+uncommitted). Firebase AI Logic is enabled + provisioned (§5).
 
-**P3 · M2 (Applications Center)** is repository-based, **Firestore-ready** (a Stream
-`ApplicationsRepository` — rebind one provider for `users/{uid}/applications`),
-provider-agnostic, with **no feature-to-feature dependencies** (verified). Mock Apply now
-creates an `Application`; the applied badge derives from it (old `JobInteractionsStore` was
-narrowed to a saved-only `SavedJobsStore`).
+**P3 · M3 (User Profile & Settings)** is repository-based, **Firestore-ready** (a Stream
+`UserProfileRepository` — rebind one provider), with **no feature-to-feature dependencies**.
+Extended `UserProfile` carries **skills, experience level, preferred job titles, links** —
+all optional, all feed the completion indicator, all shaped for AI-feature / Employer-Dashboard
+reuse. Edit Profile, photo upload (`ProfileImageStorage` seam), change password (auth reauth),
+and granular notification prefs are wired. **Live-verified EN+AR** incl. a functional
+Edit→Save (Firestore persist, completion 10%→50%). **One env caveat: Firebase Storage is not
+provisioned** — photo upload degrades to a localized error until the Console "Get Started" +
+`firebase deploy --only storage` (§7.9, §8-item-1).
 
-**Live-verify caveat (P3 · M1 + M2):** the Jobs *browse* screen and Home *both CTAs* are
-verified live (Arabic); the Jobs *detail*, the Applications *hub/detail*, and the apply flow
-are **test-verified (118 tests incl. EN+AR renders) but not cleanly captured live** — the
-emulator repeatedly hit the documented Home-CTA-input-drop + job-detail-surface-freeze quirk
-(§10; env, not app). **Recommended first action next session: on a fresh `-gpu host`
-cold-booted emulator, re-verify (EN+AR) the P3·M1 job detail AND the P3·M2 Applications
-hub/detail/apply flow.**
+**Live-verify caveat (older P3 · M1 + M2):** the Jobs *detail*, the Applications *hub/detail*,
+and the apply flow are **test-verified but not cleanly captured live** (the documented
+Home-CTA-input-drop + job-detail-surface-freeze quirk, §10; env, not app). Re-verify on a
+fresh `-gpu host` emulator — `flutter run --route=/jobs` / `--route=/applications` (with
+`MSYS_NO_PATHCONV=1 MSYS2_ARG_CONV_EXCL="*"`) sidesteps the flaky Home app-bar.
 
 **Next:** nothing is in progress — present a plan for any new milestone (§8 lists
 candidates) and **wait for the user's approval before coding**. Keep the conventions in §13;
 run with `--no-enable-impeller` and `-gpu host`; the test account session is persisted so
-the app opens to Home. (Persisted app language is currently Arabic.)
+the app opens to Home. (Persisted app language is currently **English** after M3 verification.)
