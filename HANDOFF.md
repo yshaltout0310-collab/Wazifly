@@ -7,6 +7,7 @@
 > **Phase 3 · M2 (Applications Center) COMPLETE** (`b7e4b53`, §7.8).
 > **Phase 3 · M3 (User Profile & Settings) COMPLETE** (`071902c`, §7.9) — live-verified EN+AR.
 > **Phase 4 · M1 (AI CV Builder) COMPLETE** (`b237481`, §7.10) — live-verified EN (full flow) + AR.
+> **Phase 4 · M2 (AI Interview Prep) COMPLETE** (`fc35db4`, §7.11) — live-verified EN + AR (real Gemini).
 
 ---
 
@@ -169,6 +170,16 @@ edit → real-Gemini enhance → ATS PDF preview + share); AR form/template-pick
 PDF (RTL, Arabic section headers). Known limitation: pure-Latin runs can render reversed in
 the Arabic PDF (pdf-package bidi) — Arabic content is correct; a follow-up refinement.
 
+### Phase 4 · Milestone 2 — AI Interview Prep ✅ COMPLETE (committed `fc35db4`)
+See §7.11. Pick an interview type (HR/Technical/Behavioral) → answer AI-generated questions
+with **scored per-answer feedback** (5 dimensions) → a **streamed overall debrief** + a
+scorecard + **improvement plan**. Reuses profile + resume analysis + CV + optional job (all
+via **core** providers); history behind a **Firestore-ready** `InterviewHistoryRepository`
+seam. `generateJson` for questions/evaluation, `streamText` for the debrief. Zero
+feature-to-feature deps. `flutter analyze` clean; **212 tests pass**. **Live-verified EN + AR**
+with real Gemini. Models are shaped so a future **Interview Report PDF** is a pure function of
+`InterviewSession` (no refactor). Also promoted `CvDraftStore` → `core/services/cv_store`.
+
 ---
 
 ## 5. Firebase setup & required console configuration
@@ -221,7 +232,8 @@ $env:Path = "C:\Program Files\nodejs;" + $env:Path
 main                         6f860fe  Phase 1 production foundation completed
 firebase-auth-integration    aa9b7d2  Add Cloud Firestore security rules  (branched from main)
                              2af451d  Integrate real Firebase Authentication and remove demo mode
-feature/resume-analyzer  *  b237481  feat: AI CV Builder (Phase 4, Milestone 1)  <-- current HEAD
+feature/resume-analyzer  *  fc35db4  feat: AI Interview Prep (Phase 4, Milestone 2)  <-- current HEAD
+                             b237481  feat: AI CV Builder (Phase 4, Milestone 1)
                              071902c  feat: User Profile & Settings (Phase 3, Milestone 3)
                              b7e4b53  feat: Applications Center (Phase 3, Milestone 2)
                              6a6a72c  feat: Jobs Platform (Phase 3, Milestone 1)
@@ -694,6 +706,91 @@ cached, so it seeds fully — the empty start is a `--route` artifact, not a bug
 
 ---
 
+## 7.11 Phase 4 · Milestone 2 — AI Interview Prep ✅ COMPLETE (`fc35db4`)
+
+**Scope (approved):** generate interview questions (AI); **HR / Technical / Behavioral** types;
+reuse profile + CV + resume analysis + job matching when available; **stream where
+appropriate**; evaluate answers with **detailed feedback** + **scores** (overall, communication,
+technical accuracy, confidence, clarity) + **improvement suggestions**; **interview history**
+through a repository seam; Firestore-ready; provider-agnostic; EN+AR; integrate with Career
+Coach + Jobs. Plus the approved addition: models shaped for a future **Interview Report PDF**
+(no refactor). **Streaming decision (approved):** `generateJson` for questions + per-answer
+evaluation (reliable scores); `streamText` only for the final debrief.
+
+**Store promotion (approved):** `CvDraftStore` + `cvDraftStoreProvider` moved from
+`features/cv_builder/application/` → **`lib/core/services/cv_store/`** (alongside resume/chat
+stores) so Interview Prep reuses the CV via a core provider — zero feature→feature coupling.
+`CvData` stays in `cv_builder/domain` (imported as a type, like `ResumeAnalysis`).
+
+**Domain `lib/features/interview_prep/domain/`:** `interview_models.dart` — `InterviewType`
+{hr,technical,behavioral} + `InterviewStatus`; `InterviewQuestion`/`InterviewAnswer`;
+`InterviewScores` (5 dims, **clamped 0–100**); `AnswerFeedback` (scores+feedback+strengths+
+improvements+sampleAnswer); `InterviewSummary` (scores + overallFeedback + keyStrengths +
+improvementSuggestions + **improvementPlan**); `InterviewSession` (denormalized role/jobTitle;
+`create`/`withAnswer`/`completed`; `overallScore`/`answerFor`/`feedbackFor`). **Report-ready:**
+Overall Score / Type / Date / Strengths / Suggestions / Plan all derive from the session.
+Defensive `toJson/fromJson` (ISO/millis/Timestamp, bad enum→default). `interview_context.dart`
+(primitive reuse bundle) · `interview_repository.dart` (interface) · `interview_exception.dart`.
+
+**Data:** `interview_repository_impl.dart` (+ `interviewRepositoryProvider`) — pure (takes an
+`InterviewContext`), builds localized prompts, defensive-parsed. `generateQuestions`
+(`generateJson`, throws `noQuestions`), `evaluateAnswer` (`generateJson`, throws
+`emptyEvaluation`), `summarize` (`generateJson` scorecard), `streamDebrief` (`streamText`).
+Prompts instruct plain text / no Markdown (coach convention).
+
+**History seam (core, Firestore-ready — Applications pattern):**
+`lib/core/services/interview_store/` — `InterviewHistoryRepository` interface (`watchSessions`
+Stream + `saveSession`/`findById`/`delete`) + `InMemoryInterviewHistoryRepository` (broadcast) +
+`interviewHistoryRepositoryProvider` (swap point) + `interviewSessionsProvider` (StreamProvider).
+**Rebind for Firestore `users/{uid}/interviews` later — needs a subcollection rule then (the
+current `users/{uid}` rule doesn't cascade); in-memory now, so no rules change this milestone.**
+
+**Application/presentation `lib/features/interview_prep/`:** `InterviewController`
+(phases setup/generating/inProgress/summarizing/summary/error; `buildContext` from
+`currentUserProfileProvider` + `lastResumeAnalysisProvider` + `cvDraftStoreProvider` + job;
+`start`/`submitAnswer`/`nextQuestion`/`finish` (streams debrief → `summarize` → persist);
+`InterviewFailure` enum). `InterviewPrepScreen` (AnimatedSwitcher over phases; type picker →
+one-question-at-a-time Q&A with a 5-dim `_FeedbackCard` → summary with `OverallScoreGauge` +
+`ScoreBars` + strengths/suggestions/plan + coach deep-link + practice-again),
+`InterviewHistoryScreen`, `InterviewSessionDetailScreen`, `interview_l10n.dart`,
+`widgets/score_display.dart`.
+
+**Wiring/integrations (via core providers + navigation, zero feature→feature imports):** routes
+`interviewPrep` (`/interview-prep`, optional `extra: Job`) + `interviewHistory`
+(`/interview-prep/history`) + `interviewSessionDetail` (`…/history/:id`); Home Interview Prep
+card now live; **Jobs detail app-bar "Practice interview"** → `/interview-prep` `extra: job`;
+**summary "Discuss with the coach"** → `/career-coach` seeded prompt. ~55 EN+AR `interview*` keys.
+
+**Tests: 212 total pass** (was 179; +33): `interview_models_test` (5), `interview_repository_test`
+(8 — fake `AiService`: questions/eval/summary/stream/empty/error/language), `interview_history_repository_test`
+(3), `interview_controller_test` (5 — start→answer→finish→persist + failure mapping),
+`interview_prep_screen_test` (2 EN+AR), `interview_history_screen_test` (2 EN+AR),
+`interview_prep_flow_test` (4 — feedback + summary render EN+AR); InterviewPrep+InterviewHistory
+in the locale sweep. `flutter analyze` clean.
+
+**VERIFIED live on emulator with REAL Gemini — both English and Arabic:**
+- **Arabic (full loop):** Technical interview → generated real DS&A / DB / system-design /
+  debugging questions (RTL, focus chips) → typed answer → per-answer evaluation renders (score
+  gauge + Arabic feedback + strengths ✓ + improvements → + sample answer) → multi-question
+  progression (Question 1→2→3 of 5, progress bar).
+- **English:** setup (type cards LTR) → generated HR question ("Focus: Motivation") → answer →
+  feedback card (score gauge + Strengths + To improve, clean plain text, no Markdown).
+
+**Bugs found on-device & FIXED:** (1) a **non-uniform `Border` + `borderRadius`** in the card
+widget threw "borderRadius can only be given on borders with uniform colors" → blanked the
+feedback card; fixed to a uniform accent-tinted border. (2) an **`ExpansionTile` inside a
+`DecoratedBox`** (no Material ancestor) threw a ListTile-background assertion → replaced the
+sample-answer with a plain block. (3) a small **score-gauge overflow** at size 44 (fixed:
+scale font to size, hide "/100" when small). (4) the model emitted **Markdown** in the sample
+answer → added a "plain text, no Markdown" instruction to the eval/summary prompts. Added
+`interview_prep_flow_test` (feedback + summary render) so this class of bug is caught by CI.
+
+**Seed note (same as CV Builder):** entering `/interview-prep` directly via `--route` starts
+with an empty (general) context because auth→Firestore hasn't resolved; the **normal Home →
+Interview Prep path** has the profile cached and personalizes fully.
+
+---
+
 ## 8. Next steps
 
 **Phase 2 COMPLETE.** **Phase 3 · M1 (Jobs Platform) `6a6a72c`, M2 (Applications Center)
@@ -713,12 +810,13 @@ cached, so it seeds fully — the empty start is a `--route` artifact, not a bug
    (with `MSYS_NO_PATHCONV=1 MSYS2_ARG_CONV_EXCL="*"`) sidesteps the flaky Home app-bar.
 
 3. **Candidate next milestones** (present a plan + wait for approval, per the workflow):
-   the two remaining "Soon" Home cards — **Interview Prep** (fits `AiService.streamChat`, like
-   the Career Coach) and **For You / Recommendations** (from resume + matches + profile) — or
-   **durable persistence** for the existing seams. See "Later candidates" below.
+   the **last remaining "Soon" Home card — For You / Recommendations** (from resume + matches +
+   profile + interview history) — or **durable persistence** for the existing seams. See "Later
+   candidates" below. *(CV Builder ✅ §7.10, Interview Prep ✅ §7.11 — both done.)*
 
-4. **CV Builder polish (follow-up to §7.10):** fix the Arabic-PDF Latin-run bidi reversal;
-   optionally add a second template (Modern/Minimal/Harvard) — the architecture is ready.
+4. **Polish follow-ups:** CV Builder Arabic-PDF Latin-run bidi reversal (§7.10) + a 2nd CV
+   template; an **Interview Report PDF** (the models are already report-ready — §7.11) reusing
+   the `pdf`/`printing` stack from CV Builder.
 
 <details><summary>Historical: the (now completed) approved Phase 3 · M3 plan</summary>
    - **Scope (9 items):** Profile screen · Edit Profile · profile completion indicator ·
@@ -759,13 +857,16 @@ cached, so it seeds fully — the empty start is a `--route` artifact, not a bug
 
 </details>
 
-**Later candidates** (the two remaining "Soon" cards on Home + polish), pending direction:
-- **Interview Prep** (fits `AiService.streamChat`, like the Career Coach) · **For You /
-  Recommendations** (from resume + matches + profile). *(CV Builder ✅ done — §7.10.)*
+**Later candidates** (the last "Soon" Home card + polish), pending direction:
+- **For You / Recommendations** (from resume + matches + profile + interview history) — the last
+  "Soon" Home card. *(Resume Analyzer, Job Matching, Career Coach, Jobs, Applications, Profile,
+  CV Builder, Interview Prep — all ✅.)*
 - **Durable persistence** — implement Firestore/local impls for the existing seams
   (`ResumeAnalysisStore`, `ChatHistoryStore`, `SavedJobsStore`, `ApplicationsRepository`,
-  `UserProfileRepository` (already Firestore-backed), and the new `CvDraftStore`); just rebind.
-- **CV Builder polish** — Arabic-PDF Latin bidi fix; add a 2nd template (Modern/Minimal/Harvard).
+  `UserProfileRepository` (already Firestore-backed), `CvDraftStore`, `InterviewHistoryRepository`);
+  just rebind (interview + applications need a `users/{uid}/…` subcollection Firestore rule).
+- **Interview Report PDF** — the `InterviewSession` is already report-ready (§7.11); reuse the
+  `pdf`/`printing` stack. **CV Builder polish** — Arabic-PDF Latin bidi fix; a 2nd CV template.
 - **Markdown rendering** in the coach chat (currently prompted to emit plain text instead).
 
 Per the workflow: present a plan, wait for approval, one milestone at a time, verify on the
@@ -811,7 +912,11 @@ emulator (both languages), `analyze`+`test` before committing, one commit per mi
   (ATS live; Modern/Minimal/Harvard "coming soon"), and a WYSIWYG PDF (`pdf` + `printing`)
   behind a `CvPdfGenerator` swap seam. **Zero feature-to-feature deps.** Live-verified EN (full
   flow) + AR (179 pass). Follow-up: Arabic-PDF Latin bidi fix; more templates.
-- **Candidates:** Interview Prep · For You / Recommendations · durable persistence.
+- **M2 — AI Interview Prep** ✅ *complete* (see §7.11). HR/Technical/Behavioral interviews with
+  AI questions, scored per-answer feedback (5 dims), a streamed debrief + improvement plan, and
+  Firestore-ready history — reusing profile/resume/CV/job via core providers. Report-ready
+  models. **Live-verified EN+AR** with real Gemini (212 pass).
+- **Candidates:** For You / Recommendations · durable persistence · Interview Report PDF.
 
 See §8 for candidate future work.
 
@@ -854,7 +959,7 @@ built-in Kotlin and breaks `assembleDebug` (`FilePickerPlugin` symbol not found)
 **`file_selector`** (already done). If you re-add a plugin and the build fails on
 `GeneratedPluginRegistrant`, suspect a KGP conflict.
 
-**No functional app bugs open.** `flutter analyze` clean; **179 tests pass** (as of P4·M1).
+**No functional app bugs open.** `flutter analyze` clean; **212 tests pass** (as of P4·M2).
 One known cosmetic limitation: pure-Latin runs can render reversed in the Arabic CV PDF
 (pdf-package bidi; §7.10) — Arabic content is correct.
 
@@ -973,7 +1078,19 @@ Auth extension: `changePassword`/`updateProfile` on the `AuthRepository` (§7.9)
 `presentation/`: `cv_builder_screen.dart`, `cv_preview_screen.dart` (`printing` `PdfPreview`),
 `cv_l10n.dart`, `widgets/{cv_template_picker,entry_editors}.dart`.
 Deps: **`pdf` + `printing`** (added P4·M1; build-verified). Shared `ChipInput` now in
-`lib/shared/widgets/`.
+`lib/shared/widgets/`. **`CvDraftStore` now in `lib/core/services/cv_store/`** (P4·M2).
+
+**AI Interview Prep** `lib/features/interview_prep/`
+`domain/`: `interview_models.dart` (`InterviewSession`/`Question`/`Answer`/`AnswerFeedback`/
+`InterviewScores`/`InterviewSummary` + enums; report-ready), `interview_context.dart`,
+`interview_repository.dart` (interface), `interview_exception.dart`.
+`data/`: `interview_repository_impl.dart` (+ `interviewRepositoryProvider`, prompts).
+`application/`: `interview_controller.dart` (phased + context assembly).
+`presentation/`: `interview_prep_screen.dart`, `interview_history_screen.dart`,
+`interview_session_detail_screen.dart`, `interview_l10n.dart`, `widgets/score_display.dart`.
+**History seam** `lib/core/services/interview_store/` (`interview_history_repository.dart`
+interface, `in_memory_interview_history_repository.dart` = impl + `interviewHistoryRepositoryProvider`
++ `interviewSessionsProvider`). Firestore-ready: rebind the provider.
 
 **Firebase** `lib/core/services/firebase/{firebase_service,firebase_options}.dart` ·
 `firebase.json` · `firestore.rules` · `firestore.indexes.json`.
@@ -1012,6 +1129,8 @@ Deps: **`pdf` + `printing`** (added P4·M1; build-verified). Shared `ChipInput` 
 | `editProfile` | `/settings/profile/edit` | Edit Profile (P3·M3) |
 | `changePassword` | `/settings/change-password` | Change Password (P3·M3) |
 | `cvBuilder` / `cvPreview` | `/cv-builder` · `/cv-builder/preview` | AI CV Builder (P4·M1) |
+| `interviewPrep` | `/interview-prep` | AI Interview Prep (P4·M2); optional `extra` = `Job` |
+| `interviewHistory` / `interviewSessionDetail` | `/interview-prep/history` · `…/history/:id` | Interview history + detail |
 
 **Core services & swap-point providers** (`lib/core/services/…`; each is the single binding
 to rebind for a real backend — in-memory/local today):
@@ -1029,7 +1148,9 @@ to rebind for a real backend — in-memory/local today):
 | `notificationPreferencesStoreProvider` | `NotificationPreferencesStore` | local storage → remote/FCM later |
 | `cvPdfGeneratorProvider` | `CvPdfGenerator` | `PdfCvGenerator` (`pdf`/`printing`) → Syncfusion fallback |
 | `cvEnhancementRepositoryProvider` | `CvEnhancementRepository` | `AiService.generateJson` (Gemini) |
-| `cvDraftStoreProvider` | `CvDraftStore` | in-memory → Firestore/local |
+| `cvDraftStoreProvider` | `CvDraftStore` (now in `core/services/cv_store`) | in-memory → Firestore/local |
+| `interviewRepositoryProvider` | `InterviewRepository` (generate/evaluate/summarize/streamDebrief) | `AiService` (Gemini) |
+| `interviewHistoryRepositoryProvider` · `interviewSessionsProvider` (Stream) | `InterviewHistoryRepository` (`watchSessions`/`saveSession`/`findById`/`delete`) | in-memory → Firestore `users/{uid}/interviews` |
 
 **Feature controllers / providers** (per feature `application/`): `authStateProvider` +
 `authRepositoryProvider` (auth) · `localeControllerProvider` · `themeControllerProvider` ·
@@ -1090,18 +1211,22 @@ and it links to `/jobs/:id` (matching) + `/career-coach` (interview prep).
 ## 14. TL;DR for the next session
 
 **Phase 2 COMPLETE (verified live EN+AR).** **Phase 3 · M1 `6a6a72c`, M2 `b7e4b53`, M3
-`071902c`, and Phase 4 · M1 (AI CV Builder) `b237481` are COMPLETE and committed** (latest on
-`feature/resume-analyzer` — see §6, §7.7–§7.10). `flutter analyze` clean, **179 tests pass**,
-repo clean (only `.claude/settings.local.json` intentionally uncommitted). Firebase AI Logic
-is enabled + provisioned (§5).
+`071902c`, Phase 4 · M1 (CV Builder) `b237481`, and M2 (Interview Prep) `fc35db4` are COMPLETE
+and committed** (latest on `feature/resume-analyzer` — see §6, §7.7–§7.11). `flutter analyze`
+clean, **212 tests pass**, repo clean (only `.claude/settings.local.json` intentionally
+uncommitted). Firebase AI Logic is enabled + provisioned (§5).
 
-**P4 · M1 (AI CV Builder)** seeds a CV from the profile + reused resume analysis, allows
-manual editing, an **AI enhancement** (summary + achievement bullets + ATS skills via
-`AiService.generateJson`), a **template registry** (ATS live; Modern/Minimal/Harvard "coming
-soon" — add one with no refactor), and a **WYSIWYG PDF** (`pdf` + `printing`) behind a
-`CvPdfGenerator` swap seam. **Zero feature-to-feature deps.** Live-verified EN (full flow incl.
-real Gemini) + AR (RTL). Follow-up: Arabic-PDF Latin bidi reversal (§7.10); Firebase Storage
-still unprovisioned from M3 (blocks profile-photo upload only).
+**P4 · M2 (AI Interview Prep)** runs HR/Technical/Behavioral interviews: `generateJson` for
+questions + per-answer evaluation (5-dim scores + feedback), `streamText` for the final debrief
++ scorecard + **improvement plan**. Reuses profile/resume/CV/job via **core** providers only;
+history behind a **Firestore-ready** `InterviewHistoryRepository` seam (rebind for
+`users/{uid}/interviews`). `InterviewSession` is **report-ready** for a future Interview Report
+PDF. **Zero feature-to-feature deps.** Live-verified EN + AR with real Gemini. Also promoted
+`CvDraftStore` → `core/services/cv_store` so all reusable stores live in core.
+
+**P4 · M1 (AI CV Builder)** — a WYSIWYG PDF builder (`pdf` + `printing`) behind a `CvPdfGenerator`
+swap seam, template registry (ATS live; others "coming soon"). Follow-up: Arabic-PDF Latin bidi
+reversal (§7.10); Firebase Storage still unprovisioned from M3 (blocks profile-photo upload only).
 
 **Live-verify caveat (older P3 · M1 + M2):** the Jobs *detail*, the Applications *hub/detail*,
 and the apply flow are **test-verified but not cleanly captured live** (the documented
@@ -1112,4 +1237,4 @@ fresh `-gpu host` emulator — `flutter run --route=/jobs` / `--route=/applicati
 **Next:** nothing is in progress — present a plan for any new milestone (§8 lists
 candidates) and **wait for the user's approval before coding**. Keep the conventions in §13;
 run with `--no-enable-impeller` and `-gpu host`; the test account session is persisted so
-the app opens to Home. (Persisted app language is currently **Arabic** after P4·M1 verification.)
+the app opens to Home. (Persisted app language is currently **English** after P4·M2 verification.)
