@@ -22,6 +22,7 @@ import 'package:careerbridge/features/onboarding/presentation/onboarding_screen.
 import 'package:careerbridge/features/profile/presentation/change_password_screen.dart';
 import 'package:careerbridge/features/profile/presentation/edit_profile_screen.dart';
 import 'package:careerbridge/features/profile/presentation/profile_screen.dart';
+import 'package:careerbridge/features/recommendations/presentation/recommendations_screen.dart';
 import 'package:careerbridge/features/resume_analyzer/presentation/resume_analyzer_screen.dart';
 import 'package:careerbridge/features/settings/presentation/settings_screen.dart';
 import 'package:careerbridge/features/user_type/presentation/user_type_selection_screen.dart';
@@ -97,6 +98,7 @@ void main() {
     'CvPreview': () => const CvPreviewScreen(),
     'InterviewPrep': () => const InterviewPrepScreen(),
     'InterviewHistory': () => const InterviewHistoryScreen(),
+    'Recommendations': () => const RecommendationsScreen(),
   };
 
   for (final locale in const [Locale('en'), Locale('ar')]) {

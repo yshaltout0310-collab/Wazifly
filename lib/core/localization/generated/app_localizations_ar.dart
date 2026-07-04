@@ -1373,4 +1373,117 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get statOffers => 'العروض';
+
+  @override
+  String get recTitle => 'لك';
+
+  @override
+  String get recSubtitle => 'توصيات مخصّصة بناءً على كل ما شاركته.';
+
+  @override
+  String get recLoading => 'نُخصّص توصياتك…';
+
+  @override
+  String get recRefresh => 'تحديث';
+
+  @override
+  String get recRetry => 'حاول مرة أخرى';
+
+  @override
+  String get recUpToDate => 'كل شيء محدَّث — توصياتك محدّثة بالفعل.';
+
+  @override
+  String get recNudge =>
+      'أضف مهاراتك أو حلّل سيرتك أو أنشئ سيرة ذاتية للحصول على توصيات أدق.';
+
+  @override
+  String recUpdated(String date) {
+    return 'آخر تحديث $date';
+  }
+
+  @override
+  String recConfidence(int percent) {
+    return 'تطابق $percent٪';
+  }
+
+  @override
+  String get recViewJob => 'عرض الوظيفة';
+
+  @override
+  String get recJobsTitle => 'وظائف موصى بها';
+
+  @override
+  String get recSkillsTitle => 'مهارات لتتعلّمها';
+
+  @override
+  String get recCertsTitle => 'شهادات';
+
+  @override
+  String get recCoursesTitle => 'دورات';
+
+  @override
+  String get recRoadmapTitle => 'خارطة طريق مهنية';
+
+  @override
+  String get recActionsTitle => 'أفضل الخطوات التالية';
+
+  @override
+  String get recPriorityHigh => 'عالية';
+
+  @override
+  String get recPriorityMedium => 'متوسطة';
+
+  @override
+  String get recPriorityLow => 'منخفضة';
+
+  @override
+  String get recHorizonThisWeek => 'هذا الأسبوع';
+
+  @override
+  String get recHorizonNextMonth => 'الشهر القادم';
+
+  @override
+  String get recHorizonNext3Months => 'خلال 3 أشهر';
+
+  @override
+  String get recHorizon6to12 => '6–12 شهرًا';
+
+  @override
+  String get recActionAnalyzeResume => 'حلّل سيرتك';
+
+  @override
+  String get recActionBuildCv => 'أنشئ سيرة ذاتية';
+
+  @override
+  String get recActionPracticeInterview => 'تدرّب على المقابلة';
+
+  @override
+  String get recActionBrowseJobs => 'تصفّح الوظائف';
+
+  @override
+  String get recActionReviewApplications => 'راجع الطلبات';
+
+  @override
+  String get recActionCompleteProfile => 'أكمل ملفك';
+
+  @override
+  String get recActionApplyToJob => 'قدّم الآن';
+
+  @override
+  String get recActionLearnSkill => 'ابدأ التعلّم';
+
+  @override
+  String get recErrGeneric => 'تعذّر إنشاء توصياتك. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get recErrNetwork =>
+      'يبدو أنك غير متصل. تحقّق من اتصالك وحاول مجددًا.';
+
+  @override
+  String get recErrQuota =>
+      'خدمة الذكاء الاصطناعي مشغولة حاليًا. يرجى المحاولة بعد قليل.';
+
+  @override
+  String get recErrEmpty =>
+      'لا توجد بيانات كافية للتوصية بعد. أضف المزيد إلى ملفك وحاول مجددًا.';
 }

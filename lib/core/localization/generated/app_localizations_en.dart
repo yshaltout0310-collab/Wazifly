@@ -1386,4 +1386,120 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get statOffers => 'Offers';
+
+  @override
+  String get recTitle => 'For You';
+
+  @override
+  String get recSubtitle =>
+      'Personalized recommendations based on everything you\'ve shared.';
+
+  @override
+  String get recLoading => 'Personalizing your recommendations…';
+
+  @override
+  String get recRefresh => 'Refresh';
+
+  @override
+  String get recRetry => 'Try again';
+
+  @override
+  String get recUpToDate =>
+      'You\'re all set — your recommendations are already up to date.';
+
+  @override
+  String get recNudge =>
+      'Add your skills, analyze a resume, or build a CV to unlock sharper recommendations.';
+
+  @override
+  String recUpdated(String date) {
+    return 'Updated $date';
+  }
+
+  @override
+  String recConfidence(int percent) {
+    return '$percent% match';
+  }
+
+  @override
+  String get recViewJob => 'View job';
+
+  @override
+  String get recJobsTitle => 'Recommended jobs';
+
+  @override
+  String get recSkillsTitle => 'Skills to learn';
+
+  @override
+  String get recCertsTitle => 'Certifications';
+
+  @override
+  String get recCoursesTitle => 'Courses';
+
+  @override
+  String get recRoadmapTitle => 'Career roadmap';
+
+  @override
+  String get recActionsTitle => 'Next best actions';
+
+  @override
+  String get recPriorityHigh => 'High';
+
+  @override
+  String get recPriorityMedium => 'Medium';
+
+  @override
+  String get recPriorityLow => 'Low';
+
+  @override
+  String get recHorizonThisWeek => 'This week';
+
+  @override
+  String get recHorizonNextMonth => 'Next month';
+
+  @override
+  String get recHorizonNext3Months => 'Next 3 months';
+
+  @override
+  String get recHorizon6to12 => '6–12 months';
+
+  @override
+  String get recActionAnalyzeResume => 'Analyze resume';
+
+  @override
+  String get recActionBuildCv => 'Build CV';
+
+  @override
+  String get recActionPracticeInterview => 'Practice interview';
+
+  @override
+  String get recActionBrowseJobs => 'Browse jobs';
+
+  @override
+  String get recActionReviewApplications => 'Review applications';
+
+  @override
+  String get recActionCompleteProfile => 'Complete profile';
+
+  @override
+  String get recActionApplyToJob => 'Apply now';
+
+  @override
+  String get recActionLearnSkill => 'Start learning';
+
+  @override
+  String get recErrGeneric =>
+      'We couldn\'t generate your recommendations. Please try again.';
+
+  @override
+  String get recErrNetwork =>
+      'You appear to be offline. Check your connection and try again.';
+
+  @override
+  String get recErrQuota =>
+      'The AI service is busy right now. Please try again in a moment.';
+
+  @override
+  String get recErrEmpty =>
+      'We don\'t have enough to recommend yet. Add more to your profile and try again.';
 }

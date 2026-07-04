@@ -58,7 +58,11 @@ class HomeScreen extends ConsumerWidget {
         label: l10n.featInterviewPrep,
         route: RouteNames.interviewPrep,
       ),
-      (icon: Icons.recommend_outlined, label: l10n.featRecommendations, route: null),
+      (
+        icon: Icons.recommend_outlined,
+        label: l10n.featRecommendations,
+        route: RouteNames.recommendations,
+      ),
     ];
 
     return Scaffold(

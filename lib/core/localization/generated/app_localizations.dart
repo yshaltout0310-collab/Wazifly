@@ -2647,6 +2647,216 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Offers'**
   String get statOffers;
+
+  /// No description provided for @recTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'For You'**
+  String get recTitle;
+
+  /// No description provided for @recSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Personalized recommendations based on everything you\'ve shared.'**
+  String get recSubtitle;
+
+  /// No description provided for @recLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Personalizing your recommendations…'**
+  String get recLoading;
+
+  /// No description provided for @recRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get recRefresh;
+
+  /// No description provided for @recRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get recRetry;
+
+  /// No description provided for @recUpToDate.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re all set — your recommendations are already up to date.'**
+  String get recUpToDate;
+
+  /// No description provided for @recNudge.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your skills, analyze a resume, or build a CV to unlock sharper recommendations.'**
+  String get recNudge;
+
+  /// No description provided for @recUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated {date}'**
+  String recUpdated(String date);
+
+  /// No description provided for @recConfidence.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% match'**
+  String recConfidence(int percent);
+
+  /// No description provided for @recViewJob.
+  ///
+  /// In en, this message translates to:
+  /// **'View job'**
+  String get recViewJob;
+
+  /// No description provided for @recJobsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended jobs'**
+  String get recJobsTitle;
+
+  /// No description provided for @recSkillsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Skills to learn'**
+  String get recSkillsTitle;
+
+  /// No description provided for @recCertsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Certifications'**
+  String get recCertsTitle;
+
+  /// No description provided for @recCoursesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Courses'**
+  String get recCoursesTitle;
+
+  /// No description provided for @recRoadmapTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Career roadmap'**
+  String get recRoadmapTitle;
+
+  /// No description provided for @recActionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Next best actions'**
+  String get recActionsTitle;
+
+  /// No description provided for @recPriorityHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'High'**
+  String get recPriorityHigh;
+
+  /// No description provided for @recPriorityMedium.
+  ///
+  /// In en, this message translates to:
+  /// **'Medium'**
+  String get recPriorityMedium;
+
+  /// No description provided for @recPriorityLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Low'**
+  String get recPriorityLow;
+
+  /// No description provided for @recHorizonThisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'This week'**
+  String get recHorizonThisWeek;
+
+  /// No description provided for @recHorizonNextMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Next month'**
+  String get recHorizonNextMonth;
+
+  /// No description provided for @recHorizonNext3Months.
+  ///
+  /// In en, this message translates to:
+  /// **'Next 3 months'**
+  String get recHorizonNext3Months;
+
+  /// No description provided for @recHorizon6to12.
+  ///
+  /// In en, this message translates to:
+  /// **'6–12 months'**
+  String get recHorizon6to12;
+
+  /// No description provided for @recActionAnalyzeResume.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyze resume'**
+  String get recActionAnalyzeResume;
+
+  /// No description provided for @recActionBuildCv.
+  ///
+  /// In en, this message translates to:
+  /// **'Build CV'**
+  String get recActionBuildCv;
+
+  /// No description provided for @recActionPracticeInterview.
+  ///
+  /// In en, this message translates to:
+  /// **'Practice interview'**
+  String get recActionPracticeInterview;
+
+  /// No description provided for @recActionBrowseJobs.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse jobs'**
+  String get recActionBrowseJobs;
+
+  /// No description provided for @recActionReviewApplications.
+  ///
+  /// In en, this message translates to:
+  /// **'Review applications'**
+  String get recActionReviewApplications;
+
+  /// No description provided for @recActionCompleteProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete profile'**
+  String get recActionCompleteProfile;
+
+  /// No description provided for @recActionApplyToJob.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply now'**
+  String get recActionApplyToJob;
+
+  /// No description provided for @recActionLearnSkill.
+  ///
+  /// In en, this message translates to:
+  /// **'Start learning'**
+  String get recActionLearnSkill;
+
+  /// No description provided for @recErrGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t generate your recommendations. Please try again.'**
+  String get recErrGeneric;
+
+  /// No description provided for @recErrNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'You appear to be offline. Check your connection and try again.'**
+  String get recErrNetwork;
+
+  /// No description provided for @recErrQuota.
+  ///
+  /// In en, this message translates to:
+  /// **'The AI service is busy right now. Please try again in a moment.'**
+  String get recErrQuota;
+
+  /// No description provided for @recErrEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'We don\'t have enough to recommend yet. Add more to your profile and try again.'**
+  String get recErrEmpty;
 }
 
 class _AppLocalizationsDelegate

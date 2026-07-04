@@ -28,6 +28,7 @@ abstract final class RouteNames {
   static const String interviewPrep = 'interviewPrep';
   static const String interviewHistory = 'interviewHistory';
   static const String interviewSessionDetail = 'interviewSessionDetail';
+  static const String recommendations = 'recommendations';
 
   static const String splashPath = '/';
   static const String languagePath = '/language';
@@ -55,4 +56,5 @@ abstract final class RouteNames {
   static const String interviewPrepPath = '/interview-prep';
   static const String interviewHistoryPath = '/interview-prep/history';
   static const String interviewSessionDetailPath = '/interview-prep/history/:id';
+  static const String recommendationsPath = '/recommendations';
 }

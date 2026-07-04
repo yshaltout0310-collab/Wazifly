@@ -499,5 +499,50 @@
   "statApplied": "Applied",
   "statSaved": "Saved",
   "statInterviews": "Interviews",
-  "statOffers": "Offers"
+  "statOffers": "Offers",
+  "recTitle": "For You",
+  "recSubtitle": "Personalized recommendations based on everything you've shared.",
+  "recLoading": "Personalizing your recommendations…",
+  "recRefresh": "Refresh",
+  "recRetry": "Try again",
+  "recUpToDate": "You're all set — your recommendations are already up to date.",
+  "recNudge": "Add your skills, analyze a resume, or build a CV to unlock sharper recommendations.",
+  "recUpdated": "Updated {date}",
+  "@recUpdated": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "recConfidence": "{percent}% match",
+  "@recConfidence": {
+    "placeholders": {
+      "percent": { "type": "int" }
+    }
+  },
+  "recViewJob": "View job",
+  "recJobsTitle": "Recommended jobs",
+  "recSkillsTitle": "Skills to learn",
+  "recCertsTitle": "Certifications",
+  "recCoursesTitle": "Courses",
+  "recRoadmapTitle": "Career roadmap",
+  "recActionsTitle": "Next best actions",
+  "recPriorityHigh": "High",
+  "recPriorityMedium": "Medium",
+  "recPriorityLow": "Low",
+  "recHorizonThisWeek": "This week",
+  "recHorizonNextMonth": "Next month",
+  "recHorizonNext3Months": "Next 3 months",
+  "recHorizon6to12": "6–12 months",
+  "recActionAnalyzeResume": "Analyze resume",
+  "recActionBuildCv": "Build CV",
+  "recActionPracticeInterview": "Practice interview",
+  "recActionBrowseJobs": "Browse jobs",
+  "recActionReviewApplications": "Review applications",
+  "recActionCompleteProfile": "Complete profile",
+  "recActionApplyToJob": "Apply now",
+  "recActionLearnSkill": "Start learning",
+  "recErrGeneric": "We couldn't generate your recommendations. Please try again.",
+  "recErrNetwork": "You appear to be offline. Check your connection and try again.",
+  "recErrQuota": "The AI service is busy right now. Please try again in a moment.",
+  "recErrEmpty": "We don't have enough to recommend yet. Add more to your profile and try again."
 }

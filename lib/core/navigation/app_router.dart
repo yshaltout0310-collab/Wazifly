@@ -24,6 +24,7 @@ import '../../features/onboarding/presentation/onboarding_screen.dart';
 import '../../features/profile/presentation/change_password_screen.dart';
 import '../../features/profile/presentation/edit_profile_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
+import '../../features/recommendations/presentation/recommendations_screen.dart';
 import '../../features/resume_analyzer/presentation/resume_analyzer_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/splash/presentation/splash_screen.dart';
@@ -182,6 +183,11 @@ abstract final class AppRouter {
         path: RouteNames.applicationsPath,
         name: RouteNames.applications,
         pageBuilder: _fade(const ApplicationsScreen()),
+      ),
+      GoRoute(
+        path: RouteNames.recommendationsPath,
+        name: RouteNames.recommendations,
+        pageBuilder: _fade(const RecommendationsScreen()),
       ),
       GoRoute(
         path: RouteNames.applicationDetailPath,
