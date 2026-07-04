@@ -1,11 +1,12 @@
 # Career Bridge — Session Handoff
 
 > Living handoff doc so a fresh Claude session can continue immediately.
-> Last updated: end of Phase 3 · Milestone 3 (User Profile & Settings) implementation.
+> Last updated: end of Phase 4 · Milestone 1 (AI CV Builder) implementation.
 > **Phase 2 COMPLETE** (M1 Resume Analyzer + M2 Job Matching + M3 Career Coach).
 > **Phase 3 · M1 (Jobs Platform) COMPLETE** (`6a6a72c`, §7.7).
 > **Phase 3 · M2 (Applications Center) COMPLETE** (`b7e4b53`, §7.8).
 > **Phase 3 · M3 (User Profile & Settings) COMPLETE** (`071902c`, §7.9) — live-verified EN+AR.
+> **Phase 4 · M1 (AI CV Builder) COMPLETE** (`b237481`, §7.10) — live-verified EN (full flow) + AR.
 
 ---
 
@@ -158,6 +159,16 @@ an enhanced Settings — over a Stream-based, Firestore-ready `UserProfileReposi
 10%→50%). One env caveat: **Firebase Storage isn't provisioned yet** (photo upload degrades
 to a localized error until the console "Get Started" is run + `storage.rules` deployed).
 
+### Phase 4 · Milestone 1 — AI CV Builder ✅ COMPLETE (committed `b237481`)
+See §7.10. Builds a professional CV **from the profile (+ reused resume analysis)**, allows
+manual editing, an **AI enhancement** step (summary + achievement bullets + ATS skills),
+**multiple registered templates** (ATS implemented; Modern/Minimal/Harvard show "Coming
+soon"), and a **WYSIWYG PDF preview/export** via `pdf` + `printing`. Zero feature-to-feature
+deps. `flutter analyze` clean; **179 tests pass**. **Live-verified**: EN full flow (manual
+edit → real-Gemini enhance → ATS PDF preview + share); AR form/template-picker RTL + Arabic
+PDF (RTL, Arabic section headers). Known limitation: pure-Latin runs can render reversed in
+the Arabic PDF (pdf-package bidi) — Arabic content is correct; a follow-up refinement.
+
 ---
 
 ## 5. Firebase setup & required console configuration
@@ -210,7 +221,8 @@ $env:Path = "C:\Program Files\nodejs;" + $env:Path
 main                         6f860fe  Phase 1 production foundation completed
 firebase-auth-integration    aa9b7d2  Add Cloud Firestore security rules  (branched from main)
                              2af451d  Integrate real Firebase Authentication and remove demo mode
-feature/resume-analyzer  *  071902c  feat: User Profile & Settings (Phase 3, Milestone 3)  <-- current HEAD
+feature/resume-analyzer  *  b237481  feat: AI CV Builder (Phase 4, Milestone 1)  <-- current HEAD
+                             071902c  feat: User Profile & Settings (Phase 3, Milestone 3)
                              b7e4b53  feat: Applications Center (Phase 3, Milestone 2)
                              6a6a72c  feat: Jobs Platform (Phase 3, Milestone 1)
                              89ee1a1  feat: AI Career Coach (Phase 2, Milestone 3)
@@ -612,6 +624,76 @@ with `MSYS_NO_PATHCONV=1 MSYS2_ARG_CONV_EXCL="*"`.
 
 ---
 
+## 7.10 Phase 4 · Milestone 1 — AI CV Builder ✅ COMPLETE (`b237481`)
+
+**Scope (approved):** build a CV **from the profile whenever possible**, allow **manual
+editing before generating**, support **multiple templates** (start with one ATS-friendly),
+export a **professional PDF**, and be structured so **new templates need no refactor**. Plus
+two approved additions: **reuse the cached `ResumeAnalysis`** (summary/strengths/skills/ATS
+suggestions), and **register 4 templates now** (ATS, Modern, Minimal, Harvard) with only ATS
+implemented (others "Coming soon").
+
+**Dependency decision (approved Option A):** added **`pdf`** (pure-Dart document build) +
+**`printing`** (in-app `PdfPreview` + native share/print). **Debug APK build verified first —
+no Gradle/KGP conflict** (the risk flagged from `file_picker`). The `CvPdfGenerator` interface
+preserves the Syncfusion fallback with no feature-code change.
+
+**Feature `lib/features/cv_builder/` (zero feature-to-feature deps — reaches Profile only via
+the core `currentUserProfileProvider` + `lastResumeAnalysisProvider`):**
+- `domain/cv_data.dart` — `CvData` (+ `CvExperience`/`CvEducation`/`CvProject`), defensive
+  JSON, and **`CvData.fromProfile(UserProfile, {user, analysis})`** which seeds contact/skills/
+  links/target-role from the profile and **the summary from the reused `ResumeAnalysis`** (else
+  the profile bio).
+- `domain/cv_enhancement_repository.dart` (+ impl) — builds a localized prompt from the CV
+  (+ the resume analysis strengths/missingSkills/suggestions + target role) → `AiService.
+  generateJson` → **merges** a polished summary, achievement bullets, and ATS skills back into
+  `CvData`, **preserving factual fields**. Defensive-parsed; throws `CvBuilderException`.
+- `domain/cv_template.dart` — `CvTemplateId {ats, modern, minimal, harvard}` +
+  `cvTemplateCatalog` (ATS `available:true`; rest `false`). `domain/cv_pdf_generator.dart` =
+  the `CvPdfGenerator` **swap seam** + `CvLabels`. `data/pdf/pdf_cv_generator.dart` maps id →
+  `PdfTemplate` (throws `templateUnavailable` for coming-soon), loads fonts via `CvFonts`
+  (`PdfGoogleFonts` Noto + Arabic, built-in fallback). `data/templates/ats_template.dart` =
+  single-column ATS layout (`pw` widgets, RTL-aware, brand accents). **Add a template later:
+  new `PdfTemplate` + flip the catalog flag — nothing else changes.**
+- `application/`: `CvBuilderController` (needsProfile/editing/enhancing; seeds from profile+
+  analysis or resumes a `CvDraftStore` draft) + `CvDraftStore` seam (in-memory → Firestore
+  later). `presentation/`: `CvBuilderScreen` (edit form + experience/education **entry-editor
+  sheets** + skills `ChipInput` + target role + **Enhance with AI**), `widgets/cv_template_picker.dart`
+  (ATS selectable, others "Soon"), `CvPreviewScreen` (`printing` `PdfPreview` → share/print).
+- **Wiring:** routes `cvBuilder` (`/cv-builder`) + `cvPreview` (`/cv-builder/preview`); Home
+  CV Builder card now `available`. ~45 EN+AR `cv*` l10n keys. **`ChipInput` promoted from
+  `features/profile/presentation/widgets/` to `lib/shared/widgets/`** (reused by CV skills;
+  keeps zero feature-to-feature coupling). **`PrimaryButton`** now ellipsizes long labels
+  (Flexible) — fixed an RTL overflow on the long "Enhance with AI" Arabic label.
+
+**Tests: 179 total pass** (was 153; +26): `cv_data_test` (7 — seed + resume reuse + json +
+defensive), `cv_enhancement_repository_test` (5 — merge/omit/lang/empty/error via a fake
+`AiService`), `cv_pdf_generator_test` (4 — EN/AR bytes with built-in fonts + coming-soon
+throws), `cv_builder_controller_test` (5), `cv_builder_screen_test` (2 EN+AR); CvBuilder +
+CvPreview added to the locale sweep. `flutter analyze` clean.
+
+**VERIFIED live on emulator:**
+- **English (full flow):** `--route=/cv-builder` → manual edit (name/headline + an experience
+  with a crude highlight "built-app-and-improved-speed") → **Enhance with AI** wrote a
+  professional summary, **rewrote the crude bullet into two achievement statements**, and
+  **expanded skills** with ATS keywords (real Gemini) → **ATS PDF preview rendered WYSIWYG**
+  (bullets/·/— all render via Noto) with the **print + share** bar.
+- **Arabic (RTL):** form + entry-editor sheets + template picker all RTL with Arabic labels
+  (القالب: ATS selected, عصري/بسيط = قريبا); the **Enhance button fits (no overflow)**; the
+  Arabic PDF renders **RTL with correct Arabic section headers** (الخبرات …).
+
+**Known limitation (follow-up):** pure-**Latin** runs can render **reversed** inside the
+Arabic (RTL) PDF — a `pdf`-package bidi limitation. **Arabic content renders correctly** (and
+the AI writes content in the user's language, so an Arabic-mode CV gets Arabic content). Fix
+later via per-run bidi / not forcing page-level rtl.
+
+**Seed note:** entering `/cv-builder` *directly* via `--route` constructs the controller
+before the auth→Firestore stream resolves, so the form starts empty (the "Reset from profile"
+↻ action re-seeds once resolved). The **normal Home → CV Builder path** has the profile already
+cached, so it seeds fully — the empty start is a `--route` artifact, not a bug.
+
+---
+
 ## 8. Next steps
 
 **Phase 2 COMPLETE.** **Phase 3 · M1 (Jobs Platform) `6a6a72c`, M2 (Applications Center)
@@ -631,8 +713,12 @@ with `MSYS_NO_PATHCONV=1 MSYS2_ARG_CONV_EXCL="*"`.
    (with `MSYS_NO_PATHCONV=1 MSYS2_ARG_CONV_EXCL="*"`) sidesteps the flaky Home app-bar.
 
 3. **Candidate next milestones** (present a plan + wait for approval, per the workflow):
-   the three remaining "Soon" Home cards — **CV Builder**, **Interview Prep**, **For You** —
-   or **durable persistence** for the existing seams. See "Later candidates" below.
+   the two remaining "Soon" Home cards — **Interview Prep** (fits `AiService.streamChat`, like
+   the Career Coach) and **For You / Recommendations** (from resume + matches + profile) — or
+   **durable persistence** for the existing seams. See "Later candidates" below.
+
+4. **CV Builder polish (follow-up to §7.10):** fix the Arabic-PDF Latin-run bidi reversal;
+   optionally add a second template (Modern/Minimal/Harvard) — the architecture is ready.
 
 <details><summary>Historical: the (now completed) approved Phase 3 · M3 plan</summary>
    - **Scope (9 items):** Profile screen · Edit Profile · profile completion indicator ·
@@ -673,12 +759,13 @@ with `MSYS_NO_PATHCONV=1 MSYS2_ARG_CONV_EXCL="*"`.
 
 </details>
 
-**Later candidates** (the three remaining "Soon" cards on Home + polish), pending direction:
-- **CV Builder** (reuse `ResumeAnalysis` + `AiService`) · **Interview Prep** (fits `streamChat`)
-  · **For You / Recommendations** (from resume + matches).
+**Later candidates** (the two remaining "Soon" cards on Home + polish), pending direction:
+- **Interview Prep** (fits `AiService.streamChat`, like the Career Coach) · **For You /
+  Recommendations** (from resume + matches + profile). *(CV Builder ✅ done — §7.10.)*
 - **Durable persistence** — implement Firestore/local impls for the existing seams
   (`ResumeAnalysisStore`, `ChatHistoryStore`, `SavedJobsStore`, `ApplicationsRepository`,
-  and the M3 `UserProfileRepository`); just rebind the providers.
+  `UserProfileRepository` (already Firestore-backed), and the new `CvDraftStore`); just rebind.
+- **CV Builder polish** — Arabic-PDF Latin bidi fix; add a 2nd template (Modern/Minimal/Harvard).
 - **Markdown rendering** in the coach chat (currently prompted to emit plain text instead).
 
 Per the workflow: present a plan, wait for approval, one milestone at a time, verify on the
@@ -717,6 +804,14 @@ emulator (both languages), `analyze`+`test` before committing, one commit per mi
   upload, change password, granular notifications, over a Stream-based, Firestore-ready
   `UserProfileRepository` with **zero feature-to-feature dependencies**. **Live-verified EN+AR**
   (153 pass). Only pending item: provision Firebase Storage for photo upload (§7.9).
+
+## Phase 4 roadmap
+- **M1 — AI CV Builder** ✅ *complete* (see §7.10). Seeds a CV from the profile + reused resume
+  analysis, manual editing, AI enhancement (`AiService.generateJson`), a template registry
+  (ATS live; Modern/Minimal/Harvard "coming soon"), and a WYSIWYG PDF (`pdf` + `printing`)
+  behind a `CvPdfGenerator` swap seam. **Zero feature-to-feature deps.** Live-verified EN (full
+  flow) + AR (179 pass). Follow-up: Arabic-PDF Latin bidi fix; more templates.
+- **Candidates:** Interview Prep · For You / Recommendations · durable persistence.
 
 See §8 for candidate future work.
 
@@ -759,7 +854,9 @@ built-in Kotlin and breaks `assembleDebug` (`FilePickerPlugin` symbol not found)
 **`file_selector`** (already done). If you re-add a plugin and the build fails on
 `GeneratedPluginRegistrant`, suspect a KGP conflict.
 
-**No functional app bugs open.** `flutter analyze` clean; **153 tests pass** (as of P3·M3).
+**No functional app bugs open.** `flutter analyze` clean; **179 tests pass** (as of P4·M1).
+One known cosmetic limitation: pure-Latin runs can render reversed in the Arabic CV PDF
+(pdf-package bidi; §7.10) — Arabic content is correct.
 
 ---
 
@@ -865,6 +962,19 @@ providers, `firestore_user_profile_repository.dart`, `in_memory_user_profile_rep
 + `application/{notification_preferences_store,notifications_controller}.dart`.
 Auth extension: `changePassword`/`updateProfile` on the `AuthRepository` (§7.9). `storage.rules`.
 
+**AI CV Builder** `lib/features/cv_builder/`
+`domain/`: `cv_data.dart` (`CvData` + nested + `fromProfile`), `cv_template.dart`
+(`CvTemplateId` + `cvTemplateCatalog`), `cv_pdf_generator.dart` (`CvPdfGenerator` seam +
+`CvLabels`), `cv_enhancement_repository.dart`, `cv_builder_exception.dart`.
+`data/`: `cv_enhancement_repository_impl.dart` (+ provider, prompt), `pdf/pdf_cv_generator.dart`
+(+ `cvPdfGeneratorProvider`), `pdf/cv_fonts.dart` (PdfGoogleFonts + fallback),
+`templates/{pdf_template,ats_template}.dart`.
+`application/`: `cv_builder_controller.dart`, `cv_draft_store.dart`.
+`presentation/`: `cv_builder_screen.dart`, `cv_preview_screen.dart` (`printing` `PdfPreview`),
+`cv_l10n.dart`, `widgets/{cv_template_picker,entry_editors}.dart`.
+Deps: **`pdf` + `printing`** (added P4·M1; build-verified). Shared `ChipInput` now in
+`lib/shared/widgets/`.
+
 **Firebase** `lib/core/services/firebase/{firebase_service,firebase_options}.dart` ·
 `firebase.json` · `firestore.rules` · `firestore.indexes.json`.
 
@@ -901,6 +1011,7 @@ Auth extension: `changePassword`/`updateProfile` on the `AuthRepository` (§7.9)
 | `applications` / `applicationDetail` | `/applications` · `/applications/:id` | Applications Center (P3·M2) |
 | `editProfile` | `/settings/profile/edit` | Edit Profile (P3·M3) |
 | `changePassword` | `/settings/change-password` | Change Password (P3·M3) |
+| `cvBuilder` / `cvPreview` | `/cv-builder` · `/cv-builder/preview` | AI CV Builder (P4·M1) |
 
 **Core services & swap-point providers** (`lib/core/services/…`; each is the single binding
 to rebind for a real backend — in-memory/local today):
@@ -916,6 +1027,9 @@ to rebind for a real backend — in-memory/local today):
 | `userProfileRepositoryProvider` · `userProfileProvider` (Stream) | `UserProfileRepository` (`watchProfile`/`fetchProfile`/`saveProfile`/`ensureProfile`/`setUserType`/`setPhotoUrl`) | `FirestoreUserProfileRepository` (live) ↔ in-memory (tests) |
 | `profileImageStorageProvider` | `ProfileImageStorage` | `FirebaseProfileImageStorage` → `CloudStorageService` |
 | `notificationPreferencesStoreProvider` | `NotificationPreferencesStore` | local storage → remote/FCM later |
+| `cvPdfGeneratorProvider` | `CvPdfGenerator` | `PdfCvGenerator` (`pdf`/`printing`) → Syncfusion fallback |
+| `cvEnhancementRepositoryProvider` | `CvEnhancementRepository` | `AiService.generateJson` (Gemini) |
+| `cvDraftStoreProvider` | `CvDraftStore` | in-memory → Firestore/local |
 
 **Feature controllers / providers** (per feature `application/`): `authStateProvider` +
 `authRepositoryProvider` (auth) · `localeControllerProvider` · `themeControllerProvider` ·
@@ -975,21 +1089,19 @@ and it links to `/jobs/:id` (matching) + `/career-coach` (interview prep).
 
 ## 14. TL;DR for the next session
 
-**Phase 2 COMPLETE (verified live EN+AR).** **Phase 3 · M1 (Jobs Platform) `6a6a72c`,
-M2 (Applications Center) `b7e4b53`, and M3 (User Profile & Settings) `071902c` are COMPLETE
-and committed** (latest on `feature/resume-analyzer` — see §6, §7.7–§7.9). `flutter analyze`
-clean, **153 tests pass**, repo clean (only `.claude/settings.local.json` intentionally
-uncommitted). Firebase AI Logic is enabled + provisioned (§5).
+**Phase 2 COMPLETE (verified live EN+AR).** **Phase 3 · M1 `6a6a72c`, M2 `b7e4b53`, M3
+`071902c`, and Phase 4 · M1 (AI CV Builder) `b237481` are COMPLETE and committed** (latest on
+`feature/resume-analyzer` — see §6, §7.7–§7.10). `flutter analyze` clean, **179 tests pass**,
+repo clean (only `.claude/settings.local.json` intentionally uncommitted). Firebase AI Logic
+is enabled + provisioned (§5).
 
-**P3 · M3 (User Profile & Settings)** is repository-based, **Firestore-ready** (a Stream
-`UserProfileRepository` — rebind one provider), with **no feature-to-feature dependencies**.
-Extended `UserProfile` carries **skills, experience level, preferred job titles, links** —
-all optional, all feed the completion indicator, all shaped for AI-feature / Employer-Dashboard
-reuse. Edit Profile, photo upload (`ProfileImageStorage` seam), change password (auth reauth),
-and granular notification prefs are wired. **Live-verified EN+AR** incl. a functional
-Edit→Save (Firestore persist, completion 10%→50%). **One env caveat: Firebase Storage is not
-provisioned** — photo upload degrades to a localized error until the Console "Get Started" +
-`firebase deploy --only storage` (§7.9, §8-item-1).
+**P4 · M1 (AI CV Builder)** seeds a CV from the profile + reused resume analysis, allows
+manual editing, an **AI enhancement** (summary + achievement bullets + ATS skills via
+`AiService.generateJson`), a **template registry** (ATS live; Modern/Minimal/Harvard "coming
+soon" — add one with no refactor), and a **WYSIWYG PDF** (`pdf` + `printing`) behind a
+`CvPdfGenerator` swap seam. **Zero feature-to-feature deps.** Live-verified EN (full flow incl.
+real Gemini) + AR (RTL). Follow-up: Arabic-PDF Latin bidi reversal (§7.10); Firebase Storage
+still unprovisioned from M3 (blocks profile-photo upload only).
 
 **Live-verify caveat (older P3 · M1 + M2):** the Jobs *detail*, the Applications *hub/detail*,
 and the apply flow are **test-verified but not cleanly captured live** (the documented
@@ -1000,4 +1112,4 @@ fresh `-gpu host` emulator — `flutter run --route=/jobs` / `--route=/applicati
 **Next:** nothing is in progress — present a plan for any new milestone (§8 lists
 candidates) and **wait for the user's approval before coding**. Keep the conventions in §13;
 run with `--no-enable-impeller` and `-gpu host`; the test account session is persisted so
-the app opens to Home. (Persisted app language is currently **English** after M3 verification.)
+the app opens to Home. (Persisted app language is currently **Arabic** after P4·M1 verification.)
