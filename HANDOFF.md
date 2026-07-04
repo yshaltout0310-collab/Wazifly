@@ -1,7 +1,7 @@
 # Career Bridge — Session Handoff
 
 > Living handoff doc so a fresh Claude session can continue immediately.
-> Last updated: end of Phase 4 · Milestone 1 (AI CV Builder) implementation.
+> Last updated: end of Phase 4 · Milestone 2 (AI Interview Prep) — final handoff.
 > **Phase 2 COMPLETE** (M1 Resume Analyzer + M2 Job Matching + M3 Career Coach).
 > **Phase 3 · M1 (Jobs Platform) COMPLETE** (`6a6a72c`, §7.7).
 > **Phase 3 · M2 (Applications Center) COMPLETE** (`b7e4b53`, §7.8).
@@ -80,10 +80,10 @@ importing `firebase_ai`; swap providers by rebinding `aiServiceProvider`.
 
 `Splash → Language → Country → Onboarding → Welcome → (Email | Google | Phone→OTP)
 → User Type (Job Seeker/Employer) → Home`. Settings + Profile reachable from Home.
-Home shows an "AI toolkit" grid of feature cards; the **Resume Analyzer**, **AI Job
-Matching**, and **Career Coach** cards are now live (route to their screens), the
-remaining three (CV Builder, Interview Prep, For You) show a "Soon" badge +
-coming-soon snackbar.
+Home shows an "AI toolkit" grid of feature cards; **Resume Analyzer**, **AI Job
+Matching**, **Career Coach**, **CV Builder**, and **Interview Prep** are all live (route
+to their screens). Only **For You / Recommendations** still shows a "Soon" badge +
+coming-soon snackbar. Home also has **Browse Jobs** + **My Applications** CTAs.
 
 ---
 
@@ -252,15 +252,10 @@ feature/resume-analyzer  *  fc35db4  feat: AI Interview Prep (Phase 4, Milestone
   `Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>`.
 - **Do NOT commit** `.claude/settings.local.json` (local). Exclude it from `git add`.
 
-**Uncommitted Milestone-1 changes on `feature/resume-analyzer`:**
-- New: `lib/core/services/ai/{ai_exception,ai_providers,firebase_ai_service}.dart`,
-  entire `lib/features/resume_analyzer/`, `test/resume_analysis_test.dart`,
-  `test/resume_analyzer_repository_test.dart`, `test/resume_analyzer_screen_test.dart`.
-- Modified: `lib/core/services/ai/ai_service.dart` (new interface),
-  `lib/core/navigation/{app_router,route_names}.dart`,
-  `lib/features/home/presentation/home_screen.dart`,
-  `lib/core/localization/l10n/*` + generated, `pubspec.yaml`, `pubspec.lock`,
-  `test/render_all_locales_test.dart`.
+**Working tree is clean** — every milestone through P4·M2 is committed. The **only**
+uncommitted file is `.claude/settings.local.json` (intentionally excluded from `git add`).
+Each milestone is one `feat` commit + a follow-up `docs` commit updating this file; nothing is
+merged to `main` and nothing is pushed to any remote (no PRs).
 
 ---
 
