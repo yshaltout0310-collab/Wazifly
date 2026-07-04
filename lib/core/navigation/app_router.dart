@@ -16,6 +16,8 @@ import '../../features/jobs/presentation/job_detail_screen.dart';
 import '../../features/jobs/presentation/jobs_screen.dart';
 import '../../features/language_selection/presentation/language_selection_screen.dart';
 import '../../features/onboarding/presentation/onboarding_screen.dart';
+import '../../features/profile/presentation/change_password_screen.dart';
+import '../../features/profile/presentation/edit_profile_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
 import '../../features/resume_analyzer/presentation/resume_analyzer_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
@@ -154,6 +156,18 @@ abstract final class AppRouter {
             path: 'profile',
             name: RouteNames.profile,
             pageBuilder: _fade(const ProfileScreen()),
+            routes: [
+              GoRoute(
+                path: 'edit',
+                name: RouteNames.editProfile,
+                pageBuilder: _fade(const EditProfileScreen()),
+              ),
+            ],
+          ),
+          GoRoute(
+            path: 'change-password',
+            name: RouteNames.changePassword,
+            pageBuilder: _fade(const ChangePasswordScreen()),
           ),
         ],
       ),

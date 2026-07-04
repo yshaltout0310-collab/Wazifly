@@ -8,5 +8,12 @@ abstract final class StorageKeys {
   static const String onboardingCompleted = 'pref_onboarding_completed';
 
   static const String userType = 'pref_user_type';
+
+  /// Master push-notifications opt-in (kept for backward compatibility).
   static const String notificationsEnabled = 'pref_notifications_enabled';
+
+  /// Granular notification categories (gated by the master toggle).
+  static const String notifyJobAlerts = 'pref_notify_job_alerts';
+  static const String notifyApplicationUpdates = 'pref_notify_application_updates';
+  static const String notifyCoachTips = 'pref_notify_coach_tips';
 }

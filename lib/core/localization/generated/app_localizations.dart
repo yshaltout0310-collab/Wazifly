@@ -446,6 +446,330 @@ abstract class AppLocalizations {
   /// **'Not provided'**
   String get notProvided;
 
+  /// No description provided for @profileEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit profile'**
+  String get profileEdit;
+
+  /// No description provided for @editProfileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit profile'**
+  String get editProfileTitle;
+
+  /// No description provided for @profileChangePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Change photo'**
+  String get profileChangePhoto;
+
+  /// No description provided for @profileNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name'**
+  String get profileNameLabel;
+
+  /// No description provided for @profileHeadlineLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Headline'**
+  String get profileHeadlineLabel;
+
+  /// No description provided for @profileHeadlineHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Senior Flutter Engineer'**
+  String get profileHeadlineHint;
+
+  /// No description provided for @profileLocationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get profileLocationLabel;
+
+  /// No description provided for @profileLocationHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Doha, Qatar'**
+  String get profileLocationHint;
+
+  /// No description provided for @profileBioLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get profileBioLabel;
+
+  /// No description provided for @profileBioHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A short summary about you'**
+  String get profileBioHint;
+
+  /// No description provided for @profileSkillsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Skills'**
+  String get profileSkillsLabel;
+
+  /// No description provided for @profileSkillsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a skill'**
+  String get profileSkillsHint;
+
+  /// No description provided for @profileExperienceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Experience level'**
+  String get profileExperienceLabel;
+
+  /// No description provided for @profileExperienceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select your level'**
+  String get profileExperienceHint;
+
+  /// No description provided for @profilePreferredTitlesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferred job titles'**
+  String get profilePreferredTitlesLabel;
+
+  /// No description provided for @profilePreferredTitlesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a role you\'re targeting'**
+  String get profilePreferredTitlesHint;
+
+  /// No description provided for @profileLinksLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Links'**
+  String get profileLinksLabel;
+
+  /// No description provided for @profilePortfolioLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Portfolio'**
+  String get profilePortfolioLabel;
+
+  /// No description provided for @profileGithubLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'GitHub'**
+  String get profileGithubLabel;
+
+  /// No description provided for @profileLinkedinLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'LinkedIn'**
+  String get profileLinkedinLabel;
+
+  /// No description provided for @profileLinkHint.
+  ///
+  /// In en, this message translates to:
+  /// **'https://…'**
+  String get profileLinkHint;
+
+  /// No description provided for @profileFieldOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional'**
+  String get profileFieldOptional;
+
+  /// No description provided for @profileAddDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Add details to help employers and AI features understand you better.'**
+  String get profileAddDetails;
+
+  /// No description provided for @profileSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile saved'**
+  String get profileSaved;
+
+  /// No description provided for @profileSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t save your profile. Please try again.'**
+  String get profileSaveFailed;
+
+  /// No description provided for @profilePhotoUploadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t upload your photo. Please try again.'**
+  String get profilePhotoUploadFailed;
+
+  /// No description provided for @profileChipAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get profileChipAdd;
+
+  /// No description provided for @profileCompletionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile completion'**
+  String get profileCompletionTitle;
+
+  /// No description provided for @profileCompletionPercent.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% complete'**
+  String profileCompletionPercent(int percent);
+
+  /// No description provided for @profileCompletionComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Your profile is complete'**
+  String get profileCompletionComplete;
+
+  /// No description provided for @profileCompletionNudge.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete your profile for better matches and recommendations.'**
+  String get profileCompletionNudge;
+
+  /// No description provided for @experienceEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'Entry'**
+  String get experienceEntry;
+
+  /// No description provided for @experienceJunior.
+  ///
+  /// In en, this message translates to:
+  /// **'Junior'**
+  String get experienceJunior;
+
+  /// No description provided for @experienceMid.
+  ///
+  /// In en, this message translates to:
+  /// **'Mid'**
+  String get experienceMid;
+
+  /// No description provided for @experienceSenior.
+  ///
+  /// In en, this message translates to:
+  /// **'Senior'**
+  String get experienceSenior;
+
+  /// No description provided for @experienceLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Lead'**
+  String get experienceLead;
+
+  /// No description provided for @settingsChangePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Change password'**
+  String get settingsChangePassword;
+
+  /// No description provided for @settingsChangePasswordSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update your account password'**
+  String get settingsChangePasswordSubtitle;
+
+  /// No description provided for @changePasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Change password'**
+  String get changePasswordTitle;
+
+  /// No description provided for @changePasswordSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your current password, then choose a new one.'**
+  String get changePasswordSubtitle;
+
+  /// No description provided for @changePasswordCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'Current password'**
+  String get changePasswordCurrent;
+
+  /// No description provided for @changePasswordNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New password'**
+  String get changePasswordNew;
+
+  /// No description provided for @changePasswordConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm new password'**
+  String get changePasswordConfirm;
+
+  /// No description provided for @changePasswordSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Update password'**
+  String get changePasswordSubmit;
+
+  /// No description provided for @changePasswordSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Password updated'**
+  String get changePasswordSuccess;
+
+  /// No description provided for @changePasswordEmptyFields.
+  ///
+  /// In en, this message translates to:
+  /// **'Please fill in all fields.'**
+  String get changePasswordEmptyFields;
+
+  /// No description provided for @changePasswordTooShort.
+  ///
+  /// In en, this message translates to:
+  /// **'New password must be at least 6 characters.'**
+  String get changePasswordTooShort;
+
+  /// No description provided for @changePasswordMismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'New passwords don\'t match.'**
+  String get changePasswordMismatch;
+
+  /// No description provided for @notifyJobAlerts.
+  ///
+  /// In en, this message translates to:
+  /// **'Job alerts'**
+  String get notifyJobAlerts;
+
+  /// No description provided for @notifyJobAlertsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New roles that match you'**
+  String get notifyJobAlertsSubtitle;
+
+  /// No description provided for @notifyApplicationUpdates.
+  ///
+  /// In en, this message translates to:
+  /// **'Application updates'**
+  String get notifyApplicationUpdates;
+
+  /// No description provided for @notifyApplicationUpdatesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Status changes on your applications'**
+  String get notifyApplicationUpdatesSubtitle;
+
+  /// No description provided for @notifyCoachTips.
+  ///
+  /// In en, this message translates to:
+  /// **'Coach tips'**
+  String get notifyCoachTips;
+
+  /// No description provided for @notifyCoachTipsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Personalized career suggestions'**
+  String get notifyCoachTipsSubtitle;
+
   /// No description provided for @welcomeTitle.
   ///
   /// In en, this message translates to:

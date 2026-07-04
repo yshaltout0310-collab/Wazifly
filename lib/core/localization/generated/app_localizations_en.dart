@@ -193,6 +193,177 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notProvided => 'Not provided';
 
   @override
+  String get profileEdit => 'Edit profile';
+
+  @override
+  String get editProfileTitle => 'Edit profile';
+
+  @override
+  String get profileChangePhoto => 'Change photo';
+
+  @override
+  String get profileNameLabel => 'Full name';
+
+  @override
+  String get profileHeadlineLabel => 'Headline';
+
+  @override
+  String get profileHeadlineHint => 'e.g. Senior Flutter Engineer';
+
+  @override
+  String get profileLocationLabel => 'Location';
+
+  @override
+  String get profileLocationHint => 'e.g. Doha, Qatar';
+
+  @override
+  String get profileBioLabel => 'About';
+
+  @override
+  String get profileBioHint => 'A short summary about you';
+
+  @override
+  String get profileSkillsLabel => 'Skills';
+
+  @override
+  String get profileSkillsHint => 'Add a skill';
+
+  @override
+  String get profileExperienceLabel => 'Experience level';
+
+  @override
+  String get profileExperienceHint => 'Select your level';
+
+  @override
+  String get profilePreferredTitlesLabel => 'Preferred job titles';
+
+  @override
+  String get profilePreferredTitlesHint => 'Add a role you\'re targeting';
+
+  @override
+  String get profileLinksLabel => 'Links';
+
+  @override
+  String get profilePortfolioLabel => 'Portfolio';
+
+  @override
+  String get profileGithubLabel => 'GitHub';
+
+  @override
+  String get profileLinkedinLabel => 'LinkedIn';
+
+  @override
+  String get profileLinkHint => 'https://…';
+
+  @override
+  String get profileFieldOptional => 'Optional';
+
+  @override
+  String get profileAddDetails =>
+      'Add details to help employers and AI features understand you better.';
+
+  @override
+  String get profileSaved => 'Profile saved';
+
+  @override
+  String get profileSaveFailed =>
+      'Couldn\'t save your profile. Please try again.';
+
+  @override
+  String get profilePhotoUploadFailed =>
+      'Couldn\'t upload your photo. Please try again.';
+
+  @override
+  String get profileChipAdd => 'Add';
+
+  @override
+  String get profileCompletionTitle => 'Profile completion';
+
+  @override
+  String profileCompletionPercent(int percent) {
+    return '$percent% complete';
+  }
+
+  @override
+  String get profileCompletionComplete => 'Your profile is complete';
+
+  @override
+  String get profileCompletionNudge =>
+      'Complete your profile for better matches and recommendations.';
+
+  @override
+  String get experienceEntry => 'Entry';
+
+  @override
+  String get experienceJunior => 'Junior';
+
+  @override
+  String get experienceMid => 'Mid';
+
+  @override
+  String get experienceSenior => 'Senior';
+
+  @override
+  String get experienceLead => 'Lead';
+
+  @override
+  String get settingsChangePassword => 'Change password';
+
+  @override
+  String get settingsChangePasswordSubtitle => 'Update your account password';
+
+  @override
+  String get changePasswordTitle => 'Change password';
+
+  @override
+  String get changePasswordSubtitle =>
+      'Enter your current password, then choose a new one.';
+
+  @override
+  String get changePasswordCurrent => 'Current password';
+
+  @override
+  String get changePasswordNew => 'New password';
+
+  @override
+  String get changePasswordConfirm => 'Confirm new password';
+
+  @override
+  String get changePasswordSubmit => 'Update password';
+
+  @override
+  String get changePasswordSuccess => 'Password updated';
+
+  @override
+  String get changePasswordEmptyFields => 'Please fill in all fields.';
+
+  @override
+  String get changePasswordTooShort =>
+      'New password must be at least 6 characters.';
+
+  @override
+  String get changePasswordMismatch => 'New passwords don\'t match.';
+
+  @override
+  String get notifyJobAlerts => 'Job alerts';
+
+  @override
+  String get notifyJobAlertsSubtitle => 'New roles that match you';
+
+  @override
+  String get notifyApplicationUpdates => 'Application updates';
+
+  @override
+  String get notifyApplicationUpdatesSubtitle =>
+      'Status changes on your applications';
+
+  @override
+  String get notifyCoachTips => 'Coach tips';
+
+  @override
+  String get notifyCoachTipsSubtitle => 'Personalized career suggestions';
+
+  @override
   String get welcomeTitle => 'Welcome to Career Bridge';
 
   @override

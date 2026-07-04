@@ -50,6 +50,19 @@ abstract interface class AuthRepository {
     required String smsCode,
   });
 
+  // --- Account management ---
+  /// Re-authenticates with [currentPassword] and sets [newPassword]. Only valid
+  /// for email/password accounts. Throws [AuthException] on failure (e.g. a
+  /// wrong current password maps to [AuthErrorCode.invalidCredentials]).
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  });
+
+  /// Updates the signed-in user's Firebase Auth display name and/or photo URL so
+  /// the auth identity stays in sync with the extended profile.
+  Future<void> updateProfile({String? displayName, String? photoUrl});
+
   // --- Session ---
   Future<void> signOut();
 }

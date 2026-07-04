@@ -9,13 +9,17 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/responsive.dart';
 import '../../../shared/models/app_user.dart';
+import '../../../shared/models/user_profile.dart';
 import '../../../shared/widgets/primary_button.dart';
 import '../../auth/application/auth_providers.dart';
 import '../../user_type/application/user_type_controller.dart';
 import '../../user_type/domain/user_type.dart';
+import '../application/profile_completion_provider.dart';
+import 'profile_l10n.dart';
+import 'widgets/completion_indicator.dart';
 
-/// Read-only profile view. Editing arrives in a later phase; for now it
-/// surfaces the authenticated identity (or an empty state when signed out).
+/// Profile view: identity, completion indicator, and the extended, editable
+/// details (headline, skills, experience level, preferred titles, links).
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
@@ -23,25 +27,43 @@ class ProfileScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final user = ref.watch(authStateProvider).valueOrNull;
+    final profile = ref.watch(currentUserProfileProvider);
     final type = ref.watch(userTypeControllerProvider);
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.profileTitle)),
+      appBar: AppBar(
+        title: Text(l10n.profileTitle),
+        actions: [
+          if (user != null)
+            IconButton(
+              tooltip: l10n.profileEdit,
+              icon: const Icon(Icons.edit_outlined),
+              onPressed: () => context.pushNamed(RouteNames.editProfile),
+            ),
+        ],
+      ),
       body: SafeArea(
         child: ResponsiveCenter(
-          child: user == null
+          child: user == null || profile == null
               ? _EmptyState(l10n: l10n)
-              : _ProfileBody(user: user, type: type, l10n: l10n),
+              : _ProfileBody(
+                  user: user, profile: profile, type: type, l10n: l10n),
         ),
       ),
     );
   }
 }
 
-class _ProfileBody extends StatelessWidget {
-  const _ProfileBody({required this.user, required this.type, required this.l10n});
+class _ProfileBody extends ConsumerWidget {
+  const _ProfileBody({
+    required this.user,
+    required this.profile,
+    required this.type,
+    required this.l10n,
+  });
 
   final AppUser user;
+  final UserProfile profile;
   final UserType? type;
   final AppLocalizations l10n;
 
@@ -51,17 +73,14 @@ class _ProfileBody extends StatelessWidget {
         AuthMethod.email => 'Email',
       };
 
-  String? get _roleLabel => switch (type) {
-        UserType.jobSeeker => l10n.jobSeeker,
-        UserType.employer => l10n.employer,
-        null => null,
-      };
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final initial =
-        user.label.isNotEmpty ? user.label.characters.first.toUpperCase() : '?';
+    final completion = ref.watch(profileCompletionProvider);
+    final name = profile.displayName?.trim().isNotEmpty == true
+        ? profile.displayName!
+        : user.label;
+    final initial = name.isNotEmpty ? name.characters.first.toUpperCase() : '?';
 
     return ListView(
       padding: EdgeInsets.fromLTRB(
@@ -82,14 +101,14 @@ class _ProfileBody extends StatelessWidget {
                   gradient: AppColors.ctaGradient,
                   shape: BoxShape.circle,
                   boxShadow: AppShadows.brandGlow,
-                  image: user.photoUrl != null
+                  image: profile.photoUrl != null
                       ? DecorationImage(
-                          image: NetworkImage(user.photoUrl!),
+                          image: NetworkImage(profile.photoUrl!),
                           fit: BoxFit.cover,
                         )
                       : null,
                 ),
-                child: user.photoUrl == null
+                child: profile.photoUrl == null
                     ? Text(
                         initial,
                         style: const TextStyle(
@@ -102,12 +121,53 @@ class _ProfileBody extends StatelessWidget {
               ).animate().scale(duration: 450.ms, curve: AppCurves.spring),
               const SizedBox(height: AppSpacing.md),
               Text(
-                user.label,
+                name,
                 style: theme.textTheme.headlineSmall
                     ?.copyWith(fontWeight: FontWeight.w800),
               ).animate(delay: 120.ms).fadeIn(),
+              if (profile.headline != null) ...[
+                const SizedBox(height: 4),
+                Text(
+                  profile.headline!,
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                  ),
+                ).animate(delay: 160.ms).fadeIn(),
+              ],
+              if (profile.location != null) ...[
+                const SizedBox(height: 4),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.place_outlined,
+                        size: 16,
+                        color:
+                            theme.colorScheme.onSurface.withValues(alpha: 0.6)),
+                    const SizedBox(width: 4),
+                    Text(
+                      profile.location!,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color:
+                            theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                      ),
+                    ),
+                  ],
+                ).animate(delay: 180.ms).fadeIn(),
+              ],
             ],
           ),
+        ),
+        const SizedBox(height: AppSpacing.xl),
+        CompletionIndicator(percent: completion)
+            .animate(delay: 200.ms)
+            .fadeIn()
+            .moveY(begin: 12, end: 0),
+        const SizedBox(height: AppSpacing.md),
+        PrimaryButton(
+          label: l10n.profileEdit,
+          icon: Icons.edit_outlined,
+          onPressed: () => context.pushNamed(RouteNames.editProfile),
         ),
         const SizedBox(height: AppSpacing.xl),
         _InfoCard(
@@ -116,12 +176,161 @@ class _ProfileBody extends StatelessWidget {
               (icon: Icons.mail_outline_rounded, label: l10n.profileEmailLabel, value: user.email!),
             if (user.phoneNumber != null)
               (icon: Icons.phone_outlined, label: l10n.profilePhoneLabel, value: user.phoneNumber!),
-            if (_roleLabel != null)
-              (icon: Icons.badge_outlined, label: l10n.profileRoleLabel, value: _roleLabel!),
+            if (type != null)
+              (icon: Icons.badge_outlined, label: l10n.profileRoleLabel, value: userTypeLabel(l10n, type!)),
+            if (profile.experienceLevel != null)
+              (
+                icon: Icons.workspace_premium_outlined,
+                label: l10n.profileExperienceLabel,
+                value: profile.experienceLevel!.label(l10n)
+              ),
             (icon: Icons.verified_user_outlined, label: l10n.profileMethodLabel, value: _methodLabel),
           ],
-        ).animate(delay: 200.ms).fadeIn().moveY(begin: 12, end: 0),
+        ).animate(delay: 260.ms).fadeIn().moveY(begin: 12, end: 0),
+        if (profile.bio != null) ...[
+          const SizedBox(height: AppSpacing.lg),
+          _Section(
+            title: l10n.profileBioLabel,
+            child: Text(profile.bio!, style: theme.textTheme.bodyMedium),
+          ),
+        ],
+        if (profile.skills.isNotEmpty) ...[
+          const SizedBox(height: AppSpacing.lg),
+          _Section(
+            title: l10n.profileSkillsLabel,
+            child: _Chips(values: profile.skills),
+          ),
+        ],
+        if (profile.preferredJobTitles.isNotEmpty) ...[
+          const SizedBox(height: AppSpacing.lg),
+          _Section(
+            title: l10n.profilePreferredTitlesLabel,
+            child: _Chips(values: profile.preferredJobTitles),
+          ),
+        ],
+        if (profile.hasAnyLink) ...[
+          const SizedBox(height: AppSpacing.lg),
+          _Section(
+            title: l10n.profileLinksLabel,
+            child: Column(
+              children: [
+                if (profile.portfolioUrl != null)
+                  _LinkRow(
+                      icon: Icons.link_rounded,
+                      label: l10n.profilePortfolioLabel,
+                      value: profile.portfolioUrl!),
+                if (profile.githubUrl != null)
+                  _LinkRow(
+                      icon: Icons.code_rounded,
+                      label: l10n.profileGithubLabel,
+                      value: profile.githubUrl!),
+                if (profile.linkedinUrl != null)
+                  _LinkRow(
+                      icon: Icons.business_center_outlined,
+                      label: l10n.profileLinkedinLabel,
+                      value: profile.linkedinUrl!),
+              ],
+            ),
+          ),
+        ],
       ],
+    );
+  }
+}
+
+class _Section extends StatelessWidget {
+  const _Section({required this.title, required this.child});
+
+  final String title;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final dark = theme.brightness == Brightness.dark;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        border:
+            Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.5)),
+        boxShadow: AppShadows.card(dark: dark),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: theme.textTheme.labelMedium?.copyWith(
+              color: theme.colorScheme.primary,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.6,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          child,
+        ],
+      ),
+    );
+  }
+}
+
+class _Chips extends StatelessWidget {
+  const _Chips({required this.values});
+  final List<String> values;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: AppSpacing.sm,
+      runSpacing: AppSpacing.sm,
+      children: [
+        for (final v in values)
+          Chip(
+            label: Text(v),
+            visualDensity: VisualDensity.compact,
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+      ],
+    );
+  }
+}
+
+class _LinkRow extends StatelessWidget {
+  const _LinkRow(
+      {required this.icon, required this.label, required this.value});
+
+  final IconData icon;
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        children: [
+          Icon(icon, size: 18, color: theme.colorScheme.primary),
+          const SizedBox(width: AppSpacing.sm),
+          Text(label,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+              )),
+          const Spacer(),
+          Flexible(
+            child: Text(
+              value,
+              textAlign: TextAlign.end,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.bodySmall
+                  ?.copyWith(color: theme.colorScheme.primary),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

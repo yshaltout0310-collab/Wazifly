@@ -140,6 +140,15 @@ class SettingsScreen extends ConsumerWidget {
                     guestLabel: l10n.profileNotSignedIn,
                     onTap: () => context.pushNamed(RouteNames.profile),
                   ),
+                  if (user?.method == AuthMethod.email)
+                    SettingsTile(
+                      icon: Icons.password_rounded,
+                      title: l10n.settingsChangePassword,
+                      subtitle: l10n.settingsChangePasswordSubtitle,
+                      trailing: const Icon(Icons.chevron_right_rounded),
+                      onTap: () =>
+                          context.pushNamed(RouteNames.changePassword),
+                    ),
                   SettingsTile(
                     icon: Icons.logout_rounded,
                     title: l10n.logout,
@@ -171,10 +180,49 @@ class SettingsScreen extends ConsumerWidget {
                     title: l10n.settingsNotifications,
                     subtitle: l10n.settingsNotificationsSubtitle,
                     trailing: Switch(
-                      value: notifications,
+                      value: notifications.master,
                       onChanged: (v) => ref
                           .read(notificationsControllerProvider.notifier)
-                          .setEnabled(value: v),
+                          .setMaster(value: v),
+                    ),
+                  ),
+                  SettingsTile(
+                    icon: Icons.work_outline_rounded,
+                    title: l10n.notifyJobAlerts,
+                    subtitle: l10n.notifyJobAlertsSubtitle,
+                    trailing: Switch(
+                      value: notifications.effectiveJobAlerts,
+                      onChanged: notifications.master
+                          ? (v) => ref
+                              .read(notificationsControllerProvider.notifier)
+                              .setJobAlerts(value: v)
+                          : null,
+                    ),
+                  ),
+                  SettingsTile(
+                    icon: Icons.assignment_turned_in_outlined,
+                    title: l10n.notifyApplicationUpdates,
+                    subtitle: l10n.notifyApplicationUpdatesSubtitle,
+                    trailing: Switch(
+                      value: notifications.effectiveApplicationUpdates,
+                      onChanged: notifications.master
+                          ? (v) => ref
+                              .read(notificationsControllerProvider.notifier)
+                              .setApplicationUpdates(value: v)
+                          : null,
+                    ),
+                  ),
+                  SettingsTile(
+                    icon: Icons.tips_and_updates_outlined,
+                    title: l10n.notifyCoachTips,
+                    subtitle: l10n.notifyCoachTipsSubtitle,
+                    trailing: Switch(
+                      value: notifications.effectiveCoachTips,
+                      onChanged: notifications.master
+                          ? (v) => ref
+                              .read(notificationsControllerProvider.notifier)
+                              .setCoachTips(value: v)
+                          : null,
                     ),
                   ),
                   SettingsTile(

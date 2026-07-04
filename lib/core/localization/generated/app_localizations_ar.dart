@@ -193,6 +193,174 @@ class AppLocalizationsAr extends AppLocalizations {
   String get notProvided => 'غير متوفر';
 
   @override
+  String get profileEdit => 'تعديل الملف الشخصي';
+
+  @override
+  String get editProfileTitle => 'تعديل الملف الشخصي';
+
+  @override
+  String get profileChangePhoto => 'تغيير الصورة';
+
+  @override
+  String get profileNameLabel => 'الاسم الكامل';
+
+  @override
+  String get profileHeadlineLabel => 'المسمى المهني';
+
+  @override
+  String get profileHeadlineHint => 'مثال: مهندس Flutter أول';
+
+  @override
+  String get profileLocationLabel => 'الموقع';
+
+  @override
+  String get profileLocationHint => 'مثال: الدوحة، قطر';
+
+  @override
+  String get profileBioLabel => 'نبذة';
+
+  @override
+  String get profileBioHint => 'ملخّص قصير عنك';
+
+  @override
+  String get profileSkillsLabel => 'المهارات';
+
+  @override
+  String get profileSkillsHint => 'أضف مهارة';
+
+  @override
+  String get profileExperienceLabel => 'مستوى الخبرة';
+
+  @override
+  String get profileExperienceHint => 'اختر مستواك';
+
+  @override
+  String get profilePreferredTitlesLabel => 'المسميات الوظيفية المفضّلة';
+
+  @override
+  String get profilePreferredTitlesHint => 'أضف وظيفة تستهدفها';
+
+  @override
+  String get profileLinksLabel => 'الروابط';
+
+  @override
+  String get profilePortfolioLabel => 'معرض الأعمال';
+
+  @override
+  String get profileGithubLabel => 'GitHub';
+
+  @override
+  String get profileLinkedinLabel => 'LinkedIn';
+
+  @override
+  String get profileLinkHint => 'https://…';
+
+  @override
+  String get profileFieldOptional => 'اختياري';
+
+  @override
+  String get profileAddDetails =>
+      'أضف تفاصيل لمساعدة أصحاب العمل وميزات الذكاء الاصطناعي على فهمك بشكل أفضل.';
+
+  @override
+  String get profileSaved => 'تم حفظ الملف الشخصي';
+
+  @override
+  String get profileSaveFailed => 'تعذّر حفظ ملفك الشخصي. حاول مرة أخرى.';
+
+  @override
+  String get profilePhotoUploadFailed => 'تعذّر رفع صورتك. حاول مرة أخرى.';
+
+  @override
+  String get profileChipAdd => 'إضافة';
+
+  @override
+  String get profileCompletionTitle => 'اكتمال الملف الشخصي';
+
+  @override
+  String profileCompletionPercent(int percent) {
+    return 'اكتمل بنسبة $percent%';
+  }
+
+  @override
+  String get profileCompletionComplete => 'ملفك الشخصي مكتمل';
+
+  @override
+  String get profileCompletionNudge =>
+      'أكمل ملفك الشخصي للحصول على تطابقات وتوصيات أفضل.';
+
+  @override
+  String get experienceEntry => 'مبتدئ';
+
+  @override
+  String get experienceJunior => 'مبتدئ متقدّم';
+
+  @override
+  String get experienceMid => 'متوسط';
+
+  @override
+  String get experienceSenior => 'خبير';
+
+  @override
+  String get experienceLead => 'قائد';
+
+  @override
+  String get settingsChangePassword => 'تغيير كلمة المرور';
+
+  @override
+  String get settingsChangePasswordSubtitle => 'تحديث كلمة مرور حسابك';
+
+  @override
+  String get changePasswordTitle => 'تغيير كلمة المرور';
+
+  @override
+  String get changePasswordSubtitle =>
+      'أدخل كلمة المرور الحالية ثم اختر كلمة مرور جديدة.';
+
+  @override
+  String get changePasswordCurrent => 'كلمة المرور الحالية';
+
+  @override
+  String get changePasswordNew => 'كلمة المرور الجديدة';
+
+  @override
+  String get changePasswordConfirm => 'تأكيد كلمة المرور الجديدة';
+
+  @override
+  String get changePasswordSubmit => 'تحديث كلمة المرور';
+
+  @override
+  String get changePasswordSuccess => 'تم تحديث كلمة المرور';
+
+  @override
+  String get changePasswordEmptyFields => 'يرجى تعبئة جميع الحقول.';
+
+  @override
+  String get changePasswordTooShort =>
+      'يجب أن تكون كلمة المرور الجديدة 6 أحرف على الأقل.';
+
+  @override
+  String get changePasswordMismatch => 'كلمتا المرور غير متطابقتين.';
+
+  @override
+  String get notifyJobAlerts => 'تنبيهات الوظائف';
+
+  @override
+  String get notifyJobAlertsSubtitle => 'وظائف جديدة تناسبك';
+
+  @override
+  String get notifyApplicationUpdates => 'تحديثات الطلبات';
+
+  @override
+  String get notifyApplicationUpdatesSubtitle => 'تغيّرات حالة طلباتك';
+
+  @override
+  String get notifyCoachTips => 'نصائح المدرّب';
+
+  @override
+  String get notifyCoachTipsSubtitle => 'اقتراحات مهنية مخصّصة';
+
+  @override
   String get welcomeTitle => 'مرحبًا بك في كاريير بريدج';
 
   @override

@@ -10,8 +10,8 @@ import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/responsive.dart';
 import '../../../shared/widgets/aurora_background.dart';
 import '../../../shared/widgets/primary_button.dart';
+import '../../../core/services/user_profile/user_profile_repository.dart';
 import '../../auth/application/auth_providers.dart';
-import '../../profile/data/user_profile_repository.dart';
 import '../application/user_type_controller.dart';
 import '../domain/user_type.dart';
 

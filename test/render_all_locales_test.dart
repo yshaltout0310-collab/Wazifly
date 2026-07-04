@@ -15,6 +15,8 @@ import 'package:careerbridge/features/job_matching/presentation/job_matching_scr
 import 'package:careerbridge/features/jobs/presentation/jobs_screen.dart';
 import 'package:careerbridge/features/language_selection/presentation/language_selection_screen.dart';
 import 'package:careerbridge/features/onboarding/presentation/onboarding_screen.dart';
+import 'package:careerbridge/features/profile/presentation/change_password_screen.dart';
+import 'package:careerbridge/features/profile/presentation/edit_profile_screen.dart';
 import 'package:careerbridge/features/profile/presentation/profile_screen.dart';
 import 'package:careerbridge/features/resume_analyzer/presentation/resume_analyzer_screen.dart';
 import 'package:careerbridge/features/settings/presentation/settings_screen.dart';
@@ -80,6 +82,8 @@ void main() {
     'Home': () => const HomeScreen(),
     'Settings': () => const SettingsScreen(),
     'Profile': () => const ProfileScreen(),
+    'EditProfile': () => const EditProfileScreen(),
+    'ChangePassword': () => const ChangePasswordScreen(),
     'ResumeAnalyzer': () => const ResumeAnalyzerScreen(),
     'JobMatching': () => const JobMatchingScreen(),
     'CareerCoach': () => const CareerCoachScreen(),

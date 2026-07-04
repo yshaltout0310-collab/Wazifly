@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/navigation/route_names.dart';
-import '../../profile/data/user_profile_repository.dart';
+import '../../../core/services/user_profile/user_profile_repository.dart';
 import '../../user_type/application/user_type_controller.dart';
 import '../application/auth_providers.dart';
 

@@ -123,6 +123,36 @@ class FirebaseAuthRepository implements AuthRepository {
       });
 
   @override
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) =>
+      _guard(() async {
+        final user = _auth.currentUser;
+        final email = user?.email;
+        if (user == null || email == null) {
+          throw const AuthException(AuthErrorCode.userNotFound);
+        }
+        // Firebase requires a recent login to change a password; re-authenticate
+        // with the current credentials first.
+        final credential = EmailAuthProvider.credential(
+          email: email,
+          password: currentPassword,
+        );
+        await user.reauthenticateWithCredential(credential);
+        await user.updatePassword(newPassword);
+      });
+
+  @override
+  Future<void> updateProfile({String? displayName, String? photoUrl}) =>
+      _guard(() async {
+        final user = _auth.currentUser;
+        if (user == null) throw const AuthException(AuthErrorCode.userNotFound);
+        if (displayName != null) await user.updateDisplayName(displayName);
+        if (photoUrl != null) await user.updatePhotoURL(photoUrl);
+      });
+
+  @override
   Future<void> signOut() => _auth.signOut();
 
   /// Normalizes Firebase errors into a typed [AuthException].
