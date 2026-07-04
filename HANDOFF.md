@@ -1,7 +1,7 @@
 # Career Bridge — Session Handoff
 
 > Living handoff doc so a fresh Claude session can continue immediately.
-> Last updated: end of Phase 4 · Milestone 3 (AI Recommendations / For You) — final handoff.
+> Last updated: end of Phase 5 · Milestone 1 (Employer Dashboard — Company Foundation) — final handoff.
 > **Phase 2 COMPLETE** (M1 Resume Analyzer + M2 Job Matching + M3 Career Coach).
 > **Phase 3 · M1 (Jobs Platform) COMPLETE** (`6a6a72c`, §7.7).
 > **Phase 3 · M2 (Applications Center) COMPLETE** (`b7e4b53`, §7.8).
@@ -9,6 +9,7 @@
 > **Phase 4 · M1 (AI CV Builder) COMPLETE** (`b237481`, §7.10) — live-verified EN (full flow) + AR.
 > **Phase 4 · M2 (AI Interview Prep) COMPLETE** (`fc35db4`, §7.11) — live-verified EN + AR (real Gemini).
 > **Phase 4 · M3 (AI Recommendations / For You) COMPLETE** (`c1d044b`, §7.12) — live-verified EN + AR (real Gemini). **Last "Soon" Home card is now live — the AI toolkit is complete.**
+> **Phase 5 · M1 (Employer Dashboard — Company Foundation) COMPLETE** (`baf5801`, §7.13) — live-verified EN + AR. **First employer-side milestone: role-based landing + Company Profile/Settings/Dashboard over a Firestore-ready `CompanyRepository`.**
 
 ---
 
@@ -80,11 +81,19 @@ importing `firebase_ai`; swap providers by rebinding `aiServiceProvider`.
 ## 3. App flow
 
 `Splash → Language → Country → Onboarding → Welcome → (Email | Google | Phone→OTP)
-→ User Type (Job Seeker/Employer) → Home`. Settings + Profile reachable from Home.
-Home shows an "AI toolkit" grid of feature cards; **Resume Analyzer**, **AI Job
-Matching**, **Career Coach**, **CV Builder**, **Interview Prep**, and **For You /
-Recommendations** are all live (route to their screens). **No "Soon" cards remain — the
-AI toolkit is complete.** Home also has **Browse Jobs** + **My Applications** CTAs.
+→ User Type (Job Seeker/Employer) → {Home | Employer Home}`. **Role-based landing (P5·M1):**
+`splash`/`goAfterAuth`/`user_type_selection` branch on `UserType` — **employers → `/employer`
+(Employer Home)**, job seekers → `/home`. Logout clears the persisted role.
+
+**Job-seeker Home** shows an "AI toolkit" grid; **Resume Analyzer**, **AI Job Matching**,
+**Career Coach**, **CV Builder**, **Interview Prep**, and **For You / Recommendations** are
+all live. **No "Soon" cards remain — the AI toolkit is complete.** Home also has **Browse
+Jobs** + **My Applications** CTAs.
+
+**Employer Home** shows company header + quick stats (Active jobs/Applications/Interviews/
+Hires — zero for now), company-profile completion, a Company Profile entry, and "Soon"
+recruiting tools (Post a Job/Applicants/Interviews/Candidates). Settings is shared by both
+roles (its account card is role-aware → Company Profile for employers).
 
 ---
 
@@ -171,6 +180,21 @@ edit → real-Gemini enhance → ATS PDF preview + share); AR form/template-pick
 PDF (RTL, Arabic section headers). Known limitation: pure-Latin runs can render reversed in
 the Arabic PDF (pdf-package bidi) — Arabic content is correct; a follow-up refinement.
 
+### Phase 5 · Milestone 1 — Employer Dashboard: Company Foundation ✅ COMPLETE (committed `baf5801`)
+See §7.13. The **first employer-side** milestone. **Role-based landing** (employers → a new
+`/employer` dashboard; job seekers → `/home`, branch on `UserType` + route names only in
+`splash`/`goAfterAuth`/`user_type_selection`; logout clears the role). A **shared `Company`
+model** + core **`CompanyRepository`** (Firestore `companies/{companyId}`, `companyId == ownerUid`)
++ **`CompanyLogoStorage`** seam (over `CloudStorageService`) — single-binding swap points. New
+`lib/features/employer/`: **Employer Home** (quick stats, completion, company CTA, "Soon"
+recruiting tools), **Company Profile**, **Edit Company** (name/industry/size/website/HQ/
+description/contact + social links + logo). **Company Settings** = the shared Settings screen made
+role-aware. Forward-ready fields: `verificationStatus`, `companySlug` (auto-derived on save),
+social links, and an embedded `CompanyStrength` (future AI profile-quality score — no refactor).
+Promoted `CompletionIndicator` → `shared/widgets`. **Zero product-feature-to-feature deps.**
+`flutter analyze` clean; **270 tests pass**. **Live-verified EN + AR**; `firestore.rules`
+(companies) deployed.
+
 ### Phase 4 · Milestone 3 — AI Recommendations / For You ✅ COMPLETE (committed `c1d044b`)
 See §7.12. A personalized **For You** hub: **one holistic `generateJson` pass** over the
 user's profile, resume analysis, CV, applications, and interview history → **Recommended
@@ -247,7 +271,8 @@ $env:Path = "C:\Program Files\nodejs;" + $env:Path
 main                         6f860fe  Phase 1 production foundation completed
 firebase-auth-integration    aa9b7d2  Add Cloud Firestore security rules  (branched from main)
                              2af451d  Integrate real Firebase Authentication and remove demo mode
-feature/resume-analyzer  *  c1d044b  feat: AI Recommendations / For You (Phase 4, Milestone 3)  <-- current HEAD
+feature/resume-analyzer  *  baf5801  feat: Employer Dashboard — Company Foundation (Phase 5, Milestone 1)  <-- current HEAD
+                             c1d044b  feat: AI Recommendations / For You (Phase 4, Milestone 3)
                              fc35db4  feat: AI Interview Prep (Phase 4, Milestone 2)
                              b237481  feat: AI CV Builder (Phase 4, Milestone 1)
                              071902c  feat: User Profile & Settings (Phase 3, Milestone 3)
@@ -899,12 +924,103 @@ once data has loaded.
 
 ---
 
+## 7.13 Phase 5 · Milestone 1 — Employer Dashboard: Company Foundation ✅ COMPLETE (`baf5801`)
+
+**Scope (approved):** introduce the employer side — role integration with auth, Company Profile,
+Company Settings, completion, logo (Storage-ready), all company info fields, Employer Home
+dashboard, repository/store architecture, Firestore-ready models, EN/AR — provider-agnostic,
+repository-based, reusing existing auth/localization, **zero feature-to-feature deps**, same
+feature-first architecture. Approved additions: (1) **Quick Stats** on Employer Home (Active jobs/
+Applications/Interviews/Hires, zero for now); (2) **`verificationStatus`** (Pending/Verified/
+Rejected, no UI); (3) **`companySlug`** (public URLs later, no migration); (4) optional **social
+links** (LinkedIn/X/Facebook); (5) model shaped for a future **AI Company Strength** score with no
+refactor.
+
+**Three approved architecture decisions:** (1) **role-based landing** (not a second app); (2)
+**reuse the shared Settings screen** (role-aware account card) for "Company Settings"; (3)
+**`companies/{companyId}` top-level collection, `companyId == ownerUid`** for M1.
+
+**Role integration (auth):** `splash._bootstrap`, `auth_navigation.goAfterAuth`, and
+`user_type_selection._confirm` branch on `UserType` → employers `goNamed(employerHome)` + job
+seekers `goNamed(home)` (navigation-only, no employer-feature import). `goAfterAuth`/user-type-select
+call `companyRepository.ensureCompany(uid, email, name)` for employers (idempotent, seeds the doc
+from the auth identity). **Logout now clears the persisted `userType`** (`SettingsScreen._confirmLogout`
+→ `userTypeControllerProvider.clear()`) so a different account on the device picks its own role —
+required now that roles land on different dashboards.
+
+**Shared model `lib/shared/models/company.dart`:** `Company` (Equatable, `copyWith`, defensive
+`toJson`/`fromJson` tolerating snake_case / bad enums / ISO+millis+Timestamp dates) — companyId,
+ownerUid, name, industry, size, website, headquarters, description, contactEmail, contactPhone,
+logoUrl, **companySlug**, **verificationStatus**, **linkedinUrl/xUrl/facebookUrl**, **strength**
+(`CompanyStrength` nested: score/summary/strengths/improvements/analyzedAt), createdAt/updatedAt.
+`completion`/`completionPercent`/`missingFields` over **8 tracked fields** (name, logo, industry,
+size, website, headquarters, description, contactEmail). `CompanyField` enum + `Company.slugify(name)`.
+Enums in `features/employer/domain/`: `Industry` (14), `CompanySize` (6, tolerant `fromName`),
+`CompanyVerificationStatus`. Ephemeral `CompanyStats` (dashboard) in the same domain.
+
+**Core service `lib/core/services/company/`:** `CompanyRepository` interface (`watchCompany` Stream
++ `fetchCompany`/`saveCompany`/`ensureCompany`/`setLogoUrl`) + `FirestoreCompanyRepository` (degrades
+gracefully; `companies/{companyId}`) + `InMemoryCompanyRepository` (tests) + `companyRepositoryProvider`
+(swap point) + `companyProvider` (StreamProvider, tracks the auth uid). `CompanyLogoStorage` seam
+(`company_logo_storage.dart`) over `CloudStorageService.companyLogoPath(id)` = `companies/{id}/logo.jpg`
+(+ `companyLogoStorageProvider`). Mirrors the `user_profile` stack exactly.
+
+**Feature `lib/features/employer/`:** `application/` — `company_providers.dart` (`currentCompanyProvider`
+merges stored + auth-email fallback, `companyCompletionProvider`, `companyStatsProvider` = zeros for
+M1, rebindable later), `company_edit_controller.dart` (save → `saveCompany`, keys by uid, auto-derives
+`companySlug` from name when empty; `CompanyFailure` enum), `company_logo_controller.dart` (pick via
+`file_selector` → `uploadCompanyLogo` seam → `setLogoUrl`; `uploadBytes` `@visibleForTesting`).
+`presentation/` — `employer_home_screen.dart`, `company_profile_screen.dart`, `edit_company_screen.dart`,
+`company_l10n.dart` (Industry/CompanySize/CompanyField label maps + failure message).
+**Promoted** `completion_indicator.dart` → `lib/shared/widgets/` (parameterized title/nudge/complete;
+profile + company reuse it; `profile_screen` + its test updated).
+
+**Wiring:** routes `employerHome` (`/employer`) + `companyProfile` (`/employer/company`) + `editCompany`
+(`/employer/company/edit`, nested); `SettingsScreen` account card → role-aware (`/employer/company` for
+employers); ~62 `company*`/`employer*`/`industry*` EN+AR l10n keys.
+
+**Firestore/Storage:** new `companies/{companyId}` collection. **`firestore.rules` deployed** — read by
+any signed-in user (future job listings), write only by the owner (`request.auth.uid == companyId`).
+**`storage.rules` updated** for `companies/{companyId}/**` (same owner rule). ⚠️ **Firebase Storage is
+still unprovisioned** (carried from P3·M3) — logo upload degrades to a localized error until the Console
+bucket + `firebase deploy --only storage`; everything else works on live Firestore + Auth.
+
+**Tests: 270 total pass** (was 238; +32): `company_model_test` (7 — completion/missing/round-trip incl.
+new fields/snake_case+range/verification default+dates/slugify/strength), `company_repository_test` (3),
+`company_providers_test` (2 — fallback+completion), `company_edit_controller_test` (3 — save+slug/no-clobber/
+not-signed-in), `company_logo_controller_test` (3), `employer_screens_test` (7 — 3 screens EN+AR + name/
+industry); EmployerHome/CompanyProfile/EditCompany added to the locale sweep. `flutter analyze` clean.
+
+**VERIFIED live on emulator — both English and Arabic:**
+- **Role routing:** registered a **new employer account** (`employer01@cb.app`) → User Type → **Employer**
+  → landed on **Employer Home** (not the job-seeker Home); role persists across an app restart. A job-seeker
+  account still lands on `/home` (regression check).
+- **Employer Home:** quick-stats grid (0/0/0/0), completion ring, Company Profile CTA, "Soon" recruiting
+  tools — EN + AR (RTL, mirrored, Arabic stat labels).
+- **Company Profile + Edit:** filled name (Acme-Robotics) + Industry (Technology) + size + website + HQ →
+  **Save → Firestore persist** (`companies/{uid}`), completion **13%→38%**, re-rendered after an app restart;
+  Arabic Edit shows all 14 industry + 6 size chips localized (التقنية, 11–50 موظفًا, …). Role-aware Settings
+  account card → Company Profile (verified in Arabic).
+
+**On-device fixes during verification:** (1) `_ToolCard` grid overflowed 2.7px → lowered `childAspectRatio`
+1.42→1.3; (2) **logout didn't clear `userType`** → a new account inherited the device's old role and landed on
+the wrong dashboard → added `userTypeController.clear()` on logout. **Firestore-rules gotcha:** company writes
+were denied until `firestore.rules` was deployed; a snapshot listener that hits a permission error **terminates**
+(same `.handleError` swallow as the profile repo), so after deploying rules the running app needed a restart to
+re-subscribe — a fresh launch reads the persisted doc fine.
+
+**Firebase state note (§5):** the `companies/{companyId}` Firestore rule is **deployed**. Storage rules for
+`companies/**` are authored but not deployed (bucket unprovisioned).
+
+---
+
 ## 8. Next steps
 
 **Phase 2 COMPLETE.** **Phase 3 · M1 (Jobs Platform) `6a6a72c`, M2 (Applications Center)
 `b7e4b53`, and M3 (User Profile & Settings) `071902c` COMPLETE. Phase 4 · M1 (CV Builder)
 `b237481`, M2 (Interview Prep) `fc35db4`, M3 (Recommendations / For You) `c1d044b` COMPLETE —
-the AI toolkit is complete; no "Soon" cards remain.** Nothing is in progress.
+the AI toolkit is complete; no "Soon" cards remain. Phase 5 · M1 (Employer Dashboard — Company
+Foundation) `baf5801` COMPLETE — the employer side has begun.** Nothing is in progress.
 
 **Open items for the next session:**
 
@@ -920,10 +1036,12 @@ the AI toolkit is complete; no "Soon" cards remain.** Nothing is in progress.
    (with `MSYS_NO_PATHCONV=1 MSYS2_ARG_CONV_EXCL="*"`) sidesteps the flaky Home app-bar.
 
 3. **Candidate next milestones** (present a plan + wait for approval, per the workflow):
-   **all six AI-toolkit features are done** — the remaining big rocks are **durable persistence**
-   (Firestore/local impls for the existing seams) and an **Employer/Recruiter side** (the profile
-   fields were shaped for it). See "Later candidates" below. *(For You ✅ §7.12 — the last "Soon"
-   card is now live.)*
+   **Employer Phase 5 · M2+** — the Company Foundation (§7.13) is live, so the natural next steps are
+   **Post a Job** (employer creates job posts → the shared `companies/{id}` + a `jobs` collection the
+   seeker side already reads), then **Applicants / candidate management**. Also open: **durable
+   persistence** for the remaining in-memory seams; an **AI Company Strength** score (the `Company.strength`
+   field is already shaped for it — §7.13). *(All six AI-toolkit features + the employer Company Foundation
+   are done.)*
 
 4. **Polish follow-ups:** CV Builder Arabic-PDF Latin-run bidi reversal (§7.10) + a 2nd CV
    template; an **Interview Report PDF** (the models are already report-ready — §7.11) reusing
@@ -1037,6 +1155,15 @@ emulator (both languages), `analyze`+`test` before committing, one commit per mi
   pass). Flips the last "Soon" Home card live.
 - **Candidates:** durable persistence · Interview Report PDF · Recommendations PDF · Employer side.
 
+## Phase 5 roadmap (Employer side)
+- **M1 — Employer Dashboard: Company Foundation** ✅ *complete* (see §7.13). Role-based landing
+  (employer → `/employer`), Company Profile/Settings/Edit + completion + logo seam, over a
+  Firestore-ready `CompanyRepository` (`companies/{companyId}`) + shared `Company` model. Forward-ready
+  fields (verificationStatus, companySlug, social links, `CompanyStrength`). **Zero feature-to-feature
+  deps.** Live-verified EN+AR (270 pass).
+- **Candidates:** Post a Job (employer job creation → shared jobs the seeker side reads) · Applicants /
+  candidate management · AI Company Strength score · employer verification flow.
+
 See §8 for candidate future work.
 
 **Workflow rules (user-mandated):** present a plan per milestone and **wait for
@@ -1078,7 +1205,7 @@ built-in Kotlin and breaks `assembleDebug` (`FilePickerPlugin` symbol not found)
 **`file_selector`** (already done). If you re-add a plugin and the build fails on
 `GeneratedPluginRegistrant`, suspect a KGP conflict.
 
-**No functional app bugs open.** `flutter analyze` clean; **238 tests pass** (as of P4·M3).
+**No functional app bugs open.** `flutter analyze` clean; **270 tests pass** (as of P5·M1).
 One known cosmetic limitation: pure-Latin runs can render reversed in the Arabic CV PDF
 (pdf-package bidi; §7.10) — Arabic content is correct.
 
@@ -1224,6 +1351,20 @@ prompt, job-id filtering).
 `in_memory_recommendations_store.dart` = impl + `recommendationsStoreProvider` +
 `latestRecommendationsProvider`). Firestore-ready: rebind the provider.
 
+**Employer Dashboard** `lib/features/employer/`
+`domain/`: `industry.dart` (Industry, 14), `company_size.dart` (CompanySize, 6), `company_verification_status.dart`,
+`company_stats.dart` (dashboard stats), `company_failure.dart`.
+`application/`: `company_providers.dart` (`currentCompanyProvider`/`companyCompletionProvider`/`companyStatsProvider`),
+`company_edit_controller.dart`, `company_logo_controller.dart`.
+`presentation/`: `employer_home_screen.dart`, `company_profile_screen.dart`, `edit_company_screen.dart`,
+`company_l10n.dart`.
+**Shared model** `lib/shared/models/company.dart` (`Company` + `CompanyStrength` + `CompanyField`).
+**Core company service** `lib/core/services/company/` (`company_repository.dart` interface + `companyProvider`,
+`firestore_company_repository.dart`, `in_memory_company_repository.dart`, `company_logo_storage.dart` seam).
+Role branch in `splash`/`auth_navigation`/`user_type_selection`; role-aware `settings_screen` account card;
+logout clears `userType`. Promoted `completion_indicator.dart` → `lib/shared/widgets/`.
+`companies/{companyId}` in `firestore.rules` (deployed) + `storage.rules`.
+
 **Firebase** `lib/core/services/firebase/{firebase_service,firebase_options}.dart` ·
 `firebase.json` · `firestore.rules` · `firestore.indexes.json`.
 
@@ -1264,6 +1405,8 @@ prompt, job-id filtering).
 | `interviewPrep` | `/interview-prep` | AI Interview Prep (P4·M2); optional `extra` = `Job` |
 | `interviewHistory` / `interviewSessionDetail` | `/interview-prep/history` · `…/history/:id` | Interview history + detail |
 | `recommendations` | `/recommendations` | AI Recommendations / For You (P4·M3) |
+| `employerHome` | `/employer` | Employer Home dashboard (P5·M1; role-routed) |
+| `companyProfile` / `editCompany` | `/employer/company` · `/employer/company/edit` | Company Profile · Edit Company (P5·M1) |
 
 **Core services & swap-point providers** (`lib/core/services/…`; each is the single binding
 to rebind for a real backend — in-memory/local today):
@@ -1286,6 +1429,8 @@ to rebind for a real backend — in-memory/local today):
 | `interviewHistoryRepositoryProvider` · `interviewSessionsProvider` (Stream) | `InterviewHistoryRepository` (`watchSessions`/`saveSession`/`findById`/`delete`) | in-memory → Firestore `users/{uid}/interviews` |
 | `recommendationsRepositoryProvider` | `RecommendationsRepository` (`generate`) | `AiService.generateJson` (Gemini) |
 | `recommendationsStoreProvider` · `latestRecommendationsProvider` (Stream) | `RecommendationsStore` (`watchLatest`/`read`/`save`/`clear`) | in-memory (latest-only) → Firestore `users/{uid}/recommendations/latest` |
+| `companyRepositoryProvider` · `companyProvider` (Stream) | `CompanyRepository` (`watchCompany`/`fetchCompany`/`saveCompany`/`ensureCompany`/`setLogoUrl`) | `FirestoreCompanyRepository` (live, `companies/{companyId}`) ↔ in-memory (tests) |
+| `companyLogoStorageProvider` | `CompanyLogoStorage` | `FirebaseCompanyLogoStorage` → `CloudStorageService` (`companies/{id}/logo.jpg`; **bucket unprovisioned**) |
 
 **Feature controllers / providers** (per feature `application/`): `authStateProvider` +
 `authRepositoryProvider` (auth) · `localeControllerProvider` · `themeControllerProvider` ·
@@ -1345,12 +1490,23 @@ and it links to `/jobs/:id` (matching) + `/career-coach` (interview prep).
 
 ## 14. TL;DR for the next session
 
-**Phase 2 COMPLETE (verified live EN+AR).** **Phase 3 · M1 `6a6a72c`, M2 `b7e4b53`, M3
-`071902c`, Phase 4 · M1 (CV Builder) `b237481`, M2 (Interview Prep) `fc35db4`, and M3
-(Recommendations / For You) `c1d044b` are COMPLETE and committed** (latest on
-`feature/resume-analyzer` — see §6, §7.7–§7.12). `flutter analyze` clean, **238 tests pass**,
-repo clean (only `.claude/settings.local.json` intentionally uncommitted). Firebase AI Logic is
-enabled + provisioned (§5). **The AI toolkit is complete — no "Soon" cards remain on Home.**
+**Phase 2 COMPLETE (verified live EN+AR).** **Phase 3 (M1–M3), Phase 4 (M1–M3), and Phase 5 · M1
+are COMPLETE and committed** (latest `baf5801` on `feature/resume-analyzer` — see §6, §7.7–§7.13).
+`flutter analyze` clean, **270 tests pass**, repo clean (only `.claude/settings.local.json`
+intentionally uncommitted). Firebase AI Logic is enabled + provisioned (§5); the
+`companies/{companyId}` Firestore rule is deployed. **The AI toolkit is complete, and the employer
+side has begun.**
+
+**P5 · M1 (Employer Dashboard — Company Foundation)** — the first employer-side milestone.
+**Role-based landing** (employers → `/employer` Employer Home; job seekers → `/home`; branch on
+`UserType` in splash/goAfterAuth/user-type-select; logout clears the role). A shared `Company` model
++ core `CompanyRepository` (`companies/{companyId}` == ownerUid) + `CompanyLogoStorage` seam. New
+`lib/features/employer/`: Employer Home (quick stats, completion, company CTA, "Soon" tools), Company
+Profile, Edit Company (all info fields + social links + logo); Settings is shared + role-aware.
+Forward-ready: `verificationStatus`, `companySlug`, social links, embedded `CompanyStrength` (future
+AI score). **Zero product-feature-to-feature deps.** Live-verified EN + AR. **Note:** logout now clears
+`userType`; a Firestore snapshot listener that hits a permission error terminates (restart to re-subscribe
+after a rules change); Storage bucket still unprovisioned (logo upload degrades).
 
 **P4 · M3 (AI Recommendations / For You)** — one holistic `generateJson` pass over
 profile/resume/CV/applications/interviews → recommended jobs (confidence + reason), skills,
