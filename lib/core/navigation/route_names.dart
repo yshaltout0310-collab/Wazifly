@@ -25,6 +25,9 @@ abstract final class RouteNames {
   static const String applicationDetail = 'applicationDetail';
   static const String cvBuilder = 'cvBuilder';
   static const String cvPreview = 'cvPreview';
+  static const String interviewPrep = 'interviewPrep';
+  static const String interviewHistory = 'interviewHistory';
+  static const String interviewSessionDetail = 'interviewSessionDetail';
 
   static const String splashPath = '/';
   static const String languagePath = '/language';
@@ -49,4 +52,7 @@ abstract final class RouteNames {
   static const String applicationDetailPath = '/applications/:id';
   static const String cvBuilderPath = '/cv-builder';
   static const String cvPreviewPath = '/cv-builder/preview';
+  static const String interviewPrepPath = '/interview-prep';
+  static const String interviewHistoryPath = '/interview-prep/history';
+  static const String interviewSessionDetailPath = '/interview-prep/history/:id';
 }

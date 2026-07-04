@@ -1,12 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../domain/cv_data.dart';
+import '../../../features/cv_builder/domain/cv_data.dart';
 
 /// Persistence seam for the in-progress CV draft.
 ///
-/// In-memory today (survives navigation within a session). Rebind
-/// [cvDraftStoreProvider] to a Firestore/local implementation later — **no
-/// feature code changes** — mirroring the resume/chat/saved-jobs store seams.
+/// Lives in `core/services` alongside the other reusable store seams
+/// (resume/chat/saved-jobs) so features (CV Builder, Interview Prep) read the
+/// draft via this one core provider without depending on each other. In-memory
+/// today (survives navigation within a session); rebind [cvDraftStoreProvider]
+/// to a Firestore/local implementation later — **no feature code changes**.
 abstract interface class CvDraftStore {
   CvData? read();
   void write(CvData data);

@@ -1106,6 +1106,342 @@ abstract class AppLocalizations {
   /// **'Classic academic format'**
   String get cvTemplateHarvardDesc;
 
+  /// No description provided for @interviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Interview Prep'**
+  String get interviewTitle;
+
+  /// No description provided for @interviewSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Practice with AI and get scored feedback'**
+  String get interviewSubtitle;
+
+  /// No description provided for @interviewChooseType.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose an interview type'**
+  String get interviewChooseType;
+
+  /// No description provided for @interviewTypeHr.
+  ///
+  /// In en, this message translates to:
+  /// **'HR'**
+  String get interviewTypeHr;
+
+  /// No description provided for @interviewTypeHrDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Motivation, fit, and career goals'**
+  String get interviewTypeHrDesc;
+
+  /// No description provided for @interviewTypeTechnical.
+  ///
+  /// In en, this message translates to:
+  /// **'Technical'**
+  String get interviewTypeTechnical;
+
+  /// No description provided for @interviewTypeTechnicalDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Role-specific skills and problem-solving'**
+  String get interviewTypeTechnicalDesc;
+
+  /// No description provided for @interviewTypeBehavioral.
+  ///
+  /// In en, this message translates to:
+  /// **'Behavioral'**
+  String get interviewTypeBehavioral;
+
+  /// No description provided for @interviewTypeBehavioralDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Real situations, STAR method'**
+  String get interviewTypeBehavioralDesc;
+
+  /// No description provided for @interviewRoleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Target role'**
+  String get interviewRoleLabel;
+
+  /// No description provided for @interviewNoRole.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get interviewNoRole;
+
+  /// No description provided for @interviewPersonalized.
+  ///
+  /// In en, this message translates to:
+  /// **'Personalized from your profile, resume, and CV'**
+  String get interviewPersonalized;
+
+  /// No description provided for @interviewGenericHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a resume or CV for more tailored questions'**
+  String get interviewGenericHint;
+
+  /// No description provided for @interviewForJob.
+  ///
+  /// In en, this message translates to:
+  /// **'Tailored to this job'**
+  String get interviewForJob;
+
+  /// No description provided for @interviewStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start interview'**
+  String get interviewStart;
+
+  /// No description provided for @interviewGenerating.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing your questions…'**
+  String get interviewGenerating;
+
+  /// No description provided for @interviewQuestionOf.
+  ///
+  /// In en, this message translates to:
+  /// **'Question {current} of {total}'**
+  String interviewQuestionOf(int current, int total);
+
+  /// No description provided for @interviewFocusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Focus'**
+  String get interviewFocusLabel;
+
+  /// No description provided for @interviewYourAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Your answer'**
+  String get interviewYourAnswer;
+
+  /// No description provided for @interviewAnswerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Type your answer as you would say it…'**
+  String get interviewAnswerHint;
+
+  /// No description provided for @interviewSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit answer'**
+  String get interviewSubmit;
+
+  /// No description provided for @interviewEvaluating.
+  ///
+  /// In en, this message translates to:
+  /// **'Evaluating your answer…'**
+  String get interviewEvaluating;
+
+  /// No description provided for @interviewNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next question'**
+  String get interviewNext;
+
+  /// No description provided for @interviewFinish.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish & get results'**
+  String get interviewFinish;
+
+  /// No description provided for @interviewFeedbackTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback'**
+  String get interviewFeedbackTitle;
+
+  /// No description provided for @interviewSampleAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Sample strong answer'**
+  String get interviewSampleAnswer;
+
+  /// No description provided for @interviewStrengthsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Strengths'**
+  String get interviewStrengthsLabel;
+
+  /// No description provided for @interviewImprovementsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'To improve'**
+  String get interviewImprovementsLabel;
+
+  /// No description provided for @interviewScoreOverall.
+  ///
+  /// In en, this message translates to:
+  /// **'Overall'**
+  String get interviewScoreOverall;
+
+  /// No description provided for @interviewScoreCommunication.
+  ///
+  /// In en, this message translates to:
+  /// **'Communication'**
+  String get interviewScoreCommunication;
+
+  /// No description provided for @interviewScoreTechnical.
+  ///
+  /// In en, this message translates to:
+  /// **'Technical accuracy'**
+  String get interviewScoreTechnical;
+
+  /// No description provided for @interviewScoreConfidence.
+  ///
+  /// In en, this message translates to:
+  /// **'Confidence'**
+  String get interviewScoreConfidence;
+
+  /// No description provided for @interviewScoreClarity.
+  ///
+  /// In en, this message translates to:
+  /// **'Clarity'**
+  String get interviewScoreClarity;
+
+  /// No description provided for @interviewSummarizing.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing your debrief…'**
+  String get interviewSummarizing;
+
+  /// No description provided for @interviewSummaryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your interview results'**
+  String get interviewSummaryTitle;
+
+  /// No description provided for @interviewOverallFeedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Overall feedback'**
+  String get interviewOverallFeedback;
+
+  /// No description provided for @interviewKeyStrengths.
+  ///
+  /// In en, this message translates to:
+  /// **'Key strengths'**
+  String get interviewKeyStrengths;
+
+  /// No description provided for @interviewImprovementSuggestions.
+  ///
+  /// In en, this message translates to:
+  /// **'Improvement suggestions'**
+  String get interviewImprovementSuggestions;
+
+  /// No description provided for @interviewImprovementPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Your improvement plan'**
+  String get interviewImprovementPlan;
+
+  /// No description provided for @interviewDiscussCoach.
+  ///
+  /// In en, this message translates to:
+  /// **'Discuss with the coach'**
+  String get interviewDiscussCoach;
+
+  /// No description provided for @interviewPracticeAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Practice again'**
+  String get interviewPracticeAgain;
+
+  /// No description provided for @interviewCoachSeed.
+  ///
+  /// In en, this message translates to:
+  /// **'I just practiced a {type} interview for {role}. Help me improve my answers and confidence.'**
+  String interviewCoachSeed(String type, String role);
+
+  /// No description provided for @interviewHistoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Interview history'**
+  String get interviewHistoryTitle;
+
+  /// No description provided for @interviewHistoryAction.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get interviewHistoryAction;
+
+  /// No description provided for @interviewHistoryEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No practice interviews yet. Start one to see it here.'**
+  String get interviewHistoryEmpty;
+
+  /// No description provided for @interviewQuestionsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 question} other{{count} questions}}'**
+  String interviewQuestionsCount(int count);
+
+  /// No description provided for @interviewDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Interview'**
+  String get interviewDetailTitle;
+
+  /// No description provided for @interviewNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This interview no longer exists.'**
+  String get interviewNotFound;
+
+  /// No description provided for @interviewInProgressBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'In progress'**
+  String get interviewInProgressBadge;
+
+  /// No description provided for @interviewPracticeForJob.
+  ///
+  /// In en, this message translates to:
+  /// **'Practice interview'**
+  String get interviewPracticeForJob;
+
+  /// No description provided for @interviewRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get interviewRetry;
+
+  /// No description provided for @interviewErrNoQuestions.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t generate questions. Please try again.'**
+  String get interviewErrNoQuestions;
+
+  /// No description provided for @interviewErrEmptyEval.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t evaluate that answer. Try rephrasing it.'**
+  String get interviewErrEmptyEval;
+
+  /// No description provided for @interviewErrNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'No internet connection. Check your network and try again.'**
+  String get interviewErrNetwork;
+
+  /// No description provided for @interviewErrQuota.
+  ///
+  /// In en, this message translates to:
+  /// **'The AI service is busy right now. Please try again shortly.'**
+  String get interviewErrQuota;
+
+  /// No description provided for @interviewErrGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong. Please try again.'**
+  String get interviewErrGeneric;
+
   /// No description provided for @welcomeTitle.
   ///
   /// In en, this message translates to:

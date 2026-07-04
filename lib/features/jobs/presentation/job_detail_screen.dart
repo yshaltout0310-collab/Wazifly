@@ -29,7 +29,16 @@ class JobDetailScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(l10n.jobsDetailTitle),
         actions: [
-          if (state.status == JobDetailStatus.ready)
+          if (state.status == JobDetailStatus.ready) ...[
+            IconButton(
+              tooltip: l10n.interviewPracticeForJob,
+              icon: const Icon(Icons.record_voice_over_outlined),
+              // Tailors the interview to this job via the route `extra`.
+              onPressed: () => context.pushNamed(
+                RouteNames.interviewPrep,
+                extra: state.job,
+              ),
+            ),
             Consumer(builder: (context, ref, _) {
               final saved = ref.watch(savedJobsProvider).contains(jobId);
               return IconButton(
@@ -41,6 +50,7 @@ class JobDetailScreen extends ConsumerWidget {
                     : Icons.bookmark_border_rounded),
               );
             }),
+          ],
         ],
       ),
       body: SafeArea(

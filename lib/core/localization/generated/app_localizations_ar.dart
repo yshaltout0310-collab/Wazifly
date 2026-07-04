@@ -532,6 +532,192 @@ class AppLocalizationsAr extends AppLocalizations {
   String get cvTemplateHarvardDesc => 'تنسيق أكاديمي كلاسيكي';
 
   @override
+  String get interviewTitle => 'التحضير للمقابلة';
+
+  @override
+  String get interviewSubtitle =>
+      'تدرّب مع الذكاء الاصطناعي واحصل على تقييم مفصّل';
+
+  @override
+  String get interviewChooseType => 'اختر نوع المقابلة';
+
+  @override
+  String get interviewTypeHr => 'الموارد البشرية';
+
+  @override
+  String get interviewTypeHrDesc => 'الدوافع والتوافق والأهداف المهنية';
+
+  @override
+  String get interviewTypeTechnical => 'تقنية';
+
+  @override
+  String get interviewTypeTechnicalDesc => 'مهارات الوظيفة وحل المشكلات';
+
+  @override
+  String get interviewTypeBehavioral => 'سلوكية';
+
+  @override
+  String get interviewTypeBehavioralDesc => 'مواقف واقعية بأسلوب STAR';
+
+  @override
+  String get interviewRoleLabel => 'الوظيفة المستهدفة';
+
+  @override
+  String get interviewNoRole => 'عامة';
+
+  @override
+  String get interviewPersonalized => 'مخصّصة من ملفك الشخصي وسيرتك الذاتية';
+
+  @override
+  String get interviewGenericHint =>
+      'أضف سيرة ذاتية للحصول على أسئلة أكثر تخصيصًا';
+
+  @override
+  String get interviewForJob => 'مخصّصة لهذه الوظيفة';
+
+  @override
+  String get interviewStart => 'ابدأ المقابلة';
+
+  @override
+  String get interviewGenerating => 'جارٍ تحضير أسئلتك…';
+
+  @override
+  String interviewQuestionOf(int current, int total) {
+    return 'السؤال $current من $total';
+  }
+
+  @override
+  String get interviewFocusLabel => 'المحور';
+
+  @override
+  String get interviewYourAnswer => 'إجابتك';
+
+  @override
+  String get interviewAnswerHint => 'اكتب إجابتك كما ستقولها…';
+
+  @override
+  String get interviewSubmit => 'إرسال الإجابة';
+
+  @override
+  String get interviewEvaluating => 'جارٍ تقييم إجابتك…';
+
+  @override
+  String get interviewNext => 'السؤال التالي';
+
+  @override
+  String get interviewFinish => 'إنهاء وعرض النتائج';
+
+  @override
+  String get interviewFeedbackTitle => 'الملاحظات';
+
+  @override
+  String get interviewSampleAnswer => 'نموذج إجابة قوية';
+
+  @override
+  String get interviewStrengthsLabel => 'نقاط القوة';
+
+  @override
+  String get interviewImprovementsLabel => 'للتحسين';
+
+  @override
+  String get interviewScoreOverall => 'الإجمالي';
+
+  @override
+  String get interviewScoreCommunication => 'التواصل';
+
+  @override
+  String get interviewScoreTechnical => 'الدقة التقنية';
+
+  @override
+  String get interviewScoreConfidence => 'الثقة';
+
+  @override
+  String get interviewScoreClarity => 'الوضوح';
+
+  @override
+  String get interviewSummarizing => 'جارٍ تحضير ملخّصك…';
+
+  @override
+  String get interviewSummaryTitle => 'نتائج مقابلتك';
+
+  @override
+  String get interviewOverallFeedback => 'الملاحظات العامة';
+
+  @override
+  String get interviewKeyStrengths => 'أبرز نقاط القوة';
+
+  @override
+  String get interviewImprovementSuggestions => 'اقتراحات التحسين';
+
+  @override
+  String get interviewImprovementPlan => 'خطة التحسين الخاصة بك';
+
+  @override
+  String get interviewDiscussCoach => 'ناقش مع المدرّب';
+
+  @override
+  String get interviewPracticeAgain => 'تدرّب مجددًا';
+
+  @override
+  String interviewCoachSeed(String type, String role) {
+    return 'لقد تدرّبت للتوّ على مقابلة $type لوظيفة $role. ساعدني في تحسين إجاباتي وثقتي.';
+  }
+
+  @override
+  String get interviewHistoryTitle => 'سجلّ المقابلات';
+
+  @override
+  String get interviewHistoryAction => 'السجل';
+
+  @override
+  String get interviewHistoryEmpty =>
+      'لا توجد مقابلات تدريبية بعد. ابدأ واحدة لتظهر هنا.';
+
+  @override
+  String interviewQuestionsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count أسئلة',
+      one: 'سؤال واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get interviewDetailTitle => 'المقابلة';
+
+  @override
+  String get interviewNotFound => 'لم تعد هذه المقابلة موجودة.';
+
+  @override
+  String get interviewInProgressBadge => 'قيد التقدّم';
+
+  @override
+  String get interviewPracticeForJob => 'تدرّب على مقابلة';
+
+  @override
+  String get interviewRetry => 'حاول مرة أخرى';
+
+  @override
+  String get interviewErrNoQuestions => 'تعذّر إنشاء الأسئلة. حاول مرة أخرى.';
+
+  @override
+  String get interviewErrEmptyEval =>
+      'تعذّر تقييم هذه الإجابة. حاول إعادة صياغتها.';
+
+  @override
+  String get interviewErrNetwork =>
+      'لا يوجد اتصال بالإنترنت. تحقّق من شبكتك وحاول مجددًا.';
+
+  @override
+  String get interviewErrQuota =>
+      'خدمة الذكاء الاصطناعي مشغولة الآن. حاول بعد قليل.';
+
+  @override
+  String get interviewErrGeneric => 'حدث خطأ ما. حاول مرة أخرى.';
+
+  @override
   String get welcomeTitle => 'مرحبًا بك في كاريير بريدج';
 
   @override

@@ -10,7 +10,7 @@ import '../data/cv_enhancement_repository_impl.dart';
 import '../domain/cv_builder_exception.dart';
 import '../domain/cv_data.dart';
 import '../domain/cv_template.dart';
-import 'cv_draft_store.dart';
+import '../../../core/services/cv_store/cv_draft_store.dart';
 
 enum CvBuilderStatus { needsProfile, editing, enhancing }
 

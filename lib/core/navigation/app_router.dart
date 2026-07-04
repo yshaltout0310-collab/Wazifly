@@ -13,6 +13,9 @@ import '../../features/cv_builder/presentation/cv_preview_screen.dart';
 import '../../features/applications/presentation/applications_screen.dart';
 import '../../features/career_coach/presentation/career_coach_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
+import '../../features/interview_prep/presentation/interview_history_screen.dart';
+import '../../features/interview_prep/presentation/interview_prep_screen.dart';
+import '../../features/interview_prep/presentation/interview_session_detail_screen.dart';
 import '../../features/job_matching/presentation/job_matching_screen.dart';
 import '../../features/jobs/presentation/job_detail_screen.dart';
 import '../../features/jobs/presentation/jobs_screen.dart';
@@ -24,6 +27,7 @@ import '../../features/profile/presentation/profile_screen.dart';
 import '../../features/resume_analyzer/presentation/resume_analyzer_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/splash/presentation/splash_screen.dart';
+import '../../shared/models/job.dart';
 import '../../features/user_type/presentation/user_type_selection_screen.dart';
 import 'route_names.dart';
 
@@ -144,6 +148,33 @@ abstract final class AppRouter {
             path: 'preview',
             name: RouteNames.cvPreview,
             pageBuilder: _fade(const CvPreviewScreen()),
+          ),
+        ],
+      ),
+      GoRoute(
+        path: RouteNames.interviewPrepPath,
+        name: RouteNames.interviewPrep,
+        // Optional `Job` extra tailors the interview to a specific job.
+        pageBuilder: (context, state) => _fadePage(
+          InterviewPrepScreen(job: state.extra is Job ? state.extra as Job : null),
+          state.pageKey,
+        ),
+        routes: [
+          GoRoute(
+            path: 'history',
+            name: RouteNames.interviewHistory,
+            pageBuilder: _fade(const InterviewHistoryScreen()),
+            routes: [
+              GoRoute(
+                path: ':id',
+                name: RouteNames.interviewSessionDetail,
+                pageBuilder: (context, state) => _fadePage(
+                  InterviewSessionDetailScreen(
+                      sessionId: state.pathParameters['id'] ?? ''),
+                  state.pageKey,
+                ),
+              ),
+            ],
           ),
         ],
       ),

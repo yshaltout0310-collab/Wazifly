@@ -1,5 +1,5 @@
 import 'package:careerbridge/features/cv_builder/application/cv_builder_controller.dart';
-import 'package:careerbridge/features/cv_builder/application/cv_draft_store.dart';
+import 'package:careerbridge/core/services/cv_store/cv_draft_store.dart';
 import 'package:careerbridge/features/cv_builder/data/cv_enhancement_repository_impl.dart';
 import 'package:careerbridge/features/cv_builder/domain/cv_builder_exception.dart';
 import 'package:careerbridge/features/cv_builder/domain/cv_data.dart';

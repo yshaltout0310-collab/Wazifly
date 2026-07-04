@@ -11,6 +11,8 @@ import 'package:careerbridge/features/country_selection/presentation/country_sel
 import 'package:careerbridge/features/applications/presentation/applications_screen.dart';
 import 'package:careerbridge/features/cv_builder/presentation/cv_builder_screen.dart';
 import 'package:careerbridge/features/cv_builder/presentation/cv_preview_screen.dart';
+import 'package:careerbridge/features/interview_prep/presentation/interview_history_screen.dart';
+import 'package:careerbridge/features/interview_prep/presentation/interview_prep_screen.dart';
 import 'package:careerbridge/features/career_coach/presentation/career_coach_screen.dart';
 import 'package:careerbridge/features/home/presentation/home_screen.dart';
 import 'package:careerbridge/features/job_matching/presentation/job_matching_screen.dart';
@@ -93,6 +95,8 @@ void main() {
     'Applications': () => const ApplicationsScreen(),
     'CvBuilder': () => const CvBuilderScreen(),
     'CvPreview': () => const CvPreviewScreen(),
+    'InterviewPrep': () => const InterviewPrepScreen(),
+    'InterviewHistory': () => const InterviewHistoryScreen(),
   };
 
   for (final locale in const [Locale('en'), Locale('ar')]) {

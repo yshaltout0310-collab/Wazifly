@@ -56,7 +56,7 @@ class HomeScreen extends ConsumerWidget {
       (
         icon: Icons.record_voice_over_outlined,
         label: l10n.featInterviewPrep,
-        route: null,
+        route: RouteNames.interviewPrep,
       ),
       (icon: Icons.recommend_outlined, label: l10n.featRecommendations, route: null),
     ];

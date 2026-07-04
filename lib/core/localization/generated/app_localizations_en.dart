@@ -536,6 +536,194 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cvTemplateHarvardDesc => 'Classic academic format';
 
   @override
+  String get interviewTitle => 'Interview Prep';
+
+  @override
+  String get interviewSubtitle => 'Practice with AI and get scored feedback';
+
+  @override
+  String get interviewChooseType => 'Choose an interview type';
+
+  @override
+  String get interviewTypeHr => 'HR';
+
+  @override
+  String get interviewTypeHrDesc => 'Motivation, fit, and career goals';
+
+  @override
+  String get interviewTypeTechnical => 'Technical';
+
+  @override
+  String get interviewTypeTechnicalDesc =>
+      'Role-specific skills and problem-solving';
+
+  @override
+  String get interviewTypeBehavioral => 'Behavioral';
+
+  @override
+  String get interviewTypeBehavioralDesc => 'Real situations, STAR method';
+
+  @override
+  String get interviewRoleLabel => 'Target role';
+
+  @override
+  String get interviewNoRole => 'General';
+
+  @override
+  String get interviewPersonalized =>
+      'Personalized from your profile, resume, and CV';
+
+  @override
+  String get interviewGenericHint =>
+      'Add a resume or CV for more tailored questions';
+
+  @override
+  String get interviewForJob => 'Tailored to this job';
+
+  @override
+  String get interviewStart => 'Start interview';
+
+  @override
+  String get interviewGenerating => 'Preparing your questions…';
+
+  @override
+  String interviewQuestionOf(int current, int total) {
+    return 'Question $current of $total';
+  }
+
+  @override
+  String get interviewFocusLabel => 'Focus';
+
+  @override
+  String get interviewYourAnswer => 'Your answer';
+
+  @override
+  String get interviewAnswerHint => 'Type your answer as you would say it…';
+
+  @override
+  String get interviewSubmit => 'Submit answer';
+
+  @override
+  String get interviewEvaluating => 'Evaluating your answer…';
+
+  @override
+  String get interviewNext => 'Next question';
+
+  @override
+  String get interviewFinish => 'Finish & get results';
+
+  @override
+  String get interviewFeedbackTitle => 'Feedback';
+
+  @override
+  String get interviewSampleAnswer => 'Sample strong answer';
+
+  @override
+  String get interviewStrengthsLabel => 'Strengths';
+
+  @override
+  String get interviewImprovementsLabel => 'To improve';
+
+  @override
+  String get interviewScoreOverall => 'Overall';
+
+  @override
+  String get interviewScoreCommunication => 'Communication';
+
+  @override
+  String get interviewScoreTechnical => 'Technical accuracy';
+
+  @override
+  String get interviewScoreConfidence => 'Confidence';
+
+  @override
+  String get interviewScoreClarity => 'Clarity';
+
+  @override
+  String get interviewSummarizing => 'Preparing your debrief…';
+
+  @override
+  String get interviewSummaryTitle => 'Your interview results';
+
+  @override
+  String get interviewOverallFeedback => 'Overall feedback';
+
+  @override
+  String get interviewKeyStrengths => 'Key strengths';
+
+  @override
+  String get interviewImprovementSuggestions => 'Improvement suggestions';
+
+  @override
+  String get interviewImprovementPlan => 'Your improvement plan';
+
+  @override
+  String get interviewDiscussCoach => 'Discuss with the coach';
+
+  @override
+  String get interviewPracticeAgain => 'Practice again';
+
+  @override
+  String interviewCoachSeed(String type, String role) {
+    return 'I just practiced a $type interview for $role. Help me improve my answers and confidence.';
+  }
+
+  @override
+  String get interviewHistoryTitle => 'Interview history';
+
+  @override
+  String get interviewHistoryAction => 'History';
+
+  @override
+  String get interviewHistoryEmpty =>
+      'No practice interviews yet. Start one to see it here.';
+
+  @override
+  String interviewQuestionsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count questions',
+      one: '1 question',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get interviewDetailTitle => 'Interview';
+
+  @override
+  String get interviewNotFound => 'This interview no longer exists.';
+
+  @override
+  String get interviewInProgressBadge => 'In progress';
+
+  @override
+  String get interviewPracticeForJob => 'Practice interview';
+
+  @override
+  String get interviewRetry => 'Try again';
+
+  @override
+  String get interviewErrNoQuestions =>
+      'Couldn\'t generate questions. Please try again.';
+
+  @override
+  String get interviewErrEmptyEval =>
+      'Couldn\'t evaluate that answer. Try rephrasing it.';
+
+  @override
+  String get interviewErrNetwork =>
+      'No internet connection. Check your network and try again.';
+
+  @override
+  String get interviewErrQuota =>
+      'The AI service is busy right now. Please try again shortly.';
+
+  @override
+  String get interviewErrGeneric => 'Something went wrong. Please try again.';
+
+  @override
   String get welcomeTitle => 'Welcome to Career Bridge';
 
   @override
