@@ -1,23 +1,38 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/localization/generated/app_localizations.dart';
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_dimensions.dart';
+import '../../core/localization/generated/app_localizations.dart';
+import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_dimensions.dart';
 
-/// Compact profile-completion card: a circular percentage ring plus a title and
-/// a contextual hint (celebratory when complete, a nudge otherwise).
+/// Compact completion card: a circular percentage ring plus a title and a
+/// contextual hint (celebratory when complete, a nudge otherwise).
+///
+/// Shared by the job-seeker profile and the employer company profile. Pass
+/// [title]/[nudge]/[complete] to override the default profile strings (the
+/// company screens pass company-specific copy).
 class CompletionIndicator extends StatelessWidget {
-  const CompletionIndicator({required this.percent, super.key});
+  const CompletionIndicator({
+    required this.percent,
+    this.title,
+    this.nudge,
+    this.complete,
+    super.key,
+  });
 
   /// Completion in `[0, 100]`.
   final int percent;
+
+  /// Optional copy overrides (default to the profile strings when null).
+  final String? title;
+  final String? nudge;
+  final String? complete;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
     final dark = theme.brightness == Brightness.dark;
-    final complete = percent >= 100;
+    final isComplete = percent >= 100;
     final ratio = (percent / 100).clamp(0.0, 1.0);
 
     return Container(
@@ -50,7 +65,9 @@ class CompletionIndicator extends StatelessWidget {
                       backgroundColor:
                           theme.colorScheme.primary.withValues(alpha: 0.12),
                       valueColor: AlwaysStoppedAnimation<Color>(
-                        complete ? AppColors.emerald : theme.colorScheme.primary,
+                        isComplete
+                            ? AppColors.emerald
+                            : theme.colorScheme.primary,
                       ),
                     ),
                   ),
@@ -69,15 +86,15 @@ class CompletionIndicator extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  l10n.profileCompletionTitle,
+                  title ?? l10n.profileCompletionTitle,
                   style: theme.textTheme.titleSmall
                       ?.copyWith(fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  complete
-                      ? l10n.profileCompletionComplete
-                      : l10n.profileCompletionNudge,
+                  isComplete
+                      ? (complete ?? l10n.profileCompletionComplete)
+                      : (nudge ?? l10n.profileCompletionNudge),
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurface.withValues(alpha: 0.65),
                   ),

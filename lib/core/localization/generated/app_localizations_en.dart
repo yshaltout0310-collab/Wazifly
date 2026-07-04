@@ -1502,4 +1502,195 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get recErrEmpty =>
       'We don\'t have enough to recommend yet. Add more to your profile and try again.';
+
+  @override
+  String get employerCompanyFallback => 'Your company';
+
+  @override
+  String get employerCompanyProfile => 'Company profile';
+
+  @override
+  String get employerCompanyProfileSubtitle =>
+      'View and edit your company details';
+
+  @override
+  String get employerToolsTitle => 'Recruiting tools';
+
+  @override
+  String get employerToolsSubtitle => 'Powerful hiring tools launching soon.';
+
+  @override
+  String get employerPostJob => 'Post a Job';
+
+  @override
+  String get employerApplicants => 'Applicants';
+
+  @override
+  String get employerInterviews => 'Interviews';
+
+  @override
+  String get employerCandidates => 'Candidates';
+
+  @override
+  String get employerStatActiveJobs => 'Active jobs';
+
+  @override
+  String get employerStatApplications => 'Applications';
+
+  @override
+  String get employerStatInterviews => 'Interviews';
+
+  @override
+  String get employerStatHires => 'Hires';
+
+  @override
+  String get companyCompletionTitle => 'Company profile';
+
+  @override
+  String get companyCompletionNudge =>
+      'Complete your company profile to attract candidates.';
+
+  @override
+  String get companyCompletionComplete => 'Your company profile looks great!';
+
+  @override
+  String get companyProfileTitle => 'Company profile';
+
+  @override
+  String get companyEdit => 'Edit company';
+
+  @override
+  String get editCompanyTitle => 'Edit company';
+
+  @override
+  String get companySaved => 'Company profile saved';
+
+  @override
+  String get companyNameLabel => 'Company name';
+
+  @override
+  String get companyNameHint => 'e.g. Acme Corporation';
+
+  @override
+  String get companyLogoLabel => 'Company logo';
+
+  @override
+  String get companyChangeLogo => 'Add logo';
+
+  @override
+  String get companyIndustryLabel => 'Industry';
+
+  @override
+  String get companySizeLabel => 'Company size';
+
+  @override
+  String get companyWebsiteLabel => 'Website';
+
+  @override
+  String get companyWebsiteHint => 'https://example.com';
+
+  @override
+  String get companyHqLabel => 'Headquarters';
+
+  @override
+  String get companyHqHint => 'City, Country';
+
+  @override
+  String get companyDescriptionLabel => 'Description';
+
+  @override
+  String get companyDescriptionHint => 'What your company does';
+
+  @override
+  String get companyContactLabel => 'Contact information';
+
+  @override
+  String get companyContactEmailLabel => 'Contact email';
+
+  @override
+  String get companyContactPhoneLabel => 'Contact phone';
+
+  @override
+  String get companyLinksLabel => 'Social links';
+
+  @override
+  String get companyLinkedinLabel => 'LinkedIn';
+
+  @override
+  String get companyXLabel => 'X (Twitter)';
+
+  @override
+  String get companyFacebookLabel => 'Facebook';
+
+  @override
+  String get companyErrNotSignedIn =>
+      'You need to be signed in to manage your company.';
+
+  @override
+  String get companyErrGeneric =>
+      'We couldn\'t save your company. Please try again.';
+
+  @override
+  String get companyLogoUploadFailed =>
+      'We couldn\'t upload your logo. Please try again.';
+
+  @override
+  String get industryTechnology => 'Technology';
+
+  @override
+  String get industryFinance => 'Finance';
+
+  @override
+  String get industryHealthcare => 'Healthcare';
+
+  @override
+  String get industryEducation => 'Education';
+
+  @override
+  String get industryRetail => 'Retail';
+
+  @override
+  String get industryManufacturing => 'Manufacturing';
+
+  @override
+  String get industryConstruction => 'Construction';
+
+  @override
+  String get industryHospitality => 'Hospitality';
+
+  @override
+  String get industryMedia => 'Media';
+
+  @override
+  String get industryEnergy => 'Energy';
+
+  @override
+  String get industryTransportation => 'Transportation';
+
+  @override
+  String get industryGovernment => 'Government';
+
+  @override
+  String get industryNonprofit => 'Non-profit';
+
+  @override
+  String get industryOther => 'Other';
+
+  @override
+  String get companySize1to10 => '1–10 employees';
+
+  @override
+  String get companySize11to50 => '11–50 employees';
+
+  @override
+  String get companySize51to200 => '51–200 employees';
+
+  @override
+  String get companySize201to500 => '201–500 employees';
+
+  @override
+  String get companySize501to1000 => '501–1000 employees';
+
+  @override
+  String get companySize1000plus => '1000+ employees';
 }

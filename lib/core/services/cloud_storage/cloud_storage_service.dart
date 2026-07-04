@@ -41,6 +41,7 @@ class CloudStorageService {
   String profilePhotoPath(String uid) => 'users/$uid/profile.jpg';
   String resumePath(String uid, String fileName) =>
       'users/$uid/resumes/$fileName';
+  String companyLogoPath(String companyId) => 'companies/$companyId/logo.jpg';
 }
 
 final cloudStorageServiceProvider = Provider<CloudStorageService>(

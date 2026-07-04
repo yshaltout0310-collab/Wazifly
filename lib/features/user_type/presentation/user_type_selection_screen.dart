@@ -10,6 +10,7 @@ import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/responsive.dart';
 import '../../../shared/widgets/aurora_background.dart';
 import '../../../shared/widgets/primary_button.dart';
+import '../../../core/services/company/company_repository.dart';
 import '../../../core/services/user_profile/user_profile_repository.dart';
 import '../../auth/application/auth_providers.dart';
 import '../application/user_type_controller.dart';
@@ -40,10 +41,20 @@ class _UserTypeSelectionScreenState
       await ref
           .read(userProfileRepositoryProvider)
           .setUserType(user.uid, selected);
+      // Employers get a company document seeded from their identity.
+      if (selected == UserType.employer) {
+        await ref.read(companyRepositoryProvider).ensureCompany(
+              user.uid,
+              email: user.email,
+              name: user.displayName,
+            );
+      }
     }
 
     if (!mounted) return;
-    context.goNamed(RouteNames.home);
+    context.goNamed(selected == UserType.employer
+        ? RouteNames.employerHome
+        : RouteNames.home);
   }
 
   @override

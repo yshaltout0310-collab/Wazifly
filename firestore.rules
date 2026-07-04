@@ -13,6 +13,14 @@ service cloud.firestore {
       allow read, write: if request.auth != null && request.auth.uid == uid;
     }
 
+    // Company documents at companies/{companyId} (companyId == owner uid in
+    // Milestone 1). Readable by any signed-in user (future job listings surface
+    // the company), writable only by the owning employer.
+    match /companies/{companyId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == companyId;
+    }
+
     // Everything else is denied by default (no fall-through match).
   }
 }

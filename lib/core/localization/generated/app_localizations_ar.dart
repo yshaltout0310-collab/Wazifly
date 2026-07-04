@@ -1486,4 +1486,191 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get recErrEmpty =>
       'لا توجد بيانات كافية للتوصية بعد. أضف المزيد إلى ملفك وحاول مجددًا.';
+
+  @override
+  String get employerCompanyFallback => 'شركتك';
+
+  @override
+  String get employerCompanyProfile => 'ملف الشركة';
+
+  @override
+  String get employerCompanyProfileSubtitle => 'اعرض وعدّل تفاصيل شركتك';
+
+  @override
+  String get employerToolsTitle => 'أدوات التوظيف';
+
+  @override
+  String get employerToolsSubtitle => 'أدوات توظيف قوية ستنطلق قريبًا.';
+
+  @override
+  String get employerPostJob => 'أضف وظيفة';
+
+  @override
+  String get employerApplicants => 'المتقدّمون';
+
+  @override
+  String get employerInterviews => 'المقابلات';
+
+  @override
+  String get employerCandidates => 'المرشّحون';
+
+  @override
+  String get employerStatActiveJobs => 'الوظائف النشطة';
+
+  @override
+  String get employerStatApplications => 'الطلبات';
+
+  @override
+  String get employerStatInterviews => 'المقابلات';
+
+  @override
+  String get employerStatHires => 'التعيينات';
+
+  @override
+  String get companyCompletionTitle => 'ملف الشركة';
+
+  @override
+  String get companyCompletionNudge => 'أكمل ملف شركتك لجذب المرشّحين.';
+
+  @override
+  String get companyCompletionComplete => 'ملف شركتك يبدو رائعًا!';
+
+  @override
+  String get companyProfileTitle => 'ملف الشركة';
+
+  @override
+  String get companyEdit => 'تعديل الشركة';
+
+  @override
+  String get editCompanyTitle => 'تعديل الشركة';
+
+  @override
+  String get companySaved => 'تم حفظ ملف الشركة';
+
+  @override
+  String get companyNameLabel => 'اسم الشركة';
+
+  @override
+  String get companyNameHint => 'مثال: شركة أكمي';
+
+  @override
+  String get companyLogoLabel => 'شعار الشركة';
+
+  @override
+  String get companyChangeLogo => 'إضافة شعار';
+
+  @override
+  String get companyIndustryLabel => 'القطاع';
+
+  @override
+  String get companySizeLabel => 'حجم الشركة';
+
+  @override
+  String get companyWebsiteLabel => 'الموقع الإلكتروني';
+
+  @override
+  String get companyWebsiteHint => 'https://example.com';
+
+  @override
+  String get companyHqLabel => 'المقر الرئيسي';
+
+  @override
+  String get companyHqHint => 'المدينة، الدولة';
+
+  @override
+  String get companyDescriptionLabel => 'الوصف';
+
+  @override
+  String get companyDescriptionHint => 'ماذا تفعل شركتك';
+
+  @override
+  String get companyContactLabel => 'معلومات التواصل';
+
+  @override
+  String get companyContactEmailLabel => 'بريد التواصل';
+
+  @override
+  String get companyContactPhoneLabel => 'هاتف التواصل';
+
+  @override
+  String get companyLinksLabel => 'روابط التواصل الاجتماعي';
+
+  @override
+  String get companyLinkedinLabel => 'لينكدإن';
+
+  @override
+  String get companyXLabel => 'إكس (تويتر)';
+
+  @override
+  String get companyFacebookLabel => 'فيسبوك';
+
+  @override
+  String get companyErrNotSignedIn => 'يجب تسجيل الدخول لإدارة شركتك.';
+
+  @override
+  String get companyErrGeneric => 'تعذّر حفظ شركتك. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get companyLogoUploadFailed =>
+      'تعذّر رفع شعارك. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get industryTechnology => 'التقنية';
+
+  @override
+  String get industryFinance => 'المالية';
+
+  @override
+  String get industryHealthcare => 'الرعاية الصحية';
+
+  @override
+  String get industryEducation => 'التعليم';
+
+  @override
+  String get industryRetail => 'التجزئة';
+
+  @override
+  String get industryManufacturing => 'التصنيع';
+
+  @override
+  String get industryConstruction => 'الإنشاءات';
+
+  @override
+  String get industryHospitality => 'الضيافة';
+
+  @override
+  String get industryMedia => 'الإعلام';
+
+  @override
+  String get industryEnergy => 'الطاقة';
+
+  @override
+  String get industryTransportation => 'النقل';
+
+  @override
+  String get industryGovernment => 'الحكومة';
+
+  @override
+  String get industryNonprofit => 'غير ربحي';
+
+  @override
+  String get industryOther => 'أخرى';
+
+  @override
+  String get companySize1to10 => '1–10 موظفين';
+
+  @override
+  String get companySize11to50 => '11–50 موظفًا';
+
+  @override
+  String get companySize51to200 => '51–200 موظف';
+
+  @override
+  String get companySize201to500 => '201–500 موظف';
+
+  @override
+  String get companySize501to1000 => '501–1000 موظف';
+
+  @override
+  String get companySize1000plus => 'أكثر من 1000 موظف';
 }

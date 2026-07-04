@@ -7,7 +7,7 @@ import 'package:careerbridge/core/services/user_profile/in_memory_user_profile_r
 import 'package:careerbridge/core/services/user_profile/user_profile_repository.dart';
 import 'package:careerbridge/features/profile/domain/experience_level.dart';
 import 'package:careerbridge/features/profile/presentation/profile_screen.dart';
-import 'package:careerbridge/features/profile/presentation/widgets/completion_indicator.dart';
+import 'package:careerbridge/shared/widgets/completion_indicator.dart';
 import 'package:careerbridge/shared/models/app_user.dart';
 import 'package:careerbridge/shared/models/user_profile.dart';
 import 'package:flutter/material.dart';

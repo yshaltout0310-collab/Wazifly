@@ -99,6 +99,9 @@ class SettingsScreen extends ConsumerWidget {
     );
     if (confirmed != true) return;
     await ref.read(authRepositoryProvider).signOut();
+    // Clear the device-persisted role so the next account picks its own
+    // (job seekers and employers now land on different dashboards).
+    await ref.read(userTypeControllerProvider.notifier).clear();
     if (!context.mounted) return;
     context.goNamed(RouteNames.welcome);
   }
@@ -138,7 +141,12 @@ class SettingsScreen extends ConsumerWidget {
                       null => '',
                     },
                     guestLabel: l10n.profileNotSignedIn,
-                    onTap: () => context.pushNamed(RouteNames.profile),
+                    // Role-aware: employers manage their company here.
+                    onTap: () => context.pushNamed(
+                      type == UserType.employer
+                          ? RouteNames.companyProfile
+                          : RouteNames.profile,
+                    ),
                   ),
                   if (user?.method == AuthMethod.email)
                     SettingsTile(

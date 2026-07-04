@@ -12,6 +12,7 @@ import '../../../core/theme/app_dimensions.dart';
 import '../../../features/auth/application/auth_providers.dart';
 import '../../../features/onboarding/application/onboarding_controller.dart';
 import '../../../features/user_type/application/user_type_controller.dart';
+import '../../../features/user_type/domain/user_type.dart';
 
 /// Premium branded splash. A deep-emerald gradient (seamless with the native
 /// splash) with a glowing, pulsing logo and a choreographed wordmark reveal.
@@ -47,7 +48,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     }
 
     final type = ref.read(userTypeControllerProvider);
-    context.goNamed(type == null ? RouteNames.userType : RouteNames.home);
+    context.goNamed(switch (type) {
+      null => RouteNames.userType,
+      UserType.employer => RouteNames.employerHome,
+      UserType.jobSeeker => RouteNames.home,
+    });
   }
 
   @override

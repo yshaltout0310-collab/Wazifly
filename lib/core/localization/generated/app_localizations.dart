@@ -2857,6 +2857,378 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'We don\'t have enough to recommend yet. Add more to your profile and try again.'**
   String get recErrEmpty;
+
+  /// No description provided for @employerCompanyFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Your company'**
+  String get employerCompanyFallback;
+
+  /// No description provided for @employerCompanyProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Company profile'**
+  String get employerCompanyProfile;
+
+  /// No description provided for @employerCompanyProfileSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'View and edit your company details'**
+  String get employerCompanyProfileSubtitle;
+
+  /// No description provided for @employerToolsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recruiting tools'**
+  String get employerToolsTitle;
+
+  /// No description provided for @employerToolsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Powerful hiring tools launching soon.'**
+  String get employerToolsSubtitle;
+
+  /// No description provided for @employerPostJob.
+  ///
+  /// In en, this message translates to:
+  /// **'Post a Job'**
+  String get employerPostJob;
+
+  /// No description provided for @employerApplicants.
+  ///
+  /// In en, this message translates to:
+  /// **'Applicants'**
+  String get employerApplicants;
+
+  /// No description provided for @employerInterviews.
+  ///
+  /// In en, this message translates to:
+  /// **'Interviews'**
+  String get employerInterviews;
+
+  /// No description provided for @employerCandidates.
+  ///
+  /// In en, this message translates to:
+  /// **'Candidates'**
+  String get employerCandidates;
+
+  /// No description provided for @employerStatActiveJobs.
+  ///
+  /// In en, this message translates to:
+  /// **'Active jobs'**
+  String get employerStatActiveJobs;
+
+  /// No description provided for @employerStatApplications.
+  ///
+  /// In en, this message translates to:
+  /// **'Applications'**
+  String get employerStatApplications;
+
+  /// No description provided for @employerStatInterviews.
+  ///
+  /// In en, this message translates to:
+  /// **'Interviews'**
+  String get employerStatInterviews;
+
+  /// No description provided for @employerStatHires.
+  ///
+  /// In en, this message translates to:
+  /// **'Hires'**
+  String get employerStatHires;
+
+  /// No description provided for @companyCompletionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Company profile'**
+  String get companyCompletionTitle;
+
+  /// No description provided for @companyCompletionNudge.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete your company profile to attract candidates.'**
+  String get companyCompletionNudge;
+
+  /// No description provided for @companyCompletionComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Your company profile looks great!'**
+  String get companyCompletionComplete;
+
+  /// No description provided for @companyProfileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Company profile'**
+  String get companyProfileTitle;
+
+  /// No description provided for @companyEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit company'**
+  String get companyEdit;
+
+  /// No description provided for @editCompanyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit company'**
+  String get editCompanyTitle;
+
+  /// No description provided for @companySaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Company profile saved'**
+  String get companySaved;
+
+  /// No description provided for @companyNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Company name'**
+  String get companyNameLabel;
+
+  /// No description provided for @companyNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Acme Corporation'**
+  String get companyNameHint;
+
+  /// No description provided for @companyLogoLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Company logo'**
+  String get companyLogoLabel;
+
+  /// No description provided for @companyChangeLogo.
+  ///
+  /// In en, this message translates to:
+  /// **'Add logo'**
+  String get companyChangeLogo;
+
+  /// No description provided for @companyIndustryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Industry'**
+  String get companyIndustryLabel;
+
+  /// No description provided for @companySizeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Company size'**
+  String get companySizeLabel;
+
+  /// No description provided for @companyWebsiteLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Website'**
+  String get companyWebsiteLabel;
+
+  /// No description provided for @companyWebsiteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'https://example.com'**
+  String get companyWebsiteHint;
+
+  /// No description provided for @companyHqLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Headquarters'**
+  String get companyHqLabel;
+
+  /// No description provided for @companyHqHint.
+  ///
+  /// In en, this message translates to:
+  /// **'City, Country'**
+  String get companyHqHint;
+
+  /// No description provided for @companyDescriptionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get companyDescriptionLabel;
+
+  /// No description provided for @companyDescriptionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'What your company does'**
+  String get companyDescriptionHint;
+
+  /// No description provided for @companyContactLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact information'**
+  String get companyContactLabel;
+
+  /// No description provided for @companyContactEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact email'**
+  String get companyContactEmailLabel;
+
+  /// No description provided for @companyContactPhoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact phone'**
+  String get companyContactPhoneLabel;
+
+  /// No description provided for @companyLinksLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Social links'**
+  String get companyLinksLabel;
+
+  /// No description provided for @companyLinkedinLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'LinkedIn'**
+  String get companyLinkedinLabel;
+
+  /// No description provided for @companyXLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'X (Twitter)'**
+  String get companyXLabel;
+
+  /// No description provided for @companyFacebookLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Facebook'**
+  String get companyFacebookLabel;
+
+  /// No description provided for @companyErrNotSignedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'You need to be signed in to manage your company.'**
+  String get companyErrNotSignedIn;
+
+  /// No description provided for @companyErrGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t save your company. Please try again.'**
+  String get companyErrGeneric;
+
+  /// No description provided for @companyLogoUploadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t upload your logo. Please try again.'**
+  String get companyLogoUploadFailed;
+
+  /// No description provided for @industryTechnology.
+  ///
+  /// In en, this message translates to:
+  /// **'Technology'**
+  String get industryTechnology;
+
+  /// No description provided for @industryFinance.
+  ///
+  /// In en, this message translates to:
+  /// **'Finance'**
+  String get industryFinance;
+
+  /// No description provided for @industryHealthcare.
+  ///
+  /// In en, this message translates to:
+  /// **'Healthcare'**
+  String get industryHealthcare;
+
+  /// No description provided for @industryEducation.
+  ///
+  /// In en, this message translates to:
+  /// **'Education'**
+  String get industryEducation;
+
+  /// No description provided for @industryRetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Retail'**
+  String get industryRetail;
+
+  /// No description provided for @industryManufacturing.
+  ///
+  /// In en, this message translates to:
+  /// **'Manufacturing'**
+  String get industryManufacturing;
+
+  /// No description provided for @industryConstruction.
+  ///
+  /// In en, this message translates to:
+  /// **'Construction'**
+  String get industryConstruction;
+
+  /// No description provided for @industryHospitality.
+  ///
+  /// In en, this message translates to:
+  /// **'Hospitality'**
+  String get industryHospitality;
+
+  /// No description provided for @industryMedia.
+  ///
+  /// In en, this message translates to:
+  /// **'Media'**
+  String get industryMedia;
+
+  /// No description provided for @industryEnergy.
+  ///
+  /// In en, this message translates to:
+  /// **'Energy'**
+  String get industryEnergy;
+
+  /// No description provided for @industryTransportation.
+  ///
+  /// In en, this message translates to:
+  /// **'Transportation'**
+  String get industryTransportation;
+
+  /// No description provided for @industryGovernment.
+  ///
+  /// In en, this message translates to:
+  /// **'Government'**
+  String get industryGovernment;
+
+  /// No description provided for @industryNonprofit.
+  ///
+  /// In en, this message translates to:
+  /// **'Non-profit'**
+  String get industryNonprofit;
+
+  /// No description provided for @industryOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get industryOther;
+
+  /// No description provided for @companySize1to10.
+  ///
+  /// In en, this message translates to:
+  /// **'1–10 employees'**
+  String get companySize1to10;
+
+  /// No description provided for @companySize11to50.
+  ///
+  /// In en, this message translates to:
+  /// **'11–50 employees'**
+  String get companySize11to50;
+
+  /// No description provided for @companySize51to200.
+  ///
+  /// In en, this message translates to:
+  /// **'51–200 employees'**
+  String get companySize51to200;
+
+  /// No description provided for @companySize201to500.
+  ///
+  /// In en, this message translates to:
+  /// **'201–500 employees'**
+  String get companySize201to500;
+
+  /// No description provided for @companySize501to1000.
+  ///
+  /// In en, this message translates to:
+  /// **'501–1000 employees'**
+  String get companySize501to1000;
+
+  /// No description provided for @companySize1000plus.
+  ///
+  /// In en, this message translates to:
+  /// **'1000+ employees'**
+  String get companySize1000plus;
 }
 
 class _AppLocalizationsDelegate

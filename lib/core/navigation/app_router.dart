@@ -7,6 +7,9 @@ import '../../features/auth/presentation/otp_verification_screen.dart';
 import '../../features/auth/presentation/phone_auth_screen.dart';
 import '../../features/auth/presentation/welcome_screen.dart';
 import '../../features/country_selection/presentation/country_selection_screen.dart';
+import '../../features/employer/presentation/company_profile_screen.dart';
+import '../../features/employer/presentation/edit_company_screen.dart';
+import '../../features/employer/presentation/employer_home_screen.dart';
 import '../../features/applications/presentation/application_detail_screen.dart';
 import '../../features/cv_builder/presentation/cv_builder_screen.dart';
 import '../../features/cv_builder/presentation/cv_preview_screen.dart';
@@ -197,6 +200,25 @@ abstract final class AppRouter {
               applicationId: state.pathParameters['id'] ?? ''),
           state.pageKey,
         ),
+      ),
+      GoRoute(
+        path: RouteNames.employerHomePath,
+        name: RouteNames.employerHome,
+        pageBuilder: _fade(const EmployerHomeScreen()),
+        routes: [
+          GoRoute(
+            path: 'company',
+            name: RouteNames.companyProfile,
+            pageBuilder: _fade(const CompanyProfileScreen()),
+            routes: [
+              GoRoute(
+                path: 'edit',
+                name: RouteNames.editCompany,
+                pageBuilder: _fade(const EditCompanyScreen()),
+              ),
+            ],
+          ),
+        ],
       ),
       GoRoute(
         path: RouteNames.settingsPath,
