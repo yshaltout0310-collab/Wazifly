@@ -1,13 +1,14 @@
 # Career Bridge — Session Handoff
 
 > Living handoff doc so a fresh Claude session can continue immediately.
-> Last updated: end of Phase 4 · Milestone 2 (AI Interview Prep) — final handoff.
+> Last updated: end of Phase 4 · Milestone 3 (AI Recommendations / For You) — final handoff.
 > **Phase 2 COMPLETE** (M1 Resume Analyzer + M2 Job Matching + M3 Career Coach).
 > **Phase 3 · M1 (Jobs Platform) COMPLETE** (`6a6a72c`, §7.7).
 > **Phase 3 · M2 (Applications Center) COMPLETE** (`b7e4b53`, §7.8).
 > **Phase 3 · M3 (User Profile & Settings) COMPLETE** (`071902c`, §7.9) — live-verified EN+AR.
 > **Phase 4 · M1 (AI CV Builder) COMPLETE** (`b237481`, §7.10) — live-verified EN (full flow) + AR.
 > **Phase 4 · M2 (AI Interview Prep) COMPLETE** (`fc35db4`, §7.11) — live-verified EN + AR (real Gemini).
+> **Phase 4 · M3 (AI Recommendations / For You) COMPLETE** (`c1d044b`, §7.12) — live-verified EN + AR (real Gemini). **Last "Soon" Home card is now live — the AI toolkit is complete.**
 
 ---
 
@@ -81,9 +82,9 @@ importing `firebase_ai`; swap providers by rebinding `aiServiceProvider`.
 `Splash → Language → Country → Onboarding → Welcome → (Email | Google | Phone→OTP)
 → User Type (Job Seeker/Employer) → Home`. Settings + Profile reachable from Home.
 Home shows an "AI toolkit" grid of feature cards; **Resume Analyzer**, **AI Job
-Matching**, **Career Coach**, **CV Builder**, and **Interview Prep** are all live (route
-to their screens). Only **For You / Recommendations** still shows a "Soon" badge +
-coming-soon snackbar. Home also has **Browse Jobs** + **My Applications** CTAs.
+Matching**, **Career Coach**, **CV Builder**, **Interview Prep**, and **For You /
+Recommendations** are all live (route to their screens). **No "Soon" cards remain — the
+AI toolkit is complete.** Home also has **Browse Jobs** + **My Applications** CTAs.
 
 ---
 
@@ -170,6 +171,20 @@ edit → real-Gemini enhance → ATS PDF preview + share); AR form/template-pick
 PDF (RTL, Arabic section headers). Known limitation: pure-Latin runs can render reversed in
 the Arabic PDF (pdf-package bidi) — Arabic content is correct; a follow-up refinement.
 
+### Phase 4 · Milestone 3 — AI Recommendations / For You ✅ COMPLETE (committed `c1d044b`)
+See §7.12. A personalized **For You** hub: **one holistic `generateJson` pass** over the
+user's profile, resume analysis, CV, applications, and interview history → **Recommended
+jobs** (confidence % + reason), **Skills to learn**, **Certifications**, **Courses**, an
+action-oriented **Career roadmap** (This week / Next month / Next 3 months / 6–12 months),
+and **Next best actions** (priority + estimated time + in-app deep links). Every item carries
+a personalized reason. Recommended jobs are chosen by id from the **shared** jobs universe
+(excludes already-applied) so cards deep-link to `/jobs/:id`. Provider-agnostic (`AiService`),
+Firestore-ready `RecommendationsStore` (caches only the latest), a **refresh guard** that
+skips the AI call when the source-data signature (incl. language) is unchanged. **Zero
+feature-to-feature deps** — reuses **core** providers only. `flutter analyze` clean; **238
+tests pass**. **Live-verified EN + AR** with real Gemini. Flips the **last "Soon" Home card**
+live.
+
 ### Phase 4 · Milestone 2 — AI Interview Prep ✅ COMPLETE (committed `fc35db4`)
 See §7.11. Pick an interview type (HR/Technical/Behavioral) → answer AI-generated questions
 with **scored per-answer feedback** (5 dimensions) → a **streamed overall debrief** + a
@@ -232,7 +247,8 @@ $env:Path = "C:\Program Files\nodejs;" + $env:Path
 main                         6f860fe  Phase 1 production foundation completed
 firebase-auth-integration    aa9b7d2  Add Cloud Firestore security rules  (branched from main)
                              2af451d  Integrate real Firebase Authentication and remove demo mode
-feature/resume-analyzer  *  fc35db4  feat: AI Interview Prep (Phase 4, Milestone 2)  <-- current HEAD
+feature/resume-analyzer  *  c1d044b  feat: AI Recommendations / For You (Phase 4, Milestone 3)  <-- current HEAD
+                             fc35db4  feat: AI Interview Prep (Phase 4, Milestone 2)
                              b237481  feat: AI CV Builder (Phase 4, Milestone 1)
                              071902c  feat: User Profile & Settings (Phase 3, Milestone 3)
                              b7e4b53  feat: Applications Center (Phase 3, Milestone 2)
@@ -786,10 +802,109 @@ Interview Prep path** has the profile cached and personalizes fully.
 
 ---
 
+## 7.12 Phase 4 · Milestone 3 — AI Recommendations / For You ✅ COMPLETE (`c1d044b`)
+
+**Scope (approved):** a personalized "For You" module reusing **all** existing user data
+(profile, resume analysis, CV, job matching, interview prep, applications) to produce
+**Recommended jobs, Skills to learn, Certifications, Courses, Career roadmap, Next best
+actions** — provider-agnostic, repository-based, Firestore-ready, EN+AR, **zero
+feature-to-feature deps**. Approved additions: (1) every item has a personalized reason;
+(2) job recs carry a **confidence 0–100**; (3) roadmap uses **practical horizons** (This
+week / Next month / Next 3 months / 6–12 months); (4) next actions have an optional
+**estimated time**; (5) a **refresh guard** that skips the AI call and says "up to date"
+when nothing changed.
+
+**Three approved architecture decisions:** (1) **one holistic `generateJson` call** for all
+six sections with per-section defensive parsing; (2) **AI-generated job recs using the shared
+jobs foundation** (not by importing `job_matching`) — the model picks by id from the real
+jobs universe; (3) **cache only the latest** via a `RecommendationsStore` seam.
+
+**Domain `lib/features/recommendations/domain/`:** `recommendation_models.dart` —
+`Recommendations` (+ `generatedAt` + **`sourceSignature`** + `headline`/`summary` + six
+section lists; `hasContent`; `stamp(...)`) · `JobRecommendation` (jobId/title/company/reason/
+**confidence**) · `SkillRecommendation` (skill/reason/**priority**) · `CertificationRecommendation`
+· `CourseRecommendation` (title/provider/reason/url?/skill?) · `RoadmapStep` (**horizon**/title/
+description/focusSkills) · `NextAction` (**type**/title/description/priority/**estimatedTime**/
+targetId). Enums `RecPriority`, `RecHorizon {thisWeek,nextMonth,next3Months,sixToTwelveMonths}`,
+`NextActionType {analyzeResume,buildCv,practiceInterview,browseJobs,reviewApplications,
+completeProfile,applyToJob,learnSkill,none}` — all defensively parsed (bad enum → default).
+`recommendation_context.dart` — `RecommendationContext` (**primitives only**, like
+`InterviewContext`) + `AvailableJob` mini-type + `hasSignal` + a **`signature`** fingerprint
+(all salient signals except the static jobs universe; includes appliedJobIds). Plus
+`recommendations_repository.dart` (interface) + `recommendations_exception.dart` (`RecErrorCode.
+emptyRecommendations`).
+
+**Data:** `recommendations_repository_impl.dart` (+ `recommendationsRepositoryProvider`) — pure,
+builds one localized holistic prompt (`_system` forbids Markdown; `_contextBlock` +
+`_jobsBlock` listing available jobs by id, excluding applied), calls `AiService.generateJson`,
+**filters recommended jobs to the real universe by id** (drops invented/applied ids; backfills
+title/company), throws `emptyRecommendations` only when every section is empty.
+
+**Store seam (core, Firestore-ready):** `lib/core/services/recommendations_store/` —
+`RecommendationsStore` interface (`watchLatest` Stream + `read`/`save`/`clear`) +
+`InMemoryRecommendationsStore` (broadcast) + `recommendationsStoreProvider` (swap point) +
+`latestRecommendationsProvider`. Rebind for a Firestore `users/{uid}/recommendations/latest`
+doc later — no feature changes (needs a subcollection rule then; in-memory now, no rules change).
+
+**Application/presentation:** `RecommendationsController` (phases loading/ready/error;
+`buildContext()` reads **core providers only** — `currentUserProfileProvider` (precedent:
+Interview Prep/CV Builder), `lastResumeAnalysisProvider`, `cvDraftStoreProvider`,
+`applicationsProvider`/`interviewSessionsProvider` (via `.future`), `savedJobsProvider`,
+`jobsRepositoryProvider`; ctor hydrates from the store else `Future.microtask(generate)`;
+`refresh()`/`retry()`; **refresh guard** compares `"$lang::${context.signature}"` to the
+cached signature → "up to date" without an AI call; injectable clock; `.seeded` ctor).
+`RecommendationsScreen` (AnimatedSwitcher over loading/error/ready; header card with headline/
+summary/updated-date/low-signal nudge; six sections; app-bar Refresh; deep-links job cards →
+`/jobs/:id` and next-actions → their routes). `recommendations_l10n.dart` (enum→label maps),
+`widgets/recommendation_sections.dart` (RecSection/RecCard/RecChip/RecReason/RecJobCard/
+RecSkillTile/RecCertTile/RecCourseTile/RecRoadmap timeline/RecActionCard).
+
+**Wiring:** `RouteNames.recommendations` (`/recommendations`) + GoRoute; Home "For You" card
+flipped `route: null` → live. ~45 `rec*` EN+AR l10n keys (incl. `recConfidence(int)` +
+`recUpdated(String)` placeholders). Localized dates via `intl DateFormat`.
+
+**Tests: 238 total pass** (was 212; +26): `recommendation_models_test` (7 — defensive parse,
+clamp, enum aliases, round-trip, stamp), `recommendations_repository_test` (4 — parse + job
+filtering/backfill + empty throw + AI-error + language/no-Markdown), `recommendations_store_test`
+(2), `recommendations_controller_test` (5 — cold gen+cache, cached hydration, refresh
+up-to-date, failure map, clock), `recommendations_context_test` (1 — flatten + applied
+exclusion + stable signature), `recommendations_screen_test` (6 — ready/loading/error EN+AR);
+Recommendations added to the locale sweep. `flutter analyze` clean.
+
+**VERIFIED live on emulator with REAL Gemini — both English and Arabic:**
+- **English:** Home → For You → loading ("Personalizing…") → real result: header + summary +
+  "Updated …" + **Recommended jobs** (real seed jobs, **confidence % badges** 15/10/5%, reasons),
+  **Skills to learn** (priority High/Medium + reasons), **Certifications**, **Courses** (CS50x/
+  Harvard, Git/Udemy + skill chips), **Career roadmap** (This week/Next month timeline + focus
+  chips), **Next best actions** (**estimated-time chips** 2 hours/30 min/1 week/15 min + CTAs;
+  `learnSkill` correctly shows no CTA). Job card deep-links to `/jobs/:id`. Low-signal **nudge**
+  shown when the profile hadn't hydrated; **personalized** ("Hello Senior!…Flutter") once it did.
+- **Arabic (RTL):** cold generation returns **all content in Arabic** (header/summary/nudge/job
+  reasons/roadmap/actions), correct RTL layout (mirrored, Arabic-numeral confidence badges), no
+  overflow. **Cache path** verified (switch language → re-enter shows cached instantly). **Refresh
+  guard** verified live: with stable data, Refresh shows "كل شيء محدَّث — توصياتك محدّثة بالفعل."
+  and does NOT re-call the AI.
+
+**Bug found on-device & FIXED:** the Next-best-action footer `Row` (estimated-time chip + CTA)
+overflowed on narrow widths / wide test fonts (a `Spacer` can't rescue over-wide non-flex
+children) → replaced with a **`Wrap` (space-between)** so the CTA drops to its own line when
+tight. Also **folded the language into the refresh signature** so switching language busts the
+"up to date" guard and regenerates in the new language (was: stale-language content after a
+switch).
+
+**Seed note (same as CV Builder / Interview Prep):** entering `/recommendations` before the
+auth→Firestore profile stream resolves generates from an empty (generic) context (shows the
+nudge); the **normal Home path** personalizes once the profile is cached. A **Refresh** re-runs
+once data has loaded.
+
+---
+
 ## 8. Next steps
 
 **Phase 2 COMPLETE.** **Phase 3 · M1 (Jobs Platform) `6a6a72c`, M2 (Applications Center)
-`b7e4b53`, and M3 (User Profile & Settings) `071902c` COMPLETE.** Nothing is in progress.
+`b7e4b53`, and M3 (User Profile & Settings) `071902c` COMPLETE. Phase 4 · M1 (CV Builder)
+`b237481`, M2 (Interview Prep) `fc35db4`, M3 (Recommendations / For You) `c1d044b` COMPLETE —
+the AI toolkit is complete; no "Soon" cards remain.** Nothing is in progress.
 
 **Open items for the next session:**
 
@@ -805,13 +920,15 @@ Interview Prep path** has the profile cached and personalizes fully.
    (with `MSYS_NO_PATHCONV=1 MSYS2_ARG_CONV_EXCL="*"`) sidesteps the flaky Home app-bar.
 
 3. **Candidate next milestones** (present a plan + wait for approval, per the workflow):
-   the **last remaining "Soon" Home card — For You / Recommendations** (from resume + matches +
-   profile + interview history) — or **durable persistence** for the existing seams. See "Later
-   candidates" below. *(CV Builder ✅ §7.10, Interview Prep ✅ §7.11 — both done.)*
+   **all six AI-toolkit features are done** — the remaining big rocks are **durable persistence**
+   (Firestore/local impls for the existing seams) and an **Employer/Recruiter side** (the profile
+   fields were shaped for it). See "Later candidates" below. *(For You ✅ §7.12 — the last "Soon"
+   card is now live.)*
 
 4. **Polish follow-ups:** CV Builder Arabic-PDF Latin-run bidi reversal (§7.10) + a 2nd CV
    template; an **Interview Report PDF** (the models are already report-ready — §7.11) reusing
-   the `pdf`/`printing` stack from CV Builder.
+   the `pdf`/`printing` stack from CV Builder; a **Recommendations Report/PDF** (the
+   `Recommendations` model is denormalized + report-ready — §7.12).
 
 <details><summary>Historical: the (now completed) approved Phase 3 · M3 plan</summary>
    - **Scope (9 items):** Profile screen · Edit Profile · profile completion indicator ·
@@ -852,14 +969,15 @@ Interview Prep path** has the profile cached and personalizes fully.
 
 </details>
 
-**Later candidates** (the last "Soon" Home card + polish), pending direction:
-- **For You / Recommendations** (from resume + matches + profile + interview history) — the last
-  "Soon" Home card. *(Resume Analyzer, Job Matching, Career Coach, Jobs, Applications, Profile,
-  CV Builder, Interview Prep — all ✅.)*
+**Later candidates** (the AI toolkit is complete — these are the remaining big rocks + polish),
+pending direction:
 - **Durable persistence** — implement Firestore/local impls for the existing seams
   (`ResumeAnalysisStore`, `ChatHistoryStore`, `SavedJobsStore`, `ApplicationsRepository`,
-  `UserProfileRepository` (already Firestore-backed), `CvDraftStore`, `InterviewHistoryRepository`);
-  just rebind (interview + applications need a `users/{uid}/…` subcollection Firestore rule).
+  `UserProfileRepository` (already Firestore-backed), `CvDraftStore`, `InterviewHistoryRepository`,
+  `RecommendationsStore`); just rebind (interview + applications + recommendations need a
+  `users/{uid}/…` subcollection Firestore rule).
+- **Employer/Recruiter side** — the profile fields (skills, experience level, preferred titles)
+  were shaped for a future Employer Dashboard.
 - **Interview Report PDF** — the `InterviewSession` is already report-ready (§7.11); reuse the
   `pdf`/`printing` stack. **CV Builder polish** — Arabic-PDF Latin bidi fix; a 2nd CV template.
 - **Markdown rendering** in the coach chat (currently prompted to emit plain text instead).
@@ -911,7 +1029,13 @@ emulator (both languages), `analyze`+`test` before committing, one commit per mi
   AI questions, scored per-answer feedback (5 dims), a streamed debrief + improvement plan, and
   Firestore-ready history — reusing profile/resume/CV/job via core providers. Report-ready
   models. **Live-verified EN+AR** with real Gemini (212 pass).
-- **Candidates:** For You / Recommendations · durable persistence · Interview Report PDF.
+- **M3 — AI Recommendations / For You** ✅ *complete* (see §7.12). One holistic Gemini pass over
+  profile/resume/CV/applications/interviews → recommended jobs (confidence + reason), skills,
+  certifications, courses, an action-oriented roadmap, and next best actions (estimated time +
+  deep links) — provider-agnostic, Firestore-ready `RecommendationsStore` (latest-only) with a
+  refresh guard, **zero feature-to-feature deps**. **Live-verified EN+AR** with real Gemini (238
+  pass). Flips the last "Soon" Home card live.
+- **Candidates:** durable persistence · Interview Report PDF · Recommendations PDF · Employer side.
 
 See §8 for candidate future work.
 
@@ -954,7 +1078,7 @@ built-in Kotlin and breaks `assembleDebug` (`FilePickerPlugin` symbol not found)
 **`file_selector`** (already done). If you re-add a plugin and the build fails on
 `GeneratedPluginRegistrant`, suspect a KGP conflict.
 
-**No functional app bugs open.** `flutter analyze` clean; **212 tests pass** (as of P4·M2).
+**No functional app bugs open.** `flutter analyze` clean; **238 tests pass** (as of P4·M3).
 One known cosmetic limitation: pure-Latin runs can render reversed in the Arabic CV PDF
 (pdf-package bidi; §7.10) — Arabic content is correct.
 
@@ -1087,6 +1211,19 @@ Deps: **`pdf` + `printing`** (added P4·M1; build-verified). Shared `ChipInput` 
 interface, `in_memory_interview_history_repository.dart` = impl + `interviewHistoryRepositoryProvider`
 + `interviewSessionsProvider`). Firestore-ready: rebind the provider.
 
+**AI Recommendations / For You** `lib/features/recommendations/`
+`domain/`: `recommendation_models.dart` (`Recommendations` + 6 section models + enums;
+report-ready), `recommendation_context.dart` (primitives bundle + `AvailableJob` + `signature`),
+`recommendations_repository.dart` (interface), `recommendations_exception.dart`.
+`data/`: `recommendations_repository_impl.dart` (+ `recommendationsRepositoryProvider`, holistic
+prompt, job-id filtering).
+`application/`: `recommendations_controller.dart` (phased + context assembly + refresh guard).
+`presentation/`: `recommendations_screen.dart`, `recommendations_l10n.dart`,
+`widgets/recommendation_sections.dart`.
+**Cache seam** `lib/core/services/recommendations_store/` (`recommendations_store.dart` interface,
+`in_memory_recommendations_store.dart` = impl + `recommendationsStoreProvider` +
+`latestRecommendationsProvider`). Firestore-ready: rebind the provider.
+
 **Firebase** `lib/core/services/firebase/{firebase_service,firebase_options}.dart` ·
 `firebase.json` · `firestore.rules` · `firestore.indexes.json`.
 
@@ -1126,6 +1263,7 @@ interface, `in_memory_interview_history_repository.dart` = impl + `interviewHist
 | `cvBuilder` / `cvPreview` | `/cv-builder` · `/cv-builder/preview` | AI CV Builder (P4·M1) |
 | `interviewPrep` | `/interview-prep` | AI Interview Prep (P4·M2); optional `extra` = `Job` |
 | `interviewHistory` / `interviewSessionDetail` | `/interview-prep/history` · `…/history/:id` | Interview history + detail |
+| `recommendations` | `/recommendations` | AI Recommendations / For You (P4·M3) |
 
 **Core services & swap-point providers** (`lib/core/services/…`; each is the single binding
 to rebind for a real backend — in-memory/local today):
@@ -1146,6 +1284,8 @@ to rebind for a real backend — in-memory/local today):
 | `cvDraftStoreProvider` | `CvDraftStore` (now in `core/services/cv_store`) | in-memory → Firestore/local |
 | `interviewRepositoryProvider` | `InterviewRepository` (generate/evaluate/summarize/streamDebrief) | `AiService` (Gemini) |
 | `interviewHistoryRepositoryProvider` · `interviewSessionsProvider` (Stream) | `InterviewHistoryRepository` (`watchSessions`/`saveSession`/`findById`/`delete`) | in-memory → Firestore `users/{uid}/interviews` |
+| `recommendationsRepositoryProvider` | `RecommendationsRepository` (`generate`) | `AiService.generateJson` (Gemini) |
+| `recommendationsStoreProvider` · `latestRecommendationsProvider` (Stream) | `RecommendationsStore` (`watchLatest`/`read`/`save`/`clear`) | in-memory (latest-only) → Firestore `users/{uid}/recommendations/latest` |
 
 **Feature controllers / providers** (per feature `application/`): `authStateProvider` +
 `authRepositoryProvider` (auth) · `localeControllerProvider` · `themeControllerProvider` ·
@@ -1206,10 +1346,20 @@ and it links to `/jobs/:id` (matching) + `/career-coach` (interview prep).
 ## 14. TL;DR for the next session
 
 **Phase 2 COMPLETE (verified live EN+AR).** **Phase 3 · M1 `6a6a72c`, M2 `b7e4b53`, M3
-`071902c`, Phase 4 · M1 (CV Builder) `b237481`, and M2 (Interview Prep) `fc35db4` are COMPLETE
-and committed** (latest on `feature/resume-analyzer` — see §6, §7.7–§7.11). `flutter analyze`
-clean, **212 tests pass**, repo clean (only `.claude/settings.local.json` intentionally
-uncommitted). Firebase AI Logic is enabled + provisioned (§5).
+`071902c`, Phase 4 · M1 (CV Builder) `b237481`, M2 (Interview Prep) `fc35db4`, and M3
+(Recommendations / For You) `c1d044b` are COMPLETE and committed** (latest on
+`feature/resume-analyzer` — see §6, §7.7–§7.12). `flutter analyze` clean, **238 tests pass**,
+repo clean (only `.claude/settings.local.json` intentionally uncommitted). Firebase AI Logic is
+enabled + provisioned (§5). **The AI toolkit is complete — no "Soon" cards remain on Home.**
+
+**P4 · M3 (AI Recommendations / For You)** — one holistic `generateJson` pass over
+profile/resume/CV/applications/interviews → recommended jobs (confidence + reason), skills,
+certifications, courses, an action-oriented roadmap (This week/Next month/Next 3 months/6–12
+months), and next best actions (priority + estimated time + in-app deep links). Recommended jobs
+are chosen by id from the **shared** jobs universe (excludes applied) and deep-link to `/jobs/:id`.
+Provider-agnostic (`AiService`); Firestore-ready `RecommendationsStore` (latest-only) with a
+**refresh guard** (signature incl. language → "up to date" skips the AI call). **Zero
+feature-to-feature deps.** Live-verified EN + AR with real Gemini.
 
 **P4 · M2 (AI Interview Prep)** runs HR/Technical/Behavioral interviews: `generateJson` for
 questions + per-answer evaluation (5-dim scores + feedback), `streamText` for the final debrief
