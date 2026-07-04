@@ -8,6 +8,8 @@ import '../../features/auth/presentation/phone_auth_screen.dart';
 import '../../features/auth/presentation/welcome_screen.dart';
 import '../../features/country_selection/presentation/country_selection_screen.dart';
 import '../../features/applications/presentation/application_detail_screen.dart';
+import '../../features/cv_builder/presentation/cv_builder_screen.dart';
+import '../../features/cv_builder/presentation/cv_preview_screen.dart';
 import '../../features/applications/presentation/applications_screen.dart';
 import '../../features/career_coach/presentation/career_coach_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
@@ -132,6 +134,18 @@ abstract final class AppRouter {
           JobDetailScreen(jobId: state.pathParameters['id'] ?? ''),
           state.pageKey,
         ),
+      ),
+      GoRoute(
+        path: RouteNames.cvBuilderPath,
+        name: RouteNames.cvBuilder,
+        pageBuilder: _fade(const CvBuilderScreen()),
+        routes: [
+          GoRoute(
+            path: 'preview',
+            name: RouteNames.cvPreview,
+            pageBuilder: _fade(const CvPreviewScreen()),
+          ),
+        ],
       ),
       GoRoute(
         path: RouteNames.applicationsPath,

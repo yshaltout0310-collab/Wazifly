@@ -14,8 +14,8 @@ import '../application/profile_completion_provider.dart';
 import '../application/profile_edit_controller.dart';
 import '../application/profile_photo_controller.dart';
 import '../domain/experience_level.dart';
+import '../../../shared/widgets/chip_input.dart';
 import 'profile_l10n.dart';
-import 'widgets/chip_input.dart';
 
 /// Full editor for the extended profile: photo, identity, headline/location/bio,
 /// skills, experience level, preferred job titles, and links.

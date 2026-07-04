@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/localization/generated/app_localizations.dart';
-import '../../../../core/theme/app_dimensions.dart';
+import '../../core/localization/generated/app_localizations.dart';
+import '../../core/theme/app_dimensions.dart';
 
 /// A labeled tag editor: shows the current [values] as removable chips and a
 /// text field to add more. Used for Skills and Preferred Job Titles.

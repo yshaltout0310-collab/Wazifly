@@ -361,6 +361,177 @@ class AppLocalizationsAr extends AppLocalizations {
   String get notifyCoachTipsSubtitle => 'اقتراحات مهنية مخصّصة';
 
   @override
+  String get cvBuilderTitle => 'منشئ السيرة الذاتية';
+
+  @override
+  String get cvBuilderSubtitle => 'أنشئ سيرة ذاتية احترافية من ملفك الشخصي';
+
+  @override
+  String get cvNeedsProfileTitle => 'سجّل الدخول لإنشاء سيرتك الذاتية';
+
+  @override
+  String get cvNeedsProfileBody =>
+      'تُبنى سيرتك الذاتية من ملفك الشخصي — سجّل الدخول للمتابعة.';
+
+  @override
+  String get cvResetFromProfile => 'إعادة التعبئة من الملف الشخصي';
+
+  @override
+  String get cvContactSection => 'معلومات الاتصال';
+
+  @override
+  String get cvFullName => 'الاسم الكامل';
+
+  @override
+  String get cvHeadline => 'المسمى المهني';
+
+  @override
+  String get cvEmail => 'البريد الإلكتروني';
+
+  @override
+  String get cvPhone => 'الهاتف';
+
+  @override
+  String get cvLocation => 'الموقع';
+
+  @override
+  String get cvTargetRole => 'الوظيفة المستهدفة';
+
+  @override
+  String get cvTargetRoleHint => 'مثال: مهندس Flutter أول';
+
+  @override
+  String get cvSummarySection => 'الملخّص المهني';
+
+  @override
+  String get cvSummaryHint => 'نبذة قصيرة — أو دع الذكاء الاصطناعي يكتبها لك';
+
+  @override
+  String get cvExperienceSection => 'الخبرات';
+
+  @override
+  String get cvAddExperience => 'إضافة خبرة';
+
+  @override
+  String get cvRole => 'المسمى الوظيفي';
+
+  @override
+  String get cvCompany => 'الشركة';
+
+  @override
+  String get cvStartDate => 'من';
+
+  @override
+  String get cvEndDate => 'إلى';
+
+  @override
+  String get cvCurrentRole => 'أعمل هنا حاليًا';
+
+  @override
+  String get cvHighlights => 'الإنجازات';
+
+  @override
+  String get cvAddHighlight => 'إضافة إنجاز';
+
+  @override
+  String get cvEducationSection => 'التعليم';
+
+  @override
+  String get cvAddEducation => 'إضافة مؤهل';
+
+  @override
+  String get cvDegree => 'الدرجة العلمية';
+
+  @override
+  String get cvInstitution => 'المؤسسة التعليمية';
+
+  @override
+  String get cvSkillsSection => 'المهارات';
+
+  @override
+  String get cvSkillHint => 'أضف مهارة';
+
+  @override
+  String get cvProjectsSection => 'المشاريع';
+
+  @override
+  String get cvPresent => 'حتى الآن';
+
+  @override
+  String get cvLinksSection => 'الروابط';
+
+  @override
+  String get cvRemove => 'إزالة';
+
+  @override
+  String get cvEnhanceWithAi => 'تحسين بالذكاء الاصطناعي';
+
+  @override
+  String get cvEnhancing => 'جارٍ تحسين سيرتك الذاتية…';
+
+  @override
+  String get cvEnhanced => 'تم تحسين السيرة الذاتية بالذكاء الاصطناعي';
+
+  @override
+  String get cvPreviewExport => 'المعاينة والتصدير';
+
+  @override
+  String get cvTemplateSection => 'القالب';
+
+  @override
+  String get cvExportPdf => 'تصدير PDF';
+
+  @override
+  String get cvPreviewTitle => 'معاينة';
+
+  @override
+  String get cvGenerating => 'جارٍ إنشاء ملف PDF…';
+
+  @override
+  String get cvExportError => 'تعذّر إنشاء ملف PDF. حاول مرة أخرى.';
+
+  @override
+  String get cvEnhanceFailed => 'تعذّر تحسين سيرتك الذاتية. حاول مرة أخرى.';
+
+  @override
+  String get cvErrNetwork =>
+      'لا يوجد اتصال بالإنترنت. تحقّق من شبكتك وحاول مجددًا.';
+
+  @override
+  String get cvErrQuota => 'خدمة الذكاء الاصطناعي مشغولة الآن. حاول بعد قليل.';
+
+  @override
+  String get cvErrEmpty =>
+      'أضف مزيدًا من التفاصيل إلى سيرتك الذاتية ثم أعد المحاولة.';
+
+  @override
+  String get cvEmptyPreview => 'أضف تفاصيلك أولاً لمعاينة سيرتك الذاتية.';
+
+  @override
+  String get cvTemplateAts => 'ATS';
+
+  @override
+  String get cvTemplateAtsDesc => 'نظيف ومتوافق مع أنظمة تتبّع المتقدّمين';
+
+  @override
+  String get cvTemplateModern => 'عصري';
+
+  @override
+  String get cvTemplateModernDesc => 'تصميم أنيق بلمسات لونية';
+
+  @override
+  String get cvTemplateMinimal => 'بسيط';
+
+  @override
+  String get cvTemplateMinimalDesc => 'بسيط وواسع';
+
+  @override
+  String get cvTemplateHarvard => 'هارفارد';
+
+  @override
+  String get cvTemplateHarvardDesc => 'تنسيق أكاديمي كلاسيكي';
+
+  @override
   String get welcomeTitle => 'مرحبًا بك في كاريير بريدج';
 
   @override

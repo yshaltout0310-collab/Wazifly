@@ -48,7 +48,11 @@ class HomeScreen extends ConsumerWidget {
         label: l10n.featCareerCoach,
         route: RouteNames.careerCoach,
       ),
-      (icon: Icons.edit_document, label: l10n.featCvBuilder, route: null),
+      (
+        icon: Icons.edit_document,
+        label: l10n.featCvBuilder,
+        route: RouteNames.cvBuilder,
+      ),
       (
         icon: Icons.record_voice_over_outlined,
         label: l10n.featInterviewPrep,

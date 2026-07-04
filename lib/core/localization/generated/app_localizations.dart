@@ -770,6 +770,342 @@ abstract class AppLocalizations {
   /// **'Personalized career suggestions'**
   String get notifyCoachTipsSubtitle;
 
+  /// No description provided for @cvBuilderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'CV Builder'**
+  String get cvBuilderTitle;
+
+  /// No description provided for @cvBuilderSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Build a professional CV from your profile'**
+  String get cvBuilderSubtitle;
+
+  /// No description provided for @cvNeedsProfileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to build your CV'**
+  String get cvNeedsProfileTitle;
+
+  /// No description provided for @cvNeedsProfileBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your CV is built from your profile — sign in to continue.'**
+  String get cvNeedsProfileBody;
+
+  /// No description provided for @cvResetFromProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset from profile'**
+  String get cvResetFromProfile;
+
+  /// No description provided for @cvContactSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact'**
+  String get cvContactSection;
+
+  /// No description provided for @cvFullName.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name'**
+  String get cvFullName;
+
+  /// No description provided for @cvHeadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Professional headline'**
+  String get cvHeadline;
+
+  /// No description provided for @cvEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get cvEmail;
+
+  /// No description provided for @cvPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get cvPhone;
+
+  /// No description provided for @cvLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get cvLocation;
+
+  /// No description provided for @cvTargetRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Target role'**
+  String get cvTargetRole;
+
+  /// No description provided for @cvTargetRoleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Senior Flutter Engineer'**
+  String get cvTargetRoleHint;
+
+  /// No description provided for @cvSummarySection.
+  ///
+  /// In en, this message translates to:
+  /// **'Professional summary'**
+  String get cvSummarySection;
+
+  /// No description provided for @cvSummaryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A short pitch — or let AI write it for you'**
+  String get cvSummaryHint;
+
+  /// No description provided for @cvExperienceSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Experience'**
+  String get cvExperienceSection;
+
+  /// No description provided for @cvAddExperience.
+  ///
+  /// In en, this message translates to:
+  /// **'Add experience'**
+  String get cvAddExperience;
+
+  /// No description provided for @cvRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Job title'**
+  String get cvRole;
+
+  /// No description provided for @cvCompany.
+  ///
+  /// In en, this message translates to:
+  /// **'Company'**
+  String get cvCompany;
+
+  /// No description provided for @cvStartDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get cvStartDate;
+
+  /// No description provided for @cvEndDate.
+  ///
+  /// In en, this message translates to:
+  /// **'End'**
+  String get cvEndDate;
+
+  /// No description provided for @cvCurrentRole.
+  ///
+  /// In en, this message translates to:
+  /// **'I currently work here'**
+  String get cvCurrentRole;
+
+  /// No description provided for @cvHighlights.
+  ///
+  /// In en, this message translates to:
+  /// **'Highlights'**
+  String get cvHighlights;
+
+  /// No description provided for @cvAddHighlight.
+  ///
+  /// In en, this message translates to:
+  /// **'Add highlight'**
+  String get cvAddHighlight;
+
+  /// No description provided for @cvEducationSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Education'**
+  String get cvEducationSection;
+
+  /// No description provided for @cvAddEducation.
+  ///
+  /// In en, this message translates to:
+  /// **'Add education'**
+  String get cvAddEducation;
+
+  /// No description provided for @cvDegree.
+  ///
+  /// In en, this message translates to:
+  /// **'Degree'**
+  String get cvDegree;
+
+  /// No description provided for @cvInstitution.
+  ///
+  /// In en, this message translates to:
+  /// **'Institution'**
+  String get cvInstitution;
+
+  /// No description provided for @cvSkillsSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Skills'**
+  String get cvSkillsSection;
+
+  /// No description provided for @cvSkillHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a skill'**
+  String get cvSkillHint;
+
+  /// No description provided for @cvProjectsSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Projects'**
+  String get cvProjectsSection;
+
+  /// No description provided for @cvPresent.
+  ///
+  /// In en, this message translates to:
+  /// **'Present'**
+  String get cvPresent;
+
+  /// No description provided for @cvLinksSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Links'**
+  String get cvLinksSection;
+
+  /// No description provided for @cvRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get cvRemove;
+
+  /// No description provided for @cvEnhanceWithAi.
+  ///
+  /// In en, this message translates to:
+  /// **'Enhance with AI'**
+  String get cvEnhanceWithAi;
+
+  /// No description provided for @cvEnhancing.
+  ///
+  /// In en, this message translates to:
+  /// **'Enhancing your CV…'**
+  String get cvEnhancing;
+
+  /// No description provided for @cvEnhanced.
+  ///
+  /// In en, this message translates to:
+  /// **'CV enhanced with AI'**
+  String get cvEnhanced;
+
+  /// No description provided for @cvPreviewExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview & export'**
+  String get cvPreviewExport;
+
+  /// No description provided for @cvTemplateSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Template'**
+  String get cvTemplateSection;
+
+  /// No description provided for @cvExportPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Export PDF'**
+  String get cvExportPdf;
+
+  /// No description provided for @cvPreviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get cvPreviewTitle;
+
+  /// No description provided for @cvGenerating.
+  ///
+  /// In en, this message translates to:
+  /// **'Generating your PDF…'**
+  String get cvGenerating;
+
+  /// No description provided for @cvExportError.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t generate the PDF. Please try again.'**
+  String get cvExportError;
+
+  /// No description provided for @cvEnhanceFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t enhance your CV. Please try again.'**
+  String get cvEnhanceFailed;
+
+  /// No description provided for @cvErrNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'No internet connection. Check your network and try again.'**
+  String get cvErrNetwork;
+
+  /// No description provided for @cvErrQuota.
+  ///
+  /// In en, this message translates to:
+  /// **'The AI service is busy right now. Please try again shortly.'**
+  String get cvErrQuota;
+
+  /// No description provided for @cvErrEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Add more detail to your CV, then try enhancing again.'**
+  String get cvErrEmpty;
+
+  /// No description provided for @cvEmptyPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your details first to preview your CV.'**
+  String get cvEmptyPreview;
+
+  /// No description provided for @cvTemplateAts.
+  ///
+  /// In en, this message translates to:
+  /// **'ATS'**
+  String get cvTemplateAts;
+
+  /// No description provided for @cvTemplateAtsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Clean, applicant-tracking-friendly'**
+  String get cvTemplateAtsDesc;
+
+  /// No description provided for @cvTemplateModern.
+  ///
+  /// In en, this message translates to:
+  /// **'Modern'**
+  String get cvTemplateModern;
+
+  /// No description provided for @cvTemplateModernDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Sleek, accented layout'**
+  String get cvTemplateModernDesc;
+
+  /// No description provided for @cvTemplateMinimal.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimal'**
+  String get cvTemplateMinimal;
+
+  /// No description provided for @cvTemplateMinimalDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Simple and spacious'**
+  String get cvTemplateMinimalDesc;
+
+  /// No description provided for @cvTemplateHarvard.
+  ///
+  /// In en, this message translates to:
+  /// **'Harvard'**
+  String get cvTemplateHarvard;
+
+  /// No description provided for @cvTemplateHarvardDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Classic academic format'**
+  String get cvTemplateHarvardDesc;
+
   /// No description provided for @welcomeTitle.
   ///
   /// In en, this message translates to:

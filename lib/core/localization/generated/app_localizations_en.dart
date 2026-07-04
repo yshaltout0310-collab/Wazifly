@@ -364,6 +364,178 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notifyCoachTipsSubtitle => 'Personalized career suggestions';
 
   @override
+  String get cvBuilderTitle => 'CV Builder';
+
+  @override
+  String get cvBuilderSubtitle => 'Build a professional CV from your profile';
+
+  @override
+  String get cvNeedsProfileTitle => 'Sign in to build your CV';
+
+  @override
+  String get cvNeedsProfileBody =>
+      'Your CV is built from your profile — sign in to continue.';
+
+  @override
+  String get cvResetFromProfile => 'Reset from profile';
+
+  @override
+  String get cvContactSection => 'Contact';
+
+  @override
+  String get cvFullName => 'Full name';
+
+  @override
+  String get cvHeadline => 'Professional headline';
+
+  @override
+  String get cvEmail => 'Email';
+
+  @override
+  String get cvPhone => 'Phone';
+
+  @override
+  String get cvLocation => 'Location';
+
+  @override
+  String get cvTargetRole => 'Target role';
+
+  @override
+  String get cvTargetRoleHint => 'e.g. Senior Flutter Engineer';
+
+  @override
+  String get cvSummarySection => 'Professional summary';
+
+  @override
+  String get cvSummaryHint => 'A short pitch — or let AI write it for you';
+
+  @override
+  String get cvExperienceSection => 'Experience';
+
+  @override
+  String get cvAddExperience => 'Add experience';
+
+  @override
+  String get cvRole => 'Job title';
+
+  @override
+  String get cvCompany => 'Company';
+
+  @override
+  String get cvStartDate => 'Start';
+
+  @override
+  String get cvEndDate => 'End';
+
+  @override
+  String get cvCurrentRole => 'I currently work here';
+
+  @override
+  String get cvHighlights => 'Highlights';
+
+  @override
+  String get cvAddHighlight => 'Add highlight';
+
+  @override
+  String get cvEducationSection => 'Education';
+
+  @override
+  String get cvAddEducation => 'Add education';
+
+  @override
+  String get cvDegree => 'Degree';
+
+  @override
+  String get cvInstitution => 'Institution';
+
+  @override
+  String get cvSkillsSection => 'Skills';
+
+  @override
+  String get cvSkillHint => 'Add a skill';
+
+  @override
+  String get cvProjectsSection => 'Projects';
+
+  @override
+  String get cvPresent => 'Present';
+
+  @override
+  String get cvLinksSection => 'Links';
+
+  @override
+  String get cvRemove => 'Remove';
+
+  @override
+  String get cvEnhanceWithAi => 'Enhance with AI';
+
+  @override
+  String get cvEnhancing => 'Enhancing your CV…';
+
+  @override
+  String get cvEnhanced => 'CV enhanced with AI';
+
+  @override
+  String get cvPreviewExport => 'Preview & export';
+
+  @override
+  String get cvTemplateSection => 'Template';
+
+  @override
+  String get cvExportPdf => 'Export PDF';
+
+  @override
+  String get cvPreviewTitle => 'Preview';
+
+  @override
+  String get cvGenerating => 'Generating your PDF…';
+
+  @override
+  String get cvExportError => 'Couldn\'t generate the PDF. Please try again.';
+
+  @override
+  String get cvEnhanceFailed => 'Couldn\'t enhance your CV. Please try again.';
+
+  @override
+  String get cvErrNetwork =>
+      'No internet connection. Check your network and try again.';
+
+  @override
+  String get cvErrQuota =>
+      'The AI service is busy right now. Please try again shortly.';
+
+  @override
+  String get cvErrEmpty =>
+      'Add more detail to your CV, then try enhancing again.';
+
+  @override
+  String get cvEmptyPreview => 'Add your details first to preview your CV.';
+
+  @override
+  String get cvTemplateAts => 'ATS';
+
+  @override
+  String get cvTemplateAtsDesc => 'Clean, applicant-tracking-friendly';
+
+  @override
+  String get cvTemplateModern => 'Modern';
+
+  @override
+  String get cvTemplateModernDesc => 'Sleek, accented layout';
+
+  @override
+  String get cvTemplateMinimal => 'Minimal';
+
+  @override
+  String get cvTemplateMinimalDesc => 'Simple and spacious';
+
+  @override
+  String get cvTemplateHarvard => 'Harvard';
+
+  @override
+  String get cvTemplateHarvardDesc => 'Classic academic format';
+
+  @override
   String get welcomeTitle => 'Welcome to Career Bridge';
 
   @override
