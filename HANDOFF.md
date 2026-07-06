@@ -1,7 +1,7 @@
 # Career Bridge — Session Handoff
 
 > Living handoff doc so a fresh Claude session can continue immediately.
-> Last updated: **Phase 5 · Milestone 2 (Employer Job Management) — COMPLETE** (see §7.14) — live-verified EN + AR.
+> Last updated: **Phase 5 · Milestone 3 (Employer Applicants Management) — COMPLETE** (see §7.15) — live-verified EN + AR.
 > **Phase 2 COMPLETE** (M1 Resume Analyzer + M2 Job Matching + M3 Career Coach).
 > **Phase 3 · M1 (Jobs Platform) COMPLETE** (`6a6a72c`, §7.7).
 > **Phase 3 · M2 (Applications Center) COMPLETE** (`b7e4b53`, §7.8).
@@ -11,6 +11,7 @@
 > **Phase 4 · M3 (AI Recommendations / For You) COMPLETE** (`c1d044b`, §7.12) — live-verified EN + AR (real Gemini). **Last "Soon" Home card is now live — the AI toolkit is complete.**
 > **Phase 5 · M1 (Employer Dashboard — Company Foundation) COMPLETE** (`baf5801`, §7.13) — live-verified EN + AR. **First employer-side milestone: role-based landing + Company Profile/Settings/Dashboard over a Firestore-ready `CompanyRepository`.**
 > **Phase 5 · M2 (Employer Job Management) COMPLETE** (§7.14) — live-verified EN + AR on `employer01@cb.app`. **Full employer job lifecycle: My Jobs (search/filter/sort) → create/edit with debounced auto-save + two-tier validation → preview (shared `JobDetailView`, exactly as a seeker sees it) → publish-with-confirmation → archive-with-reason/close/reopen/duplicate/soft-delete, all optimistic with rollback.** A `JobPosting` management superset `toJob()`-projects to the seeker `Job`; a separate write-path `EmployerJobsRepository` (`jobs/{jobId}`) leaves the read-only seeker `JobsRepository` untouched. `flutter analyze` clean; **329 tests pass**; `jobs/{jobId}` rules deployed.
+> **Phase 5 · M3 (Employer Applicants Management) COMPLETE** (§7.15) — live-verified EN + AR on `employer01@cb.app` (real Firestore, seeded applicants). **Grouped-by-job applicants inbox (stats/search/status-filter/sort) → rich applicant detail (AI match, resume analysis, resume-file graceful, skills, links, interview readiness, timeline, private notes) → status pipeline (Move to Review/Interview/Accept/Reject, appends history) + note CRUD, all optimistic with rollback.** The **shared `Application`** was extended (dual-keyed applicantUid/ownerUid + denormalized versioned `ApplicantSnapshot` + `source`) so the employer reads the exact doc the seeker's Applications Center does — no cross-user private reads. Separate `EmployerApplicantsRepository` + owner-private `EmployerNotesRepository` (`applicationNotes`) + `EmployerActivityRepository` (`employerActivity`, audit foundation). `flutter analyze` clean; **375 tests pass** (+46); `applications`/`applicationNotes`/`employerActivity` rules deployed.
 
 ---
 
@@ -1142,6 +1143,86 @@ Deep-linked via `flutter run --route=/employer/jobs` (sidesteps the flaky Home a
 
 ---
 
+## 7.15 Phase 5 · Milestone 3 — Employer Applicants Management ✅ COMPLETE
+
+> Employers review + manage applicants for every published job, over the **same shared applications foundation**
+> the seeker Applications Center uses. `flutter analyze` clean; **375 tests pass** (+46); rules deployed.
+> **Four approved additions baked in:** `ApplicantSnapshot.snapshotVersion` (forward-compat), an **employer activity
+> log** foundation (recorded fire-and-forget, no UI), an optional `Application.source` (defaults CareerBridge), and
+> the M2 **optimistic-with-rollback** strategy for *both* status actions and note ops.
+
+**The privacy-wall insight (drove the whole design):** Firestore rules keep every user's `users/{uid}` profile,
+resume analysis, and interview history **private to that user** (and resume/interview data is only session-cached).
+An employer therefore can't read an applicant's private docs — so **everything the employer needs is denormalized onto
+the application at apply time** (seeker-side, where it's the current user's own data). Mirrors how `Application`
+already snapshots the job. This keeps rules tight, avoids employer-side AI cost, and preserves zero feature deps.
+
+**Shared foundation (extended/new in `lib/shared/models/`):**
+- `application.dart` — **extended additively**: `applicantUid`/`ownerUid`/`companyId`/`companyName` (dual-keyed:
+  seeker reads by applicantUid, employer by ownerUid), `source` (`ApplicationSource {careerBridge,referral,
+  externalImport,companyWebsite}`), nested `applicant` (`ApplicantSnapshot?`); `ApplicationEvent` gained `by`/`note`
+  audit; `withStatus(...,by,note)` still **appends** (never replaces). `_parseDate` now duck-types Firestore Timestamp.
+- `applicant_snapshot.dart` — **new** `ApplicantSnapshot` (profile+resume-analysis+AI-match+interview-readiness) with
+  `snapshotVersion` (defaults `currentVersion=1`); plain values only (no feature enums into `shared/`).
+- `application_note.dart` (`ApplicationNote`), `employer_activity.dart` (`EmployerActivity` + `EmployerActivityType`).
+
+**Core repositories (`lib/core/services/`) — each interface + Firestore + in-memory + providers, mirroring M2:**
+- `applications/employer_applicants_repository.dart` — `watchApplicants(ownerUid)`/`fetchApplicant`/`updateApplication`;
+  Firestore queries **`where('ownerUid', …)`** (matches the rule — pre-empts the M2 permission-denied bug); writes rethrow.
+  `employerApplicantsProvider` tracks the auth uid. **Separate** from the untouched seeker `ApplicationsRepository`.
+- `notes/employer_notes_repository.dart` — owner-private `applicationNotes` (query by ownerUid+applicationId, two
+  equality filters, no composite index). `employerActivityRepository` (`activity/`) logs actions (fire-and-forget).
+
+**Application layer (`lib/features/employer/application/`):**
+- `employer_applicants_providers.dart` — `ApplicantsFilter`(text/statuses/jobId/sort)+controller, `visibleApplicants`
+  (stream + optimistic overrides), `filteredApplicants`, **`groupedApplicantsProvider`** (by job, most-recent first),
+  `applicantsForJobProvider`, `applicantByIdProvider`, `employerApplicantsStatsProvider`.
+- `employer_applicants_controller.dart` (optimistic status: review/interview/accept/reject/reopen — gated by the pure
+  `ApplicantStatusFlow`, appends history, logs activity, rolls back) + `employer_notes_controller.dart` (optimistic
+  add/edit/delete with `visibleNotesProvider` overlay + activity). `company_providers.dart` — stats now derive
+  Applications/Interviews/Hires from the applicants stream.
+
+**Presentation (`lib/features/employer/presentation/`):** `employer_applicants_screen.dart` (grouped inbox or per-job
+via `jobId`), `employer_applicant_detail_screen.dart` (all sections + status action bar + notes), `applicant_actions`
++ `applicant_action_handler` (`runApplicantAction`, confirm/reject-reason dialogs — controller owned by a
+`StatefulWidget`, the M2 dialog-dispose lesson), `employer_applicants_l10n`, + 8 widgets. **Promoted**
+`StatusChip`/`StatusTimeline`/status-style → `shared/widgets` (the only cross-surface link — like `JobDetailView`).
+
+**Wiring:** 3 routes under `/employer` (`employerApplicants` `/employer/applicants`, `:appId` child; `employerJobApplicants`
+`/employer/jobs/:id/applicants`). Home **"Applicants" tile live**; Job Detail **"Applicants (N) →"** (was "coming soon").
+**Rules deployed:** `applications` (create=applicant, read=either party, update=owner, delete=applicant), owner-private
+`applicationNotes` + `employerActivity`. ~45 `employerApplicants*`/`applicant*`/`note*` EN+AR keys (ICU plurals).
+
+**Tests +46 → 375:** model extension, `applicant_snapshot`, `application_note`(+activity), `applicant_status_flow`,
+applicants + notes repos, applicants + notes controllers (optimistic + **rollback via throwing fakes** + activity
+logged), providers (group/filter/stats), `employer_applicants_screens` (EN+AR, **real `AppTheme`**), + inbox in the
+locale sweep. Seeker applications tests stayed green through the widget promotion.
+
+**VERIFIED live (EN + AR, real Firestore, `employer01@cb.app`):** seeded 3 applications (Sara/Omar/Lina, distinct
+statuses + full snapshots) into Firestore `applications` via a seeder that signs in as the seeker (the create rule
+needs `applicantUid==auth.uid`) — see `scratchpad/seed_applicants.py`. Then: grouped-by-job inbox (stats
+Total/New/Interview/Accepted, search, status chips, match badges) → detail (AI match %, matching/missing skills,
+ATS score + summary + strengths, resume-file graceful "not available", skills, links, interview readiness, timeline)
+→ **added a private note** (persisted, owner-only) → **Move to Interview** (snackbar + timeline **appended** the
+Interview event, optimistic + Firestore) → dashboard stats went **Applications 3 / Interviews 2**. Repeated in AR
+(RTL): all strings translated, ICU plurals (متقدّمان / متقدّم واحد), the earlier status change persisted. **No device
+bugs this milestone — the three M2 lessons were pre-applied** (real `AppTheme` in tests, `minimumSize` action buttons,
+`StatefulWidget`-owned dialog controllers, query-by-`ownerUid`).
+
+**Notes for the next session:**
+- **Seeker apply doesn't write to Firestore yet** — the seeker Applications Center is still in-memory (P3·M2, untouched),
+  and seekers browse **seed** jobs (no ownerUid). So live seeker→employer needs two follow-ups: rebind the seeker
+  `ApplicationsRepository` to Firestore (durable persistence) **and** surface real published `jobs/{jobId}` to the seeker
+  Jobs Platform + assemble the `ApplicantSnapshot` at apply time. Until then, applicants are seeded (as above). The
+  **architecture is ready** — the same shared model/collection means the two sides live-sync the moment both are Firestore.
+- **Resume file view/download** is a graceful-degrade stub (`resumeUrl` null until Firebase Storage is provisioned +
+  the apply flow uploads the PDF); a thin `url_launcher` follow-up opens it (kept out now to avoid a KGP/Gradle risk).
+- **Employer activity log** is recorded but has no UI — a future audit screen reads `employerActivityProvider`.
+- **Full interview history** (read-only) for an applicant needs a Firestore interview store + a sharing rule; only the
+  lightweight readiness snapshot is denormalized today.
+
+---
+
 ## 8. Next steps
 
 **Phase 2 COMPLETE.** **Phase 3 · M1 (Jobs Platform) `6a6a72c`, M2 (Applications Center)
@@ -1164,14 +1245,15 @@ Foundation) `baf5801` COMPLETE — the employer side has begun.** Nothing is in 
    (with `MSYS_NO_PATHCONV=1 MSYS2_ARG_CONV_EXCL="*"`) sidesteps the flaky Home app-bar.
 
 3. **Candidate next milestones** (present a plan + wait for approval, per the workflow):
-   **Employer Phase 5 · M3+** — Company Foundation (§7.13) and **Post a Job / Job Management (§7.14) are done**, so the
-   natural next step is **Applicants / candidate management** (seeker `Application`s surfaced to the owning employer per
-   `jobs/{jobId}` → an applicants list + status pipeline; a seeker's Apply already writes an `Application`). Also open:
-   **surface published `jobs/{jobId}` to the seeker Jobs Platform** (currently seed-only — the `read: status=='published'`
-   rule + `toJob()` projection already support it); **durable persistence** for the remaining in-memory seams; an **AI
-   Company Strength** score (`Company.strength` is shaped for it — §7.13); and the seeker `_ActionBar` latent full-width-
-   button shape (bug #2 pattern in §7.14 — never verified live). *(All six AI-toolkit features + the employer Company
-   Foundation + Job Management are done.)*
+   Company Foundation (§7.13), Job Management (§7.14), and **Applicants Management (§7.15) are done**. The natural
+   next steps: **(a) close the seeker→employer loop** — rebind the seeker `ApplicationsRepository` to Firestore
+   (durable persistence) **and** surface real published `jobs/{jobId}` to the seeker Jobs Platform + assemble the
+   `ApplicantSnapshot` at apply time (currently applicants are seeded for verification; §7.15). **(b)** an **Employer
+   Activity / audit UI** (`employerActivityProvider` foundation is built). **(c)** an **AI Company Strength** score
+   (`Company.strength` shaped for it — §7.13) or **AI Recruiter Insights** over `ApplicantSnapshot`. Also open:
+   resume-file view via `url_launcher` once Storage is provisioned; the seeker `_ActionBar` latent full-width-button
+   shape (bug #2 pattern — never verified live). *(All six AI-toolkit features + the full employer side — Company /
+   Jobs / Applicants — are done.)*
 
 4. **Polish follow-ups:** CV Builder Arabic-PDF Latin-run bidi reversal (§7.10) + a 2nd CV
    template; an **Interview Report PDF** (the models are already report-ready — §7.11) reusing
