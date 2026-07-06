@@ -1,7 +1,7 @@
 # Career Bridge — Session Handoff
 
 > Living handoff doc so a fresh Claude session can continue immediately.
-> Last updated: end of Phase 5 · Milestone 1 (Employer Dashboard — Company Foundation) — final handoff.
+> Last updated: **Phase 5 · Milestone 2 (Employer Job Management) — COMPLETE** (see §7.14) — live-verified EN + AR.
 > **Phase 2 COMPLETE** (M1 Resume Analyzer + M2 Job Matching + M3 Career Coach).
 > **Phase 3 · M1 (Jobs Platform) COMPLETE** (`6a6a72c`, §7.7).
 > **Phase 3 · M2 (Applications Center) COMPLETE** (`b7e4b53`, §7.8).
@@ -10,6 +10,7 @@
 > **Phase 4 · M2 (AI Interview Prep) COMPLETE** (`fc35db4`, §7.11) — live-verified EN + AR (real Gemini).
 > **Phase 4 · M3 (AI Recommendations / For You) COMPLETE** (`c1d044b`, §7.12) — live-verified EN + AR (real Gemini). **Last "Soon" Home card is now live — the AI toolkit is complete.**
 > **Phase 5 · M1 (Employer Dashboard — Company Foundation) COMPLETE** (`baf5801`, §7.13) — live-verified EN + AR. **First employer-side milestone: role-based landing + Company Profile/Settings/Dashboard over a Firestore-ready `CompanyRepository`.**
+> **Phase 5 · M2 (Employer Job Management) COMPLETE** (§7.14) — live-verified EN + AR on `employer01@cb.app`. **Full employer job lifecycle: My Jobs (search/filter/sort) → create/edit with debounced auto-save + two-tier validation → preview (shared `JobDetailView`, exactly as a seeker sees it) → publish-with-confirmation → archive-with-reason/close/reopen/duplicate/soft-delete, all optimistic with rollback.** A `JobPosting` management superset `toJob()`-projects to the seeker `Job`; a separate write-path `EmployerJobsRepository` (`jobs/{jobId}`) leaves the read-only seeker `JobsRepository` untouched. `flutter analyze` clean; **329 tests pass**; `jobs/{jobId}` rules deployed.
 
 ---
 
@@ -1014,6 +1015,133 @@ re-subscribe — a fresh launch reads the persisted doc fine.
 
 ---
 
+## 7.14 Phase 5 · Milestone 2 — Employer Job Management ✅ COMPLETE
+
+> **A machine freeze had interrupted this milestone mid-way** (foundation built, presentation/wiring/tests/verify
+> remaining). A fresh session confirmed the working tree matched the documented progress, then **completed the
+> remaining items and live-verified EN + AR**. `flutter analyze` clean; **329 tests pass** (was 270; +59);
+> `jobs/{jobId}` Firestore rules deployed.
+
+**Design recap (see the approved plan):** a new `JobPosting` **management superset** (shared model) that
+`toJob()`-projects to the existing seeker `Job` (reuse by projection, not duplication); a **separate** core
+`EmployerJobsRepository` (write CRUD, Firestore `jobs/{jobId}`) leaving the read-only seeker `JobsRepository`
+untouched; a shared `JobDetailView` widget so the employer **preview** renders exactly as a seeker sees it. Zero
+feature-to-feature deps. Approved additions baked into the model/logic: soft-delete (`deletedAt`), availability
+dates (`opensAt`/`expiresAt`), multiple openings, draft **auto-save**, unsaved-changes guard, publish confirmation
+**after preview**, archive reason, **metrics foundation** (`JobMetrics` incl. future `firstPublishedAt`/
+`lastViewedAt`/`lastApplicationAt`), audit (`createdBy`/`updatedBy`), status **history** (`JobStatusChange`), and
+**optimistic UI** with rollback.
+
+### ✅ COMPLETE (in the working tree, analyzer-clean, untracked/modified — NOT committed)
+
+**Domain enums** `lib/features/employer/domain/`:
+- `job_status.dart` — `JobStatus {draft,published,archived,closed}` + `allowedNext`/`canTransitionTo`.
+- `employment_type.dart` — `EmploymentType` (5) with `canonical` strings matching the seed data.
+- `job_experience.dart` — `JobExperience` (5) with `canonical` → seeker `Job.seniority`.
+- `salary_period.dart` — `SalaryPeriod {yearly,monthly,hourly}`.
+- `job_validation.dart` — pure `JobValidator.forDraft`/`forPublish` + `JobField`/`JobError`/`JobValidationResult`.
+
+**Shared model** `lib/shared/models/job_posting.dart` — `JobPosting` (+ `SalaryRange`, `JobMetrics`,
+`JobStatusChange`), defensive JSON, `toJob()` projection, `withStatus`/`softDeleted`/`duplicated`/`create`/
+`copyWith`, all lifecycle/availability/openings/soft-delete/metrics/audit/history fields.
+
+**Core repository** `lib/core/services/jobs/`:
+- `employer_jobs_repository.dart` — interface (`watchJobs`/`fetchJob`/`createJob`/`updateJob`) +
+  `employerJobsRepositoryProvider` + `employerJobsProvider` (StreamProvider, tracks auth uid).
+- `firestore_employer_jobs_repository.dart` — `jobs/{jobId}`, equality-only query (no composite index), filters
+  soft-deleted + sorts in Dart, **writes rethrow on failure** (so the optimistic controller can roll back).
+- `in_memory_employer_jobs_repository.dart` — per-company broadcast stream (tests/offline).
+
+**Application layer** `lib/features/employer/application/`:
+- `employer_jobs_providers.dart` — `EmployerJobsFilter`(+controller), `JobSort`, **`visibleEmployerJobsProvider`**
+  (merges the stream with the controller's optimistic overlay), `filteredEmployerJobsProvider`,
+  `employerJobByIdProvider`, `employerJobsStatsProvider`.
+- `employer_jobs_controller.dart` — **optimistic** lifecycle actions (publish/close/reopen/archive-with-reason/
+  duplicate/softDelete) with an overlay (`overrides`/`removedIds`/`added`/`pending`) that **rolls back on failure**;
+  transitions computed by the pure model.
+- `job_editor_controller.dart` — `.autoDispose.family<…, String?>` (null=create, id=edit); field mutations,
+  two-tier validation, **debounced draft auto-save** (2.5 s, guarded by draft-validity), dirty tracking
+  (`hasUnsavedChanges`), `saveDraft()`. Injectable clock + `@visibleForTesting` seed ctor.
+
+**Modified (M1 baseline, additive/justified):**
+- `lib/features/employer/application/company_providers.dart` — `companyStatsProvider.activeJobs` now derives from
+  `employerJobsProvider` (published count). *(The M1 seam explicitly anticipated this.)*
+- `lib/shared/widgets/job_detail_view.dart` — **new** shared widget (public job body from a `Job`, optional
+  `afterMeta` slot).
+- `lib/features/jobs/presentation/job_detail_screen.dart` — **refactored** `_Content` to render via `JobDetailView`
+  (match panel injected via `afterMeta`); removed the now-shared `_MetaChip`/`_SectionTitle`. **Behavior-preserving**
+  — must stay green in the existing `job_detail_screen_test`/`jobs_screen_test` (regression guard).
+
+**Localization** — all ~90 `job*`/`employer*` M2 keys in `app_en.arb` **and** `app_ar.arb`; `flutter gen-l10n` run.
+
+### ✅ COMPLETED IN THE RESUMING SESSION (presentation + wiring + rules + tests + verify)
+
+**Presentation** `lib/features/employer/presentation/`:
+- `employer_jobs_l10n.dart` — enum→label extensions (`JobStatus`/`EmploymentType`/`JobExperience`/`SalaryPeriod`/
+  `JobSort`) + `jobErrorMessage(field, error)` (title vs description share `tooShort`) + `jobsActionFailureMessage` +
+  `jobEditorFailureMessage`.
+- `job_actions.dart` — `JobAction` enum + `availableJobActions(job)` (status-aware; Publish vs Reopen by status;
+  Delete last). `job_action_handler.dart` — `runJobAction()` shared by the list + detail (navigation, confirm/archive
+  dialogs, optimistic calls, success snackbars; failures via each screen's `ref.listen`).
+- `widgets/job_status_chip.dart`, `widgets/employer_job_tile.dart` (status chip + meta + lifecycle overflow menu +
+  in-flight progress bar).
+- `employer_jobs_screen.dart` (My Jobs: search + status filter chips + sort menu + list/empty/no-results + FAB;
+  failure snackbars). `job_editor_screen.dart` (form, inline validation, openings/salary/availability, auto-save
+  indicator, `PopScope` unsaved-changes sheet, Publish → validate → saveDraft → Preview). `job_preview_screen.dart`
+  (renders `JobDetailView(JobPosting.toJob())`, banner, Publish-confirm CTA when `isPublishable`).
+  `employer_job_detail_screen.dart` (status header, metrics row, info/availability/audit lines, archive reason,
+  Applicants-soon, status-aware action buttons; pops when the posting is soft-deleted).
+
+**Wiring:** 5 routes nested under `/employer` (`employerJobs`/`createJob`/`jobPreview`/`employerJobDetail`/`editJob`,
+static before `:id`; `jobPreview` takes `extra: JobPosting`, not `Job` — the preview needs the posting to publish).
+`employer_home_screen.dart` — **"Manage jobs"** CTA + the **"Post a Job"** tool tile now live (↗); Applicants stays "Soon".
+
+**`firestore.rules`** — `jobs/{jobId}` block added + **deployed**. Read: `status=='published' || ownerUid==uid`;
+create: `request.resource.data.ownerUid==uid`; update/delete: `resource.data.ownerUid==uid`.
+
+**Tests: 329 pass** (was 270; +59): `job_validation_test` (8), `job_posting_model_test` (12), `employer_jobs_repository_test` (4),
+`employer_jobs_controller_test` (6, incl. rollback via a throwing fake), `job_editor_controller_test` (6, auto-save reuses
+id / dirty), `employer_jobs_providers_test` (6), `job_detail_view_test` (3), `employer_jobs_screens_test` (10, EN+AR renders
+of all 4 screens **using the real `AppTheme`** — see bug #2); EmployerJobs + JobEditor added to the locale sweep. Seeker
+`job_detail_screen_test`/`jobs_screen_test` stayed green through the `JobDetailView` extraction.
+
+### 🐞 Three device-only bugs found & fixed during live verification (not caught by the original tests)
+1. **Firestore `permission-denied` on the list query.** The repo queried `where('companyId', …)` but the read rule
+   authorizes by `ownerUid`; Firestore can't prove the query only returns readable docs → denies it. **Fix:**
+   `firestore_employer_jobs_repository.watchJobs` now queries `where('ownerUid', …)` (== companyId here) to match the rule.
+2. **Infinite-width button crash.** `AppTheme` styles buttons `minimumSize: Size.fromHeight(56)` (= **infinite width** —
+   full-width buttons). A bare themed button in a `Row`/`Wrap` (unbounded main-axis) asserts. The editor's `_EditorBar`
+   (Row) and the detail `_Actions` (Wrap) crashed on device but **not in tests, because the tests used a bare
+   `MaterialApp` without `AppTheme`.** **Fix:** `_EditorBar` → both buttons `Expanded`; `_Actions` → `minimumSize: Size(0,40)`
+   per button; **and `employer_jobs_screens_test` now wraps screens in the real `AppTheme.light(locale)`** so this class of
+   bug is caught in CI. (The seeker `_ActionBar` has the same latent shape but was never verified live — a possible follow-up.)
+3. **`TextEditingController` used after dispose.** The archive-reason dialog created a controller and `dispose()`d it
+   synchronously after `showDialog` returned, while the dialog was still rebuilding during its exit animation → red screen.
+   **Fix:** moved the controller into a `_ArchiveReasonDialog` `StatefulWidget` so it's disposed only after the route unmounts.
+
+### VERIFIED live on emulator (`-gpu host`) — both English and Arabic, real Firestore
+Deep-linked via `flutter run --route=/employer/jobs` (sidesteps the flaky Home app-bar — §10). Signed in as
+**`employer01@cb.app`** (company "Acme-Robotics").
+- **Arabic (RTL):** My Jobs empty state → **create** (title/description/skill chip/experience+employment chips/location) →
+  **debounced auto-save** ("جارٍ الحفظ…" → "تم الحفظ 10:22 م", create→edit transition) → **publish validation** (inline
+  "مطلوب" on location + "يرجى تصحيح الحقول المميزة" snackbar) → **Preview** (banner + shared `JobDetailView`) →
+  **publish-confirm** dialog → **published** (card shows منشورة + "تم نشر الوظيفة") → **archive-with-reason** dialog →
+  archived (تمت أرشفة) → **reopen** → published (تمت إعادة فتح). Status-aware overflow menu confirmed (published: Archive/
+  Close; archived: Reopen).
+- **English (LTR):** Settings language switch → Employer Home (**Manage jobs** CTA + **Post a Job** live ↗ + Applicants
+  "Soon"; **Active jobs** derives from published count) → My Jobs (filter chips/search/FAB) → **detail** (Views/Applications
+  metrics, Published/Updated dates, **Archive reason "Role filled"**, Applicants-soon, content-sized action buttons).
+
+### Notes for the next session
+- Repository writes **rethrow** (unlike the M1 company repo) so `EmployerJobsController` rolls back optimistic overlay
+  entries on failure; `JobEditorController._persist` catches and surfaces `saveFailed`.
+- The `job_editor_controller` is an **`autoDispose.family`** keyed by nullable jobId; its auto-save `Timer` is cancelled in `dispose`.
+- `JobPosting.toJob()` **excludes** management/metrics/audit/openings — the preview shows only the public seeker fields.
+- **Test-host lesson:** widget tests that only use a bare `MaterialApp` miss theme-driven layout bugs; prefer wrapping in the
+  real `AppTheme` for screens with full-width themed buttons (see bug #2).
+
+---
+
 ## 8. Next steps
 
 **Phase 2 COMPLETE.** **Phase 3 · M1 (Jobs Platform) `6a6a72c`, M2 (Applications Center)
@@ -1036,12 +1164,14 @@ Foundation) `baf5801` COMPLETE — the employer side has begun.** Nothing is in 
    (with `MSYS_NO_PATHCONV=1 MSYS2_ARG_CONV_EXCL="*"`) sidesteps the flaky Home app-bar.
 
 3. **Candidate next milestones** (present a plan + wait for approval, per the workflow):
-   **Employer Phase 5 · M2+** — the Company Foundation (§7.13) is live, so the natural next steps are
-   **Post a Job** (employer creates job posts → the shared `companies/{id}` + a `jobs` collection the
-   seeker side already reads), then **Applicants / candidate management**. Also open: **durable
-   persistence** for the remaining in-memory seams; an **AI Company Strength** score (the `Company.strength`
-   field is already shaped for it — §7.13). *(All six AI-toolkit features + the employer Company Foundation
-   are done.)*
+   **Employer Phase 5 · M3+** — Company Foundation (§7.13) and **Post a Job / Job Management (§7.14) are done**, so the
+   natural next step is **Applicants / candidate management** (seeker `Application`s surfaced to the owning employer per
+   `jobs/{jobId}` → an applicants list + status pipeline; a seeker's Apply already writes an `Application`). Also open:
+   **surface published `jobs/{jobId}` to the seeker Jobs Platform** (currently seed-only — the `read: status=='published'`
+   rule + `toJob()` projection already support it); **durable persistence** for the remaining in-memory seams; an **AI
+   Company Strength** score (`Company.strength` is shaped for it — §7.13); and the seeker `_ActionBar` latent full-width-
+   button shape (bug #2 pattern in §7.14 — never verified live). *(All six AI-toolkit features + the employer Company
+   Foundation + Job Management are done.)*
 
 4. **Polish follow-ups:** CV Builder Arabic-PDF Latin-run bidi reversal (§7.10) + a 2nd CV
    template; an **Interview Report PDF** (the models are already report-ready — §7.11) reusing
