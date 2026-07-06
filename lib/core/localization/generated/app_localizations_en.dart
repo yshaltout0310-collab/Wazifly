@@ -2266,4 +2266,257 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noteDeletedMsg => 'Note deleted';
+
+  @override
+  String get employerAnalytics => 'Analytics & insights';
+
+  @override
+  String get employerAnalyticsSubtitle => 'Track your hiring performance';
+
+  @override
+  String get analyticsTitle => 'Analytics';
+
+  @override
+  String get analyticsRefresh => 'Refresh';
+
+  @override
+  String get analyticsEmptyTitle => 'No analytics yet';
+
+  @override
+  String get analyticsEmptyBody =>
+      'Analytics appear once you post jobs and receive applicants.';
+
+  @override
+  String get analyticsPostJob => 'Post a job';
+
+  @override
+  String get analyticsMetricsNote =>
+      'Metrics are based on applications received. Job view tracking is coming soon.';
+
+  @override
+  String get analyticsOverviewTitle => 'Overview';
+
+  @override
+  String get analyticsKpiActiveJobs => 'Active jobs';
+
+  @override
+  String get analyticsKpiApplicants => 'Applicants';
+
+  @override
+  String get analyticsKpiInterviews => 'Interviews';
+
+  @override
+  String get analyticsKpiHires => 'Hires';
+
+  @override
+  String get analyticsKpiHireRate => 'Hire rate';
+
+  @override
+  String get analyticsKpiAvgMatch => 'Avg. match';
+
+  @override
+  String get analyticsFunnelTitle => 'Application funnel';
+
+  @override
+  String get analyticsFunnelApplied => 'Applied';
+
+  @override
+  String get analyticsFunnelReviewed => 'Reviewed';
+
+  @override
+  String get analyticsFunnelInterview => 'Interview';
+
+  @override
+  String get analyticsFunnelHired => 'Hired';
+
+  @override
+  String analyticsRejectedCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count rejected',
+      one: '1 rejected',
+      zero: 'No rejections',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String analyticsShareOfApplicants(int percent) {
+    return '$percent% of applicants';
+  }
+
+  @override
+  String get analyticsTopJobsTitle => 'Top jobs';
+
+  @override
+  String analyticsJobApplicants(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count applicants',
+      one: '1 applicant',
+      zero: 'No applicants',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String analyticsPercentHired(int percent) {
+    return '$percent% hired';
+  }
+
+  @override
+  String get analyticsNoJobData => 'No applicants for your jobs yet.';
+
+  @override
+  String get analyticsTimeToHireTitle => 'Time to hire';
+
+  @override
+  String get analyticsAvgTimeToHire => 'Average';
+
+  @override
+  String get analyticsMedianTimeToHire => 'Median';
+
+  @override
+  String get analyticsFastestHire => 'Fastest';
+
+  @override
+  String get analyticsAvgInPipeline => 'Avg. wait (open)';
+
+  @override
+  String analyticsDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days',
+      one: '1 day',
+      zero: '—',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String analyticsOpenCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count open',
+      one: '1 open',
+      zero: 'None open',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get analyticsNoHiresYet => 'No hires yet to measure time-to-hire.';
+
+  @override
+  String get analyticsQualityTitle => 'Applicant quality';
+
+  @override
+  String get analyticsMatchDistribution => 'AI match distribution';
+
+  @override
+  String get analyticsBandStrong => 'Strong (80+)';
+
+  @override
+  String get analyticsBandGood => 'Good (60–79)';
+
+  @override
+  String get analyticsBandFair => 'Fair (40–59)';
+
+  @override
+  String get analyticsBandWeak => 'Weak (<40)';
+
+  @override
+  String get analyticsAvgAts => 'Avg. resume ATS';
+
+  @override
+  String get analyticsTopSkillsTitle => 'Top applicant skills';
+
+  @override
+  String get analyticsNoQualityData => 'No AI match data on applicants yet.';
+
+  @override
+  String get analyticsTrendTitle => 'Applications over time';
+
+  @override
+  String analyticsTrendLast7(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count in the last 7 days',
+      one: '1 in the last 7 days',
+      zero: 'None in the last 7 days',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get analyticsNoTrendData => 'No applications yet.';
+
+  @override
+  String get insightsTitle => 'AI recruiter insights';
+
+  @override
+  String get insightsSubtitle =>
+      'Let AI analyze your hiring funnel and suggest improvements.';
+
+  @override
+  String get insightsGenerate => 'Generate insights';
+
+  @override
+  String get insightsLoading => 'Analyzing your hiring data…';
+
+  @override
+  String get insightsRefresh => 'Refresh';
+
+  @override
+  String get insightsRetry => 'Retry';
+
+  @override
+  String get insightsUpToDate => 'Insights are already up to date.';
+
+  @override
+  String get insightsUnavailable =>
+      'Insights become available once you have applicants.';
+
+  @override
+  String get insightsStrengthsTitle => 'What\'s working';
+
+  @override
+  String get insightsBottlenecksTitle => 'Bottlenecks';
+
+  @override
+  String get insightsActionsTitle => 'Suggested actions';
+
+  @override
+  String insightsUpdated(String date) {
+    return 'Updated $date';
+  }
+
+  @override
+  String get insightsPriorityHigh => 'High priority';
+
+  @override
+  String get insightsPriorityMedium => 'Medium priority';
+
+  @override
+  String get insightsPriorityLow => 'Low priority';
+
+  @override
+  String get insightsErrNetwork =>
+      'Couldn\'t reach the AI service. Check your connection and try again.';
+
+  @override
+  String get insightsErrQuota =>
+      'The AI service is busy right now. Please try again shortly.';
+
+  @override
+  String get insightsErrEmpty => 'Not enough data yet to generate insights.';
+
+  @override
+  String get insightsErrGeneric =>
+      'Something went wrong generating insights. Please try again.';
 }

@@ -4297,6 +4297,396 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Note deleted'**
   String get noteDeletedMsg;
+
+  /// No description provided for @employerAnalytics.
+  ///
+  /// In en, this message translates to:
+  /// **'Analytics & insights'**
+  String get employerAnalytics;
+
+  /// No description provided for @employerAnalyticsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Track your hiring performance'**
+  String get employerAnalyticsSubtitle;
+
+  /// No description provided for @analyticsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Analytics'**
+  String get analyticsTitle;
+
+  /// No description provided for @analyticsRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get analyticsRefresh;
+
+  /// No description provided for @analyticsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No analytics yet'**
+  String get analyticsEmptyTitle;
+
+  /// No description provided for @analyticsEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Analytics appear once you post jobs and receive applicants.'**
+  String get analyticsEmptyBody;
+
+  /// No description provided for @analyticsPostJob.
+  ///
+  /// In en, this message translates to:
+  /// **'Post a job'**
+  String get analyticsPostJob;
+
+  /// No description provided for @analyticsMetricsNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Metrics are based on applications received. Job view tracking is coming soon.'**
+  String get analyticsMetricsNote;
+
+  /// No description provided for @analyticsOverviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Overview'**
+  String get analyticsOverviewTitle;
+
+  /// No description provided for @analyticsKpiActiveJobs.
+  ///
+  /// In en, this message translates to:
+  /// **'Active jobs'**
+  String get analyticsKpiActiveJobs;
+
+  /// No description provided for @analyticsKpiApplicants.
+  ///
+  /// In en, this message translates to:
+  /// **'Applicants'**
+  String get analyticsKpiApplicants;
+
+  /// No description provided for @analyticsKpiInterviews.
+  ///
+  /// In en, this message translates to:
+  /// **'Interviews'**
+  String get analyticsKpiInterviews;
+
+  /// No description provided for @analyticsKpiHires.
+  ///
+  /// In en, this message translates to:
+  /// **'Hires'**
+  String get analyticsKpiHires;
+
+  /// No description provided for @analyticsKpiHireRate.
+  ///
+  /// In en, this message translates to:
+  /// **'Hire rate'**
+  String get analyticsKpiHireRate;
+
+  /// No description provided for @analyticsKpiAvgMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg. match'**
+  String get analyticsKpiAvgMatch;
+
+  /// No description provided for @analyticsFunnelTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Application funnel'**
+  String get analyticsFunnelTitle;
+
+  /// No description provided for @analyticsFunnelApplied.
+  ///
+  /// In en, this message translates to:
+  /// **'Applied'**
+  String get analyticsFunnelApplied;
+
+  /// No description provided for @analyticsFunnelReviewed.
+  ///
+  /// In en, this message translates to:
+  /// **'Reviewed'**
+  String get analyticsFunnelReviewed;
+
+  /// No description provided for @analyticsFunnelInterview.
+  ///
+  /// In en, this message translates to:
+  /// **'Interview'**
+  String get analyticsFunnelInterview;
+
+  /// No description provided for @analyticsFunnelHired.
+  ///
+  /// In en, this message translates to:
+  /// **'Hired'**
+  String get analyticsFunnelHired;
+
+  /// No description provided for @analyticsRejectedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No rejections} =1{1 rejected} other{{count} rejected}}'**
+  String analyticsRejectedCount(int count);
+
+  /// No description provided for @analyticsShareOfApplicants.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% of applicants'**
+  String analyticsShareOfApplicants(int percent);
+
+  /// No description provided for @analyticsTopJobsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Top jobs'**
+  String get analyticsTopJobsTitle;
+
+  /// No description provided for @analyticsJobApplicants.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No applicants} =1{1 applicant} other{{count} applicants}}'**
+  String analyticsJobApplicants(int count);
+
+  /// No description provided for @analyticsPercentHired.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% hired'**
+  String analyticsPercentHired(int percent);
+
+  /// No description provided for @analyticsNoJobData.
+  ///
+  /// In en, this message translates to:
+  /// **'No applicants for your jobs yet.'**
+  String get analyticsNoJobData;
+
+  /// No description provided for @analyticsTimeToHireTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Time to hire'**
+  String get analyticsTimeToHireTitle;
+
+  /// No description provided for @analyticsAvgTimeToHire.
+  ///
+  /// In en, this message translates to:
+  /// **'Average'**
+  String get analyticsAvgTimeToHire;
+
+  /// No description provided for @analyticsMedianTimeToHire.
+  ///
+  /// In en, this message translates to:
+  /// **'Median'**
+  String get analyticsMedianTimeToHire;
+
+  /// No description provided for @analyticsFastestHire.
+  ///
+  /// In en, this message translates to:
+  /// **'Fastest'**
+  String get analyticsFastestHire;
+
+  /// No description provided for @analyticsAvgInPipeline.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg. wait (open)'**
+  String get analyticsAvgInPipeline;
+
+  /// No description provided for @analyticsDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{—} =1{1 day} other{{count} days}}'**
+  String analyticsDays(int count);
+
+  /// No description provided for @analyticsOpenCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{None open} =1{1 open} other{{count} open}}'**
+  String analyticsOpenCount(int count);
+
+  /// No description provided for @analyticsNoHiresYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No hires yet to measure time-to-hire.'**
+  String get analyticsNoHiresYet;
+
+  /// No description provided for @analyticsQualityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Applicant quality'**
+  String get analyticsQualityTitle;
+
+  /// No description provided for @analyticsMatchDistribution.
+  ///
+  /// In en, this message translates to:
+  /// **'AI match distribution'**
+  String get analyticsMatchDistribution;
+
+  /// No description provided for @analyticsBandStrong.
+  ///
+  /// In en, this message translates to:
+  /// **'Strong (80+)'**
+  String get analyticsBandStrong;
+
+  /// No description provided for @analyticsBandGood.
+  ///
+  /// In en, this message translates to:
+  /// **'Good (60–79)'**
+  String get analyticsBandGood;
+
+  /// No description provided for @analyticsBandFair.
+  ///
+  /// In en, this message translates to:
+  /// **'Fair (40–59)'**
+  String get analyticsBandFair;
+
+  /// No description provided for @analyticsBandWeak.
+  ///
+  /// In en, this message translates to:
+  /// **'Weak (<40)'**
+  String get analyticsBandWeak;
+
+  /// No description provided for @analyticsAvgAts.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg. resume ATS'**
+  String get analyticsAvgAts;
+
+  /// No description provided for @analyticsTopSkillsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Top applicant skills'**
+  String get analyticsTopSkillsTitle;
+
+  /// No description provided for @analyticsNoQualityData.
+  ///
+  /// In en, this message translates to:
+  /// **'No AI match data on applicants yet.'**
+  String get analyticsNoQualityData;
+
+  /// No description provided for @analyticsTrendTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Applications over time'**
+  String get analyticsTrendTitle;
+
+  /// No description provided for @analyticsTrendLast7.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{None in the last 7 days} =1{1 in the last 7 days} other{{count} in the last 7 days}}'**
+  String analyticsTrendLast7(int count);
+
+  /// No description provided for @analyticsNoTrendData.
+  ///
+  /// In en, this message translates to:
+  /// **'No applications yet.'**
+  String get analyticsNoTrendData;
+
+  /// No description provided for @insightsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'AI recruiter insights'**
+  String get insightsTitle;
+
+  /// No description provided for @insightsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Let AI analyze your hiring funnel and suggest improvements.'**
+  String get insightsSubtitle;
+
+  /// No description provided for @insightsGenerate.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate insights'**
+  String get insightsGenerate;
+
+  /// No description provided for @insightsLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyzing your hiring data…'**
+  String get insightsLoading;
+
+  /// No description provided for @insightsRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get insightsRefresh;
+
+  /// No description provided for @insightsRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get insightsRetry;
+
+  /// No description provided for @insightsUpToDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Insights are already up to date.'**
+  String get insightsUpToDate;
+
+  /// No description provided for @insightsUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Insights become available once you have applicants.'**
+  String get insightsUnavailable;
+
+  /// No description provided for @insightsStrengthsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s working'**
+  String get insightsStrengthsTitle;
+
+  /// No description provided for @insightsBottlenecksTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bottlenecks'**
+  String get insightsBottlenecksTitle;
+
+  /// No description provided for @insightsActionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggested actions'**
+  String get insightsActionsTitle;
+
+  /// No description provided for @insightsUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated {date}'**
+  String insightsUpdated(String date);
+
+  /// No description provided for @insightsPriorityHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'High priority'**
+  String get insightsPriorityHigh;
+
+  /// No description provided for @insightsPriorityMedium.
+  ///
+  /// In en, this message translates to:
+  /// **'Medium priority'**
+  String get insightsPriorityMedium;
+
+  /// No description provided for @insightsPriorityLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Low priority'**
+  String get insightsPriorityLow;
+
+  /// No description provided for @insightsErrNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t reach the AI service. Check your connection and try again.'**
+  String get insightsErrNetwork;
+
+  /// No description provided for @insightsErrQuota.
+  ///
+  /// In en, this message translates to:
+  /// **'The AI service is busy right now. Please try again shortly.'**
+  String get insightsErrQuota;
+
+  /// No description provided for @insightsErrEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Not enough data yet to generate insights.'**
+  String get insightsErrEmpty;
+
+  /// No description provided for @insightsErrGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong generating insights. Please try again.'**
+  String get insightsErrGeneric;
 }
 
 class _AppLocalizationsDelegate

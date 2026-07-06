@@ -2250,4 +2250,260 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get noteDeletedMsg => 'حُذفت الملاحظة';
+
+  @override
+  String get employerAnalytics => 'التحليلات والرؤى';
+
+  @override
+  String get employerAnalyticsSubtitle => 'تابع أداء التوظيف لديك';
+
+  @override
+  String get analyticsTitle => 'التحليلات';
+
+  @override
+  String get analyticsRefresh => 'تحديث';
+
+  @override
+  String get analyticsEmptyTitle => 'لا توجد تحليلات بعد';
+
+  @override
+  String get analyticsEmptyBody =>
+      'تظهر التحليلات بمجرد نشر وظائف واستقبال متقدّمين.';
+
+  @override
+  String get analyticsPostJob => 'انشر وظيفة';
+
+  @override
+  String get analyticsMetricsNote =>
+      'تعتمد المقاييس على الطلبات المستلمة. تتبّع مشاهدات الوظائف قريبًا.';
+
+  @override
+  String get analyticsOverviewTitle => 'نظرة عامة';
+
+  @override
+  String get analyticsKpiActiveJobs => 'وظائف نشطة';
+
+  @override
+  String get analyticsKpiApplicants => 'المتقدّمون';
+
+  @override
+  String get analyticsKpiInterviews => 'المقابلات';
+
+  @override
+  String get analyticsKpiHires => 'التعيينات';
+
+  @override
+  String get analyticsKpiHireRate => 'معدّل التعيين';
+
+  @override
+  String get analyticsKpiAvgMatch => 'متوسط التطابق';
+
+  @override
+  String get analyticsFunnelTitle => 'مسار الطلبات';
+
+  @override
+  String get analyticsFunnelApplied => 'تقدّموا';
+
+  @override
+  String get analyticsFunnelReviewed => 'تمت مراجعتهم';
+
+  @override
+  String get analyticsFunnelInterview => 'مقابلة';
+
+  @override
+  String get analyticsFunnelHired => 'تم تعيينهم';
+
+  @override
+  String analyticsRejectedCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count مرفوضين',
+      two: 'مرفوضان',
+      one: 'مرفوض واحد',
+      zero: 'لا رفض',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String analyticsShareOfApplicants(int percent) {
+    return '$percent% من المتقدّمين';
+  }
+
+  @override
+  String get analyticsTopJobsTitle => 'أبرز الوظائف';
+
+  @override
+  String analyticsJobApplicants(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count متقدّمين',
+      two: 'متقدّمان',
+      one: 'متقدّم واحد',
+      zero: 'لا متقدّمين',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String analyticsPercentHired(int percent) {
+    return '$percent% تم تعيينهم';
+  }
+
+  @override
+  String get analyticsNoJobData => 'لا متقدّمين لوظائفك بعد.';
+
+  @override
+  String get analyticsTimeToHireTitle => 'زمن التعيين';
+
+  @override
+  String get analyticsAvgTimeToHire => 'المتوسط';
+
+  @override
+  String get analyticsMedianTimeToHire => 'الوسيط';
+
+  @override
+  String get analyticsFastestHire => 'الأسرع';
+
+  @override
+  String get analyticsAvgInPipeline => 'متوسط الانتظار (مفتوح)';
+
+  @override
+  String analyticsDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count أيام',
+      two: 'يومان',
+      one: 'يوم واحد',
+      zero: '—',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String analyticsOpenCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count مفتوحة',
+      two: 'مفتوحان',
+      one: 'مفتوح واحد',
+      zero: 'لا مفتوح',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get analyticsNoHiresYet => 'لا تعيينات بعد لقياس زمن التعيين.';
+
+  @override
+  String get analyticsQualityTitle => 'جودة المتقدّمين';
+
+  @override
+  String get analyticsMatchDistribution => 'توزيع تطابق الذكاء الاصطناعي';
+
+  @override
+  String get analyticsBandStrong => 'قوي (80+)';
+
+  @override
+  String get analyticsBandGood => 'جيد (60–79)';
+
+  @override
+  String get analyticsBandFair => 'متوسط (40–59)';
+
+  @override
+  String get analyticsBandWeak => 'ضعيف (<40)';
+
+  @override
+  String get analyticsAvgAts => 'متوسط ATS للسيرة';
+
+  @override
+  String get analyticsTopSkillsTitle => 'أبرز مهارات المتقدّمين';
+
+  @override
+  String get analyticsNoQualityData => 'لا توجد بيانات تطابق للمتقدّمين بعد.';
+
+  @override
+  String get analyticsTrendTitle => 'الطلبات عبر الزمن';
+
+  @override
+  String analyticsTrendLast7(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count طلبات خلال 7 أيام',
+      two: 'طلبان خلال 7 أيام',
+      one: 'طلب واحد خلال 7 أيام',
+      zero: 'لا شيء خلال 7 أيام',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get analyticsNoTrendData => 'لا طلبات بعد.';
+
+  @override
+  String get insightsTitle => 'رؤى الموظِّف بالذكاء الاصطناعي';
+
+  @override
+  String get insightsSubtitle =>
+      'دع الذكاء الاصطناعي يحلّل مسار التوظيف ويقترح تحسينات.';
+
+  @override
+  String get insightsGenerate => 'أنشئ الرؤى';
+
+  @override
+  String get insightsLoading => 'جارٍ تحليل بيانات التوظيف…';
+
+  @override
+  String get insightsRefresh => 'تحديث';
+
+  @override
+  String get insightsRetry => 'إعادة المحاولة';
+
+  @override
+  String get insightsUpToDate => 'الرؤى محدّثة بالفعل.';
+
+  @override
+  String get insightsUnavailable => 'تتوفّر الرؤى بمجرد وجود متقدّمين.';
+
+  @override
+  String get insightsStrengthsTitle => 'ما ينجح';
+
+  @override
+  String get insightsBottlenecksTitle => 'نقاط الاختناق';
+
+  @override
+  String get insightsActionsTitle => 'إجراءات مقترحة';
+
+  @override
+  String insightsUpdated(String date) {
+    return 'حُدّثت $date';
+  }
+
+  @override
+  String get insightsPriorityHigh => 'أولوية عالية';
+
+  @override
+  String get insightsPriorityMedium => 'أولوية متوسطة';
+
+  @override
+  String get insightsPriorityLow => 'أولوية منخفضة';
+
+  @override
+  String get insightsErrNetwork =>
+      'تعذّر الوصول إلى خدمة الذكاء الاصطناعي. تحقّق من اتصالك وحاول مجددًا.';
+
+  @override
+  String get insightsErrQuota =>
+      'خدمة الذكاء الاصطناعي مشغولة حاليًا. حاول مرة أخرى بعد قليل.';
+
+  @override
+  String get insightsErrEmpty => 'لا توجد بيانات كافية بعد لإنشاء رؤى.';
+
+  @override
+  String get insightsErrGeneric => 'حدث خطأ أثناء إنشاء الرؤى. حاول مرة أخرى.';
 }

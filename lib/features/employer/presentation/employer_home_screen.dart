@@ -91,6 +91,13 @@ class EmployerHomeScreen extends ConsumerWidget {
                 subtitle: l10n.employerManageJobsSubtitle,
                 onTap: () => context.pushNamed(RouteNames.employerJobs),
               ).animate(delay: 240.ms).fadeIn().moveY(begin: 10, end: 0),
+              const SizedBox(height: AppSpacing.md),
+              _CompanyCta(
+                icon: Icons.insights_rounded,
+                title: l10n.employerAnalytics,
+                subtitle: l10n.employerAnalyticsSubtitle,
+                onTap: () => context.pushNamed(RouteNames.employerAnalytics),
+              ).animate(delay: 280.ms).fadeIn().moveY(begin: 10, end: 0),
               const SizedBox(height: AppSpacing.xl),
               Text(
                 l10n.employerToolsTitle,

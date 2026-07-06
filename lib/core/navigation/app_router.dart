@@ -9,6 +9,7 @@ import '../../features/auth/presentation/welcome_screen.dart';
 import '../../features/country_selection/presentation/country_selection_screen.dart';
 import '../../features/employer/presentation/company_profile_screen.dart';
 import '../../features/employer/presentation/edit_company_screen.dart';
+import '../../features/employer/presentation/employer_analytics_screen.dart';
 import '../../features/employer/presentation/employer_applicant_detail_screen.dart';
 import '../../features/employer/presentation/employer_applicants_screen.dart';
 import '../../features/employer/presentation/employer_home_screen.dart';
@@ -290,6 +291,11 @@ abstract final class AppRouter {
                 ),
               ),
             ],
+          ),
+          GoRoute(
+            path: 'analytics',
+            name: RouteNames.employerAnalytics,
+            pageBuilder: _fade(const EmployerAnalyticsScreen()),
           ),
         ],
       ),
