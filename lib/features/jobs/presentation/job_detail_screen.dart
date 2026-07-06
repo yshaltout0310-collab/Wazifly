@@ -10,6 +10,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/responsive.dart';
 import '../../../shared/models/job.dart';
+import '../../../shared/widgets/job_detail_view.dart';
 import '../../job_matching/domain/job_match.dart';
 import '../application/job_detail_controller.dart';
 
@@ -81,81 +82,13 @@ class _Content extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
-
+    // The public job body is the shared JobDetailView (also used by the employer
+    // preview); the seeker injects its resume-match panel via `afterMeta`.
     return ResponsiveCenter(
       maxWidth: 640,
-      child: ListView(
-        padding: EdgeInsets.fromLTRB(context.horizontalGutter, AppSpacing.lg,
-            context.horizontalGutter, AppSpacing.lg),
-        children: [
-                Text(job.title,
-                    style: theme.textTheme.headlineSmall
-                        ?.copyWith(fontWeight: FontWeight.w800)),
-                const SizedBox(height: 4),
-                Text(job.company,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                        color: theme.colorScheme.primary,
-                        fontWeight: FontWeight.w700)),
-                const SizedBox(height: AppSpacing.md),
-                Wrap(
-                  spacing: AppSpacing.xs,
-                  runSpacing: AppSpacing.xs,
-                  children: [
-                    _MetaChip(
-                        icon: job.remote
-                            ? Icons.public_rounded
-                            : Icons.place_outlined,
-                        label: job.remote
-                            ? '${job.location} · ${l10n.jobsRemote}'
-                            : job.location),
-                    if (job.employmentType.isNotEmpty)
-                      _MetaChip(
-                          icon: Icons.work_outline_rounded,
-                          label: job.employmentType),
-                    if (job.seniority.isNotEmpty)
-                      _MetaChip(
-                          icon: Icons.trending_up_rounded,
-                          label: job.seniority),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.lg),
-                _MatchSection(jobId: jobId),
-                const SizedBox(height: AppSpacing.lg),
-                if (job.description.isNotEmpty) ...[
-                  _SectionTitle(l10n.jobsDescription),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(job.description,
-                      style: theme.textTheme.bodyMedium?.copyWith(height: 1.5)),
-                  const SizedBox(height: AppSpacing.lg),
-                ],
-                if (job.requiredSkills.isNotEmpty) ...[
-                  _SectionTitle(l10n.jobsRequiredSkills),
-                  const SizedBox(height: AppSpacing.sm),
-                  Wrap(
-                    spacing: AppSpacing.sm,
-                    runSpacing: AppSpacing.sm,
-                    children: [
-                      for (final skill in job.requiredSkills)
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 7),
-                          decoration: BoxDecoration(
-                            color: AppColors.teal.withValues(alpha: 0.10),
-                            borderRadius: BorderRadius.circular(AppRadius.pill),
-                            border: Border.all(
-                                color: AppColors.teal.withValues(alpha: 0.30)),
-                          ),
-                          child: Text(skill,
-                              style: theme.textTheme.labelLarge?.copyWith(
-                                  color: AppColors.emeraldDark,
-                                  fontWeight: FontWeight.w600)),
-                        ),
-                    ],
-                  ),
-                ],
-      ],
+      child: JobDetailView(
+        job: job,
+        afterMeta: _MatchSection(jobId: jobId),
       ),
     );
   }
@@ -377,50 +310,6 @@ class _ActionBar extends ConsumerWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _SectionTitle extends StatelessWidget {
-  const _SectionTitle(this.text);
-  final String text;
-
-  @override
-  Widget build(BuildContext context) => Text(
-        text,
-        style: Theme.of(context)
-            .textTheme
-            .titleMedium
-            ?.copyWith(fontWeight: FontWeight.w800),
-      );
-}
-
-class _MetaChip extends StatelessWidget {
-  const _MetaChip({required this.icon, required this.label});
-  final IconData icon;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(AppRadius.pill),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon,
-              size: 15,
-              color: theme.colorScheme.onSurface.withValues(alpha: 0.6)),
-          const SizedBox(width: 6),
-          Text(label,
-              style: theme.textTheme.labelMedium?.copyWith(
-                  color: theme.colorScheme.onSurface.withValues(alpha: 0.85))),
-        ],
       ),
     );
   }

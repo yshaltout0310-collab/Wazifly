@@ -3229,6 +3229,654 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'1000+ employees'**
   String get companySize1000plus;
+
+  /// No description provided for @employerManageJobs.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage jobs'**
+  String get employerManageJobs;
+
+  /// No description provided for @employerManageJobsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create and manage your job postings'**
+  String get employerManageJobsSubtitle;
+
+  /// No description provided for @jobStatusDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft'**
+  String get jobStatusDraft;
+
+  /// No description provided for @jobStatusPublished.
+  ///
+  /// In en, this message translates to:
+  /// **'Published'**
+  String get jobStatusPublished;
+
+  /// No description provided for @jobStatusArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'Archived'**
+  String get jobStatusArchived;
+
+  /// No description provided for @jobStatusClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get jobStatusClosed;
+
+  /// No description provided for @empTypeFullTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Full-time'**
+  String get empTypeFullTime;
+
+  /// No description provided for @empTypePartTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Part-time'**
+  String get empTypePartTime;
+
+  /// No description provided for @empTypeContract.
+  ///
+  /// In en, this message translates to:
+  /// **'Contract'**
+  String get empTypeContract;
+
+  /// No description provided for @empTypeInternship.
+  ///
+  /// In en, this message translates to:
+  /// **'Internship'**
+  String get empTypeInternship;
+
+  /// No description provided for @empTypeTemporary.
+  ///
+  /// In en, this message translates to:
+  /// **'Temporary'**
+  String get empTypeTemporary;
+
+  /// No description provided for @jobExpEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'Entry'**
+  String get jobExpEntry;
+
+  /// No description provided for @jobExpJunior.
+  ///
+  /// In en, this message translates to:
+  /// **'Junior'**
+  String get jobExpJunior;
+
+  /// No description provided for @jobExpMid.
+  ///
+  /// In en, this message translates to:
+  /// **'Mid'**
+  String get jobExpMid;
+
+  /// No description provided for @jobExpSenior.
+  ///
+  /// In en, this message translates to:
+  /// **'Senior'**
+  String get jobExpSenior;
+
+  /// No description provided for @jobExpLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Lead'**
+  String get jobExpLead;
+
+  /// No description provided for @salaryYearly.
+  ///
+  /// In en, this message translates to:
+  /// **'per year'**
+  String get salaryYearly;
+
+  /// No description provided for @salaryMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'per month'**
+  String get salaryMonthly;
+
+  /// No description provided for @salaryHourly.
+  ///
+  /// In en, this message translates to:
+  /// **'per hour'**
+  String get salaryHourly;
+
+  /// No description provided for @employerJobsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My jobs'**
+  String get employerJobsTitle;
+
+  /// No description provided for @employerJobsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'You haven\'t posted any jobs yet.'**
+  String get employerJobsEmpty;
+
+  /// No description provided for @employerJobsEmptyCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Post your first job'**
+  String get employerJobsEmptyCta;
+
+  /// No description provided for @employerJobsSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search your jobs'**
+  String get employerJobsSearchHint;
+
+  /// No description provided for @employerJobsNoResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No jobs match your filters.'**
+  String get employerJobsNoResults;
+
+  /// No description provided for @employerJobsFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get employerJobsFilterAll;
+
+  /// No description provided for @employerJobsSort.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort'**
+  String get employerJobsSort;
+
+  /// No description provided for @jobSortUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Recently updated'**
+  String get jobSortUpdated;
+
+  /// No description provided for @jobSortCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Recently created'**
+  String get jobSortCreated;
+
+  /// No description provided for @jobSortTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get jobSortTitle;
+
+  /// No description provided for @jobSortStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get jobSortStatus;
+
+  /// No description provided for @createJobTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Post a job'**
+  String get createJobTitle;
+
+  /// No description provided for @editJobTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit job'**
+  String get editJobTitle;
+
+  /// No description provided for @jobTitleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Job title'**
+  String get jobTitleLabel;
+
+  /// No description provided for @jobTitleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Senior Flutter Engineer'**
+  String get jobTitleHint;
+
+  /// No description provided for @jobDescLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get jobDescLabel;
+
+  /// No description provided for @jobDescHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Describe the role, responsibilities, and requirements'**
+  String get jobDescHint;
+
+  /// No description provided for @jobSkillsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Required skills'**
+  String get jobSkillsLabel;
+
+  /// No description provided for @jobSkillsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a skill'**
+  String get jobSkillsHint;
+
+  /// No description provided for @jobExperienceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Experience level'**
+  String get jobExperienceLabel;
+
+  /// No description provided for @jobEmploymentTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Employment type'**
+  String get jobEmploymentTypeLabel;
+
+  /// No description provided for @jobLocationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get jobLocationLabel;
+
+  /// No description provided for @jobLocationHint.
+  ///
+  /// In en, this message translates to:
+  /// **'City, Country'**
+  String get jobLocationHint;
+
+  /// No description provided for @jobRemoteLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote'**
+  String get jobRemoteLabel;
+
+  /// No description provided for @jobOpeningsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Open positions'**
+  String get jobOpeningsLabel;
+
+  /// No description provided for @jobOpeningsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. 3'**
+  String get jobOpeningsHint;
+
+  /// No description provided for @jobSalaryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Salary (optional)'**
+  String get jobSalaryLabel;
+
+  /// No description provided for @jobSalaryMin.
+  ///
+  /// In en, this message translates to:
+  /// **'Min'**
+  String get jobSalaryMin;
+
+  /// No description provided for @jobSalaryMax.
+  ///
+  /// In en, this message translates to:
+  /// **'Max'**
+  String get jobSalaryMax;
+
+  /// No description provided for @jobSalaryCurrency.
+  ///
+  /// In en, this message translates to:
+  /// **'Currency'**
+  String get jobSalaryCurrency;
+
+  /// No description provided for @jobSalaryPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'Period'**
+  String get jobSalaryPeriod;
+
+  /// No description provided for @jobAvailabilityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Availability (optional)'**
+  String get jobAvailabilityLabel;
+
+  /// No description provided for @jobOpensAtLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening date'**
+  String get jobOpensAtLabel;
+
+  /// No description provided for @jobExpiresAtLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Expiration date'**
+  String get jobExpiresAtLabel;
+
+  /// No description provided for @jobDateNotSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not set'**
+  String get jobDateNotSet;
+
+  /// No description provided for @jobClearDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get jobClearDate;
+
+  /// No description provided for @jobSaveDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Save draft'**
+  String get jobSaveDraft;
+
+  /// No description provided for @jobPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get jobPreview;
+
+  /// No description provided for @jobPublish.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish'**
+  String get jobPublish;
+
+  /// No description provided for @jobDraftSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft saved'**
+  String get jobDraftSaved;
+
+  /// No description provided for @jobAutosaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving…'**
+  String get jobAutosaving;
+
+  /// No description provided for @jobAutosaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved {time}'**
+  String jobAutosaved(String time);
+
+  /// No description provided for @jobErrRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Required'**
+  String get jobErrRequired;
+
+  /// No description provided for @jobErrTitleShort.
+  ///
+  /// In en, this message translates to:
+  /// **'At least 3 characters'**
+  String get jobErrTitleShort;
+
+  /// No description provided for @jobErrDescShort.
+  ///
+  /// In en, this message translates to:
+  /// **'At least 30 characters'**
+  String get jobErrDescShort;
+
+  /// No description provided for @jobErrAddSkill.
+  ///
+  /// In en, this message translates to:
+  /// **'Add at least one skill'**
+  String get jobErrAddSkill;
+
+  /// No description provided for @jobErrChooseExperience.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose an experience level'**
+  String get jobErrChooseExperience;
+
+  /// No description provided for @jobErrChooseType.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose an employment type'**
+  String get jobErrChooseType;
+
+  /// No description provided for @jobErrInvalidSalary.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum must be ≤ maximum'**
+  String get jobErrInvalidSalary;
+
+  /// No description provided for @jobErrInvalidOpenings.
+  ///
+  /// In en, this message translates to:
+  /// **'Must be at least 1'**
+  String get jobErrInvalidOpenings;
+
+  /// No description provided for @jobErrInvalidDates.
+  ///
+  /// In en, this message translates to:
+  /// **'Expiration must be after the opening date'**
+  String get jobErrInvalidDates;
+
+  /// No description provided for @jobErrFixFields.
+  ///
+  /// In en, this message translates to:
+  /// **'Please fix the highlighted fields.'**
+  String get jobErrFixFields;
+
+  /// No description provided for @jobUnsavedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsaved changes'**
+  String get jobUnsavedTitle;
+
+  /// No description provided for @jobUnsavedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Save this job as a draft before leaving?'**
+  String get jobUnsavedBody;
+
+  /// No description provided for @jobUnsavedSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save draft'**
+  String get jobUnsavedSave;
+
+  /// No description provided for @jobUnsavedDiscard.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard'**
+  String get jobUnsavedDiscard;
+
+  /// No description provided for @jobUnsavedCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get jobUnsavedCancel;
+
+  /// No description provided for @jobPreviewBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview — how job seekers see this job'**
+  String get jobPreviewBanner;
+
+  /// No description provided for @jobPublishConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish this job?'**
+  String get jobPublishConfirmTitle;
+
+  /// No description provided for @jobPublishConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It will be visible to job seekers.'**
+  String get jobPublishConfirmBody;
+
+  /// No description provided for @jobPublishConfirmCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish'**
+  String get jobPublishConfirmCta;
+
+  /// No description provided for @jobPublished.
+  ///
+  /// In en, this message translates to:
+  /// **'Job published'**
+  String get jobPublished;
+
+  /// No description provided for @jobActionEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get jobActionEdit;
+
+  /// No description provided for @jobActionDuplicate.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate'**
+  String get jobActionDuplicate;
+
+  /// No description provided for @jobActionPublish.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish'**
+  String get jobActionPublish;
+
+  /// No description provided for @jobActionArchive.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive'**
+  String get jobActionArchive;
+
+  /// No description provided for @jobActionClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get jobActionClose;
+
+  /// No description provided for @jobActionReopen.
+  ///
+  /// In en, this message translates to:
+  /// **'Reopen'**
+  String get jobActionReopen;
+
+  /// No description provided for @jobActionDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get jobActionDelete;
+
+  /// No description provided for @jobActionPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get jobActionPreview;
+
+  /// No description provided for @jobDuplicated.
+  ///
+  /// In en, this message translates to:
+  /// **'Job duplicated'**
+  String get jobDuplicated;
+
+  /// No description provided for @jobArchivedMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'Job archived'**
+  String get jobArchivedMsg;
+
+  /// No description provided for @jobClosedMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'Job closed'**
+  String get jobClosedMsg;
+
+  /// No description provided for @jobReopenedMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'Job reopened'**
+  String get jobReopenedMsg;
+
+  /// No description provided for @jobDeletedMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'Job deleted'**
+  String get jobDeletedMsg;
+
+  /// No description provided for @jobDeleteConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this job?'**
+  String get jobDeleteConfirmTitle;
+
+  /// No description provided for @jobDeleteConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It\'s removed from your list, but existing applications and history are kept.'**
+  String get jobDeleteConfirmBody;
+
+  /// No description provided for @jobArchiveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive job'**
+  String get jobArchiveTitle;
+
+  /// No description provided for @jobArchiveReasonHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason (optional)'**
+  String get jobArchiveReasonHint;
+
+  /// No description provided for @jobErrPermission.
+  ///
+  /// In en, this message translates to:
+  /// **'You don\'t have permission to do that.'**
+  String get jobErrPermission;
+
+  /// No description provided for @jobErrNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'You appear to be offline. Please try again.'**
+  String get jobErrNetwork;
+
+  /// No description provided for @jobActionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong. Please try again.'**
+  String get jobActionFailed;
+
+  /// No description provided for @jobMetricsViews.
+  ///
+  /// In en, this message translates to:
+  /// **'Views'**
+  String get jobMetricsViews;
+
+  /// No description provided for @jobMetricsApplications.
+  ///
+  /// In en, this message translates to:
+  /// **'Applications'**
+  String get jobMetricsApplications;
+
+  /// No description provided for @jobOpeningsValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} open positions'**
+  String jobOpeningsValue(int count);
+
+  /// No description provided for @jobPublishedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Published {date}'**
+  String jobPublishedOn(String date);
+
+  /// No description provided for @jobUpdatedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated {date}'**
+  String jobUpdatedOn(String date);
+
+  /// No description provided for @jobArchiveReasonLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive reason'**
+  String get jobArchiveReasonLabel;
+
+  /// No description provided for @jobDetailApplicantsSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Applicants — coming soon'**
+  String get jobDetailApplicantsSoon;
 }
 
 class _AppLocalizationsDelegate

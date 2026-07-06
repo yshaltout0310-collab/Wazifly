@@ -30,12 +30,24 @@ class EmployerHomeScreen extends ConsumerWidget {
         ? company!.name!.trim()
         : l10n.employerCompanyFallback;
 
-    // Placeholder recruiting tools — go live in later milestones.
-    final tools = <({IconData icon, String label})>[
-      (icon: Icons.post_add_rounded, label: l10n.employerPostJob),
-      (icon: Icons.people_alt_outlined, label: l10n.employerApplicants),
-      (icon: Icons.event_available_outlined, label: l10n.employerInterviews),
-      (icon: Icons.groups_outlined, label: l10n.employerCandidates),
+    // Recruiting tools — "Post a Job" is now live; the rest go live later.
+    final tools = <({IconData icon, String label, String? route})>[
+      (
+        icon: Icons.post_add_rounded,
+        label: l10n.employerPostJob,
+        route: RouteNames.createJob
+      ),
+      (
+        icon: Icons.people_alt_outlined,
+        label: l10n.employerApplicants,
+        route: null
+      ),
+      (
+        icon: Icons.event_available_outlined,
+        label: l10n.employerInterviews,
+        route: null
+      ),
+      (icon: Icons.groups_outlined, label: l10n.employerCandidates, route: null),
     ];
 
     return Scaffold(
@@ -72,6 +84,13 @@ class EmployerHomeScreen extends ConsumerWidget {
                 subtitle: l10n.employerCompanyProfileSubtitle,
                 onTap: () => context.pushNamed(RouteNames.companyProfile),
               ).animate(delay: 200.ms).fadeIn().moveY(begin: 10, end: 0),
+              const SizedBox(height: AppSpacing.md),
+              _CompanyCta(
+                icon: Icons.work_outline_rounded,
+                title: l10n.employerManageJobs,
+                subtitle: l10n.employerManageJobsSubtitle,
+                onTap: () => context.pushNamed(RouteNames.employerJobs),
+              ).animate(delay: 240.ms).fadeIn().moveY(begin: 10, end: 0),
               const SizedBox(height: AppSpacing.xl),
               Text(
                 l10n.employerToolsTitle,
@@ -99,14 +118,17 @@ class EmployerHomeScreen extends ConsumerWidget {
                       icon: tools[i].icon,
                       label: tools[i].label,
                       soonLabel: l10n.comingSoonBadge,
-                      onTap: () => ScaffoldMessenger.of(context)
-                        ..hideCurrentSnackBar()
-                        ..showSnackBar(
-                          SnackBar(
-                            behavior: SnackBarBehavior.floating,
-                            content: Text(l10n.homeComingSoon),
-                          ),
-                        ),
+                      available: tools[i].route != null,
+                      onTap: tools[i].route != null
+                          ? () => context.pushNamed(tools[i].route!)
+                          : () => ScaffoldMessenger.of(context)
+                            ..hideCurrentSnackBar()
+                            ..showSnackBar(
+                              SnackBar(
+                                behavior: SnackBarBehavior.floating,
+                                content: Text(l10n.homeComingSoon),
+                              ),
+                            ),
                     )
                         .animate(delay: (220 + i * 70).ms)
                         .fadeIn()
@@ -341,12 +363,14 @@ class _ToolCard extends StatelessWidget {
     required this.label,
     required this.soonLabel,
     required this.onTap,
+    this.available = false,
   });
 
   final IconData icon;
   final String label;
   final String soonLabel;
   final VoidCallback onTap;
+  final bool available;
 
   @override
   Widget build(BuildContext context) {
@@ -384,18 +408,23 @@ class _ToolCard extends StatelessWidget {
                             theme.colorScheme.primary.withValues(alpha: 0.8)),
                   ),
                   const Spacer(),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8, vertical: 3),
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.onSurface.withValues(alpha: 0.08),
-                      borderRadius: BorderRadius.circular(AppRadius.pill),
+                  if (available)
+                    Icon(Icons.arrow_outward_rounded,
+                        size: 18, color: theme.colorScheme.primary)
+                  else
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        color:
+                            theme.colorScheme.onSurface.withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(AppRadius.pill),
+                      ),
+                      child: Text(soonLabel,
+                          style: theme.textTheme.labelSmall?.copyWith(
+                              color: theme.colorScheme.onSurface
+                                  .withValues(alpha: 0.6))),
                     ),
-                    child: Text(soonLabel,
-                        style: theme.textTheme.labelSmall?.copyWith(
-                            color: theme.colorScheme.onSurface
-                                .withValues(alpha: 0.6))),
-                  ),
                 ],
               ),
               const Spacer(),

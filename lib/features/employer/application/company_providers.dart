@@ -1,9 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/services/company/company_repository.dart';
+import '../../../core/services/jobs/employer_jobs_repository.dart';
 import '../../../shared/models/company.dart';
 import '../../auth/application/auth_providers.dart';
 import '../domain/company_stats.dart';
+import '../domain/job_status.dart';
 
 /// The signed-in employer's effective company: the stored document with the auth
 /// email as a contact fallback (so a freshly created doc still shows a sensible
@@ -23,7 +25,11 @@ final companyCompletionProvider = Provider<int>((ref) {
 
 /// At-a-glance recruiting metrics for the Employer Home dashboard.
 ///
-/// Milestone 1 returns [CompanyStats.zero]; later milestones rebind this to
-/// derive live counts from the jobs / applications repositories — the dashboard
-/// widgets need no change.
-final companyStatsProvider = Provider<CompanyStats>((ref) => CompanyStats.zero);
+/// `activeJobs` derives from the employer jobs stream (published, non-deleted);
+/// Applications/Interviews/Hires stay zero until the employer applicant
+/// milestone wires them — the dashboard widgets need no change.
+final companyStatsProvider = Provider<CompanyStats>((ref) {
+  final jobs = ref.watch(employerJobsProvider).valueOrNull ?? const [];
+  final active = jobs.where((j) => j.status == JobStatus.published).length;
+  return CompanyStats(activeJobs: active);
+});

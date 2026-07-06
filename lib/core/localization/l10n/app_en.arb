@@ -613,5 +613,141 @@
   "companySize51to200": "51–200 employees",
   "companySize201to500": "201–500 employees",
   "companySize501to1000": "501–1000 employees",
-  "companySize1000plus": "1000+ employees"
+  "companySize1000plus": "1000+ employees",
+
+  "employerManageJobs": "Manage jobs",
+  "employerManageJobsSubtitle": "Create and manage your job postings",
+
+  "jobStatusDraft": "Draft",
+  "jobStatusPublished": "Published",
+  "jobStatusArchived": "Archived",
+  "jobStatusClosed": "Closed",
+
+  "empTypeFullTime": "Full-time",
+  "empTypePartTime": "Part-time",
+  "empTypeContract": "Contract",
+  "empTypeInternship": "Internship",
+  "empTypeTemporary": "Temporary",
+
+  "jobExpEntry": "Entry",
+  "jobExpJunior": "Junior",
+  "jobExpMid": "Mid",
+  "jobExpSenior": "Senior",
+  "jobExpLead": "Lead",
+
+  "salaryYearly": "per year",
+  "salaryMonthly": "per month",
+  "salaryHourly": "per hour",
+
+  "employerJobsTitle": "My jobs",
+  "employerJobsEmpty": "You haven't posted any jobs yet.",
+  "employerJobsEmptyCta": "Post your first job",
+  "employerJobsSearchHint": "Search your jobs",
+  "employerJobsNoResults": "No jobs match your filters.",
+  "employerJobsFilterAll": "All",
+  "employerJobsSort": "Sort",
+  "jobSortUpdated": "Recently updated",
+  "jobSortCreated": "Recently created",
+  "jobSortTitle": "Title",
+  "jobSortStatus": "Status",
+
+  "createJobTitle": "Post a job",
+  "editJobTitle": "Edit job",
+  "jobTitleLabel": "Job title",
+  "jobTitleHint": "e.g. Senior Flutter Engineer",
+  "jobDescLabel": "Description",
+  "jobDescHint": "Describe the role, responsibilities, and requirements",
+  "jobSkillsLabel": "Required skills",
+  "jobSkillsHint": "Add a skill",
+  "jobExperienceLabel": "Experience level",
+  "jobEmploymentTypeLabel": "Employment type",
+  "jobLocationLabel": "Location",
+  "jobLocationHint": "City, Country",
+  "jobRemoteLabel": "Remote",
+  "jobOpeningsLabel": "Open positions",
+  "jobOpeningsHint": "e.g. 3",
+  "jobSalaryLabel": "Salary (optional)",
+  "jobSalaryMin": "Min",
+  "jobSalaryMax": "Max",
+  "jobSalaryCurrency": "Currency",
+  "jobSalaryPeriod": "Period",
+  "jobAvailabilityLabel": "Availability (optional)",
+  "jobOpensAtLabel": "Opening date",
+  "jobExpiresAtLabel": "Expiration date",
+  "jobDateNotSet": "Not set",
+  "jobClearDate": "Clear",
+
+  "jobSaveDraft": "Save draft",
+  "jobPreview": "Preview",
+  "jobPublish": "Publish",
+  "jobDraftSaved": "Draft saved",
+  "jobAutosaving": "Saving…",
+  "jobAutosaved": "Saved {time}",
+  "@jobAutosaved": {
+    "placeholders": { "time": { "type": "String" } }
+  },
+
+  "jobErrRequired": "Required",
+  "jobErrTitleShort": "At least 3 characters",
+  "jobErrDescShort": "At least 30 characters",
+  "jobErrAddSkill": "Add at least one skill",
+  "jobErrChooseExperience": "Choose an experience level",
+  "jobErrChooseType": "Choose an employment type",
+  "jobErrInvalidSalary": "Minimum must be ≤ maximum",
+  "jobErrInvalidOpenings": "Must be at least 1",
+  "jobErrInvalidDates": "Expiration must be after the opening date",
+  "jobErrFixFields": "Please fix the highlighted fields.",
+
+  "jobUnsavedTitle": "Unsaved changes",
+  "jobUnsavedBody": "Save this job as a draft before leaving?",
+  "jobUnsavedSave": "Save draft",
+  "jobUnsavedDiscard": "Discard",
+  "jobUnsavedCancel": "Cancel",
+
+  "jobPreviewBanner": "Preview — how job seekers see this job",
+  "jobPublishConfirmTitle": "Publish this job?",
+  "jobPublishConfirmBody": "It will be visible to job seekers.",
+  "jobPublishConfirmCta": "Publish",
+  "jobPublished": "Job published",
+
+  "jobActionEdit": "Edit",
+  "jobActionDuplicate": "Duplicate",
+  "jobActionPublish": "Publish",
+  "jobActionArchive": "Archive",
+  "jobActionClose": "Close",
+  "jobActionReopen": "Reopen",
+  "jobActionDelete": "Delete",
+  "jobActionPreview": "Preview",
+
+  "jobDuplicated": "Job duplicated",
+  "jobArchivedMsg": "Job archived",
+  "jobClosedMsg": "Job closed",
+  "jobReopenedMsg": "Job reopened",
+  "jobDeletedMsg": "Job deleted",
+
+  "jobDeleteConfirmTitle": "Delete this job?",
+  "jobDeleteConfirmBody": "It's removed from your list, but existing applications and history are kept.",
+  "jobArchiveTitle": "Archive job",
+  "jobArchiveReasonHint": "Reason (optional)",
+
+  "jobErrPermission": "You don't have permission to do that.",
+  "jobErrNetwork": "You appear to be offline. Please try again.",
+  "jobActionFailed": "Something went wrong. Please try again.",
+
+  "jobMetricsViews": "Views",
+  "jobMetricsApplications": "Applications",
+  "jobOpeningsValue": "{count} open positions",
+  "@jobOpeningsValue": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "jobPublishedOn": "Published {date}",
+  "@jobPublishedOn": {
+    "placeholders": { "date": { "type": "String" } }
+  },
+  "jobUpdatedOn": "Updated {date}",
+  "@jobUpdatedOn": {
+    "placeholders": { "date": { "type": "String" } }
+  },
+  "jobArchiveReasonLabel": "Archive reason",
+  "jobDetailApplicantsSoon": "Applicants — coming soon"
 }

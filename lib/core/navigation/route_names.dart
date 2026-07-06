@@ -32,6 +32,11 @@ abstract final class RouteNames {
   static const String employerHome = 'employerHome';
   static const String companyProfile = 'companyProfile';
   static const String editCompany = 'editCompany';
+  static const String employerJobs = 'employerJobs';
+  static const String createJob = 'createJob';
+  static const String jobPreview = 'jobPreview';
+  static const String employerJobDetail = 'employerJobDetail';
+  static const String editJob = 'editJob';
 
   static const String splashPath = '/';
   static const String languagePath = '/language';
@@ -63,4 +68,10 @@ abstract final class RouteNames {
   static const String employerHomePath = '/employer';
   static const String companyProfilePath = '/employer/company';
   static const String editCompanyPath = '/employer/company/edit';
+  // Static paths ('new'/'preview') precede ':id' so they match first.
+  static const String employerJobsPath = '/employer/jobs';
+  static const String createJobPath = '/employer/jobs/new';
+  static const String jobPreviewPath = '/employer/jobs/preview';
+  static const String employerJobDetailPath = '/employer/jobs/:id';
+  static const String editJobPath = '/employer/jobs/:id/edit';
 }

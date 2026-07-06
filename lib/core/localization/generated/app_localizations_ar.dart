@@ -1673,4 +1673,337 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get companySize1000plus => 'أكثر من 1000 موظف';
+
+  @override
+  String get employerManageJobs => 'إدارة الوظائف';
+
+  @override
+  String get employerManageJobsSubtitle => 'أنشئ وأدر إعلانات وظائفك';
+
+  @override
+  String get jobStatusDraft => 'مسودة';
+
+  @override
+  String get jobStatusPublished => 'منشورة';
+
+  @override
+  String get jobStatusArchived => 'مؤرشفة';
+
+  @override
+  String get jobStatusClosed => 'مغلقة';
+
+  @override
+  String get empTypeFullTime => 'دوام كامل';
+
+  @override
+  String get empTypePartTime => 'دوام جزئي';
+
+  @override
+  String get empTypeContract => 'عقد';
+
+  @override
+  String get empTypeInternship => 'تدريب';
+
+  @override
+  String get empTypeTemporary => 'مؤقت';
+
+  @override
+  String get jobExpEntry => 'مبتدئ';
+
+  @override
+  String get jobExpJunior => 'مبتدئ متقدّم';
+
+  @override
+  String get jobExpMid => 'متوسط';
+
+  @override
+  String get jobExpSenior => 'خبير';
+
+  @override
+  String get jobExpLead => 'قيادي';
+
+  @override
+  String get salaryYearly => 'سنويًا';
+
+  @override
+  String get salaryMonthly => 'شهريًا';
+
+  @override
+  String get salaryHourly => 'بالساعة';
+
+  @override
+  String get employerJobsTitle => 'وظائفي';
+
+  @override
+  String get employerJobsEmpty => 'لم تنشر أي وظائف بعد.';
+
+  @override
+  String get employerJobsEmptyCta => 'انشر وظيفتك الأولى';
+
+  @override
+  String get employerJobsSearchHint => 'ابحث في وظائفك';
+
+  @override
+  String get employerJobsNoResults => 'لا توجد وظائف مطابقة للمرشّحات.';
+
+  @override
+  String get employerJobsFilterAll => 'الكل';
+
+  @override
+  String get employerJobsSort => 'ترتيب';
+
+  @override
+  String get jobSortUpdated => 'الأحدث تعديلًا';
+
+  @override
+  String get jobSortCreated => 'الأحدث إنشاءً';
+
+  @override
+  String get jobSortTitle => 'العنوان';
+
+  @override
+  String get jobSortStatus => 'الحالة';
+
+  @override
+  String get createJobTitle => 'نشر وظيفة';
+
+  @override
+  String get editJobTitle => 'تعديل الوظيفة';
+
+  @override
+  String get jobTitleLabel => 'المسمى الوظيفي';
+
+  @override
+  String get jobTitleHint => 'مثال: مهندس Flutter خبير';
+
+  @override
+  String get jobDescLabel => 'الوصف';
+
+  @override
+  String get jobDescHint => 'صف الدور والمسؤوليات والمتطلبات';
+
+  @override
+  String get jobSkillsLabel => 'المهارات المطلوبة';
+
+  @override
+  String get jobSkillsHint => 'أضف مهارة';
+
+  @override
+  String get jobExperienceLabel => 'مستوى الخبرة';
+
+  @override
+  String get jobEmploymentTypeLabel => 'نوع التوظيف';
+
+  @override
+  String get jobLocationLabel => 'الموقع';
+
+  @override
+  String get jobLocationHint => 'المدينة، الدولة';
+
+  @override
+  String get jobRemoteLabel => 'عن بُعد';
+
+  @override
+  String get jobOpeningsLabel => 'عدد الشواغر';
+
+  @override
+  String get jobOpeningsHint => 'مثال: 3';
+
+  @override
+  String get jobSalaryLabel => 'الراتب (اختياري)';
+
+  @override
+  String get jobSalaryMin => 'الأدنى';
+
+  @override
+  String get jobSalaryMax => 'الأعلى';
+
+  @override
+  String get jobSalaryCurrency => 'العملة';
+
+  @override
+  String get jobSalaryPeriod => 'الفترة';
+
+  @override
+  String get jobAvailabilityLabel => 'التوفر (اختياري)';
+
+  @override
+  String get jobOpensAtLabel => 'تاريخ الفتح';
+
+  @override
+  String get jobExpiresAtLabel => 'تاريخ الانتهاء';
+
+  @override
+  String get jobDateNotSet => 'غير محدد';
+
+  @override
+  String get jobClearDate => 'مسح';
+
+  @override
+  String get jobSaveDraft => 'حفظ كمسودة';
+
+  @override
+  String get jobPreview => 'معاينة';
+
+  @override
+  String get jobPublish => 'نشر';
+
+  @override
+  String get jobDraftSaved => 'تم حفظ المسودة';
+
+  @override
+  String get jobAutosaving => 'جارٍ الحفظ…';
+
+  @override
+  String jobAutosaved(String time) {
+    return 'تم الحفظ $time';
+  }
+
+  @override
+  String get jobErrRequired => 'مطلوب';
+
+  @override
+  String get jobErrTitleShort => '3 أحرف على الأقل';
+
+  @override
+  String get jobErrDescShort => '30 حرفًا على الأقل';
+
+  @override
+  String get jobErrAddSkill => 'أضف مهارة واحدة على الأقل';
+
+  @override
+  String get jobErrChooseExperience => 'اختر مستوى الخبرة';
+
+  @override
+  String get jobErrChooseType => 'اختر نوع التوظيف';
+
+  @override
+  String get jobErrInvalidSalary => 'الحد الأدنى يجب أن يكون ≤ الأعلى';
+
+  @override
+  String get jobErrInvalidOpenings => 'يجب أن يكون 1 على الأقل';
+
+  @override
+  String get jobErrInvalidDates => 'تاريخ الانتهاء يجب أن يكون بعد تاريخ الفتح';
+
+  @override
+  String get jobErrFixFields => 'يرجى تصحيح الحقول المميزة.';
+
+  @override
+  String get jobUnsavedTitle => 'تغييرات غير محفوظة';
+
+  @override
+  String get jobUnsavedBody => 'هل تريد حفظ هذه الوظيفة كمسودة قبل المغادرة؟';
+
+  @override
+  String get jobUnsavedSave => 'حفظ كمسودة';
+
+  @override
+  String get jobUnsavedDiscard => 'تجاهل';
+
+  @override
+  String get jobUnsavedCancel => 'إلغاء';
+
+  @override
+  String get jobPreviewBanner => 'معاينة — كما يراها الباحثون عن عمل';
+
+  @override
+  String get jobPublishConfirmTitle => 'نشر هذه الوظيفة؟';
+
+  @override
+  String get jobPublishConfirmBody => 'ستكون مرئية للباحثين عن عمل.';
+
+  @override
+  String get jobPublishConfirmCta => 'نشر';
+
+  @override
+  String get jobPublished => 'تم نشر الوظيفة';
+
+  @override
+  String get jobActionEdit => 'تعديل';
+
+  @override
+  String get jobActionDuplicate => 'تكرار';
+
+  @override
+  String get jobActionPublish => 'نشر';
+
+  @override
+  String get jobActionArchive => 'أرشفة';
+
+  @override
+  String get jobActionClose => 'إغلاق';
+
+  @override
+  String get jobActionReopen => 'إعادة فتح';
+
+  @override
+  String get jobActionDelete => 'حذف';
+
+  @override
+  String get jobActionPreview => 'معاينة';
+
+  @override
+  String get jobDuplicated => 'تم تكرار الوظيفة';
+
+  @override
+  String get jobArchivedMsg => 'تمت أرشفة الوظيفة';
+
+  @override
+  String get jobClosedMsg => 'تم إغلاق الوظيفة';
+
+  @override
+  String get jobReopenedMsg => 'تمت إعادة فتح الوظيفة';
+
+  @override
+  String get jobDeletedMsg => 'تم حذف الوظيفة';
+
+  @override
+  String get jobDeleteConfirmTitle => 'حذف هذه الوظيفة؟';
+
+  @override
+  String get jobDeleteConfirmBody =>
+      'ستُزال من قائمتك، لكن الطلبات والسجل السابق يبقى محفوظًا.';
+
+  @override
+  String get jobArchiveTitle => 'أرشفة الوظيفة';
+
+  @override
+  String get jobArchiveReasonHint => 'السبب (اختياري)';
+
+  @override
+  String get jobErrPermission => 'ليست لديك صلاحية لفعل ذلك.';
+
+  @override
+  String get jobErrNetwork => 'يبدو أنك غير متصل. يرجى المحاولة مجددًا.';
+
+  @override
+  String get jobActionFailed => 'حدث خطأ ما. يرجى المحاولة مجددًا.';
+
+  @override
+  String get jobMetricsViews => 'المشاهدات';
+
+  @override
+  String get jobMetricsApplications => 'الطلبات';
+
+  @override
+  String jobOpeningsValue(int count) {
+    return '$count شواغر';
+  }
+
+  @override
+  String jobPublishedOn(String date) {
+    return 'نُشرت في $date';
+  }
+
+  @override
+  String jobUpdatedOn(String date) {
+    return 'آخر تعديل $date';
+  }
+
+  @override
+  String get jobArchiveReasonLabel => 'سبب الأرشفة';
+
+  @override
+  String get jobDetailApplicantsSoon => 'المتقدّمون — قريبًا';
 }

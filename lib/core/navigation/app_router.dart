@@ -10,6 +10,10 @@ import '../../features/country_selection/presentation/country_selection_screen.d
 import '../../features/employer/presentation/company_profile_screen.dart';
 import '../../features/employer/presentation/edit_company_screen.dart';
 import '../../features/employer/presentation/employer_home_screen.dart';
+import '../../features/employer/presentation/employer_job_detail_screen.dart';
+import '../../features/employer/presentation/employer_jobs_screen.dart';
+import '../../features/employer/presentation/job_editor_screen.dart';
+import '../../features/employer/presentation/job_preview_screen.dart';
 import '../../features/applications/presentation/application_detail_screen.dart';
 import '../../features/cv_builder/presentation/cv_builder_screen.dart';
 import '../../features/cv_builder/presentation/cv_preview_screen.dart';
@@ -32,6 +36,7 @@ import '../../features/resume_analyzer/presentation/resume_analyzer_screen.dart'
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/splash/presentation/splash_screen.dart';
 import '../../shared/models/job.dart';
+import '../../shared/models/job_posting.dart';
 import '../../features/user_type/presentation/user_type_selection_screen.dart';
 import 'route_names.dart';
 
@@ -215,6 +220,47 @@ abstract final class AppRouter {
                 path: 'edit',
                 name: RouteNames.editCompany,
                 pageBuilder: _fade(const EditCompanyScreen()),
+              ),
+            ],
+          ),
+          GoRoute(
+            path: 'jobs',
+            name: RouteNames.employerJobs,
+            pageBuilder: _fade(const EmployerJobsScreen()),
+            // Static children ('new'/'preview') are declared before ':id' so
+            // they match ahead of the dynamic detail route.
+            routes: [
+              GoRoute(
+                path: 'new',
+                name: RouteNames.createJob,
+                pageBuilder: _fade(const JobEditorScreen()),
+              ),
+              GoRoute(
+                path: 'preview',
+                name: RouteNames.jobPreview,
+                pageBuilder: (context, state) => _fadePage(
+                  JobPreviewScreen(posting: state.extra as JobPosting),
+                  state.pageKey,
+                ),
+              ),
+              GoRoute(
+                path: ':id',
+                name: RouteNames.employerJobDetail,
+                pageBuilder: (context, state) => _fadePage(
+                  EmployerJobDetailScreen(
+                      jobId: state.pathParameters['id'] ?? ''),
+                  state.pageKey,
+                ),
+                routes: [
+                  GoRoute(
+                    path: 'edit',
+                    name: RouteNames.editJob,
+                    pageBuilder: (context, state) => _fadePage(
+                      JobEditorScreen(jobId: state.pathParameters['id']),
+                      state.pageKey,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

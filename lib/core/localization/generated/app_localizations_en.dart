@@ -1693,4 +1693,339 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get companySize1000plus => '1000+ employees';
+
+  @override
+  String get employerManageJobs => 'Manage jobs';
+
+  @override
+  String get employerManageJobsSubtitle =>
+      'Create and manage your job postings';
+
+  @override
+  String get jobStatusDraft => 'Draft';
+
+  @override
+  String get jobStatusPublished => 'Published';
+
+  @override
+  String get jobStatusArchived => 'Archived';
+
+  @override
+  String get jobStatusClosed => 'Closed';
+
+  @override
+  String get empTypeFullTime => 'Full-time';
+
+  @override
+  String get empTypePartTime => 'Part-time';
+
+  @override
+  String get empTypeContract => 'Contract';
+
+  @override
+  String get empTypeInternship => 'Internship';
+
+  @override
+  String get empTypeTemporary => 'Temporary';
+
+  @override
+  String get jobExpEntry => 'Entry';
+
+  @override
+  String get jobExpJunior => 'Junior';
+
+  @override
+  String get jobExpMid => 'Mid';
+
+  @override
+  String get jobExpSenior => 'Senior';
+
+  @override
+  String get jobExpLead => 'Lead';
+
+  @override
+  String get salaryYearly => 'per year';
+
+  @override
+  String get salaryMonthly => 'per month';
+
+  @override
+  String get salaryHourly => 'per hour';
+
+  @override
+  String get employerJobsTitle => 'My jobs';
+
+  @override
+  String get employerJobsEmpty => 'You haven\'t posted any jobs yet.';
+
+  @override
+  String get employerJobsEmptyCta => 'Post your first job';
+
+  @override
+  String get employerJobsSearchHint => 'Search your jobs';
+
+  @override
+  String get employerJobsNoResults => 'No jobs match your filters.';
+
+  @override
+  String get employerJobsFilterAll => 'All';
+
+  @override
+  String get employerJobsSort => 'Sort';
+
+  @override
+  String get jobSortUpdated => 'Recently updated';
+
+  @override
+  String get jobSortCreated => 'Recently created';
+
+  @override
+  String get jobSortTitle => 'Title';
+
+  @override
+  String get jobSortStatus => 'Status';
+
+  @override
+  String get createJobTitle => 'Post a job';
+
+  @override
+  String get editJobTitle => 'Edit job';
+
+  @override
+  String get jobTitleLabel => 'Job title';
+
+  @override
+  String get jobTitleHint => 'e.g. Senior Flutter Engineer';
+
+  @override
+  String get jobDescLabel => 'Description';
+
+  @override
+  String get jobDescHint =>
+      'Describe the role, responsibilities, and requirements';
+
+  @override
+  String get jobSkillsLabel => 'Required skills';
+
+  @override
+  String get jobSkillsHint => 'Add a skill';
+
+  @override
+  String get jobExperienceLabel => 'Experience level';
+
+  @override
+  String get jobEmploymentTypeLabel => 'Employment type';
+
+  @override
+  String get jobLocationLabel => 'Location';
+
+  @override
+  String get jobLocationHint => 'City, Country';
+
+  @override
+  String get jobRemoteLabel => 'Remote';
+
+  @override
+  String get jobOpeningsLabel => 'Open positions';
+
+  @override
+  String get jobOpeningsHint => 'e.g. 3';
+
+  @override
+  String get jobSalaryLabel => 'Salary (optional)';
+
+  @override
+  String get jobSalaryMin => 'Min';
+
+  @override
+  String get jobSalaryMax => 'Max';
+
+  @override
+  String get jobSalaryCurrency => 'Currency';
+
+  @override
+  String get jobSalaryPeriod => 'Period';
+
+  @override
+  String get jobAvailabilityLabel => 'Availability (optional)';
+
+  @override
+  String get jobOpensAtLabel => 'Opening date';
+
+  @override
+  String get jobExpiresAtLabel => 'Expiration date';
+
+  @override
+  String get jobDateNotSet => 'Not set';
+
+  @override
+  String get jobClearDate => 'Clear';
+
+  @override
+  String get jobSaveDraft => 'Save draft';
+
+  @override
+  String get jobPreview => 'Preview';
+
+  @override
+  String get jobPublish => 'Publish';
+
+  @override
+  String get jobDraftSaved => 'Draft saved';
+
+  @override
+  String get jobAutosaving => 'Saving…';
+
+  @override
+  String jobAutosaved(String time) {
+    return 'Saved $time';
+  }
+
+  @override
+  String get jobErrRequired => 'Required';
+
+  @override
+  String get jobErrTitleShort => 'At least 3 characters';
+
+  @override
+  String get jobErrDescShort => 'At least 30 characters';
+
+  @override
+  String get jobErrAddSkill => 'Add at least one skill';
+
+  @override
+  String get jobErrChooseExperience => 'Choose an experience level';
+
+  @override
+  String get jobErrChooseType => 'Choose an employment type';
+
+  @override
+  String get jobErrInvalidSalary => 'Minimum must be ≤ maximum';
+
+  @override
+  String get jobErrInvalidOpenings => 'Must be at least 1';
+
+  @override
+  String get jobErrInvalidDates => 'Expiration must be after the opening date';
+
+  @override
+  String get jobErrFixFields => 'Please fix the highlighted fields.';
+
+  @override
+  String get jobUnsavedTitle => 'Unsaved changes';
+
+  @override
+  String get jobUnsavedBody => 'Save this job as a draft before leaving?';
+
+  @override
+  String get jobUnsavedSave => 'Save draft';
+
+  @override
+  String get jobUnsavedDiscard => 'Discard';
+
+  @override
+  String get jobUnsavedCancel => 'Cancel';
+
+  @override
+  String get jobPreviewBanner => 'Preview — how job seekers see this job';
+
+  @override
+  String get jobPublishConfirmTitle => 'Publish this job?';
+
+  @override
+  String get jobPublishConfirmBody => 'It will be visible to job seekers.';
+
+  @override
+  String get jobPublishConfirmCta => 'Publish';
+
+  @override
+  String get jobPublished => 'Job published';
+
+  @override
+  String get jobActionEdit => 'Edit';
+
+  @override
+  String get jobActionDuplicate => 'Duplicate';
+
+  @override
+  String get jobActionPublish => 'Publish';
+
+  @override
+  String get jobActionArchive => 'Archive';
+
+  @override
+  String get jobActionClose => 'Close';
+
+  @override
+  String get jobActionReopen => 'Reopen';
+
+  @override
+  String get jobActionDelete => 'Delete';
+
+  @override
+  String get jobActionPreview => 'Preview';
+
+  @override
+  String get jobDuplicated => 'Job duplicated';
+
+  @override
+  String get jobArchivedMsg => 'Job archived';
+
+  @override
+  String get jobClosedMsg => 'Job closed';
+
+  @override
+  String get jobReopenedMsg => 'Job reopened';
+
+  @override
+  String get jobDeletedMsg => 'Job deleted';
+
+  @override
+  String get jobDeleteConfirmTitle => 'Delete this job?';
+
+  @override
+  String get jobDeleteConfirmBody =>
+      'It\'s removed from your list, but existing applications and history are kept.';
+
+  @override
+  String get jobArchiveTitle => 'Archive job';
+
+  @override
+  String get jobArchiveReasonHint => 'Reason (optional)';
+
+  @override
+  String get jobErrPermission => 'You don\'t have permission to do that.';
+
+  @override
+  String get jobErrNetwork => 'You appear to be offline. Please try again.';
+
+  @override
+  String get jobActionFailed => 'Something went wrong. Please try again.';
+
+  @override
+  String get jobMetricsViews => 'Views';
+
+  @override
+  String get jobMetricsApplications => 'Applications';
+
+  @override
+  String jobOpeningsValue(int count) {
+    return '$count open positions';
+  }
+
+  @override
+  String jobPublishedOn(String date) {
+    return 'Published $date';
+  }
+
+  @override
+  String jobUpdatedOn(String date) {
+    return 'Updated $date';
+  }
+
+  @override
+  String get jobArchiveReasonLabel => 'Archive reason';
+
+  @override
+  String get jobDetailApplicantsSoon => 'Applicants — coming soon';
 }
