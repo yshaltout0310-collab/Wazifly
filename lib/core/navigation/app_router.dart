@@ -9,6 +9,8 @@ import '../../features/auth/presentation/welcome_screen.dart';
 import '../../features/country_selection/presentation/country_selection_screen.dart';
 import '../../features/employer/presentation/company_profile_screen.dart';
 import '../../features/employer/presentation/edit_company_screen.dart';
+import '../../features/employer/presentation/employer_applicant_detail_screen.dart';
+import '../../features/employer/presentation/employer_applicants_screen.dart';
 import '../../features/employer/presentation/employer_home_screen.dart';
 import '../../features/employer/presentation/employer_job_detail_screen.dart';
 import '../../features/employer/presentation/employer_jobs_screen.dart';
@@ -260,7 +262,32 @@ abstract final class AppRouter {
                       state.pageKey,
                     ),
                   ),
+                  GoRoute(
+                    path: 'applicants',
+                    name: RouteNames.employerJobApplicants,
+                    pageBuilder: (context, state) => _fadePage(
+                      EmployerApplicantsScreen(
+                          jobId: state.pathParameters['id']),
+                      state.pageKey,
+                    ),
+                  ),
                 ],
+              ),
+            ],
+          ),
+          GoRoute(
+            path: 'applicants',
+            name: RouteNames.employerApplicants,
+            pageBuilder: _fade(const EmployerApplicantsScreen()),
+            routes: [
+              GoRoute(
+                path: ':appId',
+                name: RouteNames.employerApplicantDetail,
+                pageBuilder: (context, state) => _fadePage(
+                  EmployerApplicantDetailScreen(
+                      appId: state.pathParameters['appId'] ?? ''),
+                  state.pageKey,
+                ),
               ),
             ],
           ),

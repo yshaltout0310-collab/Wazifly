@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import '../../../../core/localization/generated/app_localizations.dart';
 import '../../../../core/theme/app_dimensions.dart';
 import '../../../../shared/models/application.dart';
-import 'status_chip.dart';
+import '../../../../shared/widgets/application_status_chip.dart';
 
 /// A row in the My Applications list: job title/company, status, applied date.
 class ApplicationTile extends StatelessWidget {

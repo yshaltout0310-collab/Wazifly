@@ -40,7 +40,7 @@ class EmployerHomeScreen extends ConsumerWidget {
       (
         icon: Icons.people_alt_outlined,
         label: l10n.employerApplicants,
-        route: null
+        route: RouteNames.employerApplicants
       ),
       (
         icon: Icons.event_available_outlined,

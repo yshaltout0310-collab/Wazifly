@@ -37,6 +37,40 @@ service cloud.firestore {
                                resource.data.ownerUid == request.auth.uid;
     }
 
+    // Job applications at applications/{applicationId} (Phase 5 · Milestone 3).
+    // Dual-keyed: the seeker (applicantUid) creates + withdraws their own; the
+    // job owner (ownerUid) reads + updates status (moves through the pipeline).
+    // Both parties can read the doc; only the owner may update it.
+    match /applications/{applicationId} {
+      allow read: if request.auth != null &&
+                     (resource.data.applicantUid == request.auth.uid ||
+                      resource.data.ownerUid == request.auth.uid);
+      allow create: if request.auth != null &&
+                       request.resource.data.applicantUid == request.auth.uid;
+      allow update: if request.auth != null &&
+                       resource.data.ownerUid == request.auth.uid;
+      allow delete: if request.auth != null &&
+                       resource.data.applicantUid == request.auth.uid;
+    }
+
+    // Private employer notes at applicationNotes/{noteId}. Only the owning
+    // employer (ownerUid) may read or write — never the applicant.
+    match /applicationNotes/{noteId} {
+      allow create: if request.auth != null &&
+                       request.resource.data.ownerUid == request.auth.uid;
+      allow read, update, delete: if request.auth != null &&
+                       resource.data.ownerUid == request.auth.uid;
+    }
+
+    // Owner-private employer activity log at employerActivity/{id} — the
+    // foundation for future auditing. Only the owner may read or append.
+    match /employerActivity/{activityId} {
+      allow create: if request.auth != null &&
+                       request.resource.data.ownerUid == request.auth.uid;
+      allow read: if request.auth != null &&
+                     resource.data.ownerUid == request.auth.uid;
+    }
+
     // Everything else is denied by default (no fall-through match).
   }
 }

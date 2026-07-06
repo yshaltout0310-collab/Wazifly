@@ -9,9 +9,10 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/responsive.dart';
 import '../../../shared/models/application.dart';
+import '../../../shared/widgets/application_status_chip.dart';
+import '../../../shared/widgets/application_status_style.dart';
+import '../../../shared/widgets/status_timeline.dart';
 import '../application/applications_controller.dart';
-import 'widgets/status_chip.dart';
-import 'widgets/status_timeline.dart';
 
 /// One application: current status, a status-history timeline, mock status
 /// controls, and links to the job and the Career Coach (for interview prep).

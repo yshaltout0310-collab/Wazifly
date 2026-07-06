@@ -3877,6 +3877,426 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Applicants — coming soon'**
   String get jobDetailApplicantsSoon;
+
+  /// No description provided for @employerApplicantsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Applicants'**
+  String get employerApplicantsTitle;
+
+  /// No description provided for @employerApplicantsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Review and manage applicants'**
+  String get employerApplicantsSubtitle;
+
+  /// No description provided for @employerApplicantsSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search applicants'**
+  String get employerApplicantsSearchHint;
+
+  /// No description provided for @employerApplicantsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No applicants yet.'**
+  String get employerApplicantsEmpty;
+
+  /// No description provided for @employerApplicantsEmptyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Applicants appear here as job seekers apply to your published jobs.'**
+  String get employerApplicantsEmptyHint;
+
+  /// No description provided for @employerApplicantsNoResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No applicants match your filters.'**
+  String get employerApplicantsNoResults;
+
+  /// No description provided for @employerApplicantsFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get employerApplicantsFilterAll;
+
+  /// No description provided for @applicantsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No applicants yet} =1{1 applicant} other{{count} applicants}}'**
+  String applicantsCount(int count);
+
+  /// No description provided for @applicantsStatTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get applicantsStatTotal;
+
+  /// No description provided for @applicantsStatNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New'**
+  String get applicantsStatNew;
+
+  /// No description provided for @applicantSortRecent.
+  ///
+  /// In en, this message translates to:
+  /// **'Most recent'**
+  String get applicantSortRecent;
+
+  /// No description provided for @applicantSortMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Match score'**
+  String get applicantSortMatch;
+
+  /// No description provided for @applicantSortName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get applicantSortName;
+
+  /// No description provided for @applicantSortStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get applicantSortStatus;
+
+  /// No description provided for @applicantActionReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Move to Review'**
+  String get applicantActionReview;
+
+  /// No description provided for @applicantActionInterview.
+  ///
+  /// In en, this message translates to:
+  /// **'Move to Interview'**
+  String get applicantActionInterview;
+
+  /// No description provided for @applicantActionAccept.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept'**
+  String get applicantActionAccept;
+
+  /// No description provided for @applicantActionReject.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject'**
+  String get applicantActionReject;
+
+  /// No description provided for @applicantActionReopen.
+  ///
+  /// In en, this message translates to:
+  /// **'Reopen'**
+  String get applicantActionReopen;
+
+  /// No description provided for @applicantAcceptTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept this applicant?'**
+  String get applicantAcceptTitle;
+
+  /// No description provided for @applicantAcceptBody.
+  ///
+  /// In en, this message translates to:
+  /// **'They\'ll be moved to Accepted.'**
+  String get applicantAcceptBody;
+
+  /// No description provided for @applicantRejectTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject applicant'**
+  String get applicantRejectTitle;
+
+  /// No description provided for @applicantRejectReasonHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason (optional, private)'**
+  String get applicantRejectReasonHint;
+
+  /// No description provided for @applicantReopenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reopen applicant?'**
+  String get applicantReopenTitle;
+
+  /// No description provided for @applicantReopenBody.
+  ///
+  /// In en, this message translates to:
+  /// **'They\'ll be moved back to Review.'**
+  String get applicantReopenBody;
+
+  /// No description provided for @applicantMovedReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Moved to Review'**
+  String get applicantMovedReview;
+
+  /// No description provided for @applicantMovedInterview.
+  ///
+  /// In en, this message translates to:
+  /// **'Moved to Interview'**
+  String get applicantMovedInterview;
+
+  /// No description provided for @applicantAccepted.
+  ///
+  /// In en, this message translates to:
+  /// **'Applicant accepted'**
+  String get applicantAccepted;
+
+  /// No description provided for @applicantRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Applicant rejected'**
+  String get applicantRejected;
+
+  /// No description provided for @applicantReopened.
+  ///
+  /// In en, this message translates to:
+  /// **'Applicant reopened'**
+  String get applicantReopened;
+
+  /// No description provided for @applicantSectionMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'AI match'**
+  String get applicantSectionMatch;
+
+  /// No description provided for @applicantSectionResume.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume'**
+  String get applicantSectionResume;
+
+  /// No description provided for @applicantSectionResumeAnalysis.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume analysis'**
+  String get applicantSectionResumeAnalysis;
+
+  /// No description provided for @applicantSectionTimeline.
+  ///
+  /// In en, this message translates to:
+  /// **'Application timeline'**
+  String get applicantSectionTimeline;
+
+  /// No description provided for @applicantSectionInterview.
+  ///
+  /// In en, this message translates to:
+  /// **'Interview readiness'**
+  String get applicantSectionInterview;
+
+  /// No description provided for @applicantSectionNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Private notes'**
+  String get applicantSectionNotes;
+
+  /// No description provided for @applicantSectionSkills.
+  ///
+  /// In en, this message translates to:
+  /// **'Skills'**
+  String get applicantSectionSkills;
+
+  /// No description provided for @applicantSectionLinks.
+  ///
+  /// In en, this message translates to:
+  /// **'Links'**
+  String get applicantSectionLinks;
+
+  /// No description provided for @applicantMatchPercent.
+  ///
+  /// In en, this message translates to:
+  /// **'{score}% match'**
+  String applicantMatchPercent(int score);
+
+  /// No description provided for @applicantMatchMatching.
+  ///
+  /// In en, this message translates to:
+  /// **'Matching skills'**
+  String get applicantMatchMatching;
+
+  /// No description provided for @applicantMatchMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing skills'**
+  String get applicantMatchMissing;
+
+  /// No description provided for @applicantNoMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'No match score captured yet.'**
+  String get applicantNoMatch;
+
+  /// No description provided for @applicantAtsScore.
+  ///
+  /// In en, this message translates to:
+  /// **'ATS score'**
+  String get applicantAtsScore;
+
+  /// No description provided for @applicantNoResumeAnalysis.
+  ///
+  /// In en, this message translates to:
+  /// **'No resume analysis captured yet.'**
+  String get applicantNoResumeAnalysis;
+
+  /// No description provided for @applicantResumeView.
+  ///
+  /// In en, this message translates to:
+  /// **'View resume'**
+  String get applicantResumeView;
+
+  /// No description provided for @applicantResumeDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get applicantResumeDownload;
+
+  /// No description provided for @applicantResumeUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume file not available.'**
+  String get applicantResumeUnavailable;
+
+  /// No description provided for @applicantInterviewSessions.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No interview practice yet} =1{1 practice session} other{{count} practice sessions}}'**
+  String applicantInterviewSessions(int count);
+
+  /// No description provided for @applicantInterviewBest.
+  ///
+  /// In en, this message translates to:
+  /// **'Best score {score}'**
+  String applicantInterviewBest(int score);
+
+  /// No description provided for @applicantNoProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'This applicant hasn\'t shared profile details.'**
+  String get applicantNoProfile;
+
+  /// No description provided for @applicantAppliedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Applied {date}'**
+  String applicantAppliedOn(String date);
+
+  /// No description provided for @applicantVia.
+  ///
+  /// In en, this message translates to:
+  /// **'via {source}'**
+  String applicantVia(String source);
+
+  /// No description provided for @sourceCareerBridge.
+  ///
+  /// In en, this message translates to:
+  /// **'CareerBridge'**
+  String get sourceCareerBridge;
+
+  /// No description provided for @sourceReferral.
+  ///
+  /// In en, this message translates to:
+  /// **'Referral'**
+  String get sourceReferral;
+
+  /// No description provided for @sourceExternalImport.
+  ///
+  /// In en, this message translates to:
+  /// **'External import'**
+  String get sourceExternalImport;
+
+  /// No description provided for @sourceCompanyWebsite.
+  ///
+  /// In en, this message translates to:
+  /// **'Company website'**
+  String get sourceCompanyWebsite;
+
+  /// No description provided for @notesPrivateHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Only you can see these notes.'**
+  String get notesPrivateHint;
+
+  /// No description provided for @notesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No notes yet.'**
+  String get notesEmpty;
+
+  /// No description provided for @noteAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a note'**
+  String get noteAdd;
+
+  /// No description provided for @noteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Write a private note…'**
+  String get noteHint;
+
+  /// No description provided for @noteSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get noteSave;
+
+  /// No description provided for @noteEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get noteEdit;
+
+  /// No description provided for @noteDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get noteDelete;
+
+  /// No description provided for @noteEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit note'**
+  String get noteEditTitle;
+
+  /// No description provided for @noteDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete note?'**
+  String get noteDeleteTitle;
+
+  /// No description provided for @noteDeleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This can\'t be undone.'**
+  String get noteDeleteBody;
+
+  /// No description provided for @noteEditedTag.
+  ///
+  /// In en, this message translates to:
+  /// **'edited'**
+  String get noteEditedTag;
+
+  /// No description provided for @noteAddedMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'Note added'**
+  String get noteAddedMsg;
+
+  /// No description provided for @noteUpdatedMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'Note updated'**
+  String get noteUpdatedMsg;
+
+  /// No description provided for @noteDeletedMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'Note deleted'**
+  String get noteDeletedMsg;
 }
 
 class _AppLocalizationsDelegate

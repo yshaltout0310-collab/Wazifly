@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../core/localization/generated/app_localizations.dart';
-import '../../../../core/theme/app_dimensions.dart';
-import '../../../../shared/models/application.dart';
-import 'status_chip.dart';
+import '../../core/localization/generated/app_localizations.dart';
+import '../../core/theme/app_dimensions.dart';
+import '../models/application.dart';
+import 'application_status_style.dart';
 
-/// Vertical timeline of an application's status history (oldest → newest).
+/// Vertical timeline of an application's status history (oldest → newest). Shared
+/// by the seeker Applications Center and the employer Applicants Management.
 class StatusTimeline extends StatelessWidget {
   const StatusTimeline({required this.history, super.key});
 
@@ -68,6 +69,16 @@ class StatusTimeline extends StatelessWidget {
                                 .withValues(alpha: 0.6),
                           ),
                         ),
+                        if ((history[i].note ?? '').isNotEmpty) ...[
+                          const SizedBox(height: 2),
+                          Text(
+                            history[i].note!,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.colorScheme.onSurface
+                                  .withValues(alpha: 0.75),
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   ),

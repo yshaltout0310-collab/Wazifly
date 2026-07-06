@@ -2006,4 +2006,248 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get jobDetailApplicantsSoon => 'المتقدّمون — قريبًا';
+
+  @override
+  String get employerApplicantsTitle => 'المتقدّمون';
+
+  @override
+  String get employerApplicantsSubtitle => 'راجع وأدر المتقدّمين';
+
+  @override
+  String get employerApplicantsSearchHint => 'ابحث في المتقدّمين';
+
+  @override
+  String get employerApplicantsEmpty => 'لا يوجد متقدّمون بعد.';
+
+  @override
+  String get employerApplicantsEmptyHint =>
+      'سيظهر المتقدّمون هنا عندما يتقدّم الباحثون عن عمل إلى وظائفك المنشورة.';
+
+  @override
+  String get employerApplicantsNoResults =>
+      'لا يوجد متقدّمون مطابقون للمرشّحات.';
+
+  @override
+  String get employerApplicantsFilterAll => 'الكل';
+
+  @override
+  String applicantsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count متقدّم',
+      many: '$count متقدّمًا',
+      few: '$count متقدّمين',
+      two: 'متقدّمان',
+      one: 'متقدّم واحد',
+      zero: 'لا متقدّمين',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get applicantsStatTotal => 'الإجمالي';
+
+  @override
+  String get applicantsStatNew => 'جديد';
+
+  @override
+  String get applicantSortRecent => 'الأحدث';
+
+  @override
+  String get applicantSortMatch => 'درجة التطابق';
+
+  @override
+  String get applicantSortName => 'الاسم';
+
+  @override
+  String get applicantSortStatus => 'الحالة';
+
+  @override
+  String get applicantActionReview => 'نقل إلى المراجعة';
+
+  @override
+  String get applicantActionInterview => 'نقل إلى المقابلة';
+
+  @override
+  String get applicantActionAccept => 'قبول';
+
+  @override
+  String get applicantActionReject => 'رفض';
+
+  @override
+  String get applicantActionReopen => 'إعادة فتح';
+
+  @override
+  String get applicantAcceptTitle => 'قبول هذا المتقدّم؟';
+
+  @override
+  String get applicantAcceptBody => 'سيُنقل إلى «مقبول».';
+
+  @override
+  String get applicantRejectTitle => 'رفض المتقدّم';
+
+  @override
+  String get applicantRejectReasonHint => 'السبب (اختياري، خاص)';
+
+  @override
+  String get applicantReopenTitle => 'إعادة فتح المتقدّم؟';
+
+  @override
+  String get applicantReopenBody => 'سيُعاد إلى «المراجعة».';
+
+  @override
+  String get applicantMovedReview => 'نُقل إلى المراجعة';
+
+  @override
+  String get applicantMovedInterview => 'نُقل إلى المقابلة';
+
+  @override
+  String get applicantAccepted => 'تم قبول المتقدّم';
+
+  @override
+  String get applicantRejected => 'تم رفض المتقدّم';
+
+  @override
+  String get applicantReopened => 'تمت إعادة فتح المتقدّم';
+
+  @override
+  String get applicantSectionMatch => 'التطابق بالذكاء الاصطناعي';
+
+  @override
+  String get applicantSectionResume => 'السيرة الذاتية';
+
+  @override
+  String get applicantSectionResumeAnalysis => 'تحليل السيرة الذاتية';
+
+  @override
+  String get applicantSectionTimeline => 'المخطط الزمني للطلب';
+
+  @override
+  String get applicantSectionInterview => 'الجاهزية للمقابلة';
+
+  @override
+  String get applicantSectionNotes => 'ملاحظات خاصة';
+
+  @override
+  String get applicantSectionSkills => 'المهارات';
+
+  @override
+  String get applicantSectionLinks => 'الروابط';
+
+  @override
+  String applicantMatchPercent(int score) {
+    return 'تطابق $score٪';
+  }
+
+  @override
+  String get applicantMatchMatching => 'المهارات المتطابقة';
+
+  @override
+  String get applicantMatchMissing => 'المهارات الناقصة';
+
+  @override
+  String get applicantNoMatch => 'لم تُحسب درجة تطابق بعد.';
+
+  @override
+  String get applicantAtsScore => 'درجة ATS';
+
+  @override
+  String get applicantNoResumeAnalysis => 'لم يُلتقط تحليل سيرة ذاتية بعد.';
+
+  @override
+  String get applicantResumeView => 'عرض السيرة الذاتية';
+
+  @override
+  String get applicantResumeDownload => 'تنزيل';
+
+  @override
+  String get applicantResumeUnavailable => 'ملف السيرة الذاتية غير متاح.';
+
+  @override
+  String applicantInterviewSessions(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count جلسة تدريب',
+      many: '$count جلسة تدريب',
+      few: '$count جلسات تدريب',
+      two: 'جلستا تدريب',
+      one: 'جلسة تدريب واحدة',
+      zero: 'لا تدريب على المقابلات بعد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String applicantInterviewBest(int score) {
+    return 'أفضل درجة $score';
+  }
+
+  @override
+  String get applicantNoProfile => 'لم يشارك هذا المتقدّم تفاصيل ملفه.';
+
+  @override
+  String applicantAppliedOn(String date) {
+    return 'تقدّم في $date';
+  }
+
+  @override
+  String applicantVia(String source) {
+    return 'عبر $source';
+  }
+
+  @override
+  String get sourceCareerBridge => 'CareerBridge';
+
+  @override
+  String get sourceReferral => 'إحالة';
+
+  @override
+  String get sourceExternalImport => 'استيراد خارجي';
+
+  @override
+  String get sourceCompanyWebsite => 'موقع الشركة';
+
+  @override
+  String get notesPrivateHint => 'أنت وحدك من يمكنه رؤية هذه الملاحظات.';
+
+  @override
+  String get notesEmpty => 'لا ملاحظات بعد.';
+
+  @override
+  String get noteAdd => 'إضافة ملاحظة';
+
+  @override
+  String get noteHint => 'اكتب ملاحظة خاصة…';
+
+  @override
+  String get noteSave => 'حفظ';
+
+  @override
+  String get noteEdit => 'تعديل';
+
+  @override
+  String get noteDelete => 'حذف';
+
+  @override
+  String get noteEditTitle => 'تعديل الملاحظة';
+
+  @override
+  String get noteDeleteTitle => 'حذف الملاحظة؟';
+
+  @override
+  String get noteDeleteBody => 'لا يمكن التراجع عن هذا.';
+
+  @override
+  String get noteEditedTag => 'مُعدّلة';
+
+  @override
+  String get noteAddedMsg => 'أُضيفت الملاحظة';
+
+  @override
+  String get noteUpdatedMsg => 'حُدّثت الملاحظة';
+
+  @override
+  String get noteDeletedMsg => 'حُذفت الملاحظة';
 }

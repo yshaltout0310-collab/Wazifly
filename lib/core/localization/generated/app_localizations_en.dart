@@ -2028,4 +2028,242 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get jobDetailApplicantsSoon => 'Applicants — coming soon';
+
+  @override
+  String get employerApplicantsTitle => 'Applicants';
+
+  @override
+  String get employerApplicantsSubtitle => 'Review and manage applicants';
+
+  @override
+  String get employerApplicantsSearchHint => 'Search applicants';
+
+  @override
+  String get employerApplicantsEmpty => 'No applicants yet.';
+
+  @override
+  String get employerApplicantsEmptyHint =>
+      'Applicants appear here as job seekers apply to your published jobs.';
+
+  @override
+  String get employerApplicantsNoResults => 'No applicants match your filters.';
+
+  @override
+  String get employerApplicantsFilterAll => 'All';
+
+  @override
+  String applicantsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count applicants',
+      one: '1 applicant',
+      zero: 'No applicants yet',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get applicantsStatTotal => 'Total';
+
+  @override
+  String get applicantsStatNew => 'New';
+
+  @override
+  String get applicantSortRecent => 'Most recent';
+
+  @override
+  String get applicantSortMatch => 'Match score';
+
+  @override
+  String get applicantSortName => 'Name';
+
+  @override
+  String get applicantSortStatus => 'Status';
+
+  @override
+  String get applicantActionReview => 'Move to Review';
+
+  @override
+  String get applicantActionInterview => 'Move to Interview';
+
+  @override
+  String get applicantActionAccept => 'Accept';
+
+  @override
+  String get applicantActionReject => 'Reject';
+
+  @override
+  String get applicantActionReopen => 'Reopen';
+
+  @override
+  String get applicantAcceptTitle => 'Accept this applicant?';
+
+  @override
+  String get applicantAcceptBody => 'They\'ll be moved to Accepted.';
+
+  @override
+  String get applicantRejectTitle => 'Reject applicant';
+
+  @override
+  String get applicantRejectReasonHint => 'Reason (optional, private)';
+
+  @override
+  String get applicantReopenTitle => 'Reopen applicant?';
+
+  @override
+  String get applicantReopenBody => 'They\'ll be moved back to Review.';
+
+  @override
+  String get applicantMovedReview => 'Moved to Review';
+
+  @override
+  String get applicantMovedInterview => 'Moved to Interview';
+
+  @override
+  String get applicantAccepted => 'Applicant accepted';
+
+  @override
+  String get applicantRejected => 'Applicant rejected';
+
+  @override
+  String get applicantReopened => 'Applicant reopened';
+
+  @override
+  String get applicantSectionMatch => 'AI match';
+
+  @override
+  String get applicantSectionResume => 'Resume';
+
+  @override
+  String get applicantSectionResumeAnalysis => 'Resume analysis';
+
+  @override
+  String get applicantSectionTimeline => 'Application timeline';
+
+  @override
+  String get applicantSectionInterview => 'Interview readiness';
+
+  @override
+  String get applicantSectionNotes => 'Private notes';
+
+  @override
+  String get applicantSectionSkills => 'Skills';
+
+  @override
+  String get applicantSectionLinks => 'Links';
+
+  @override
+  String applicantMatchPercent(int score) {
+    return '$score% match';
+  }
+
+  @override
+  String get applicantMatchMatching => 'Matching skills';
+
+  @override
+  String get applicantMatchMissing => 'Missing skills';
+
+  @override
+  String get applicantNoMatch => 'No match score captured yet.';
+
+  @override
+  String get applicantAtsScore => 'ATS score';
+
+  @override
+  String get applicantNoResumeAnalysis => 'No resume analysis captured yet.';
+
+  @override
+  String get applicantResumeView => 'View resume';
+
+  @override
+  String get applicantResumeDownload => 'Download';
+
+  @override
+  String get applicantResumeUnavailable => 'Resume file not available.';
+
+  @override
+  String applicantInterviewSessions(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count practice sessions',
+      one: '1 practice session',
+      zero: 'No interview practice yet',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String applicantInterviewBest(int score) {
+    return 'Best score $score';
+  }
+
+  @override
+  String get applicantNoProfile =>
+      'This applicant hasn\'t shared profile details.';
+
+  @override
+  String applicantAppliedOn(String date) {
+    return 'Applied $date';
+  }
+
+  @override
+  String applicantVia(String source) {
+    return 'via $source';
+  }
+
+  @override
+  String get sourceCareerBridge => 'CareerBridge';
+
+  @override
+  String get sourceReferral => 'Referral';
+
+  @override
+  String get sourceExternalImport => 'External import';
+
+  @override
+  String get sourceCompanyWebsite => 'Company website';
+
+  @override
+  String get notesPrivateHint => 'Only you can see these notes.';
+
+  @override
+  String get notesEmpty => 'No notes yet.';
+
+  @override
+  String get noteAdd => 'Add a note';
+
+  @override
+  String get noteHint => 'Write a private note…';
+
+  @override
+  String get noteSave => 'Save';
+
+  @override
+  String get noteEdit => 'Edit';
+
+  @override
+  String get noteDelete => 'Delete';
+
+  @override
+  String get noteEditTitle => 'Edit note';
+
+  @override
+  String get noteDeleteTitle => 'Delete note?';
+
+  @override
+  String get noteDeleteBody => 'This can\'t be undone.';
+
+  @override
+  String get noteEditedTag => 'edited';
+
+  @override
+  String get noteAddedMsg => 'Note added';
+
+  @override
+  String get noteUpdatedMsg => 'Note updated';
+
+  @override
+  String get noteDeletedMsg => 'Note deleted';
 }

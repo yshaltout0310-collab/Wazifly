@@ -3,10 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/localization/generated/app_localizations.dart';
+import '../../../core/navigation/route_names.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/responsive.dart';
 import '../../../shared/models/job_posting.dart';
+import '../application/employer_applicants_providers.dart';
 import '../application/employer_jobs_controller.dart';
 import '../application/employer_jobs_providers.dart';
 import 'employer_jobs_l10n.dart';
@@ -103,7 +105,7 @@ class EmployerJobDetailScreen extends ConsumerWidget {
                 _ArchiveReason(reason: job.archiveReason!),
               ],
               const SizedBox(height: AppSpacing.lg),
-              _ApplicantsSoon(text: l10n.jobDetailApplicantsSoon),
+              _ApplicantsEntry(jobId: job.id),
               const SizedBox(height: AppSpacing.lg),
               _Actions(job: job),
             ],
@@ -266,24 +268,68 @@ class _ArchiveReason extends StatelessWidget {
   }
 }
 
-class _ApplicantsSoon extends StatelessWidget {
-  const _ApplicantsSoon({required this.text});
-  final String text;
+/// A tappable "Applicants (N)" entry → the job's applicants list.
+class _ApplicantsEntry extends ConsumerWidget {
+  const _ApplicantsEntry({required this.jobId});
+  final String jobId;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
-    return Row(
-      children: [
-        Icon(Icons.people_alt_outlined,
-            size: 20, color: theme.colorScheme.onSurface.withValues(alpha: 0.5)),
-        const SizedBox(width: AppSpacing.sm),
-        Expanded(
-          child: Text(text,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onSurface.withValues(alpha: 0.6))),
+    final dark = theme.brightness == Brightness.dark;
+    final count = ref.watch(applicantsForJobProvider(jobId)).length;
+
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(AppRadius.lg),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        onTap: () => context.pushNamed(RouteNames.employerJobApplicants,
+            pathParameters: {'id': jobId}),
+        child: Container(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surface,
+            borderRadius: BorderRadius.circular(AppRadius.lg),
+            border: Border.all(
+                color: theme.colorScheme.outline.withValues(alpha: 0.5)),
+            boxShadow: AppShadows.card(dark: dark),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primary.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(AppRadius.md),
+                ),
+                child: Icon(Icons.people_alt_outlined,
+                    color: theme.colorScheme.primary),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(l10n.employerApplicantsTitle,
+                        style: theme.textTheme.titleSmall
+                            ?.copyWith(fontWeight: FontWeight.w700)),
+                    const SizedBox(height: 2),
+                    Text(l10n.applicantsCount(count),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.onSurface
+                                .withValues(alpha: 0.6))),
+                  ],
+                ),
+              ),
+              Icon(Icons.chevron_right_rounded,
+                  color: theme.colorScheme.primary),
+            ],
+          ),
         ),
-      ],
+      ),
     );
   }
 }

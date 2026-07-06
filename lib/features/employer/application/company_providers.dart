@@ -1,7 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/services/applications/employer_applicants_repository.dart';
 import '../../../core/services/company/company_repository.dart';
 import '../../../core/services/jobs/employer_jobs_repository.dart';
+import '../../../shared/models/application.dart';
 import '../../../shared/models/company.dart';
 import '../../auth/application/auth_providers.dart';
 import '../domain/company_stats.dart';
@@ -25,11 +27,27 @@ final companyCompletionProvider = Provider<int>((ref) {
 
 /// At-a-glance recruiting metrics for the Employer Home dashboard.
 ///
-/// `activeJobs` derives from the employer jobs stream (published, non-deleted);
-/// Applications/Interviews/Hires stay zero until the employer applicant
-/// milestone wires them — the dashboard widgets need no change.
+/// `activeJobs` derives from the employer jobs stream (published); Applications /
+/// Interviews / Hires derive from the employer applicants stream — Interviews
+/// counts applicants who ever reached the interview stage (via history), Hires
+/// counts accepted. All numbers become real with no dashboard-widget change.
 final companyStatsProvider = Provider<CompanyStats>((ref) {
   final jobs = ref.watch(employerJobsProvider).valueOrNull ?? const [];
   final active = jobs.where((j) => j.status == JobStatus.published).length;
-  return CompanyStats(activeJobs: active);
+
+  final apps = ref.watch(employerApplicantsProvider).valueOrNull ?? const [];
+  final interviews = apps
+      .where((a) =>
+          a.history.any((e) => e.status == ApplicationStatus.interview) ||
+          a.status == ApplicationStatus.interview)
+      .length;
+  final hires =
+      apps.where((a) => a.status == ApplicationStatus.accepted).length;
+
+  return CompanyStats(
+    activeJobs: active,
+    applications: apps.length,
+    interviews: interviews,
+    hires: hires,
+  );
 });

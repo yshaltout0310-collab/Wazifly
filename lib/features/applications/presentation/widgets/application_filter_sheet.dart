@@ -5,8 +5,8 @@ import '../../../../core/localization/generated/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
 import '../../../../shared/models/application.dart';
+import '../../../../shared/widgets/application_status_style.dart';
 import '../../application/applications_controller.dart';
-import 'status_chip.dart';
 
 /// Bottom sheet to filter applications by status. Reads/writes the shared
 /// [ApplicationsFilter] live.

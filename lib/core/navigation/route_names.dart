@@ -37,6 +37,9 @@ abstract final class RouteNames {
   static const String jobPreview = 'jobPreview';
   static const String employerJobDetail = 'employerJobDetail';
   static const String editJob = 'editJob';
+  static const String employerJobApplicants = 'employerJobApplicants';
+  static const String employerApplicants = 'employerApplicants';
+  static const String employerApplicantDetail = 'employerApplicantDetail';
 
   static const String splashPath = '/';
   static const String languagePath = '/language';
@@ -74,4 +77,8 @@ abstract final class RouteNames {
   static const String jobPreviewPath = '/employer/jobs/preview';
   static const String employerJobDetailPath = '/employer/jobs/:id';
   static const String editJobPath = '/employer/jobs/:id/edit';
+  static const String employerJobApplicantsPath = '/employer/jobs/:id/applicants';
+  // Static path ('/employer/applicants') before its ':appId' child.
+  static const String employerApplicantsPath = '/employer/applicants';
+  static const String employerApplicantDetailPath = '/employer/applicants/:appId';
 }
