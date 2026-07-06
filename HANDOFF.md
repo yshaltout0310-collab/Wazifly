@@ -1,7 +1,7 @@
 # Career Bridge — Session Handoff
 
 > Living handoff doc so a fresh Claude session can continue immediately.
-> Last updated: **Phase 5 · Milestone 3 (Employer Applicants Management) — COMPLETE** (see §7.15) — live-verified EN + AR.
+> Last updated: **Phase 5 · Milestone 4 (Employer Analytics) — COMPLETE** (see §7.16) — live-verified EN + AR on `employer01@cb.app` (real Firestore + real Gemini insights).
 > **Phase 2 COMPLETE** (M1 Resume Analyzer + M2 Job Matching + M3 Career Coach).
 > **Phase 3 · M1 (Jobs Platform) COMPLETE** (`6a6a72c`, §7.7).
 > **Phase 3 · M2 (Applications Center) COMPLETE** (`b7e4b53`, §7.8).
@@ -12,6 +12,7 @@
 > **Phase 5 · M1 (Employer Dashboard — Company Foundation) COMPLETE** (`baf5801`, §7.13) — live-verified EN + AR. **First employer-side milestone: role-based landing + Company Profile/Settings/Dashboard over a Firestore-ready `CompanyRepository`.**
 > **Phase 5 · M2 (Employer Job Management) COMPLETE** (§7.14) — live-verified EN + AR on `employer01@cb.app`. **Full employer job lifecycle: My Jobs (search/filter/sort) → create/edit with debounced auto-save + two-tier validation → preview (shared `JobDetailView`, exactly as a seeker sees it) → publish-with-confirmation → archive-with-reason/close/reopen/duplicate/soft-delete, all optimistic with rollback.** A `JobPosting` management superset `toJob()`-projects to the seeker `Job`; a separate write-path `EmployerJobsRepository` (`jobs/{jobId}`) leaves the read-only seeker `JobsRepository` untouched. `flutter analyze` clean; **329 tests pass**; `jobs/{jobId}` rules deployed.
 > **Phase 5 · M3 (Employer Applicants Management) COMPLETE** (§7.15) — live-verified EN + AR on `employer01@cb.app` (real Firestore, seeded applicants). **Grouped-by-job applicants inbox (stats/search/status-filter/sort) → rich applicant detail (AI match, resume analysis, resume-file graceful, skills, links, interview readiness, timeline, private notes) → status pipeline (Move to Review/Interview/Accept/Reject, appends history) + note CRUD, all optimistic with rollback.** The **shared `Application`** was extended (dual-keyed applicantUid/ownerUid + denormalized versioned `ApplicantSnapshot` + `source`) so the employer reads the exact doc the seeker's Applications Center does — no cross-user private reads. Separate `EmployerApplicantsRepository` + owner-private `EmployerNotesRepository` (`applicationNotes`) + `EmployerActivityRepository` (`employerActivity`, audit foundation). `flutter analyze` clean; **375 tests pass** (+46); `applications`/`applicationNotes`/`employerActivity` rules deployed.
+> **Phase 5 · M4 (Employer Analytics) COMPLETE** (§7.16) — live-verified EN + AR on `employer01@cb.app` (real Firestore, seeded applicants + real Gemini). **Read-only hiring dashboard: KPI overview → application status funnel → top jobs → time-to-hire → applicant-quality distribution → applications trend, plus an on-demand AI Recruiter Insights card (strengths/bottlenecks/suggested actions, grounded in the metrics).** All computed live by a **pure `AnalyticsCalculator`** over the employer's existing jobs/applicants/activity streams (no new data sources, no new Firestore collections/rules). The AI layer **reuses the Recommendations pattern exactly** (primitive context + signature → `AiService.generateJson` → defensive parse → latest-only `RecruiterInsightsStore` seam + refresh guard). Charts are plain-Flutter/`FractionallySizedBox` (no new deps). **Zero product-feature-to-feature deps.** `flutter analyze` clean; **412 tests pass** (+37); **no Firestore rules change**. AI Company Strength deferred to a future milestone.
 
 ---
 
@@ -94,10 +95,10 @@ Jobs** + **My Applications** CTAs.
 
 **Employer Home** shows company header + quick stats (Active jobs derive from published jobs;
 Applications/Interviews/Hires derive from the applicants stream), company-profile completion, a
-Company Profile entry, a **Manage jobs** CTA, and recruiting-tool tiles: **Post a Job** (live ↗)
-and **Applicants** (live ↗); Interviews/Candidates remain "Soon". Settings is shared by both
-roles (its account card is role-aware → Company Profile for employers). **The employer side is
-complete: Company Foundation (M1) + Job Management (M2) + Applicants Management (M3).**
+Company Profile entry, a **Manage jobs** CTA, an **Analytics & insights** CTA (live ↗), and recruiting-tool
+tiles: **Post a Job** (live ↗) and **Applicants** (live ↗); Interviews/Candidates remain "Soon". Settings is
+shared by both roles (its account card is role-aware → Company Profile for employers). **The employer side is
+complete: Company Foundation (M1) + Job Management (M2) + Applicants Management (M3) + Analytics (M4).**
 
 ---
 
@@ -226,6 +227,17 @@ separate `EmployerApplicantsRepository` + owner-private `EmployerNotesRepository
 EN + AR** on `employer01@cb.app` (real Firestore, seeded applicants); `applications`/`applicationNotes`/
 `employerActivity` rules deployed.
 
+### Phase 5 · Milestone 4 — Employer Analytics ✅ COMPLETE (feat + docs)
+See §7.16. A read-only hiring **analytics dashboard** for the employer — KPI overview, application status
+funnel, top jobs, time-to-hire, applicant-quality distribution, and an applications trend — plus an on-demand
+**AI Recruiter Insights** card (strengths / bottlenecks / suggested actions). Everything derives live from the
+employer's own jobs/applicants/activity streams via a **pure, exhaustively-tested `AnalyticsCalculator`**; the AI
+layer **reuses the Recommendations architecture** (primitive context + signature → `AiService.generateJson` →
+defensive parse → latest-only `RecruiterInsightsStore` seam + refresh guard). Custom charts are plain Flutter
+(no new deps). **Zero product-feature-to-feature deps; no new Firestore collections or rules.** `flutter analyze`
+clean; **412 tests pass** (+37). **Live-verified EN + AR** on `employer01@cb.app` with real Firestore + real
+Gemini. AI Company Strength intentionally **deferred** to a future milestone.
+
 ### Phase 4 · Milestone 3 — AI Recommendations / For You ✅ COMPLETE (committed `c1d044b`)
 See §7.12. A personalized **For You** hub: **one holistic `generateJson` pass** over the
 user's profile, resume analysis, CV, applications, and interview history → **Recommended
@@ -302,7 +314,9 @@ $env:Path = "C:\Program Files\nodejs;" + $env:Path
 main                         6f860fe  Phase 1 production foundation completed
 firebase-auth-integration    aa9b7d2  Add Cloud Firestore security rules  (branched from main)
                              2af451d  Integrate real Firebase Authentication and remove demo mode
-feature/resume-analyzer  *  d0810d5  docs: HANDOFF for Phase 5 Milestone 3  <-- current HEAD
+feature/resume-analyzer  *  (HEAD)   docs: HANDOFF for Phase 5 Milestone 4  <-- current HEAD (this docs commit)
+                             9932422  feat: Employer Analytics (Phase 5, Milestone 4)
+                             d0810d5  docs: HANDOFF for Phase 5 Milestone 3
                              8d241a6  feat: Employer Applicants Management (Phase 5, Milestone 3)
                              d2030b0  docs: HANDOFF for Phase 5 Milestone 2
                              1ecba6f  feat: Employer Job Management (Phase 5, Milestone 2)
@@ -321,14 +335,14 @@ feature/resume-analyzer  *  d0810d5  docs: HANDOFF for Phase 5 Milestone 3  <-- 
                              branched from firebase-auth-integration
 ```
 - **Latest employer-side commits: P5 M1 `baf5801` (Company Foundation); P5 M2 `1ecba6f` (Job
-  Management); P5 M3 `8d241a6` (Applicants Management) — each + a docs commit.** Neither
-  `firebase-auth-integration` nor `feature/resume-analyzer` is merged to `main`, and nothing is
-  pushed to any remote. (No PRs opened.)
+  Management); P5 M3 `8d241a6` (Applicants Management); P5 M4 `9932422` (Employer Analytics) — each +
+  a docs commit.** Neither `firebase-auth-integration` nor `feature/resume-analyzer` is merged to
+  `main`, and nothing is pushed to any remote. (No PRs opened.)
 - Commit message convention: end with
   `Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>`.
 - **Do NOT commit** `.claude/settings.local.json` (local). Exclude it from `git add`.
 
-**Working tree is clean** — every milestone through P5·M3 is committed. The **only**
+**Working tree is clean** — every milestone through P5·M4 is committed. The **only**
 uncommitted file is `.claude/settings.local.json` (intentionally excluded from `git add`).
 Each milestone is one `feat` commit + a follow-up `docs` commit updating this file; nothing is
 merged to `main` and nothing is pushed to any remote (no PRs).
@@ -1256,15 +1270,111 @@ bugs this milestone — the three M2 lessons were pre-applied** (real `AppTheme`
 
 ---
 
+## 7.16 Phase 5 · Milestone 4 — Employer Analytics ✅ COMPLETE
+
+> A read-only hiring analytics/insights surface over the data the employer side already emits — **no new data
+> sources, no new Firestore collections or rules**. `flutter analyze` clean; **412 tests pass** (+37).
+> **Scope: Analytics + AI Recruiter Insights** (the approved option); **AI Company Strength deferred**.
+
+**Design principle:** the deterministic dashboard must render **instantly** from the existing streams, so all math
+lives in a **pure `AnalyticsCalculator`** (Flutter-free, injectable `now`, exhaustively unit-tested). The AI card is
+**on-demand** (not auto-called) because it sits inside an already-instant dashboard and each call costs money — but it
+**reuses the Recommendations AI architecture verbatim** (context → signature → repository → store seam → refresh guard).
+
+**Domain (`lib/features/employer/domain/analytics/`):**
+- `employer_analytics.dart` — value objects: `OverviewKpis` (jobs/applicants/interviews/hires/hireRate/avgMatch),
+  `StatusFunnel` (reached-stage counts, monotonic, + stage-to-stage conversion), `JobPerformance` (`status` is
+  **nullable** — null when a job is only referenced by applications, so the UI shows no misleading chip — see the
+  device fix below), `TimeToHire` (avg/median/fastest days-to-hire + avg days-in-pipeline), `ApplicantQuality`
+  (match bands + avg ATS + skill demand), `ActivityTrend` (weekly buckets + last-7-day counts), and the top-level
+  `EmployerAnalytics` (+ `empty`, `hasApplicants`/`hasJobs`). Pure read-model — no JSON (nothing persisted).
+- `analytics_calculator.dart` — `AnalyticsCalculator.compute({jobs, applicants, activity, now})`. Funnel "reached
+  rank" scans current status + history (a rejection doesn't undo prior progress; accepted implies interview/reviewed
+  → monotonic). Time-to-hire reads the accepted history event; skill demand counts each skill once per applicant
+  (case-insensitive). Excludes soft-deleted jobs.
+- **AI layer** (mirrors `recommendations/domain`): `recruiter_insights.dart` (`RecruiterInsights` + `InsightItem`/
+  `InsightAction` + **local** `InsightPriority` enum — not the recommendations `RecPriority`, to keep zero coupling;
+  defensive `fromJson`, `stamp()`), `recruiter_insights_context.dart` (primitives + `signature`), `_repository.dart`
+  (interface) + `_exception.dart` (`emptyInsights`).
+
+**Data:** `data/recruiter_insights_repository_impl.dart` (+ `recruiterInsightsRepositoryProvider`) — one localized
+prompt from the analytics facts → `AiService.generateJson` (no-Markdown system instruction) → defensive parse; throws
+`emptyInsights` only when nothing usable comes back. **Identical shape to `RecommendationsRepositoryImpl`.**
+
+**Application:** `employer_analytics_providers.dart` — `employerAnalyticsProvider` (a plain `Provider` recomputing
+`AnalyticsCalculator.compute(...)` reactively from `employerJobsProvider` + `employerApplicantsProvider` +
+`employerActivityProvider`) + `analyticsClockProvider` (test seam). `recruiter_insights_controller.dart` —
+`RecruiterInsightsController` (phases idle/loading/ready/error; **starts idle, never auto-calls**; `generate()` /
+`refresh()` with the signature-based refresh guard; `.seeded` ctor; failure map reusing `AiException`) +
+`contextFromAnalytics(...)` (pulled out for direct unit testing).
+
+**Store seam (core, Firestore-ready):** `lib/core/services/recruiter_insights_store/` — `RecruiterInsightsStore`
+interface + `InMemoryRecruiterInsightsStore` (broadcast) + `recruiterInsightsStoreProvider` +
+`latestRecruiterInsightsProvider`. **In-memory now → rebind to a Firestore `companies/{companyId}/insights/latest`
+doc later (needs an owner-scoped subcollection rule then; none added this milestone).**
+
+**Presentation:** `employer_analytics_screen.dart` (loading/empty/dashboard; `_InsightsCard` ConsumerWidget with
+idle-CTA / loading / error / ready states + refresh; up-to-date & failed-refresh snackbars via `ref.listen`),
+`analytics_l10n.dart` (band/priority/failure label maps), `widgets/analytics_widgets.dart`
+(`AnalyticsSection`/`AnalyticsCard`/`KpiTile`/`HorizontalBars`/`MiniBarChart`/`PriorityChip` — **all plain-Flutter,
+RTL-safe** via `AlignmentDirectional`/`FractionallySizedBox`; reuses the promoted `JobStatusChip`). Top-jobs rows
+deep-link to `/employer/jobs/:id/applicants`.
+
+**Wiring:** route `employerAnalytics` (`/employer/analytics`, nested under `/employer`); an **"Analytics & insights"
+CTA** on Employer Home (below "Manage jobs"). ~55 `analytics*`/`insights*` EN+AR keys (ICU plurals for
+applicants/days/rejections/trend). No Firestore rules change.
+
+**Tests (+37 → 412):** `analytics_calculator_test` (12 — empty, active-jobs filter, avg-match, funnel monotonicity +
+rejection-keeps-progress, time-to-hire avg/median/fastest + avg-wait, quality bands + skill demand, job-perf sort +
+zero-applicant + **null-status-for-application-only-job**, activity trend buckets), `employer_analytics_providers_test`
+(4 — recompute from streams, signed-out empty, `contextFromAnalytics` mapping + stable signature),
+`recruiter_insights_repository_test` (4 — parse, prompt embeds numbers + language, emptyInsights, error propagation),
+`recruiter_insights_controller_test` (7 — idle start, generate+cache, cache hydrate, refresh guard, error map, empty
+map, clock), `recruiter_insights_store_test` (3), `employer_analytics_screen_test` (5 — EN+AR dashboard + EN+AR
+ready-insights, real `AppTheme`; idle CTA); Analytics added to the locale sweep.
+
+### 🐞 One device-only issue found & fixed during live verification (not caught by the original tests)
+**Misleading "Published" chip on application-only jobs.** `employer01` has **0** `JobPosting` docs, so Overview showed
+**Active jobs = 0** — yet "Top jobs" listed two jobs (Senior Flutter Engineer, Backend Developer) chipped **"Published"**.
+Those jobs exist only via the seeded applications' `jobId`; the calculator was defaulting their status to
+`JobStatus.published`. **Fix:** `JobPerformance.status` is now **nullable** — set only from a known `JobPosting`, null
+otherwise — and the UI omits the chip when null (added a calculator test for it). This also fixed the apparent
+inconsistency with the Active-jobs KPI.
+
+### VERIFIED live on emulator (`-gpu host`, Skia) — both English and Arabic, real Firestore + real Gemini
+Deep-linked via `flutter run --route=/employer/analytics`, signed in as **`employer01@cb.app`** (company "Acme-Robotics"),
+against the **M3 seeded applicants** (3 apps: statuses give applied 3 / reviewed 3 / interview 2 / hired 0).
+- **Arabic (RTL):** full dashboard — Overview (المقابلات 2 / المتقدمون 3 / متوسط التطابق 76), funnel bars growing from
+  the **right** (تقدّموا 3 100% → تمت مراجعتهم 3 100% → مقابلة 2 67% → تم تعيينهم 0), top jobs, time-to-hire (3 أيام
+  متوسط الانتظار), match distribution (قوي 1 / جيد 2), skill demand chips (Flutter · 2), trend (newest week rightmost).
+  **AI insights (real Gemini):** tapped "أنشئ الرؤى" → grounded Arabic insights citing the actual numbers (67% reach
+  interview, 0% hire, 3 new in 7 days, avg match 76/ATS 77, Flutter/Dart skills), with **strengths / bottlenecks /
+  suggested-actions + medium-priority chips + a localized "Updated 7 Jul 2026" timestamp**.
+- **English (LTR):** switched language in Settings, re-entered analytics — all sections mirror correctly LTR; the
+  **status-chip fix confirmed** (top jobs show no chip, consistent with Active jobs = 0).
+
+### Notes for the next session
+- **The AI card is on-demand** (idle → "Generate insights"), unlike the always-on "For You" flow — a deliberate
+  cost/latency choice, not a different architecture. It still caches per-session and honors the refresh guard.
+- **Job view analytics are N/A** this milestone — `JobMetrics.views` isn't instrumented and seekers browse seed jobs;
+  the screen footnote says so. Wire view counts once the seeker→employer loop is Firestore-backed.
+- **Firestore-backing the insights store** (`companies/{id}/insights/latest`) is the only follow-up seam; in-memory now.
+- **AI Company Strength** (`Company.strength` is already shaped for it) remains a clean future milestone.
+
+---
+
 ## 8. Next steps
 
 **Phase 2 COMPLETE.** **Phase 3 · M1 (Jobs Platform) `6a6a72c`, M2 (Applications Center)
 `b7e4b53`, and M3 (User Profile & Settings) `071902c` COMPLETE. Phase 4 · M1 (CV Builder)
 `b237481`, M2 (Interview Prep) `fc35db4`, M3 (Recommendations / For You) `c1d044b` COMPLETE —
 the AI toolkit is complete; no "Soon" cards remain. Phase 5 · M1 (Company Foundation) `baf5801`,
-M2 (Job Management) `1ecba6f`, M3 (Applicants Management) `8d241a6` COMPLETE — the entire employer
-side (Company / Jobs / Applicants) is done.** Nothing is in progress. **Recommended next milestone:
-Phase 5 · M4 — Employer Analytics** (see the Phase 5 roadmap + §7.15 follow-ups).
+M2 (Job Management) `1ecba6f`, M3 (Applicants Management) `8d241a6`, M4 (Employer Analytics) COMPLETE — the
+entire employer side (Company / Jobs / Applicants / Analytics) is done.** Nothing is in progress. **Candidate
+next milestones:** close the seeker→employer loop (Firestore-back the seeker `ApplicationsRepository` + surface
+real published jobs + assemble `ApplicantSnapshot` at apply time); an **AI Company Strength** score
+(`Company.strength` is shaped for it); an employer **activity/audit UI** (`employerActivityProvider` foundation);
+Firestore-back the `RecruiterInsightsStore`. (See the Phase 5 roadmap + §7.16 follow-ups.)
 
 **Open items for the next session:**
 
@@ -1418,16 +1528,18 @@ emulator (both languages), `analyze`+`test` before committing, one commit per mi
   status pipeline + note CRUD, optimistic with rollback. Shared `Application` extended (dual-keyed +
   denormalized `ApplicantSnapshot`); separate `EmployerApplicantsRepository` + owner-private notes +
   activity-log foundation. **Zero feature-to-feature deps.** Live-verified EN+AR (375 pass); rules deployed.
-- **M4 — Employer Analytics (recommended next).** A read-only analytics/insights surface over the data
-  the employer side already emits — jobs (`JobMetrics` views/applications), applicants (status funnel:
-  applied → reviewed → interview → hired, per job + overall), and the `employerActivity` audit log —
-  with time-to-hire, conversion rates, and top jobs. Optionally an **AI Recruiter Insights** pass
-  (`AiService.generateJson` over the applicants/snapshot data) and an **AI Company Strength** score
-  (`Company.strength` is already shaped for it). All the source data + seams exist; provider-agnostic,
-  Firestore-ready, zero feature-to-feature deps expected.
+- **M4 — Employer Analytics** ✅ *complete* (see §7.16). Read-only hiring dashboard — KPI overview, application
+  status funnel, top jobs, time-to-hire, applicant-quality distribution, applications trend — plus an on-demand
+  **AI Recruiter Insights** card (strengths/bottlenecks/suggested actions). All computed live by a pure
+  `AnalyticsCalculator` over the employer's jobs/applicants/activity streams; the AI layer reuses the
+  Recommendations architecture (context+signature → `AiService.generateJson` → latest-only `RecruiterInsightsStore`
+  seam + refresh guard). Plain-Flutter charts (no new deps). **Zero feature-to-feature deps; no new Firestore
+  rules.** Live-verified EN+AR (412 pass). AI Company Strength deferred.
 - **Other candidates:** close the seeker→employer loop (Firestore-back the seeker `ApplicationsRepository`
-  + surface real published jobs to seekers + assemble `ApplicantSnapshot` at apply time); employer
-  activity/audit UI; employer verification flow.
+  + surface real published jobs to seekers + assemble `ApplicantSnapshot` at apply time); **AI Company Strength**
+  score (`Company.strength` is shaped for it); employer activity/audit UI; Firestore-back the
+  `RecruiterInsightsStore`; employer verification flow; job view-count instrumentation (analytics views are N/A
+  until then).
 
 See §8 for candidate future work.
 
@@ -1470,11 +1582,11 @@ built-in Kotlin and breaks `assembleDebug` (`FilePickerPlugin` symbol not found)
 **`file_selector`** (already done). If you re-add a plugin and the build fails on
 `GeneratedPluginRegistrant`, suspect a KGP conflict.
 
-**No functional app bugs open.** `flutter analyze` clean; **375 tests pass** (as of P5·M3).
+**No functional app bugs open.** `flutter analyze` clean; **412 tests pass** (as of P5·M4).
 One known cosmetic limitation: pure-Latin runs can render reversed in the Arabic CV PDF
 (pdf-package bidi; §7.10) — Arabic content is correct. See §7.15 "Notes" for the M3 scope
-limitations (seeker apply not yet Firestore-backed; resume-file view stubbed until Storage;
-employer activity log has no UI; interview history is a lightweight snapshot).
+limitations and §7.16 "Notes" for M4 (job view analytics N/A until view instrumentation;
+insights store in-memory; AI Company Strength deferred).
 
 ---
 
@@ -1644,7 +1756,11 @@ prompt, job-id filtering).
 `employer_applicants_screen.dart` (grouped inbox / per-job via `jobId`), `employer_applicant_detail_screen.dart`,
 `applicant_actions.dart`, `applicant_action_handler.dart`, `employer_applicants_l10n.dart`, `widgets/{applicant_avatar,
 employer_applicant_tile,applicant_group_header,match_score_badge,resume_summary_card,interview_readiness_card,
-application_note_tile,note_editor_sheet}.dart`.
+application_note_tile,note_editor_sheet}.dart`; **M4** `employer_analytics_screen.dart`, `analytics_l10n.dart`,
+`widgets/analytics_widgets.dart` (plain-Flutter charts). **M4 domain** `domain/analytics/{employer_analytics,
+analytics_calculator,recruiter_insights,recruiter_insights_context,recruiter_insights_repository,
+recruiter_insights_exception}.dart`; **M4 data** `data/recruiter_insights_repository_impl.dart`; **M4 application**
+`application/{employer_analytics_providers,recruiter_insights_controller}.dart`.
 **Shared models** `lib/shared/models/`: `company.dart` (`Company`+`CompanyStrength`+`CompanyField`),
 `job_posting.dart` (`JobPosting`+`SalaryRange`+`JobMetrics`+`JobStatusChange`, `toJob()`), + the applications models
 above. **Shared widget** `lib/shared/widgets/job_detail_view.dart` (employer preview == seeker view).
@@ -1653,7 +1769,9 @@ above. **Shared widget** `lib/shared/widgets/job_detail_view.dart` (employer pre
 query by `ownerUid`), `applications/{employer_applicants_repository,firestore_…,in_memory_…}.dart`
 (`employerApplicantsRepositoryProvider`/`employerApplicantsProvider`, query by `ownerUid`),
 `notes/{employer_notes_repository,firestore_…,in_memory_…}.dart` (owner-private `applicationNotes`),
-`activity/{employer_activity_repository,firestore_…,in_memory_…}.dart` (audit-log foundation).
+`activity/{employer_activity_repository,firestore_…,in_memory_…}.dart` (audit-log foundation),
+`recruiter_insights_store/{recruiter_insights_store,in_memory_…}.dart` (**M4** latest-only insights cache seam,
+in-memory → Firestore later).
 Role branch in `splash`/`auth_navigation`/`user_type_selection`; role-aware `settings_screen` account card;
 logout clears `userType`. `firestore.rules` (deployed): `companies/{companyId}`, `jobs/{jobId}`, `applications/{id}`,
 `applicationNotes/{id}`, `employerActivity/{id}` + `storage.rules`.
@@ -1667,13 +1785,15 @@ logout clears `userType`. `firestore.rules` (deployed): `companies/{companyId}`,
 
 **Navigation** `lib/core/navigation/{app_router,route_names}.dart`.
 **l10n** `lib/core/localization/l10n/app_{en,ar}.arb` (+ generated).
-**Tests** `test/` — **375 pass** (`support/fake_auth.dart`, `render_all_locales_test.dart` locale sweep,
+**Tests** `test/` — **412 pass** (`support/fake_auth.dart`, `render_all_locales_test.dart` locale sweep,
 `resume_*`/`job_*`/`applications_*`/`saved_jobs_*`/`career_coach_*`/`cv_*`/`interview_*`/`recommendation*`/`company_*`
 tests; **employer jobs** `employer_jobs_{repository,controller,providers,screens}_test` + `job_{posting_model,validation,
 editor_controller,detail_view}_test`; **employer applicants (P5·M3)** `application_model_test` (extended),
 `applicant_snapshot_test`, `application_note_test`, `applicant_status_flow_test`, `employer_applicants_{repository,
-controller,providers,screens}_test`, `employer_notes_{repository,controller}_test`). Widget hosts wrap in the real
-`AppTheme.light(locale)`; controller tests assert optimistic rollback via throwing fakes.
+controller,providers,screens}_test`, `employer_notes_{repository,controller}_test`; **employer analytics (P5·M4)**
+`analytics_calculator_test`, `employer_analytics_providers_test`, `recruiter_insights_{repository,controller,store}_test`,
+`employer_analytics_screen_test`). Widget hosts wrap in the real `AppTheme.light(locale)`; controller tests assert
+optimistic rollback via throwing fakes, and the analytics calculator is exhaustively unit-tested (pure, injectable clock).
 
 ---
 
@@ -1709,6 +1829,7 @@ controller,providers,screens}_test`, `employer_notes_{repository,controller}_tes
 | `employerJobDetail` / `editJob` | `/employer/jobs/:id` · `/employer/jobs/:id/edit` | Job detail · Edit (P5·M2) |
 | `employerJobApplicants` | `/employer/jobs/:id/applicants` | One job's applicants (P5·M3) |
 | `employerApplicants` / `employerApplicantDetail` | `/employer/applicants` · `/employer/applicants/:appId` | Applicants inbox (grouped) · Applicant detail (P5·M3) |
+| `employerAnalytics` | `/employer/analytics` | Employer Analytics dashboard + AI Recruiter Insights (P5·M4) |
 
 **Core services & swap-point providers** (`lib/core/services/…`; each is the single binding
 to rebind for a real backend — in-memory/local today):
@@ -1736,7 +1857,10 @@ to rebind for a real backend — in-memory/local today):
 | `employerJobsRepositoryProvider` · `employerJobsProvider` (Stream) | `EmployerJobsRepository` (`watchJobs`/`fetchJob`/`createJob`/`updateJob`) | `FirestoreEmployerJobsRepository` (live, `jobs/{jobId}`, query by `ownerUid`) ↔ in-memory (tests) |
 | `employerApplicantsRepositoryProvider` · `employerApplicantsProvider` (Stream) | `EmployerApplicantsRepository` (`watchApplicants(ownerUid)`/`fetchApplicant`/`updateApplication`) | `FirestoreEmployerApplicantsRepository` (live, `applications`, query by `ownerUid`) ↔ in-memory (tests) |
 | `employerNotesRepositoryProvider` · `notesForApplicationProvider(id)` (Stream) | `EmployerNotesRepository` (`watchNotes`/`addNote`/`updateNote`/`deleteNote`) | `FirestoreEmployerNotesRepository` (live, owner-private `applicationNotes`) ↔ in-memory (tests) |
-| `employerActivityRepositoryProvider` · `employerActivityProvider` (Stream) | `EmployerActivityRepository` (`log`/`watchActivity`) | `FirestoreEmployerActivityRepository` (live, owner-private `employerActivity`; audit foundation, no UI) ↔ in-memory (tests) |
+| `employerActivityRepositoryProvider` · `employerActivityProvider` (Stream) | `EmployerActivityRepository` (`log`/`watchActivity`) | `FirestoreEmployerActivityRepository` (live, owner-private `employerActivity`; audit foundation) ↔ in-memory (tests) |
+| `recruiterInsightsStoreProvider` · `latestRecruiterInsightsProvider` (Stream) | `RecruiterInsightsStore` (`watchLatest`/`read`/`save`/`clear`) | in-memory (latest-only) → Firestore `companies/{companyId}/insights/latest` (P5·M4) |
+| `recruiterInsightsRepositoryProvider` | `RecruiterInsightsRepository` (`generate`) | `AiService.generateJson` (Gemini) — reuses the Recommendations pattern (P5·M4) |
+| `employerAnalyticsProvider` · `analyticsClockProvider` | `EmployerAnalytics` (computed) | pure `AnalyticsCalculator` over the employer jobs/applicants/activity streams (P5·M4) |
 
 **Feature controllers / providers** (per feature `application/`): `authStateProvider` +
 `authRepositoryProvider` (auth) · `localeControllerProvider` · `themeControllerProvider` ·
@@ -1804,15 +1928,28 @@ and it links to `/jobs/:id` (matching) + `/career-coach` (interview prep).
 
 ## 14. TL;DR for the next session
 
-**Phase 2 COMPLETE (verified live EN+AR).** **Phase 3 (M1–M3), Phase 4 (M1–M3), and Phase 5 · M1–M3
-are COMPLETE and committed** (latest `d0810d5` on `feature/resume-analyzer` — see §6, §7.7–§7.15).
-`flutter analyze` clean, **375 tests pass**, repo clean (only `.claude/settings.local.json`
+**Phase 2 COMPLETE (verified live EN+AR).** **Phase 3 (M1–M3), Phase 4 (M1–M3), and Phase 5 · M1–M4
+are COMPLETE** (M1–M3 committed through `d0810d5`; M4 committed this session — see §6, §7.7–§7.16).
+`flutter analyze` clean, **412 tests pass**, repo clean (only `.claude/settings.local.json`
 intentionally uncommitted). Firebase AI Logic is enabled + provisioned (§5); the
-`companies`/`jobs`/`applications`/`applicationNotes`/`employerActivity` Firestore rules are deployed.
+`companies`/`jobs`/`applications`/`applicationNotes`/`employerActivity` Firestore rules are deployed
+(M4 added **no** new rules).
 **The AI toolkit is complete AND the entire employer side is complete (Company Foundation + Job
-Management + Applicants Management).** **Recommended next: Phase 5 · Milestone 4 — Employer Analytics**
-(read-only insights over `JobMetrics` + the applicant status funnel + `employerActivity`; optionally an
-AI Recruiter Insights pass and the AI Company Strength score — all source data + seams already exist).
+Management + Applicants Management + Analytics).** Nothing is in progress — candidate next milestones:
+close the seeker→employer loop (Firestore-back the seeker apply + real published jobs), **AI Company
+Strength** (`Company.strength` is shaped for it), an employer activity/audit UI, and Firestore-backing
+the `RecruiterInsightsStore`.
+
+**P5 · M4 (Employer Analytics)** — a read-only hiring dashboard (KPI overview, application status funnel,
+top jobs, time-to-hire, applicant-quality distribution, applications trend) plus an on-demand **AI Recruiter
+Insights** card (strengths/bottlenecks/suggested actions). All computed live by a **pure `AnalyticsCalculator`**
+over the employer's jobs/applicants/activity streams (no new data sources / collections / rules). The AI layer
+**reuses the Recommendations architecture** (primitive context + signature → `AiService.generateJson` →
+defensive parse → latest-only `RecruiterInsightsStore` seam + refresh guard); the card is on-demand (idle →
+"Generate insights"), not auto-called. Plain-Flutter charts (no new deps). **Zero product-feature-to-feature
+deps.** Live-verified EN + AR on `employer01@cb.app` (real Firestore + real Gemini). One device-only fix:
+`JobPerformance.status` made nullable so application-only jobs show no misleading "Published" chip. **AI Company
+Strength deferred.** (§7.16)
 
 **P5 · M3 (Employer Applicants Management)** — employers review + manage applicants for every published
 job over the **same shared applications foundation** the seeker Applications Center uses. The
