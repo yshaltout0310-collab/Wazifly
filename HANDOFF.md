@@ -92,10 +92,12 @@ importing `firebase_ai`; swap providers by rebinding `aiServiceProvider`.
 all live. **No "Soon" cards remain — the AI toolkit is complete.** Home also has **Browse
 Jobs** + **My Applications** CTAs.
 
-**Employer Home** shows company header + quick stats (Active jobs/Applications/Interviews/
-Hires — zero for now), company-profile completion, a Company Profile entry, and "Soon"
-recruiting tools (Post a Job/Applicants/Interviews/Candidates). Settings is shared by both
-roles (its account card is role-aware → Company Profile for employers).
+**Employer Home** shows company header + quick stats (Active jobs derive from published jobs;
+Applications/Interviews/Hires derive from the applicants stream), company-profile completion, a
+Company Profile entry, a **Manage jobs** CTA, and recruiting-tool tiles: **Post a Job** (live ↗)
+and **Applicants** (live ↗); Interviews/Candidates remain "Soon". Settings is shared by both
+roles (its account card is role-aware → Company Profile for employers). **The employer side is
+complete: Company Foundation (M1) + Job Management (M2) + Applicants Management (M3).**
 
 ---
 
@@ -197,6 +199,33 @@ Promoted `CompletionIndicator` → `shared/widgets`. **Zero product-feature-to-f
 `flutter analyze` clean; **270 tests pass**. **Live-verified EN + AR**; `firestore.rules`
 (companies) deployed.
 
+### Phase 5 · Milestone 2 — Employer Job Management ✅ COMPLETE (feat `1ecba6f`, docs `d2030b0`)
+See §7.14. Full employer job lifecycle: **My Jobs** (search/status-filter/sort) → **create/edit**
+(debounced draft auto-save + two-tier validation + unsaved-changes guard) → **preview** (the shared
+`JobDetailView`, exactly as a seeker sees it) → **publish-with-confirmation** → archive-with-reason/
+close/reopen/duplicate/soft-delete — all **optimistic with rollback**. A `JobPosting` management
+superset `toJob()`-projects to the seeker `Job`; a separate write-path `EmployerJobsRepository`
+(`jobs/{jobId}`) leaves the read-only seeker `JobsRepository` untouched. Employer Home gains a
+"Manage jobs" CTA + live "Post a Job". **Zero product-feature-to-feature deps.** `flutter analyze`
+clean; **329 tests pass**. **Live-verified EN + AR** on `employer01@cb.app`; `jobs/{jobId}` rule
+deployed. Three device-only bugs found + fixed (query-vs-rule field, theme full-width buttons,
+dialog controller-after-dispose — see §7.14).
+
+### Phase 5 · Milestone 3 — Employer Applicants Management ✅ COMPLETE (feat `8d241a6`, docs `d0810d5`)
+See §7.15. Employers review + manage applicants for every published job over the **same shared
+applications foundation** the seeker Applications Center uses. Because rules keep each user's
+profile/resume/interview data private, everything the employer needs is **denormalized onto the
+application at apply time** (a versioned `ApplicantSnapshot`). Grouped-by-job **inbox**
+(stats/search/status-filter/sort) → rich **applicant detail** (AI match, resume analysis, resume-file
+graceful-degrade, skills, links, interview readiness, timeline, **private notes**) → **status
+pipeline** (Move to Review/Interview/Accept/Reject, appends history) + **note CRUD**, all optimistic
+with rollback. Extended shared `Application` (dual-keyed `applicantUid`/`ownerUid` + `source`);
+separate `EmployerApplicantsRepository` + owner-private `EmployerNotesRepository` + an
+`EmployerActivityRepository` audit foundation. Promoted `StatusChip`/`StatusTimeline` → `shared/widgets`.
+**Zero product-feature-to-feature deps.** `flutter analyze` clean; **375 tests pass**. **Live-verified
+EN + AR** on `employer01@cb.app` (real Firestore, seeded applicants); `applications`/`applicationNotes`/
+`employerActivity` rules deployed.
+
 ### Phase 4 · Milestone 3 — AI Recommendations / For You ✅ COMPLETE (committed `c1d044b`)
 See §7.12. A personalized **For You** hub: **one holistic `generateJson` pass** over the
 user's profile, resume analysis, CV, applications, and interview history → **Recommended
@@ -273,7 +302,12 @@ $env:Path = "C:\Program Files\nodejs;" + $env:Path
 main                         6f860fe  Phase 1 production foundation completed
 firebase-auth-integration    aa9b7d2  Add Cloud Firestore security rules  (branched from main)
                              2af451d  Integrate real Firebase Authentication and remove demo mode
-feature/resume-analyzer  *  baf5801  feat: Employer Dashboard — Company Foundation (Phase 5, Milestone 1)  <-- current HEAD
+feature/resume-analyzer  *  d0810d5  docs: HANDOFF for Phase 5 Milestone 3  <-- current HEAD
+                             8d241a6  feat: Employer Applicants Management (Phase 5, Milestone 3)
+                             d2030b0  docs: HANDOFF for Phase 5 Milestone 2
+                             1ecba6f  feat: Employer Job Management (Phase 5, Milestone 2)
+                             3681109  docs: HANDOFF for Phase 5 Milestone 1
+                             baf5801  feat: Employer Dashboard — Company Foundation (Phase 5, Milestone 1)
                              c1d044b  feat: AI Recommendations / For You (Phase 4, Milestone 3)
                              fc35db4  feat: AI Interview Prep (Phase 4, Milestone 2)
                              b237481  feat: AI CV Builder (Phase 4, Milestone 1)
@@ -286,16 +320,15 @@ feature/resume-analyzer  *  baf5801  feat: Employer Dashboard — Company Founda
                             (each milestone: 1 feat commit + a follow-up docs commit updating this file)
                              branched from firebase-auth-integration
 ```
-- **P2 M1 `bf469e6`; M2 `8f2101f`; M3 `89ee1a1`; P3 M1 `6a6a72c` (Jobs Platform);
-  P3 M2 `b7e4b53` (Applications Center); P3 M3 `071902c` (User Profile & Settings).**
-  Neither `firebase-auth-integration` nor
-  `feature/resume-analyzer` is merged to `main`, and nothing is pushed to any remote.
-  (No PRs opened.)
+- **Latest employer-side commits: P5 M1 `baf5801` (Company Foundation); P5 M2 `1ecba6f` (Job
+  Management); P5 M3 `8d241a6` (Applicants Management) — each + a docs commit.** Neither
+  `firebase-auth-integration` nor `feature/resume-analyzer` is merged to `main`, and nothing is
+  pushed to any remote. (No PRs opened.)
 - Commit message convention: end with
   `Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>`.
 - **Do NOT commit** `.claude/settings.local.json` (local). Exclude it from `git add`.
 
-**Working tree is clean** — every milestone through P4·M2 is committed. The **only**
+**Working tree is clean** — every milestone through P5·M3 is committed. The **only**
 uncommitted file is `.claude/settings.local.json` (intentionally excluded from `git add`).
 Each milestone is one `feat` commit + a follow-up `docs` commit updating this file; nothing is
 merged to `main` and nothing is pushed to any remote (no PRs).
@@ -1228,8 +1261,10 @@ bugs this milestone — the three M2 lessons were pre-applied** (real `AppTheme`
 **Phase 2 COMPLETE.** **Phase 3 · M1 (Jobs Platform) `6a6a72c`, M2 (Applications Center)
 `b7e4b53`, and M3 (User Profile & Settings) `071902c` COMPLETE. Phase 4 · M1 (CV Builder)
 `b237481`, M2 (Interview Prep) `fc35db4`, M3 (Recommendations / For You) `c1d044b` COMPLETE —
-the AI toolkit is complete; no "Soon" cards remain. Phase 5 · M1 (Employer Dashboard — Company
-Foundation) `baf5801` COMPLETE — the employer side has begun.** Nothing is in progress.
+the AI toolkit is complete; no "Soon" cards remain. Phase 5 · M1 (Company Foundation) `baf5801`,
+M2 (Job Management) `1ecba6f`, M3 (Applicants Management) `8d241a6` COMPLETE — the entire employer
+side (Company / Jobs / Applicants) is done.** Nothing is in progress. **Recommended next milestone:
+Phase 5 · M4 — Employer Analytics** (see the Phase 5 roadmap + §7.15 follow-ups).
 
 **Open items for the next session:**
 
@@ -1373,8 +1408,26 @@ emulator (both languages), `analyze`+`test` before committing, one commit per mi
   Firestore-ready `CompanyRepository` (`companies/{companyId}`) + shared `Company` model. Forward-ready
   fields (verificationStatus, companySlug, social links, `CompanyStrength`). **Zero feature-to-feature
   deps.** Live-verified EN+AR (270 pass).
-- **Candidates:** Post a Job (employer job creation → shared jobs the seeker side reads) · Applicants /
-  candidate management · AI Company Strength score · employer verification flow.
+- **M2 — Employer Job Management** ✅ *complete* (see §7.14). Full job lifecycle: My Jobs → create/edit
+  (auto-save + validation + unsaved guard) → preview (shared `JobDetailView`) → publish-confirm →
+  archive/close/reopen/duplicate/soft-delete, optimistic with rollback. `JobPosting` superset
+  `toJob()`-projects to the seeker `Job`; separate `EmployerJobsRepository` (`jobs/{jobId}`). **Zero
+  feature-to-feature deps.** Live-verified EN+AR (329 pass); rules deployed.
+- **M3 — Employer Applicants Management** ✅ *complete* (see §7.15). Grouped-by-job applicants inbox →
+  detail (AI match, resume analysis, skills, links, interview readiness, timeline, private notes) →
+  status pipeline + note CRUD, optimistic with rollback. Shared `Application` extended (dual-keyed +
+  denormalized `ApplicantSnapshot`); separate `EmployerApplicantsRepository` + owner-private notes +
+  activity-log foundation. **Zero feature-to-feature deps.** Live-verified EN+AR (375 pass); rules deployed.
+- **M4 — Employer Analytics (recommended next).** A read-only analytics/insights surface over the data
+  the employer side already emits — jobs (`JobMetrics` views/applications), applicants (status funnel:
+  applied → reviewed → interview → hired, per job + overall), and the `employerActivity` audit log —
+  with time-to-hire, conversion rates, and top jobs. Optionally an **AI Recruiter Insights** pass
+  (`AiService.generateJson` over the applicants/snapshot data) and an **AI Company Strength** score
+  (`Company.strength` is already shaped for it). All the source data + seams exist; provider-agnostic,
+  Firestore-ready, zero feature-to-feature deps expected.
+- **Other candidates:** close the seeker→employer loop (Firestore-back the seeker `ApplicationsRepository`
+  + surface real published jobs to seekers + assemble `ApplicantSnapshot` at apply time); employer
+  activity/audit UI; employer verification flow.
 
 See §8 for candidate future work.
 
@@ -1417,9 +1470,11 @@ built-in Kotlin and breaks `assembleDebug` (`FilePickerPlugin` symbol not found)
 **`file_selector`** (already done). If you re-add a plugin and the build fails on
 `GeneratedPluginRegistrant`, suspect a KGP conflict.
 
-**No functional app bugs open.** `flutter analyze` clean; **270 tests pass** (as of P5·M1).
+**No functional app bugs open.** `flutter analyze` clean; **375 tests pass** (as of P5·M3).
 One known cosmetic limitation: pure-Latin runs can render reversed in the Arabic CV PDF
-(pdf-package bidi; §7.10) — Arabic content is correct.
+(pdf-package bidi; §7.10) — Arabic content is correct. See §7.15 "Notes" for the M3 scope
+limitations (seeker apply not yet Firestore-backed; resume-file view stubbed until Storage;
+employer activity log has no UI; interview history is a lightweight snapshot).
 
 ---
 
@@ -1502,14 +1557,19 @@ prompt). Seed data: `assets/data/seed_jobs.json`.
 `saved_jobs_store.dart` = saved-only seam). Seed data `assets/data/seed_jobs.json`.
 Per-job match: `JobMatchingRepository.matchJob()` (in `job_matching`).
 
-**Applications Center** `lib/features/applications/`
+**Applications Center (seeker)** `lib/features/applications/`
 `application/applications_controller.dart` (filter + stats + derived providers).
 `presentation/`: `applications_screen.dart`, `application_detail_screen.dart`,
-`widgets/{status_chip,stats_card,application_tile,status_timeline,application_filter_sheet}.dart`.
-**Shared applications foundation** `lib/shared/models/application.dart` (Application +
-status/history) · `lib/core/services/applications/` (`applications_repository.dart` interface,
+`widgets/{stats_card,application_tile,application_filter_sheet}.dart`.
+**Shared applications foundation** `lib/shared/models/application.dart` (Application + status/history;
+**P5·M3-extended**: dual-keyed `applicantUid`/`ownerUid`, `source`, nested `ApplicantSnapshot`, event
+`by`/`note`) + `applicant_snapshot.dart` + `application_note.dart` + `employer_activity.dart` ·
+`lib/core/services/applications/` (`applications_repository.dart` interface,
 `in_memory_applications_repository.dart` = impl + `applicationsRepositoryProvider` +
 `applicationsProvider` + `appliedJobIdsProvider`). Firestore-ready: rebind the provider.
+**Promoted (P5·M3)** to `lib/shared/widgets/`: `application_status_chip.dart` (`StatusChip`),
+`status_timeline.dart`, `application_status_style.dart` (label/color/icon) — shared by the seeker
+Applications Center **and** the employer Applicants Management (the only cross-surface link).
 
 **User Profile & Settings** `lib/features/profile/`
 `domain/`: `experience_level.dart`, `profile_failure.dart`.
@@ -1563,19 +1623,40 @@ prompt, job-id filtering).
 `in_memory_recommendations_store.dart` = impl + `recommendationsStoreProvider` +
 `latestRecommendationsProvider`). Firestore-ready: rebind the provider.
 
-**Employer Dashboard** `lib/features/employer/`
-`domain/`: `industry.dart` (Industry, 14), `company_size.dart` (CompanySize, 6), `company_verification_status.dart`,
-`company_stats.dart` (dashboard stats), `company_failure.dart`.
-`application/`: `company_providers.dart` (`currentCompanyProvider`/`companyCompletionProvider`/`companyStatsProvider`),
-`company_edit_controller.dart`, `company_logo_controller.dart`.
-`presentation/`: `employer_home_screen.dart`, `company_profile_screen.dart`, `edit_company_screen.dart`,
-`company_l10n.dart`.
-**Shared model** `lib/shared/models/company.dart` (`Company` + `CompanyStrength` + `CompanyField`).
-**Core company service** `lib/core/services/company/` (`company_repository.dart` interface + `companyProvider`,
-`firestore_company_repository.dart`, `in_memory_company_repository.dart`, `company_logo_storage.dart` seam).
+**Employer feature** `lib/features/employer/` — one feature spanning Dashboard (M1) + Jobs (M2) + Applicants (M3).
+`domain/`: **M1** `industry.dart` (14), `company_size.dart` (6), `company_verification_status.dart`,
+`company_stats.dart`, `company_failure.dart`; **M2** `job_status.dart` (+ `allowedNext`), `employment_type.dart`,
+`job_experience.dart`, `salary_period.dart`, `job_validation.dart`; **M3** `applicant_status_flow.dart` (pure
+`ApplicationStatus.allowedNext`/`isTerminal`).
+`application/`: **M1** `company_providers.dart` (`currentCompanyProvider`/`companyCompletionProvider`/
+`companyStatsProvider` — stats now derive from jobs + applicants), `company_edit_controller.dart`,
+`company_logo_controller.dart`; **M2** `employer_jobs_providers.dart` (filter/sort/`visibleEmployerJobsProvider`/
+`filteredEmployerJobsProvider`/`employerJobByIdProvider`/`employerJobsStatsProvider`), `employer_jobs_controller.dart`
+(optimistic lifecycle), `job_editor_controller.dart` (autoDispose.family, auto-save); **M3**
+`employer_applicants_providers.dart` (filter/sort/`visibleApplicantsProvider`/`filteredApplicantsProvider`/
+`groupedApplicantsProvider`/`applicantsForJobProvider`/`applicantByIdProvider`/`employerApplicantsStatsProvider`),
+`employer_applicants_controller.dart` (optimistic status + activity), `employer_notes_controller.dart`
+(optimistic notes + `visibleNotesProvider`).
+`presentation/`: **M1** `employer_home_screen.dart` (Applicants tile now live), `company_profile_screen.dart`,
+`edit_company_screen.dart`, `company_l10n.dart`; **M2** `employer_jobs_screen.dart`, `job_editor_screen.dart`,
+`job_preview_screen.dart`, `employer_job_detail_screen.dart` (Applicants-N entry), `employer_jobs_l10n.dart`,
+`job_actions.dart`, `job_action_handler.dart`, `widgets/{job_status_chip,employer_job_tile}.dart`; **M3**
+`employer_applicants_screen.dart` (grouped inbox / per-job via `jobId`), `employer_applicant_detail_screen.dart`,
+`applicant_actions.dart`, `applicant_action_handler.dart`, `employer_applicants_l10n.dart`, `widgets/{applicant_avatar,
+employer_applicant_tile,applicant_group_header,match_score_badge,resume_summary_card,interview_readiness_card,
+application_note_tile,note_editor_sheet}.dart`.
+**Shared models** `lib/shared/models/`: `company.dart` (`Company`+`CompanyStrength`+`CompanyField`),
+`job_posting.dart` (`JobPosting`+`SalaryRange`+`JobMetrics`+`JobStatusChange`, `toJob()`), + the applications models
+above. **Shared widget** `lib/shared/widgets/job_detail_view.dart` (employer preview == seeker view).
+**Core services** `lib/core/services/`: `company/` (`CompanyRepository` + `companyProvider` + logo seam),
+`jobs/{employer_jobs_repository,firestore_…,in_memory_…}.dart` (`employerJobsRepositoryProvider`/`employerJobsProvider`,
+query by `ownerUid`), `applications/{employer_applicants_repository,firestore_…,in_memory_…}.dart`
+(`employerApplicantsRepositoryProvider`/`employerApplicantsProvider`, query by `ownerUid`),
+`notes/{employer_notes_repository,firestore_…,in_memory_…}.dart` (owner-private `applicationNotes`),
+`activity/{employer_activity_repository,firestore_…,in_memory_…}.dart` (audit-log foundation).
 Role branch in `splash`/`auth_navigation`/`user_type_selection`; role-aware `settings_screen` account card;
-logout clears `userType`. Promoted `completion_indicator.dart` → `lib/shared/widgets/`.
-`companies/{companyId}` in `firestore.rules` (deployed) + `storage.rules`.
+logout clears `userType`. `firestore.rules` (deployed): `companies/{companyId}`, `jobs/{jobId}`, `applications/{id}`,
+`applicationNotes/{id}`, `employerActivity/{id}` + `storage.rules`.
 
 **Firebase** `lib/core/services/firebase/{firebase_service,firebase_options}.dart` ·
 `firebase.json` · `firestore.rules` · `firestore.indexes.json`.
@@ -1586,9 +1667,13 @@ logout clears `userType`. Promoted `completion_indicator.dart` → `lib/shared/w
 
 **Navigation** `lib/core/navigation/{app_router,route_names}.dart`.
 **l10n** `lib/core/localization/l10n/app_{en,ar}.arb` (+ generated).
-**Tests** `test/` (`support/fake_auth.dart`, `render_all_locales_test.dart`,
-`resume_*` tests, `job_*`/`applications_*`/`saved_jobs_*` tests, `career_coach_*` tests,
-`screens_render_test.dart`, `widget_smoke_test.dart`).
+**Tests** `test/` — **375 pass** (`support/fake_auth.dart`, `render_all_locales_test.dart` locale sweep,
+`resume_*`/`job_*`/`applications_*`/`saved_jobs_*`/`career_coach_*`/`cv_*`/`interview_*`/`recommendation*`/`company_*`
+tests; **employer jobs** `employer_jobs_{repository,controller,providers,screens}_test` + `job_{posting_model,validation,
+editor_controller,detail_view}_test`; **employer applicants (P5·M3)** `application_model_test` (extended),
+`applicant_snapshot_test`, `application_note_test`, `applicant_status_flow_test`, `employer_applicants_{repository,
+controller,providers,screens}_test`, `employer_notes_{repository,controller}_test`). Widget hosts wrap in the real
+`AppTheme.light(locale)`; controller tests assert optimistic rollback via throwing fakes.
 
 ---
 
@@ -1619,6 +1704,11 @@ logout clears `userType`. Promoted `completion_indicator.dart` → `lib/shared/w
 | `recommendations` | `/recommendations` | AI Recommendations / For You (P4·M3) |
 | `employerHome` | `/employer` | Employer Home dashboard (P5·M1; role-routed) |
 | `companyProfile` / `editCompany` | `/employer/company` · `/employer/company/edit` | Company Profile · Edit Company (P5·M1) |
+| `employerJobs` | `/employer/jobs` | My Jobs list (P5·M2) |
+| `createJob` / `jobPreview` | `/employer/jobs/new` · `/employer/jobs/preview` | Create job · Preview (P5·M2; `jobPreview` `extra` = `JobPosting`; static before `:id`) |
+| `employerJobDetail` / `editJob` | `/employer/jobs/:id` · `/employer/jobs/:id/edit` | Job detail · Edit (P5·M2) |
+| `employerJobApplicants` | `/employer/jobs/:id/applicants` | One job's applicants (P5·M3) |
+| `employerApplicants` / `employerApplicantDetail` | `/employer/applicants` · `/employer/applicants/:appId` | Applicants inbox (grouped) · Applicant detail (P5·M3) |
 
 **Core services & swap-point providers** (`lib/core/services/…`; each is the single binding
 to rebind for a real backend — in-memory/local today):
@@ -1643,6 +1733,10 @@ to rebind for a real backend — in-memory/local today):
 | `recommendationsStoreProvider` · `latestRecommendationsProvider` (Stream) | `RecommendationsStore` (`watchLatest`/`read`/`save`/`clear`) | in-memory (latest-only) → Firestore `users/{uid}/recommendations/latest` |
 | `companyRepositoryProvider` · `companyProvider` (Stream) | `CompanyRepository` (`watchCompany`/`fetchCompany`/`saveCompany`/`ensureCompany`/`setLogoUrl`) | `FirestoreCompanyRepository` (live, `companies/{companyId}`) ↔ in-memory (tests) |
 | `companyLogoStorageProvider` | `CompanyLogoStorage` | `FirebaseCompanyLogoStorage` → `CloudStorageService` (`companies/{id}/logo.jpg`; **bucket unprovisioned**) |
+| `employerJobsRepositoryProvider` · `employerJobsProvider` (Stream) | `EmployerJobsRepository` (`watchJobs`/`fetchJob`/`createJob`/`updateJob`) | `FirestoreEmployerJobsRepository` (live, `jobs/{jobId}`, query by `ownerUid`) ↔ in-memory (tests) |
+| `employerApplicantsRepositoryProvider` · `employerApplicantsProvider` (Stream) | `EmployerApplicantsRepository` (`watchApplicants(ownerUid)`/`fetchApplicant`/`updateApplication`) | `FirestoreEmployerApplicantsRepository` (live, `applications`, query by `ownerUid`) ↔ in-memory (tests) |
+| `employerNotesRepositoryProvider` · `notesForApplicationProvider(id)` (Stream) | `EmployerNotesRepository` (`watchNotes`/`addNote`/`updateNote`/`deleteNote`) | `FirestoreEmployerNotesRepository` (live, owner-private `applicationNotes`) ↔ in-memory (tests) |
+| `employerActivityRepositoryProvider` · `employerActivityProvider` (Stream) | `EmployerActivityRepository` (`log`/`watchActivity`) | `FirestoreEmployerActivityRepository` (live, owner-private `employerActivity`; audit foundation, no UI) ↔ in-memory (tests) |
 
 **Feature controllers / providers** (per feature `application/`): `authStateProvider` +
 `authRepositoryProvider` (auth) · `localeControllerProvider` · `themeControllerProvider` ·
@@ -1653,7 +1747,15 @@ to rebind for a real backend — in-memory/local today):
 `jobDetailControllerProvider(id)` · `applicationsFilterProvider` +
 `filteredApplicationsProvider` + `applicationStatsProvider` + `applicationByIdProvider(id)` +
 `savedJobsListProvider` · `profileEditControllerProvider` · `profilePhotoControllerProvider` ·
-`changePasswordControllerProvider` · `currentUserProfileProvider` + `profileCompletionProvider`.
+`changePasswordControllerProvider` · `currentUserProfileProvider` + `profileCompletionProvider` ·
+`cvBuilderControllerProvider` · `interviewControllerProvider` · `recommendationsControllerProvider`.
+**Employer (P5):** `companyEditControllerProvider` · `companyLogoControllerProvider` · `currentCompanyProvider` +
+`companyCompletionProvider` + `companyStatsProvider` (M1) · `employerJobsFilterProvider` +
+`visibleEmployerJobsProvider`/`filteredEmployerJobsProvider`/`employerJobByIdProvider(id)`/`employerJobsStatsProvider` +
+`employerJobsControllerProvider` + `jobEditorControllerProvider(jobId?)` (M2) · `employerApplicantsFilterProvider` +
+`visibleApplicantsProvider`/`filteredApplicantsProvider`/`groupedApplicantsProvider`/`applicantsForJobProvider(jobId)`/
+`applicantByIdProvider(id)`/`employerApplicantsStatsProvider` + `employerApplicantsControllerProvider` +
+`employerNotesControllerProvider` + `visibleNotesProvider(id)` (M3).
 
 **Integration map (who reads what — all via core providers + navigation, no feature→feature
 imports among the product features):** Job Matching reads the resume via
@@ -1702,12 +1804,39 @@ and it links to `/jobs/:id` (matching) + `/career-coach` (interview prep).
 
 ## 14. TL;DR for the next session
 
-**Phase 2 COMPLETE (verified live EN+AR).** **Phase 3 (M1–M3), Phase 4 (M1–M3), and Phase 5 · M1
-are COMPLETE and committed** (latest `baf5801` on `feature/resume-analyzer` — see §6, §7.7–§7.13).
-`flutter analyze` clean, **270 tests pass**, repo clean (only `.claude/settings.local.json`
+**Phase 2 COMPLETE (verified live EN+AR).** **Phase 3 (M1–M3), Phase 4 (M1–M3), and Phase 5 · M1–M3
+are COMPLETE and committed** (latest `d0810d5` on `feature/resume-analyzer` — see §6, §7.7–§7.15).
+`flutter analyze` clean, **375 tests pass**, repo clean (only `.claude/settings.local.json`
 intentionally uncommitted). Firebase AI Logic is enabled + provisioned (§5); the
-`companies/{companyId}` Firestore rule is deployed. **The AI toolkit is complete, and the employer
-side has begun.**
+`companies`/`jobs`/`applications`/`applicationNotes`/`employerActivity` Firestore rules are deployed.
+**The AI toolkit is complete AND the entire employer side is complete (Company Foundation + Job
+Management + Applicants Management).** **Recommended next: Phase 5 · Milestone 4 — Employer Analytics**
+(read-only insights over `JobMetrics` + the applicant status funnel + `employerActivity`; optionally an
+AI Recruiter Insights pass and the AI Company Strength score — all source data + seams already exist).
+
+**P5 · M3 (Employer Applicants Management)** — employers review + manage applicants for every published
+job over the **same shared applications foundation** the seeker Applications Center uses. The
+privacy-wall insight (rules keep each user's profile/resume/interview private) drove a **denormalized
+`ApplicantSnapshot`** captured at apply time — the employer never reads an applicant's private docs.
+Grouped-by-job inbox (stats/search/status-filter/sort) → detail (AI match, resume analysis, resume-file
+graceful-degrade, skills, links, interview readiness, timeline, **private notes**) → status pipeline
+(Move to Review/Interview/Accept/Reject, **appends** history) + note CRUD, all optimistic with rollback.
+Extended shared `Application` (dual-keyed `applicantUid`/`ownerUid` + `source`); separate
+`EmployerApplicantsRepository` + owner-private `EmployerNotesRepository` + an `EmployerActivityRepository`
+audit foundation (recorded, no UI). Promoted `StatusChip`/`StatusTimeline` → `shared/widgets`. **Zero
+product-feature-to-feature deps.** Live-verified EN + AR on `employer01` with real Firestore (seeded
+applicants — see `scratchpad/seed_applicants.py`). **No device bugs — the 3 M2 lessons were pre-applied.**
+**Scope note:** the seeker apply isn't Firestore-backed yet (applicants seeded for verification); resume-file
+view is stubbed until Storage; the activity log has no UI; interview history is a lightweight snapshot (§7.15).
+
+**P5 · M2 (Employer Job Management)** — full job lifecycle: My Jobs (search/status-filter/sort) →
+create/edit (debounced auto-save + two-tier validation + unsaved guard) → preview (shared `JobDetailView`,
+exactly as a seeker sees it) → publish-with-confirmation → archive-with-reason/close/reopen/duplicate/
+soft-delete, all optimistic with rollback. A `JobPosting` superset `toJob()`-projects to the seeker `Job`;
+a separate write-path `EmployerJobsRepository` (`jobs/{jobId}`, query by `ownerUid`). **Zero deps.**
+Live-verified EN + AR. Three device-only bugs found + fixed and turned into reusable lessons: query by the
+rule's field, wrap themed full-width buttons (test with real `AppTheme`), own dialog controllers in a
+`StatefulWidget` (§7.14).
 
 **P5 · M1 (Employer Dashboard — Company Foundation)** — the first employer-side milestone.
 **Role-based landing** (employers → `/employer` Employer Home; job seekers → `/home`; branch on
