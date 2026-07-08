@@ -1,7 +1,7 @@
 # Career Bridge — Session Handoff
 
 > Living handoff doc so a fresh Claude session can continue immediately.
-> Last updated: **Phase 5 · Milestone 4 (Employer Analytics) — COMPLETE** (see §7.16) — live-verified EN + AR on `employer01@cb.app` (real Firestore + real Gemini insights).
+> Last updated: **Phase 6 · Milestone 1 (Production Ready — Firebase & Backend) — COMPLETE** (see §7.17) — live-verified EN + AR on `employer01@cb.app` (real Firebase Analytics/Crashlytics/FCM on device).
 > **Phase 2 COMPLETE** (M1 Resume Analyzer + M2 Job Matching + M3 Career Coach).
 > **Phase 3 · M1 (Jobs Platform) COMPLETE** (`6a6a72c`, §7.7).
 > **Phase 3 · M2 (Applications Center) COMPLETE** (`b7e4b53`, §7.8).
@@ -13,6 +13,7 @@
 > **Phase 5 · M2 (Employer Job Management) COMPLETE** (§7.14) — live-verified EN + AR on `employer01@cb.app`. **Full employer job lifecycle: My Jobs (search/filter/sort) → create/edit with debounced auto-save + two-tier validation → preview (shared `JobDetailView`, exactly as a seeker sees it) → publish-with-confirmation → archive-with-reason/close/reopen/duplicate/soft-delete, all optimistic with rollback.** A `JobPosting` management superset `toJob()`-projects to the seeker `Job`; a separate write-path `EmployerJobsRepository` (`jobs/{jobId}`) leaves the read-only seeker `JobsRepository` untouched. `flutter analyze` clean; **329 tests pass**; `jobs/{jobId}` rules deployed.
 > **Phase 5 · M3 (Employer Applicants Management) COMPLETE** (§7.15) — live-verified EN + AR on `employer01@cb.app` (real Firestore, seeded applicants). **Grouped-by-job applicants inbox (stats/search/status-filter/sort) → rich applicant detail (AI match, resume analysis, resume-file graceful, skills, links, interview readiness, timeline, private notes) → status pipeline (Move to Review/Interview/Accept/Reject, appends history) + note CRUD, all optimistic with rollback.** The **shared `Application`** was extended (dual-keyed applicantUid/ownerUid + denormalized versioned `ApplicantSnapshot` + `source`) so the employer reads the exact doc the seeker's Applications Center does — no cross-user private reads. Separate `EmployerApplicantsRepository` + owner-private `EmployerNotesRepository` (`applicationNotes`) + `EmployerActivityRepository` (`employerActivity`, audit foundation). `flutter analyze` clean; **375 tests pass** (+46); `applications`/`applicationNotes`/`employerActivity` rules deployed.
 > **Phase 5 · M4 (Employer Analytics) COMPLETE** (§7.16) — live-verified EN + AR on `employer01@cb.app` (real Firestore, seeded applicants + real Gemini). **Read-only hiring dashboard: KPI overview → application status funnel → top jobs → time-to-hire → applicant-quality distribution → applications trend, plus an on-demand AI Recruiter Insights card (strengths/bottlenecks/suggested actions, grounded in the metrics).** All computed live by a **pure `AnalyticsCalculator`** over the employer's existing jobs/applicants/activity streams (no new data sources, no new Firestore collections/rules). The AI layer **reuses the Recommendations pattern exactly** (primitive context + signature → `AiService.generateJson` → defensive parse → latest-only `RecruiterInsightsStore` seam + refresh guard). Charts are plain-Flutter/`FractionallySizedBox` (no new deps). **Zero product-feature-to-feature deps.** `flutter analyze` clean; **412 tests pass** (+37); **no Firestore rules change**. AI Company Strength deferred to a future milestone.
+> **Phase 6 · M1 (Production Ready — Firebase & Backend) COMPLETE** (§7.17) — live-verified EN + AR on `employer01@cb.app` (real on-device Firebase). **Five vendor-neutral core services, each interface + single Firebase impl + Noop/in-memory + swap-point provider (the `AiService` pattern):** **Storage** (`StorageService` with upload progress + delete/replace + optional `StorageMetadata`; the two media seams `ProfileImageStorage`/`CompanyLogoStorage` rebased on it, + profile-photo/company-logo progress UI + Remove action), **Push Notifications** (`NotificationService` + `FirebaseNotificationService` absorbing the old `MessagingService`, token refresh, `PushTokenRegistrar` seam, + a `PushPreferences` category foundation), **Analytics** (`AnalyticsService` + vendor-neutral `AnalyticsRouteObserver` screen_views + `AnalyticsEvents` at key seams + a persisted **consent** lever), **Crashlytics** (`CrashReporter` + `FlutterError`/`PlatformDispatcher` handlers + user context uid/account_type), **Performance** (`PerformanceMonitor`/`PerfTrace` + upload traces). All telemetry **best-effort, non-blocking**. `firebase_analytics`/`crashlytics`/`performance` added; **build-verified**. Crashlytics/Performance **Gradle plugins deferred** (AGP 9 compat; runtime SDKs work without them). Live Storage upload **deferred** (default bucket unprovisioned). **Zero product-feature-to-feature deps; no new Firestore rules.** `flutter analyze` clean; **438 tests pass** (+26).
 
 ---
 
@@ -281,6 +282,16 @@ with real Gemini. Models are shaped so a future **Interview Report PDF** is a pu
 - ✅ **Authentication** providers: Email/Password, Google, Phone — **enabled**.
 - ✅ **Cloud Firestore** — created in **Production mode**; rules deployed from
   `firestore.rules`.
+- ⚠️ **Cloud Storage** — the default bucket is **still NOT provisioned** (carried since P3·M3).
+  `firebase deploy --only storage` fails with "Firebase Storage has not been set up". Needs
+  Console → Storage → **Get Started** (may need Blaze); can't be done headlessly here
+  (`gcloud`/`gsutil` absent). Until then all uploads degrade gracefully to a localized error.
+  P6·M1 wired the full Storage stack (`StorageService`, progress, delete/replace) behind this.
+- ✅ **Firebase Analytics / Crashlytics / Performance (P6·M1)** — SDKs added + initialize on
+  device (verified: FA "App measurement initialized", Crashlytics 19.4.4). **No Console setup was
+  required** for basic collection. **Deferred:** the Crashlytics + Performance **Gradle plugins**
+  (AGP 9 compat — §7.17/§10); the runtime SDKs work without them (they only add release
+  mapping-upload + auto-instrumentation).
 - ⚠️ **Phone SMS delivery** — Firebase returns `17006 "SMS unable to be sent until
   this region enabled"`. To actually deliver codes: Console → Auth → Settings →
   **SMS region policy** (allow the region, e.g. Qatar/+974) **or** add a **test phone
@@ -314,7 +325,9 @@ $env:Path = "C:\Program Files\nodejs;" + $env:Path
 main                         6f860fe  Phase 1 production foundation completed
 firebase-auth-integration    aa9b7d2  Add Cloud Firestore security rules  (branched from main)
                              2af451d  Integrate real Firebase Authentication and remove demo mode
-feature/resume-analyzer  *  (HEAD)   docs: HANDOFF for Phase 5 Milestone 4  <-- current HEAD (this docs commit)
+feature/resume-analyzer  *  (HEAD)   docs: HANDOFF for Phase 6 Milestone 1  <-- current HEAD (this docs commit)
+                             2e4c706  feat: Production-ready Firebase infrastructure (Phase 6, Milestone 1)
+                             3f1ff4a  docs: HANDOFF for Phase 5 Milestone 4
                              9932422  feat: Employer Analytics (Phase 5, Milestone 4)
                              d0810d5  docs: HANDOFF for Phase 5 Milestone 3
                              8d241a6  feat: Employer Applicants Management (Phase 5, Milestone 3)
@@ -1363,6 +1376,104 @@ against the **M3 seeded applicants** (3 apps: statuses give applied 3 / reviewed
 
 ---
 
+## 7.17 Phase 6 · Milestone 1 — Production Ready (Firebase & Backend) ✅ COMPLETE
+
+> Production Firebase infrastructure behind **five vendor-neutral core services**, each following the app's one
+> dominant pattern: **interface (plain Dart only) → single Firebase impl (the only file importing that plugin) →
+> Noop/in-memory impl → one Riverpod swap-point provider**. Providers default to the Firebase impl **when
+> `FirebaseService.isReady`, else a Noop**, so tests and unconfigured runs never touch a plugin. **All telemetry is
+> best-effort, non-blocking, and non-throwing — a telemetry failure can never affect the app** (the mandated M1
+> principle). `flutter analyze` clean; **438 tests pass** (+26); **no new Firestore rules**.
+
+**Scope additions (approved) baked in:** (1) a `PushPreferences` category foundation + repository seam; (2) an
+analytics **consent** lever; (3) Crashlytics **user context** (uid + account type); (4) optional `StorageMetadata`
+(contentType/cacheControl/customMetadata); (5) the strict non-blocking telemetry principle.
+
+**1 · Firebase Storage** (`lib/core/services/cloud_storage/`): `StorageService` interface (`upload({path, bytes,
+metadata, onProgress}) / delete / downloadUrl`) + `FirebaseStorageService` (only file importing `firebase_storage`;
+progress via `UploadTask.snapshotEvents`) + `InMemoryStorageService` + `storage_paths.dart` + `storageServiceProvider`.
+Plain `StorageUploadProgress` / `StorageMetadata` value types. The former `CloudStorageService` is **removed**; the two
+media seams `ProfileImageStorage` / `CompanyLogoStorage` are **rebased on `StorageService`** and gain `delete` +
+progress. `ProfilePhotoController` / `CompanyLogoController` gained a `progress` field + `removePhoto` / `removeLogo`;
+the profile-photo + company-logo editors show a determinate ring + a **Remove** action (confirm dialog). Uploads are
+wrapped in a performance trace + log an analytics event.
+
+**2 · Push Notifications** (`lib/core/services/messaging/`): `NotificationService` interface (permission / token /
+`onTokenRefresh` / `onMessage` / `onMessageOpened`, plain `PushMessage` + `NotificationPermission`) +
+`FirebaseNotificationService` (**absorbs the removed `MessagingService`**, keeps the top-level `@pragma('vm:entry-point')`
+background handler) + `NoopNotificationService` + `notificationServiceProvider`. `PushTokenRegistrar` seam (no-op now →
+Firestore `users/{uid}/fcmTokens` later; no rule change — own-doc). **`PushPreferences`** (categories
+jobRecommendations / applicationUpdates / interviewReminders / employerNotifications, master-gated, defensive JSON) +
+`PushPreferencesRepository` (in-memory → Firestore later). **No UI** (kept separate from the existing settings
+`NotificationPreferences` to avoid refactoring that feature; a future milestone can map settings → these categories).
+
+**3 · Analytics** (`lib/core/services/analytics/`): `AnalyticsService` (`logScreenView`/`logEvent`/`setUserId`/
+`setUserProperty`/`setEnabled`) + `FirebaseAnalyticsService` + `NoopAnalyticsService`. **`AnalyticsRouteObserver`**
+(vendor-neutral `NavigatorObserver`, wired via `GoRouter(observers:)`) logs `screen_view` from the route name.
+`AnalyticsEvents`/`AnalyticsParams` constants (validated by a test); events logged at key seams — seeker `job_apply`;
+employer `job_publish`/`job_archive`, `applicant_status_change`, `recruiter_insights_generate`; media
+`profile_photo_upload`/`company_logo_upload`. **Consent:** persisted `AnalyticsConsentController` (default on) applied
+via `setEnabled` at bootstrap + a `container.listen` — feature code never branches on consent. *Distinct from the
+employer hiring-**Analytics** feature (`employerAnalyticsProvider`).*
+
+**4 · Crashlytics** (`lib/core/services/crashlytics/`): `CrashReporter` (`recordError`/`recordFlutterError`/`log`/
+`setUserIdentifier`/`setCustomKey`/`setEnabled`) + `FirebaseCrashReporter` + `NoopCrashReporter`. `main()` wires
+`FlutterError.onError` + `PlatformDispatcher.instance.onError`. **User context** (uid + `account_type`) is bound from
+the existing `authStateProvider` + `userTypeControllerProvider` and pushed to both Crashlytics and Analytics.
+
+**5 · Performance** (`lib/core/services/performance/`): `PerformanceMonitor` + `PerfTrace` interfaces +
+`FirebasePerformanceMonitor` + Noop; representative upload traces.
+
+**Bootstrap** (`main.dart`): one `ProviderContainer` shared with the tree via `UncontrolledProviderScope`; resolves
+crash/analytics/perf, sets error handlers, applies consent, binds user context, builds the router with the analytics
+observer. `AppRouter.create({observers})` + `CareerBridgeApp(router:)`.
+
+**Deps:** `firebase_analytics ^11.3` / `firebase_crashlytics ^4.1` / `firebase_performance ^0.10`; **build-verified**
+(`flutter build apk --debug` green — only a benign KGP *warning* on `firebase_analytics`). **The Crashlytics +
+Performance Gradle plugins were intentionally NOT added** — AGP is **9.0.1** (bleeding-edge) and those plugins are the
+exact KGP/Gradle risk class (§10); the runtime SDKs work without them (the plugins only add release
+mapping-upload + auto-instrumentation). Adding them is a documented production-hardening follow-up.
+
+**l10n:** +8 EN/AR keys (`uploadInProgress`, `profileRemovePhoto*`, `companyRemoveLogo*`, `remove`).
+
+**Tests (+26 → 438):** `storage_service_test`, `push_preferences_test`, `notification_service_test`,
+`analytics_events_test`, `analytics_route_observer_test`, `analytics_consent_test`, `telemetry_noop_test`; extended
+`profile_photo_controller_test` + `company_logo_controller_test` (progress + remove). Firebase impls are not
+unit-tested (need live backends — same policy as `FirebaseAuthRepository`/`FirebaseAiService`).
+
+### 🐞 One device-only defect found & fixed during live verification
+**Screen-view names were null.** The router's `CustomTransitionPage`s never set `settings.name`, so
+`AnalyticsRouteObserver` saw null names and every manual `screen_view` silently no-opped. **Fix:** `_fadePage` now sets
+`name: state.name` on the page (and `_fade`/all inline page builders pass the `GoRouterState`). Confirmed live: named
+`screen_view`s (`employerHome`, `employerAnalytics`) then appeared.
+
+### VERIFIED live on emulator (`-gpu host`, Skia) — EN + AR, real on-device Firebase (`employer01@cb.app`)
+- **Init:** `[FirebaseService] Initialized`; `[FCM] Permission: granted` + token via the new `FirebaseNotificationService`;
+  `FA: App measurement initialized`; `FirebaseCrashlytics: Initializing 19.4.4` + session started.
+- **Analytics (EN):** auto + **named** `screen_view` (`ga_screen=employerHome`/`employerAnalytics`); `setUserId` =
+  employer01 uid; **user property `account_type=employer`**; **custom event `recruiter_insights_generate`** on a
+  successful generate. A transient Gemini network error showed the graceful Retry UI and **correctly did not** log the
+  event (non-blocking failure path).
+- **Analytics (AR):** language switched in Settings; Employer Home + Analytics render **RTL**; named `screen_view`s +
+  `account_type` + Crashlytics init all confirmed. No regressions.
+- **Storage:** live upload **deferred** — the default bucket is still unprovisioned and it can't be created headlessly
+  (`gcloud`/`gsutil` absent; Console "Get Started"/Blaze needed). Upload/delete/progress are covered by
+  `storage_service_test` + the extended controller tests + graceful-degrade (upload → null → localized error).
+
+### Notes for the next session
+- **To finish Storage production-readiness:** provision the default bucket (Console → Storage → Get Started), then
+  `firebase deploy --only storage` (rules already authored). Then live-verify photo/logo upload + Remove (EN + AR).
+- **To harden Crashlytics/Performance:** add the `com.google.firebase.crashlytics` + `com.google.firebase.firebase-perf`
+  Gradle plugins **once AGP-9-compatible versions are confirmed** (build-verify immediately — §10 KGP risk). Unlocks
+  release mapping upload + automatic HTTP/screen traces.
+- **Token registrar + push preferences + analytics consent** are Firestore-/UI-ready seams with no consumer yet — a
+  future "notification settings" milestone wires them (map settings toggles → `PushCategory`; a consent switch →
+  `AnalyticsConsentController`).
+- Crashlytics/Analytics/Performance collection is currently **enabled in debug** for verification; gate by
+  `kDebugMode` for production noise reduction if desired (one line in `_bootstrapTelemetry`).
+
+---
+
 ## 8. Next steps
 
 **Phase 2 COMPLETE.** **Phase 3 · M1 (Jobs Platform) `6a6a72c`, M2 (Applications Center)
@@ -1582,11 +1693,12 @@ built-in Kotlin and breaks `assembleDebug` (`FilePickerPlugin` symbol not found)
 **`file_selector`** (already done). If you re-add a plugin and the build fails on
 `GeneratedPluginRegistrant`, suspect a KGP conflict.
 
-**No functional app bugs open.** `flutter analyze` clean; **412 tests pass** (as of P5·M4).
+**No functional app bugs open.** `flutter analyze` clean; **438 tests pass** (as of P6·M1).
 One known cosmetic limitation: pure-Latin runs can render reversed in the Arabic CV PDF
-(pdf-package bidi; §7.10) — Arabic content is correct. See §7.15 "Notes" for the M3 scope
-limitations and §7.16 "Notes" for M4 (job view analytics N/A until view instrumentation;
-insights store in-memory; AI Company Strength deferred).
+(pdf-package bidi; §7.10) — Arabic content is correct. See §7.15/§7.16 "Notes" for the M3/M4 scope
+limitations and §7.17 "Notes" for P6·M1 (Storage default bucket unprovisioned → live upload deferred;
+Crashlytics/Performance Gradle plugins deferred for AGP 9; token-registrar/push-prefs/consent are
+wired seams with no UI consumer yet).
 
 ---
 
@@ -1785,15 +1897,18 @@ logout clears `userType`. `firestore.rules` (deployed): `companies/{companyId}`,
 
 **Navigation** `lib/core/navigation/{app_router,route_names}.dart`.
 **l10n** `lib/core/localization/l10n/app_{en,ar}.arb` (+ generated).
-**Tests** `test/` — **412 pass** (`support/fake_auth.dart`, `render_all_locales_test.dart` locale sweep,
+**Tests** `test/` — **438 pass** (`support/fake_auth.dart`, `render_all_locales_test.dart` locale sweep,
 `resume_*`/`job_*`/`applications_*`/`saved_jobs_*`/`career_coach_*`/`cv_*`/`interview_*`/`recommendation*`/`company_*`
 tests; **employer jobs** `employer_jobs_{repository,controller,providers,screens}_test` + `job_{posting_model,validation,
 editor_controller,detail_view}_test`; **employer applicants (P5·M3)** `application_model_test` (extended),
 `applicant_snapshot_test`, `application_note_test`, `applicant_status_flow_test`, `employer_applicants_{repository,
 controller,providers,screens}_test`, `employer_notes_{repository,controller}_test`; **employer analytics (P5·M4)**
 `analytics_calculator_test`, `employer_analytics_providers_test`, `recruiter_insights_{repository,controller,store}_test`,
-`employer_analytics_screen_test`). Widget hosts wrap in the real `AppTheme.light(locale)`; controller tests assert
-optimistic rollback via throwing fakes, and the analytics calculator is exhaustively unit-tested (pure, injectable clock).
+`employer_analytics_screen_test`; **production infra (P6·M1)** `storage_service_test`, `push_preferences_test`,
+`notification_service_test`, `analytics_events_test`, `analytics_route_observer_test`, `analytics_consent_test`,
+`telemetry_noop_test` + extended `profile_photo_controller_test`/`company_logo_controller_test` for progress+remove).
+Widget hosts wrap in the real `AppTheme.light(locale)`; controller tests assert optimistic rollback via throwing fakes,
+the analytics calculator is exhaustively unit-tested (pure, injectable clock), and telemetry uses Noop/in-memory fakes.
 
 ---
 
@@ -1928,17 +2043,29 @@ and it links to `/jobs/:id` (matching) + `/career-coach` (interview prep).
 
 ## 14. TL;DR for the next session
 
-**Phase 2 COMPLETE (verified live EN+AR).** **Phase 3 (M1–M3), Phase 4 (M1–M3), and Phase 5 · M1–M4
-are COMPLETE** (M1–M3 committed through `d0810d5`; M4 committed this session — see §6, §7.7–§7.16).
-`flutter analyze` clean, **412 tests pass**, repo clean (only `.claude/settings.local.json`
-intentionally uncommitted). Firebase AI Logic is enabled + provisioned (§5); the
-`companies`/`jobs`/`applications`/`applicationNotes`/`employerActivity` Firestore rules are deployed
-(M4 added **no** new rules).
-**The AI toolkit is complete AND the entire employer side is complete (Company Foundation + Job
-Management + Applicants Management + Analytics).** Nothing is in progress — candidate next milestones:
-close the seeker→employer loop (Firestore-back the seeker apply + real published jobs), **AI Company
-Strength** (`Company.strength` is shaped for it), an employer activity/audit UI, and Firestore-backing
-the `RecruiterInsightsStore`.
+**Phase 2 COMPLETE (verified live EN+AR).** **Phase 3 (M1–M3), Phase 4 (M1–M3), Phase 5 · M1–M4, and Phase 6 · M1
+are COMPLETE** (through `3f1ff4a`; P6·M1 = feat `2e4c706` + this docs commit — see §6, §7.7–§7.17).
+`flutter analyze` clean, **438 tests pass**, repo clean (only `.claude/settings.local.json`
+intentionally uncommitted). Firebase AI Logic enabled + provisioned; Analytics/Crashlytics/Performance SDKs
+initialize on device; the `companies`/`jobs`/`applications`/`applicationNotes`/`employerActivity` Firestore rules
+are deployed (**P6·M1 added no new rules**). ⚠️ **Cloud Storage default bucket is still unprovisioned** (§5) —
+live media upload deferred.
+**The AI toolkit + the entire employer side are complete, and the app now has a production Firebase
+infrastructure layer (Storage/Notifications/Analytics/Crashlytics/Performance).** Nothing is in progress —
+candidate next: **provision the Storage bucket** (unblocks live photo/logo upload + resume-file view); add the
+Crashlytics/Performance **Gradle plugins** once AGP-9-compatible; a **notification-settings UI** (wiring the
+`PushPreferences` + `AnalyticsConsent` seams); close the **seeker→employer loop**; **AI Company Strength**.
+
+**P6 · M1 (Production Ready — Firebase & Backend)** — five vendor-neutral core services, each **interface + single
+Firebase impl + Noop/in-memory + swap-point provider** (the `AiService` pattern), all **best-effort + non-blocking**:
+**Storage** (`StorageService` progress/delete/metadata; media seams rebased; photo/logo progress UI + Remove),
+**Notifications** (`NotificationService` + `FirebaseNotificationService` replacing `MessagingService`; token registrar
+seam; `PushPreferences` foundation), **Analytics** (`AnalyticsService` + vendor-neutral route observer + event catalog
++ persisted consent lever), **Crashlytics** (`CrashReporter` + global error handlers + uid/account_type context),
+**Performance** (`PerformanceMonitor`/`PerfTrace`). Deps added + build-verified; Crashlytics/Perf **Gradle plugins
+deferred** (AGP 9). Live-verified EN + AR on device (FCM token, named `screen_view`s, `setUserId`, `account_type`
+property, custom events, Crashlytics init). Device fix: router now sets `CustomTransitionPage.name` so screen_views
+carry names. Live Storage upload deferred (bucket). (§7.17)
 
 **P5 · M4 (Employer Analytics)** — a read-only hiring dashboard (KPI overview, application status funnel,
 top jobs, time-to-hire, applicant-quality distribution, applications trend) plus an on-demand **AI Recruiter
