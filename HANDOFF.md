@@ -43,8 +43,13 @@ domain/         models (Equatable), repository interfaces, exceptions
 data/           repository implementations, external adapters
 ```
 Cross-cutting code under `lib/core/` (`constants`, `localization`, `navigation`,
-`providers`, `services/{ai,firebase,storage,messaging,cloud_storage,document}`,
-`theme`, `utils`). Reused widgets/models under `lib/shared/`.
+`providers`, `services/{ai,firebase,storage (local prefs),cloud_storage (Firebase
+Storage),messaging,analytics,crashlytics,performance,document, + the store/repository
+seams}`, `theme`, `utils`). Reused widgets/models under `lib/shared/`. **Every external
+capability sits behind a vendor-neutral interface with a single Firebase impl (the only
+file importing that plugin), a Noop/in-memory impl, and one swap-point provider** — the
+`AiService` pattern, applied to Storage/Notifications/Analytics/Crashlytics/Performance
+in P6·M1.
 
 **State management:** `flutter_riverpod` 2.6.x (no code-gen). Controllers are
 `StateNotifier<T>` exposed via `StateNotifierProvider`. Services/repositories are
@@ -325,7 +330,8 @@ $env:Path = "C:\Program Files\nodejs;" + $env:Path
 main                         6f860fe  Phase 1 production foundation completed
 firebase-auth-integration    aa9b7d2  Add Cloud Firestore security rules  (branched from main)
                              2af451d  Integrate real Firebase Authentication and remove demo mode
-feature/resume-analyzer  *  (HEAD)   docs: HANDOFF for Phase 6 Milestone 1  <-- current HEAD (this docs commit)
+feature/resume-analyzer  *  (HEAD)   docs: HANDOFF consistency pass for Phase 6 Milestone 1  <-- current HEAD
+                             bb62aac  docs: HANDOFF for Phase 6 Milestone 1
                              2e4c706  feat: Production-ready Firebase infrastructure (Phase 6, Milestone 1)
                              3f1ff4a  docs: HANDOFF for Phase 5 Milestone 4
                              9932422  feat: Employer Analytics (Phase 5, Milestone 4)
@@ -1480,19 +1486,26 @@ unit-tested (need live backends — same policy as `FirebaseAuthRepository`/`Fir
 `b7e4b53`, and M3 (User Profile & Settings) `071902c` COMPLETE. Phase 4 · M1 (CV Builder)
 `b237481`, M2 (Interview Prep) `fc35db4`, M3 (Recommendations / For You) `c1d044b` COMPLETE —
 the AI toolkit is complete; no "Soon" cards remain. Phase 5 · M1 (Company Foundation) `baf5801`,
-M2 (Job Management) `1ecba6f`, M3 (Applicants Management) `8d241a6`, M4 (Employer Analytics) COMPLETE — the
-entire employer side (Company / Jobs / Applicants / Analytics) is done.** Nothing is in progress. **Candidate
-next milestones:** close the seeker→employer loop (Firestore-back the seeker `ApplicationsRepository` + surface
-real published jobs + assemble `ApplicantSnapshot` at apply time); an **AI Company Strength** score
-(`Company.strength` is shaped for it); an employer **activity/audit UI** (`employerActivityProvider` foundation);
-Firestore-back the `RecruiterInsightsStore`. (See the Phase 5 roadmap + §7.16 follow-ups.)
+M2 (Job Management) `1ecba6f`, M3 (Applicants Management) `8d241a6`, M4 (Employer Analytics) `9932422` COMPLETE — the
+entire employer side (Company / Jobs / Applicants / Analytics) is done. Phase 6 · M1 (Production Ready — Firebase &
+Backend) `2e4c706` COMPLETE — a production Firebase infrastructure layer (Storage / Notifications / Analytics /
+Crashlytics / Performance) behind vendor-neutral swap-point providers (§7.17).** Nothing is in progress.
+**Recommended next milestone: Phase 6 · M2** — the natural continuation is to (a) **provision the Storage bucket** and
+finish live media (photo/logo upload + resume-file view), and/or (b) **close the seeker→employer loop** (Firestore-back
+the seeker `ApplicationsRepository` + surface real published `jobs/{jobId}` + assemble `ApplicantSnapshot` at apply
+time), and/or (c) a **notification-settings + consent UI** wiring the `PushPreferences` / `AnalyticsConsent` /
+`PushTokenRegistrar` seams. Other candidates: **AI Company Strength** (`Company.strength` shaped for it); an employer
+**activity/audit UI** (`employerActivityProvider` foundation); Firestore-back the `RecruiterInsightsStore`; add the
+Crashlytics/Performance Gradle plugins once AGP-9-compatible. (See the Phase 6 roadmap + §7.17 follow-ups.)
 
 **Open items for the next session:**
 
-1. **Provision Firebase Storage (unblocks profile-photo upload):** Console → Storage →
-   **Get Started** (creates the default bucket; may need Blaze), then deploy the already-authored
-   `storage.rules` (`firebase deploy --only storage`). Until then the photo upload degrades to a
-   localized error (§7.9); everything else in M3 works on live Firestore + Auth.
+1. **Provision Firebase Storage (unblocks live media):** Console → Storage → **Get Started**
+   (creates the default bucket; may need Blaze), then deploy the already-authored `storage.rules`
+   (`firebase deploy --only storage`). P6·M1 wired the full Storage stack (`StorageService` + progress
+   + delete/replace + the photo/logo Remove UI) behind this; until the bucket exists, uploads degrade to
+   a localized error. Then live-verify photo/logo upload + Remove (EN + AR) and add the resume-file view.
+   (Can't be provisioned headlessly here — `gcloud`/`gsutil` absent; §5, §7.17.)
 
 2. **Live re-verification of earlier milestones (blocked by env before, not app):** on a
    healthy `-gpu host` emulator, re-verify (EN+AR) the **P3·M1 job detail + integrations** AND
@@ -1651,6 +1664,20 @@ emulator (both languages), `analyze`+`test` before committing, one commit per mi
   score (`Company.strength` is shaped for it); employer activity/audit UI; Firestore-back the
   `RecruiterInsightsStore`; employer verification flow; job view-count instrumentation (analytics views are N/A
   until then).
+
+## Phase 6 roadmap (Production readiness)
+- **M1 — Production Ready: Firebase & Backend** ✅ *complete* (see §7.17). Five vendor-neutral core services
+  (Storage / Notifications / Analytics / Crashlytics / Performance), each **interface + single Firebase impl +
+  Noop/in-memory + swap-point provider**, all best-effort & non-blocking. Storage gains progress + delete/replace +
+  metadata (media seams rebased; photo/logo progress UI + Remove); Notifications gains a provider-agnostic
+  `NotificationService` + token-registrar seam + `PushPreferences` foundation; Analytics adds a route-observer +
+  event catalog + consent lever; Crashlytics adds global error handlers + user context; Performance adds custom
+  traces. Deps added + **build-verified**. **Zero feature-to-feature deps; no new Firestore rules.** Live-verified
+  EN+AR on device (438 pass). Deferred: live Storage upload (bucket unprovisioned) + the Crashlytics/Performance
+  Gradle plugins (AGP 9).
+- **M2 — candidates (present a plan + wait for approval):** (a) provision Storage → finish live media + resume-file
+  view; (b) close the seeker→employer loop; (c) a notification-settings + analytics-consent UI wiring the P6·M1
+  seams; (d) AI Company Strength; (e) add the Crashlytics/Performance Gradle plugins once AGP-9-compatible.
 
 See §8 for candidate future work.
 
@@ -1888,8 +1915,28 @@ Role branch in `splash`/`auth_navigation`/`user_type_selection`; role-aware `set
 logout clears `userType`. `firestore.rules` (deployed): `companies/{companyId}`, `jobs/{jobId}`, `applications/{id}`,
 `applicationNotes/{id}`, `employerActivity/{id}` + `storage.rules`.
 
+**Production Firebase infrastructure (P6·M1)** — five vendor-neutral core services, each `interface + firebase_*
+impl + noop/in_memory + provider`:
+`lib/core/services/cloud_storage/` (`storage_service.dart` = `StorageService`+`StorageMetadata`+`StorageUploadProgress`,
+`firebase_storage_service.dart` = `storageServiceProvider`, `in_memory_storage_service.dart`, `storage_paths.dart`) ·
+`lib/core/services/messaging/` (`notification_service.dart` = `NotificationService`+`PushMessage`+`NotificationPermission`,
+`firebase_notification_service.dart` (+ bg handler + `notificationServiceProvider`), `noop_notification_service.dart`,
+`push_token_registrar.dart`, `push_preferences.dart` = `PushPreferences`+`PushCategory`+repo) ·
+`lib/core/services/analytics/` (`analytics_service.dart`, `firebase_analytics_service.dart` = `analyticsServiceProvider`,
+`noop_analytics_service.dart`, `analytics_events.dart` = `AnalyticsEvents`/`AnalyticsParams`, `analytics_route_observer.dart`,
+`analytics_consent.dart` = `analyticsConsentControllerProvider`) ·
+`lib/core/services/crashlytics/` (`crash_reporter.dart`, `firebase_crash_reporter.dart` = `crashReporterProvider`,
+`noop_crash_reporter.dart`) ·
+`lib/core/services/performance/` (`performance_monitor.dart` = `PerformanceMonitor`/`PerfTrace`,
+`firebase_performance_monitor.dart` = `performanceMonitorProvider`, `noop_performance_monitor.dart`).
+Media seams `user_profile/profile_image_storage.dart` + `company/company_logo_storage.dart` now delegate to
+`StorageService` (upload+progress+delete). Bootstrap in `main.dart` (error handlers + consent + user context +
+`AppRouter.create({observers})`); `app.dart` takes the built `router`.
+
 **Firebase** `lib/core/services/firebase/{firebase_service,firebase_options}.dart` ·
-`firebase.json` · `firestore.rules` · `firestore.indexes.json`.
+`firebase.json` · `firestore.rules` · `firestore.indexes.json` · `storage.rules`
+(authored; deploy once the default bucket is provisioned). Deps: `firebase_analytics`/`crashlytics`/`performance`
+(added P6·M1; **Crashlytics/Performance Gradle plugins deferred — AGP 9**).
 
 **Auth** `lib/features/auth/` (`domain/auth_repository.dart` interface,
 `data/firebase_auth_repository.dart`, `application/auth_providers.dart`,
@@ -1956,9 +2003,9 @@ to rebind for a real backend — in-memory/local today):
 | `jobsRepositoryProvider` | `JobsRepository` (`fetchJobs`/`fetchJobById`/`searchJobs`) | `SeedJobsRepository` (asset) → real jobs API |
 | `savedJobsStoreProvider` · `savedJobsProvider` | `SavedJobsStore` | in-memory → Firestore/local |
 | `applicationsRepositoryProvider` · `applicationsProvider` (Stream) · `appliedJobIdsProvider` | `ApplicationsRepository` (`watchApplications`/`apply`/`updateStatus`/`withdraw`/`findByJobId`) | `InMemoryApplicationsRepository` → Firestore `users/{uid}/applications` |
-| `cloudStorageServiceProvider` | `CloudStorageService` | Firebase Storage (`users/{uid}/…`) — ready; **bucket not provisioned yet (§7.9)** |
+| `storageServiceProvider` (P6·M1) | `StorageService` (`upload({metadata,onProgress})`/`delete`/`downloadUrl`) | `FirebaseStorageService` ↔ `InMemoryStorageService` (tests) — **default bucket not provisioned yet (§5)** |
 | `userProfileRepositoryProvider` · `userProfileProvider` (Stream) | `UserProfileRepository` (`watchProfile`/`fetchProfile`/`saveProfile`/`ensureProfile`/`setUserType`/`setPhotoUrl`) | `FirestoreUserProfileRepository` (live) ↔ in-memory (tests) |
-| `profileImageStorageProvider` | `ProfileImageStorage` | `FirebaseProfileImageStorage` → `CloudStorageService` |
+| `profileImageStorageProvider` | `ProfileImageStorage` (upload+progress+`deleteProfilePhoto`) | `FirebaseProfileImageStorage` → `StorageService` |
 | `notificationPreferencesStoreProvider` | `NotificationPreferencesStore` | local storage → remote/FCM later |
 | `cvPdfGeneratorProvider` | `CvPdfGenerator` | `PdfCvGenerator` (`pdf`/`printing`) → Syncfusion fallback |
 | `cvEnhancementRepositoryProvider` | `CvEnhancementRepository` | `AiService.generateJson` (Gemini) |
@@ -1968,7 +2015,7 @@ to rebind for a real backend — in-memory/local today):
 | `recommendationsRepositoryProvider` | `RecommendationsRepository` (`generate`) | `AiService.generateJson` (Gemini) |
 | `recommendationsStoreProvider` · `latestRecommendationsProvider` (Stream) | `RecommendationsStore` (`watchLatest`/`read`/`save`/`clear`) | in-memory (latest-only) → Firestore `users/{uid}/recommendations/latest` |
 | `companyRepositoryProvider` · `companyProvider` (Stream) | `CompanyRepository` (`watchCompany`/`fetchCompany`/`saveCompany`/`ensureCompany`/`setLogoUrl`) | `FirestoreCompanyRepository` (live, `companies/{companyId}`) ↔ in-memory (tests) |
-| `companyLogoStorageProvider` | `CompanyLogoStorage` | `FirebaseCompanyLogoStorage` → `CloudStorageService` (`companies/{id}/logo.jpg`; **bucket unprovisioned**) |
+| `companyLogoStorageProvider` | `CompanyLogoStorage` (upload+progress+`deleteCompanyLogo`) | `FirebaseCompanyLogoStorage` → `StorageService` (`companies/{id}/logo.jpg`; **bucket unprovisioned**) |
 | `employerJobsRepositoryProvider` · `employerJobsProvider` (Stream) | `EmployerJobsRepository` (`watchJobs`/`fetchJob`/`createJob`/`updateJob`) | `FirestoreEmployerJobsRepository` (live, `jobs/{jobId}`, query by `ownerUid`) ↔ in-memory (tests) |
 | `employerApplicantsRepositoryProvider` · `employerApplicantsProvider` (Stream) | `EmployerApplicantsRepository` (`watchApplicants(ownerUid)`/`fetchApplicant`/`updateApplication`) | `FirestoreEmployerApplicantsRepository` (live, `applications`, query by `ownerUid`) ↔ in-memory (tests) |
 | `employerNotesRepositoryProvider` · `notesForApplicationProvider(id)` (Stream) | `EmployerNotesRepository` (`watchNotes`/`addNote`/`updateNote`/`deleteNote`) | `FirestoreEmployerNotesRepository` (live, owner-private `applicationNotes`) ↔ in-memory (tests) |
@@ -1976,6 +2023,13 @@ to rebind for a real backend — in-memory/local today):
 | `recruiterInsightsStoreProvider` · `latestRecruiterInsightsProvider` (Stream) | `RecruiterInsightsStore` (`watchLatest`/`read`/`save`/`clear`) | in-memory (latest-only) → Firestore `companies/{companyId}/insights/latest` (P5·M4) |
 | `recruiterInsightsRepositoryProvider` | `RecruiterInsightsRepository` (`generate`) | `AiService.generateJson` (Gemini) — reuses the Recommendations pattern (P5·M4) |
 | `employerAnalyticsProvider` · `analyticsClockProvider` | `EmployerAnalytics` (computed) | pure `AnalyticsCalculator` over the employer jobs/applicants/activity streams (P5·M4) |
+| `notificationServiceProvider` (P6·M1) | `NotificationService` (permission/token/`onTokenRefresh`/`onMessage`/`onMessageOpened`) | `FirebaseNotificationService` (ready) ↔ `NoopNotificationService` |
+| `pushTokenRegistrarProvider` (P6·M1) | `PushTokenRegistrar` (`register`/`unregister`) | `NoopPushTokenRegistrar` → Firestore `users/{uid}/fcmTokens` later (no UI yet) |
+| `pushPreferencesRepositoryProvider` (P6·M1) | `PushPreferencesRepository` (`watch`/`read`/`save`) | `InMemoryPushPreferencesRepository` → Firestore `users/{uid}` later (no UI yet) |
+| `analyticsServiceProvider` (P6·M1) | `AnalyticsService` (`logScreenView`/`logEvent`/`setUserId`/`setUserProperty`/`setEnabled`) | `FirebaseAnalyticsService` (ready) ↔ `NoopAnalyticsService` |
+| `analyticsConsentControllerProvider` (P6·M1) | `bool` (persisted consent) | applied via `AnalyticsService.setEnabled` at bootstrap — feature code never branches |
+| `crashReporterProvider` (P6·M1) | `CrashReporter` (`recordError`/`recordFlutterError`/`log`/`setUserIdentifier`/`setCustomKey`/`setEnabled`) | `FirebaseCrashReporter` (ready) ↔ `NoopCrashReporter` |
+| `performanceMonitorProvider` (P6·M1) | `PerformanceMonitor` (`newTrace`/`setEnabled`) → `PerfTrace` | `FirebasePerformanceMonitor` (ready) ↔ `NoopPerformanceMonitor` |
 
 **Feature controllers / providers** (per feature `application/`): `authStateProvider` +
 `authRepositoryProvider` (auth) · `localeControllerProvider` · `themeControllerProvider` ·
