@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import 'core/localization/generated/app_localizations.dart';
 import 'core/localization/locale_controller.dart';
@@ -12,9 +13,14 @@ import 'core/theme/theme_controller.dart';
 ///
 /// Wires the router, the light/dark themes, the active theme mode, and the
 /// localization stack. Theme and locale both come from persisted Riverpod
-/// controllers, so user choices are honored from the very first frame.
+/// controllers, so user choices are honored from the very first frame. The
+/// [router] is built once in `main()` (with the analytics screen-view observer
+/// attached) so it stays stable across rebuilds.
 class CareerBridgeApp extends ConsumerWidget {
-  const CareerBridgeApp({super.key});
+  const CareerBridgeApp({super.key, this.router});
+
+  /// The app router. When null (e.g. tests), a fresh default router is built.
+  final GoRouter? router;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -28,7 +34,7 @@ class CareerBridgeApp extends ConsumerWidget {
     return MaterialApp.router(
       title: 'Career Bridge',
       debugShowCheckedModeBanner: false,
-      routerConfig: AppRouter.router,
+      routerConfig: router ?? AppRouter.create(),
 
       // --- Theming ---
       theme: AppTheme.light(themeLocale),

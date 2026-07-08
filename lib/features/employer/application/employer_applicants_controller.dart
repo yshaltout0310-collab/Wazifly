@@ -5,6 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/services/activity/employer_activity_repository.dart';
+import '../../../core/services/analytics/analytics_events.dart';
+import '../../../core/services/analytics/firebase_analytics_service.dart';
 import '../../../core/services/applications/employer_applicants_repository.dart';
 import '../../../shared/models/application.dart';
 import '../../../shared/models/employer_activity.dart';
@@ -92,6 +94,10 @@ class EmployerApplicantsController extends StateNotifier<ApplicantsActionState> 
     await _optimistic(app.id, updated, () => _repo.updateApplication(updated));
     if (state.failure == null) {
       _record(activityType, app.id, from: from.name, to: next.name);
+      _ref.read(analyticsServiceProvider).logEvent(
+        AnalyticsEvents.applicantStatusChange,
+        parameters: {AnalyticsParams.status: next.name},
+      );
     }
   }
 

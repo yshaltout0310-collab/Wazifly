@@ -1,14 +1,16 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 
-import '../messaging/messaging_service.dart';
+import '../messaging/firebase_notification_service.dart';
 import 'firebase_options.dart';
 
 /// Owns Firebase app initialization for the whole app.
 ///
 /// Initializes the Firebase app with the project's real credentials (generated
 /// by `flutterfire configure`, see [firebase_options.dart]) and prepares Cloud
-/// Messaging. [isReady] gates the Firestore profile layer.
+/// Messaging. [isReady] gates the Firestore + Storage layers. Crashlytics,
+/// Performance and Analytics collection are wired in the app bootstrap (main /
+/// app) via their providers, all best-effort.
 class FirebaseService {
   FirebaseService._();
   static final FirebaseService instance = FirebaseService._();
@@ -28,7 +30,7 @@ class FirebaseService {
           '${DefaultFirebaseOptions.currentPlatform.projectId}');
 
       // Prepare Cloud Messaging (permissions + token). Best-effort.
-      await MessagingService.instance.initialize();
+      await FirebaseNotificationService.instance.initialize();
     } catch (e) {
       debugPrint('[FirebaseService] Init failed: $e');
     }

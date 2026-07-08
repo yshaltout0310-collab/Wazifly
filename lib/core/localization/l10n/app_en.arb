@@ -914,5 +914,14 @@
   "insightsErrNetwork": "Couldn't reach the AI service. Check your connection and try again.",
   "insightsErrQuota": "The AI service is busy right now. Please try again shortly.",
   "insightsErrEmpty": "Not enough data yet to generate insights.",
-  "insightsErrGeneric": "Something went wrong generating insights. Please try again."
+  "insightsErrGeneric": "Something went wrong generating insights. Please try again.",
+
+  "uploadInProgress": "Uploading…",
+  "profileRemovePhoto": "Remove photo",
+  "profileRemovePhotoTitle": "Remove photo?",
+  "profileRemovePhotoBody": "Your profile photo will be deleted.",
+  "companyRemoveLogo": "Remove logo",
+  "companyRemoveLogoTitle": "Remove logo?",
+  "companyRemoveLogoBody": "Your company logo will be deleted.",
+  "remove": "Remove"
 }

@@ -83,6 +83,15 @@ dependencies:
   firebase_storage: ^12.0.1
   # firebase_messaging: push notifications (plumbing prepared this phase).
   firebase_messaging: ^15.0.0
+  # firebase_analytics: product telemetry (screen views + typed events) behind a
+  # vendor-neutral AnalyticsService. Only firebase_analytics_service.dart imports it.
+  firebase_analytics: ^11.3.0
+  # firebase_crashlytics: automatic crash + non-fatal error reporting behind a
+  # vendor-neutral CrashReporter. Requires the Crashlytics Gradle plugin.
+  firebase_crashlytics: ^4.1.0
+  # firebase_performance: custom traces + auto network/screen metrics behind a
+  # vendor-neutral PerformanceMonitor. Requires the firebase-perf Gradle plugin.
+  firebase_performance: ^0.10.0
 
   # ---------------------------------------------------------------------------
   # Phase 2 — AI features

@@ -2506,4 +2506,28 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get insightsErrGeneric => 'حدث خطأ أثناء إنشاء الرؤى. حاول مرة أخرى.';
+
+  @override
+  String get uploadInProgress => 'جارٍ الرفع…';
+
+  @override
+  String get profileRemovePhoto => 'إزالة الصورة';
+
+  @override
+  String get profileRemovePhotoTitle => 'إزالة الصورة؟';
+
+  @override
+  String get profileRemovePhotoBody => 'سيتم حذف صورة ملفك الشخصي.';
+
+  @override
+  String get companyRemoveLogo => 'إزالة الشعار';
+
+  @override
+  String get companyRemoveLogoTitle => 'إزالة الشعار؟';
+
+  @override
+  String get companyRemoveLogoBody => 'سيتم حذف شعار شركتك.';
+
+  @override
+  String get remove => 'إزالة';
 }

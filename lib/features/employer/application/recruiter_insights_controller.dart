@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/localization/locale_controller.dart';
 import '../../../core/services/ai/ai_exception.dart';
+import '../../../core/services/analytics/analytics_events.dart';
+import '../../../core/services/analytics/firebase_analytics_service.dart';
 import '../../../core/services/recruiter_insights_store/in_memory_recruiter_insights_store.dart';
 import '../data/recruiter_insights_repository_impl.dart';
 import '../domain/analytics/employer_analytics.dart';
@@ -145,6 +147,9 @@ class RecruiterInsightsController extends StateNotifier<RecruiterInsightsState> 
         sourceSignature: signature,
       );
       await _ref.read(recruiterInsightsStoreProvider).save(stamped);
+      _ref
+          .read(analyticsServiceProvider)
+          .logEvent(AnalyticsEvents.recruiterInsightsGenerate);
       if (!mounted) return;
       state = RecruiterInsightsState(
         phase: RecruiterInsightsPhase.ready,

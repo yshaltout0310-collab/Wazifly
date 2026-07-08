@@ -16,4 +16,7 @@ abstract final class StorageKeys {
   static const String notifyJobAlerts = 'pref_notify_job_alerts';
   static const String notifyApplicationUpdates = 'pref_notify_application_updates';
   static const String notifyCoachTips = 'pref_notify_coach_tips';
+
+  /// Analytics collection consent (opt-out foundation; defaults enabled).
+  static const String analyticsConsent = 'pref_analytics_consent';
 }

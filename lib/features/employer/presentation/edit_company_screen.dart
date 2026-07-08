@@ -299,7 +299,10 @@ class _LogoEditor extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final working = ref.watch(companyLogoControllerProvider).isWorking;
+    final theme = Theme.of(context);
+    final state = ref.watch(companyLogoControllerProvider);
+    final working = state.isWorking;
+    final hasLogo = logoUrl != null && logoUrl!.isNotEmpty;
 
     return Column(
       children: [
@@ -314,21 +317,23 @@ class _LogoEditor extends ConsumerWidget {
                 gradient: AppColors.ctaGradient,
                 borderRadius: BorderRadius.circular(AppRadius.lg),
                 boxShadow: AppShadows.brandGlow,
-                image: logoUrl != null
+                image: hasLogo
                     ? DecorationImage(
                         image: NetworkImage(logoUrl!), fit: BoxFit.cover)
                     : null,
               ),
               child: working
-                  ? const CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(AppColors.white))
-                  : (logoUrl == null
-                      ? const Icon(Icons.business_rounded,
-                          color: AppColors.white, size: 48)
-                      : null),
+                  ? CircularProgressIndicator(
+                      value: state.progress > 0 ? state.progress : null,
+                      valueColor:
+                          const AlwaysStoppedAnimation<Color>(AppColors.white))
+                  : (hasLogo
+                      ? null
+                      : const Icon(Icons.business_rounded,
+                          color: AppColors.white, size: 48)),
             ),
             Material(
-              color: Theme.of(context).colorScheme.primary,
+              color: theme.colorScheme.primary,
               shape: const CircleBorder(),
               child: InkWell(
                 customBorder: const CircleBorder(),
@@ -356,7 +361,37 @@ class _LogoEditor extends ConsumerWidget {
           icon: const Icon(Icons.image_outlined, size: 18),
           label: Text(l10n.companyChangeLogo),
         ),
+        if (hasLogo)
+          TextButton.icon(
+            onPressed: working ? null : () => _confirmRemove(context, ref, l10n),
+            icon: Icon(Icons.delete_outline_rounded,
+                size: 18, color: theme.colorScheme.error),
+            label: Text(l10n.companyRemoveLogo,
+                style: TextStyle(color: theme.colorScheme.error)),
+          ),
       ],
     );
+  }
+
+  Future<void> _confirmRemove(
+      BuildContext context, WidgetRef ref, AppLocalizations l10n) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.companyRemoveLogoTitle),
+        content: Text(l10n.companyRemoveLogoBody),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: Text(l10n.cancel)),
+          TextButton(
+              onPressed: () => Navigator.of(ctx).pop(true),
+              child: Text(l10n.remove)),
+        ],
+      ),
+    );
+    if (confirmed == true) {
+      await ref.read(companyLogoControllerProvider.notifier).removeLogo();
+    }
   }
 }

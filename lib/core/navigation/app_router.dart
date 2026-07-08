@@ -53,9 +53,14 @@ import 'route_names.dart';
 abstract final class AppRouter {
   AppRouter._();
 
-  static final GoRouter router = GoRouter(
+  /// Builds the app router. [observers] lets the bootstrap attach a
+  /// vendor-neutral `AnalyticsRouteObserver` for screen-view tracking without the
+  /// router knowing about analytics.
+  static GoRouter create({List<NavigatorObserver> observers = const []}) =>
+      GoRouter(
     initialLocation: RouteNames.splashPath,
     debugLogDiagnostics: true,
+    observers: observers,
     routes: [
       GoRoute(
         path: RouteNames.splashPath,
@@ -81,7 +86,7 @@ abstract final class AppRouter {
               'true';
           return _fadePage(
             OnboardingScreen(replay: replay),
-            state.pageKey,
+            state,
           );
         },
       ),
@@ -105,7 +110,7 @@ abstract final class AppRouter {
         name: RouteNames.otp,
         pageBuilder: (context, state) {
           final args = state.extra as OtpArgs;
-          return _fadePage(OtpVerificationScreen(args: args), state.pageKey);
+          return _fadePage(OtpVerificationScreen(args: args), state);
         },
       ),
       GoRoute(
@@ -135,7 +140,7 @@ abstract final class AppRouter {
         // job's "Ask the coach about this job").
         pageBuilder: (context, state) => _fadePage(
           CareerCoachScreen(seedPrompt: state.extra as String?),
-          state.pageKey,
+          state,
         ),
       ),
       GoRoute(
@@ -148,7 +153,7 @@ abstract final class AppRouter {
         name: RouteNames.jobDetail,
         pageBuilder: (context, state) => _fadePage(
           JobDetailScreen(jobId: state.pathParameters['id'] ?? ''),
-          state.pageKey,
+          state,
         ),
       ),
       GoRoute(
@@ -169,7 +174,7 @@ abstract final class AppRouter {
         // Optional `Job` extra tailors the interview to a specific job.
         pageBuilder: (context, state) => _fadePage(
           InterviewPrepScreen(job: state.extra is Job ? state.extra as Job : null),
-          state.pageKey,
+          state,
         ),
         routes: [
           GoRoute(
@@ -183,7 +188,7 @@ abstract final class AppRouter {
                 pageBuilder: (context, state) => _fadePage(
                   InterviewSessionDetailScreen(
                       sessionId: state.pathParameters['id'] ?? ''),
-                  state.pageKey,
+                  state,
                 ),
               ),
             ],
@@ -206,7 +211,7 @@ abstract final class AppRouter {
         pageBuilder: (context, state) => _fadePage(
           ApplicationDetailScreen(
               applicationId: state.pathParameters['id'] ?? ''),
-          state.pageKey,
+          state,
         ),
       ),
       GoRoute(
@@ -243,7 +248,7 @@ abstract final class AppRouter {
                 name: RouteNames.jobPreview,
                 pageBuilder: (context, state) => _fadePage(
                   JobPreviewScreen(posting: state.extra as JobPosting),
-                  state.pageKey,
+                  state,
                 ),
               ),
               GoRoute(
@@ -252,7 +257,7 @@ abstract final class AppRouter {
                 pageBuilder: (context, state) => _fadePage(
                   EmployerJobDetailScreen(
                       jobId: state.pathParameters['id'] ?? ''),
-                  state.pageKey,
+                  state,
                 ),
                 routes: [
                   GoRoute(
@@ -260,7 +265,7 @@ abstract final class AppRouter {
                     name: RouteNames.editJob,
                     pageBuilder: (context, state) => _fadePage(
                       JobEditorScreen(jobId: state.pathParameters['id']),
-                      state.pageKey,
+                      state,
                     ),
                   ),
                   GoRoute(
@@ -269,7 +274,7 @@ abstract final class AppRouter {
                     pageBuilder: (context, state) => _fadePage(
                       EmployerApplicantsScreen(
                           jobId: state.pathParameters['id']),
-                      state.pageKey,
+                      state,
                     ),
                   ),
                 ],
@@ -287,7 +292,7 @@ abstract final class AppRouter {
                 pageBuilder: (context, state) => _fadePage(
                   EmployerApplicantDetailScreen(
                       appId: state.pathParameters['appId'] ?? ''),
-                  state.pageKey,
+                  state,
                 ),
               ),
             ],
@@ -339,11 +344,15 @@ abstract final class AppRouter {
   );
 
   static Page<void> Function(BuildContext, GoRouterState) _fade(Widget child) =>
-      (context, state) => _fadePage(child, state.pageKey);
+      (context, state) => _fadePage(child, state);
 
-  static Page<void> _fadePage(Widget child, LocalKey key) =>
+  static Page<void> _fadePage(Widget child, GoRouterState state) =>
       CustomTransitionPage<void>(
-        key: key,
+        key: state.pageKey,
+        // Propagate the route name to the page so the AnalyticsRouteObserver can
+        // report a meaningful screen_view (CustomTransitionPage doesn't set this
+        // automatically).
+        name: state.name,
         child: child,
         transitionDuration: const Duration(milliseconds: 420),
         reverseTransitionDuration: const Duration(milliseconds: 320),

@@ -2,6 +2,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/services/analytics/analytics_events.dart';
+import '../../../core/services/analytics/firebase_analytics_service.dart';
 import '../../../core/services/jobs/employer_jobs_repository.dart';
 import '../../../shared/models/job_posting.dart';
 import '../../auth/application/auth_providers.dart';
@@ -78,12 +80,25 @@ class EmployerJobsController extends StateNotifier<EmployerJobsActionState> {
   Future<void> archive(JobPosting job, {String? reason}) =>
       _transition(job, JobStatus.archived, reason: reason);
 
-  Future<void> _transition(JobPosting job, JobStatus next, {String? reason}) {
-    if (!job.status.canTransitionTo(next)) return Future.value();
+  Future<void> _transition(JobPosting job, JobStatus next, {String? reason}) async {
+    if (!job.status.canTransitionTo(next)) return;
     final updated =
         job.withStatus(next, at: _clock(), by: _uid, reason: reason);
-    return _optimistic(job.id,
+    await _optimistic(job.id,
         override: updated, call: () => _repo.updateJob(updated));
+    if (state.failure == null) {
+      final event = switch (next) {
+        JobStatus.published => AnalyticsEvents.jobPublish,
+        JobStatus.archived => AnalyticsEvents.jobArchive,
+        _ => null,
+      };
+      if (event != null) {
+        _ref.read(analyticsServiceProvider).logEvent(
+          event,
+          parameters: {AnalyticsParams.jobId: job.id},
+        );
+      }
+    }
   }
 
   /// Soft-deletes: retains the document (applications/analytics/audit intact),

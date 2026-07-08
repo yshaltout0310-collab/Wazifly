@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/localization/generated/app_localizations.dart';
 import '../../../core/navigation/route_names.dart';
+import '../../../core/services/analytics/analytics_events.dart';
+import '../../../core/services/analytics/firebase_analytics_service.dart';
 import '../../../core/services/applications/in_memory_applications_repository.dart';
 import '../../../core/services/jobs/saved_jobs_store.dart';
 import '../../../core/theme/app_colors.dart';
@@ -285,6 +287,10 @@ class _ActionBar extends ConsumerWidget {
                         final app = await ref
                             .read(applicationsRepositoryProvider)
                             .apply(job: job);
+                        ref.read(analyticsServiceProvider).logEvent(
+                          AnalyticsEvents.jobApply,
+                          parameters: {AnalyticsParams.jobId: job.id},
+                        );
                         if (!context.mounted) return;
                         ScaffoldMessenger.of(context)
                           ..hideCurrentSnackBar()

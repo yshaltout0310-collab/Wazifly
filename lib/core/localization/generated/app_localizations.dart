@@ -4687,6 +4687,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Something went wrong generating insights. Please try again.'**
   String get insightsErrGeneric;
+
+  /// No description provided for @uploadInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading…'**
+  String get uploadInProgress;
+
+  /// No description provided for @profileRemovePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove photo'**
+  String get profileRemovePhoto;
+
+  /// No description provided for @profileRemovePhotoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove photo?'**
+  String get profileRemovePhotoTitle;
+
+  /// No description provided for @profileRemovePhotoBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your profile photo will be deleted.'**
+  String get profileRemovePhotoBody;
+
+  /// No description provided for @companyRemoveLogo.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove logo'**
+  String get companyRemoveLogo;
+
+  /// No description provided for @companyRemoveLogoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove logo?'**
+  String get companyRemoveLogoTitle;
+
+  /// No description provided for @companyRemoveLogoBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your company logo will be deleted.'**
+  String get companyRemoveLogoBody;
+
+  /// No description provided for @remove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get remove;
 }
 
 class _AppLocalizationsDelegate

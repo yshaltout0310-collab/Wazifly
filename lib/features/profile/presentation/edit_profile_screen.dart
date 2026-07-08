@@ -238,7 +238,10 @@ class _PhotoEditor extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final working = ref.watch(profilePhotoControllerProvider).isWorking;
+    final theme = Theme.of(context);
+    final state = ref.watch(profilePhotoControllerProvider);
+    final working = state.isWorking;
+    final hasPhoto = photoUrl != null && photoUrl!.isNotEmpty;
 
     return Column(
       children: [
@@ -253,23 +256,24 @@ class _PhotoEditor extends ConsumerWidget {
                 gradient: AppColors.ctaGradient,
                 shape: BoxShape.circle,
                 boxShadow: AppShadows.brandGlow,
-                image: photoUrl != null
+                image: hasPhoto
                     ? DecorationImage(
                         image: NetworkImage(photoUrl!), fit: BoxFit.cover)
                     : null,
               ),
               child: working
-                  ? const CircularProgressIndicator(
+                  ? CircularProgressIndicator(
+                      value: state.progress > 0 ? state.progress : null,
                       valueColor:
-                          AlwaysStoppedAnimation<Color>(AppColors.white),
+                          const AlwaysStoppedAnimation<Color>(AppColors.white),
                     )
-                  : (photoUrl == null
-                      ? const Icon(Icons.person_rounded,
-                          color: AppColors.white, size: 48)
-                      : null),
+                  : (hasPhoto
+                      ? null
+                      : const Icon(Icons.person_rounded,
+                          color: AppColors.white, size: 48)),
             ),
             Material(
-              color: Theme.of(context).colorScheme.primary,
+              color: theme.colorScheme.primary,
               shape: const CircleBorder(),
               child: InkWell(
                 customBorder: const CircleBorder(),
@@ -297,8 +301,38 @@ class _PhotoEditor extends ConsumerWidget {
           icon: const Icon(Icons.image_outlined, size: 18),
           label: Text(l10n.profileChangePhoto),
         ),
+        if (hasPhoto)
+          TextButton.icon(
+            onPressed: working ? null : () => _confirmRemove(context, ref, l10n),
+            icon: Icon(Icons.delete_outline_rounded,
+                size: 18, color: theme.colorScheme.error),
+            label: Text(l10n.profileRemovePhoto,
+                style: TextStyle(color: theme.colorScheme.error)),
+          ),
       ],
     );
+  }
+
+  Future<void> _confirmRemove(
+      BuildContext context, WidgetRef ref, AppLocalizations l10n) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.profileRemovePhotoTitle),
+        content: Text(l10n.profileRemovePhotoBody),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: Text(l10n.cancel)),
+          TextButton(
+              onPressed: () => Navigator.of(ctx).pop(true),
+              child: Text(l10n.remove)),
+        ],
+      ),
+    );
+    if (confirmed == true) {
+      await ref.read(profilePhotoControllerProvider.notifier).removePhoto();
+    }
   }
 }
 

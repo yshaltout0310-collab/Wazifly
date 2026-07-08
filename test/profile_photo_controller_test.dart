@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:careerbridge/core/services/cloud_storage/storage_service.dart';
 import 'package:careerbridge/core/services/user_profile/in_memory_user_profile_repository.dart';
 import 'package:careerbridge/core/services/user_profile/profile_image_storage.dart';
 import 'package:careerbridge/core/services/user_profile/user_profile_repository.dart';
@@ -18,15 +19,26 @@ class FakeProfileImageStorage implements ProfileImageStorage {
   FakeProfileImageStorage(this.url);
   final String? url;
   Uint8List? lastBytes;
+  bool deleted = false;
+  final List<double> progress = [];
 
   @override
   Future<String?> uploadProfilePhoto({
     required String uid,
     required Uint8List bytes,
     String contentType = 'image/jpeg',
+    void Function(StorageUploadProgress progress)? onProgress,
   }) async {
     lastBytes = bytes;
+    onProgress?.call(const StorageUploadProgress(bytesTransferred: 1, totalBytes: 2));
+    onProgress?.call(const StorageUploadProgress(bytesTransferred: 2, totalBytes: 2));
+    progress.addAll([0.5, 1.0]);
     return url;
+  }
+
+  @override
+  Future<void> deleteProfilePhoto(String uid) async {
+    deleted = true;
   }
 }
 
@@ -84,5 +96,40 @@ void main() {
     final state = c.read(profilePhotoControllerProvider);
     expect(state.status, PhotoStatus.error);
     expect(state.failure, ProfileFailure.notSignedIn);
+  });
+
+  test('upload reports progress via the storage seam', () async {
+    final storage = FakeProfileImageStorage('https://img/p.jpg');
+    final c = ProviderContainer(overrides: [
+      authRepositoryProvider.overrideWithValue(FakeAuthRepository(user: _user)),
+      profileImageStorageProvider.overrideWithValue(storage),
+      userProfileRepositoryProvider
+          .overrideWithValue(InMemoryUserProfileRepository()),
+    ]);
+    addTearDown(c.dispose);
+
+    await c.read(profilePhotoControllerProvider.notifier).uploadBytes(bytes);
+    expect(storage.progress, [0.5, 1.0]);
+    expect(c.read(profilePhotoControllerProvider).status, PhotoStatus.idle);
+  });
+
+  test('removePhoto deletes from storage and clears the URL', () async {
+    final storage = FakeProfileImageStorage('https://img/p.jpg');
+    final repo = InMemoryUserProfileRepository();
+    final c = ProviderContainer(overrides: [
+      authRepositoryProvider.overrideWithValue(FakeAuthRepository(user: _user)),
+      profileImageStorageProvider.overrideWithValue(storage),
+      userProfileRepositoryProvider.overrideWithValue(repo),
+    ]);
+    addTearDown(c.dispose);
+
+    await c.read(profilePhotoControllerProvider.notifier).uploadBytes(bytes);
+    await c.read(profilePhotoControllerProvider.notifier).removePhoto();
+
+    expect(storage.deleted, isTrue);
+    expect((await repo.fetchProfile('u1'))?.photoUrl ?? '', '');
+    final fake = c.read(authRepositoryProvider) as FakeAuthRepository;
+    expect(fake.lastProfileUpdate?.photoUrl, '');
+    expect(c.read(profilePhotoControllerProvider).status, PhotoStatus.idle);
   });
 }

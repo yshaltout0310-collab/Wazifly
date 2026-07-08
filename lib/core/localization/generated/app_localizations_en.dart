@@ -2519,4 +2519,28 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get insightsErrGeneric =>
       'Something went wrong generating insights. Please try again.';
+
+  @override
+  String get uploadInProgress => 'Uploading…';
+
+  @override
+  String get profileRemovePhoto => 'Remove photo';
+
+  @override
+  String get profileRemovePhotoTitle => 'Remove photo?';
+
+  @override
+  String get profileRemovePhotoBody => 'Your profile photo will be deleted.';
+
+  @override
+  String get companyRemoveLogo => 'Remove logo';
+
+  @override
+  String get companyRemoveLogoTitle => 'Remove logo?';
+
+  @override
+  String get companyRemoveLogoBody => 'Your company logo will be deleted.';
+
+  @override
+  String get remove => 'Remove';
 }

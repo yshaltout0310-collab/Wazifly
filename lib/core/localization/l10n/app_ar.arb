@@ -861,5 +861,14 @@
   "insightsErrNetwork": "تعذّر الوصول إلى خدمة الذكاء الاصطناعي. تحقّق من اتصالك وحاول مجددًا.",
   "insightsErrQuota": "خدمة الذكاء الاصطناعي مشغولة حاليًا. حاول مرة أخرى بعد قليل.",
   "insightsErrEmpty": "لا توجد بيانات كافية بعد لإنشاء رؤى.",
-  "insightsErrGeneric": "حدث خطأ أثناء إنشاء الرؤى. حاول مرة أخرى."
+  "insightsErrGeneric": "حدث خطأ أثناء إنشاء الرؤى. حاول مرة أخرى.",
+
+  "uploadInProgress": "جارٍ الرفع…",
+  "profileRemovePhoto": "إزالة الصورة",
+  "profileRemovePhotoTitle": "إزالة الصورة؟",
+  "profileRemovePhotoBody": "سيتم حذف صورة ملفك الشخصي.",
+  "companyRemoveLogo": "إزالة الشعار",
+  "companyRemoveLogoTitle": "إزالة الشعار؟",
+  "companyRemoveLogoBody": "سيتم حذف شعار شركتك.",
+  "remove": "إزالة"
 }
