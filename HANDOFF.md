@@ -1,7 +1,8 @@
 # Career Bridge — Session Handoff
 
 > Living handoff doc so a fresh Claude session can continue immediately.
-> Last updated: **Phase 6 · Milestone 2 (Security & Performance) — COMPLETE** (see §7.18) — live-verified EN + AR on `employer01@cb.app` (App Check active on device w/ graceful fallback, hardened rules deployed, no regressions).
+> Last updated: **Phase 6 · Milestone 3 (Release Preparation) — COMPLETE** (see §7.19) — live-verified EN + AR on the **release build** (bundled fonts, offline banner, R8/minify on). Release runbook + QA checklist in `docs/`.
+> **Phase 6 · Milestone 2 (Security & Performance) — COMPLETE** (see §7.18) — live-verified EN + AR on `employer01@cb.app` (App Check active on device w/ graceful fallback, hardened rules deployed, no regressions).
 > **Phase 6 · Milestone 1 (Production Ready — Firebase & Backend) — COMPLETE** (see §7.17) — live-verified EN + AR on `employer01@cb.app` (real Firebase Analytics/Crashlytics/FCM on device).
 > **Phase 2 COMPLETE** (M1 Resume Analyzer + M2 Job Matching + M3 Career Coach).
 > **Phase 3 · M1 (Jobs Platform) COMPLETE** (`6a6a72c`, §7.7).
@@ -318,6 +319,9 @@ with real Gemini. Models are shaped so a future **Interview Report PDF** is a pu
   Firebase CLI credentials (project owner `yshaltout0310@gmail.com`). **Live Gemini
   calls succeed.** If it ever regresses to "AI logic config is missing," re-run the
   Console AI Logic "Get started" flow (or re-PATCH `.../locations/global/config`).
+
+> **See `docs/RELEASE.md` for the full, reproducible release runbook** (build/sign/publish + every manual step below,
+> plus the `docs/QA_CHECKLIST.md`). The checklist here is the authoritative source that RELEASE.md §7 mirrors.
 
 **Manual production console steps (deployment checklist — nothing here can be done
 headlessly from this environment; `gcloud`/`gsutil` absent).** These are the ONLY
@@ -1652,6 +1656,88 @@ Firebase impls.
 
 ---
 
+## 7.19 Phase 6 · Milestone 3 — Release Preparation ✅ COMPLETE
+
+> Production release readiness — **branding, release build/signing, assets, offline behavior, QA + release docs**.
+> Deliberately **behavior-preserving** (config + assets + docs + a small dependency-free offline layer); reuses the
+> established seam patterns and adds **no native plugin**. `flutter analyze` clean; **460 tests pass** (+11); the
+> **release APK builds with R8/minify ON** (71.4 MB). **Five approved additions baked in:** BuildInfo foundation,
+> asset verification, release-checklist-automation foundation, accessibility verification, fully-reproducible
+> RELEASE.md. Two new docs live under `docs/`.
+
+**A · Branding (already built — verified in sync).** Launcher/adaptive icons + native splash were already generated
+from the 1024² `assets/icon/*` sources; **regenerating produced zero diff** → confirmed consistent. Brand colors
+align end-to-end: icon bg emerald `#0E9F6E`, splash `#0B7D57` / dark `#101413` (= `AppColors`), app label
+"Career Bridge". No art created; the audit codifies consistency (RELEASE.md §4).
+
+**B · Release build & signing** (`android/app/build.gradle.kts`): release signing now reads an **optional
+`android/key.properties`** (gitignored) → a real `release` `signingConfig`, with a **graceful fallback to debug
+signing** when absent (dev/CI/validation builds still run — the app's "degrade when unconfigured" convention). Added
+**`android/app/proguard-rules.pro`** (Flutter/Firebase/Play-Core/Kotlin keeps) and enabled **`isMinifyEnabled` +
+`isShrinkResources`** on release. `android/key.properties.example` is a committed template. **Release APK + AAB build
+green under R8** (top risk cleared — no fallback needed; only the pre-existing benign `firebase_analytics` KGP
+*warning*). Signing preparation is **documented, not performed** (no real keystore minted/committed) — RELEASE.md has
+the exact `keytool` + `key.properties` steps.
+
+**C · Offline readiness** (dependency-free, `AiService`-pattern seams):
+- **Bundled fonts** — Inter + Cairo (the exact families `AppTypography` used) are now committed at
+  `assets/fonts/{Inter,Cairo}.ttf` (variable, OFL) and declared in `pubspec.yaml` `fonts:`. **`AppTypography` switched
+  off `google_fonts` to native `fontFamily`** so the UI never needs the network for fonts; `main()` also sets
+  `GoogleFonts.config.allowRuntimeFetching = false` as a guard. *(Genuine-blocker adaptation: only variable fonts are
+  available upstream, which `google_fonts`' bundling can't match; flipping the flag alone would have regressed online
+  users to the platform font — so the native-family switch was the safe path. Live-verified fonts render EN + AR.)*
+- **`ConnectivityService`** core seam (`lib/core/services/connectivity/`): interface + `IoConnectivityService`
+  (`dart:io` DNS-lookup poll, injectable probe, **not** `connectivity_plus`/KGP) + `NoopConnectivityService` +
+  `connectivityServiceProvider` + `connectivityStatusProvider` (StreamProvider). Advisory only — never gates a feature.
+- **`OfflineBanner`** shared widget wired once in `app.dart`'s `MaterialApp.builder`; slim, localized, RTL-safe,
+  auto-hides. Firestore offline persistence (P6·M2) already covers data.
+
+**D · BuildInfo foundation (addition #1)** (`lib/core/services/build_info/`): `BuildInfo{appName,version,buildNumber,
+buildType}` (+ `fullVersion`/`displayLabel`) via `buildInfoProvider`. Version/build via `--dart-define`
+(`APP_VERSION`/`BUILD_NUMBER`, defaults mirror pubspec) + `kReleaseMode`/`kProfileMode` — **no plugin**. Reusable by a
+future About screen / bug reports; wired **now** into telemetry — every crash report is stamped with `app_version` +
+`build_type`. No UI.
+
+**Additions #2/#3/#5 (docs).** `docs/RELEASE.md` = a **fully-reproducible** runbook (prereqs, Firebase config, keystore
+`keytool` + `key.properties`, branding regen, versioning + dart-defines, build commands AAB/APK/split, **all manual
+console steps** — App Check enable/enforce + debug-token allow-list + Play Integrity, Storage bucket provisioning +
+`firebase deploy --only storage`, Firestore rules, Crashlytics/Perf plugins — Play upload, fonts/OFL, **reserved-asset
+verification**, an **ordered validation table structured for future CI automation**, rollback). `docs/QA_CHECKLIST.md`
+= EN+AR × light/dark matrix incl. an **accessibility** section.
+
+### VERIFIED live on emulator (`-gpu host`, Skia) — **release build** (obfuscated + minified), EN + AR
+Installed `app-release.apk` (R8/minify on; debug-signing fallback). Launch `Status: ok`.
+- **Branding/label:** OS shows "Career Bridge"; emerald splash window; clean Material-3 screens.
+- **Fonts (EN):** Language screen renders **Inter** ("Choose Your Language") + Arabic "العربية" in **Cairo** — bundled,
+  no network.
+- **AR (RTL):** Country screen fully mirrored (title `اختر دولتك`, RTL search, back arrow top-right, dial codes
+  LTR-forced) in Cairo.
+- **Offline:** airplane mode → after the poll, the **offline banner** appears (AR: `أنت غير متصل بالإنترنت — يتم عرض
+  البيانات المحفوظة`, wifi-off icon, white on `#101413`); content stays usable; restoring network **auto-hides** it.
+- **Accessibility:** font scale **1.5×** → titles/labels/rows enlarge, subtitle wraps, **no clipping/overlap**
+  (graceful). Code scan: **24 `tooltip:` on 20 IconButtons** (icon buttons labelled for TalkBack); standard Material
+  semantics; DecorationImage avatars/logos are non-focusable (decorative).
+
+### ♿ Accessibility — remaining limitations (documented, not blocking)
+- **Screen reader:** icon buttons carry tooltips (→ semantic labels); a **full TalkBack pass** across every flow
+  wasn't automated here — recommended before store launch. Decorative flags/avatars have no explicit `semanticLabel`
+  (they're background/decorative, so non-focusable — acceptable).
+- **Contrast:** offline banner (white/`#101413`) and body text pass comfortably; **white-on-emerald primary buttons**
+  are borderline for AA *normal* text (~2.5:1) though bold/large — an existing brand-design choice, flagged for review
+  (not changed here — out of scope + no-regression mandate).
+- **Text scaling** verified to 1.5× on representative screens; extreme scales (2×+) on the densest dashboards weren't
+  exhaustively swept.
+
+### Notes for the next session
+- **App Check is still monitoring-only** and **Storage bucket still unprovisioned** — both are in the RELEASE.md
+  manual-steps checklist (§7 there). Nothing in code blocks on them.
+- **Real signing:** create the upload keystore + `android/key.properties` per RELEASE.md §3 before the first Play
+  upload; enroll in **Play App Signing**.
+- **BuildInfo** is a foundation with no UI — an About screen can consume `buildInfoProvider` directly.
+- If R8 ever breaks under a future AGP bump, RELEASE.md §6 documents the safe `isMinifyEnabled = false` fallback.
+
+---
+
 ## 8. Next steps
 
 **Phase 2 COMPLETE.** **Phase 3 · M1 (Jobs Platform) `6a6a72c`, M2 (Applications Center)
@@ -1901,7 +1987,7 @@ built-in Kotlin and breaks `assembleDebug` (`FilePickerPlugin` symbol not found)
 **`file_selector`** (already done). If you re-add a plugin and the build fails on
 `GeneratedPluginRegistrant`, suspect a KGP conflict.
 
-**No functional app bugs open.** `flutter analyze` clean; **449 tests pass** (as of P6·M2).
+**No functional app bugs open.** `flutter analyze` clean; **460 tests pass** (as of P6·M3).
 One known cosmetic limitation: pure-Latin runs can render reversed in the Arabic CV PDF
 (pdf-package bidi; §7.10) — Arabic content is correct. See §7.15/§7.16 "Notes" for the M3/M4 scope
 limitations, §7.17 "Notes" for P6·M1, and §7.18 + §5 for P6·M2 (Storage default bucket unprovisioned →
