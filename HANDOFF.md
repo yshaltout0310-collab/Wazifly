@@ -1,7 +1,8 @@
 # Career Bridge — Session Handoff
 
 > Living handoff doc so a fresh Claude session can continue immediately.
-> Last updated: **Phase 6 · Milestone 1 (Production Ready — Firebase & Backend) — COMPLETE** (see §7.17) — live-verified EN + AR on `employer01@cb.app` (real Firebase Analytics/Crashlytics/FCM on device).
+> Last updated: **Phase 6 · Milestone 2 (Security & Performance) — COMPLETE** (see §7.18) — live-verified EN + AR on `employer01@cb.app` (App Check active on device w/ graceful fallback, hardened rules deployed, no regressions).
+> **Phase 6 · Milestone 1 (Production Ready — Firebase & Backend) — COMPLETE** (see §7.17) — live-verified EN + AR on `employer01@cb.app` (real Firebase Analytics/Crashlytics/FCM on device).
 > **Phase 2 COMPLETE** (M1 Resume Analyzer + M2 Job Matching + M3 Career Coach).
 > **Phase 3 · M1 (Jobs Platform) COMPLETE** (`6a6a72c`, §7.7).
 > **Phase 3 · M2 (Applications Center) COMPLETE** (`b7e4b53`, §7.8).
@@ -13,6 +14,7 @@
 > **Phase 5 · M2 (Employer Job Management) COMPLETE** (§7.14) — live-verified EN + AR on `employer01@cb.app`. **Full employer job lifecycle: My Jobs (search/filter/sort) → create/edit with debounced auto-save + two-tier validation → preview (shared `JobDetailView`, exactly as a seeker sees it) → publish-with-confirmation → archive-with-reason/close/reopen/duplicate/soft-delete, all optimistic with rollback.** A `JobPosting` management superset `toJob()`-projects to the seeker `Job`; a separate write-path `EmployerJobsRepository` (`jobs/{jobId}`) leaves the read-only seeker `JobsRepository` untouched. `flutter analyze` clean; **329 tests pass**; `jobs/{jobId}` rules deployed.
 > **Phase 5 · M3 (Employer Applicants Management) COMPLETE** (§7.15) — live-verified EN + AR on `employer01@cb.app` (real Firestore, seeded applicants). **Grouped-by-job applicants inbox (stats/search/status-filter/sort) → rich applicant detail (AI match, resume analysis, resume-file graceful, skills, links, interview readiness, timeline, private notes) → status pipeline (Move to Review/Interview/Accept/Reject, appends history) + note CRUD, all optimistic with rollback.** The **shared `Application`** was extended (dual-keyed applicantUid/ownerUid + denormalized versioned `ApplicantSnapshot` + `source`) so the employer reads the exact doc the seeker's Applications Center does — no cross-user private reads. Separate `EmployerApplicantsRepository` + owner-private `EmployerNotesRepository` (`applicationNotes`) + `EmployerActivityRepository` (`employerActivity`, audit foundation). `flutter analyze` clean; **375 tests pass** (+46); `applications`/`applicationNotes`/`employerActivity` rules deployed.
 > **Phase 5 · M4 (Employer Analytics) COMPLETE** (§7.16) — live-verified EN + AR on `employer01@cb.app` (real Firestore, seeded applicants + real Gemini). **Read-only hiring dashboard: KPI overview → application status funnel → top jobs → time-to-hire → applicant-quality distribution → applications trend, plus an on-demand AI Recruiter Insights card (strengths/bottlenecks/suggested actions, grounded in the metrics).** All computed live by a **pure `AnalyticsCalculator`** over the employer's existing jobs/applicants/activity streams (no new data sources, no new Firestore collections/rules). The AI layer **reuses the Recommendations pattern exactly** (primitive context + signature → `AiService.generateJson` → defensive parse → latest-only `RecruiterInsightsStore` seam + refresh guard). Charts are plain-Flutter/`FractionallySizedBox` (no new deps). **Zero product-feature-to-feature deps.** `flutter analyze` clean; **412 tests pass** (+37); **no Firestore rules change**. AI Company Strength deferred to a future milestone.
+> **Phase 6 · M2 (Security & Performance) COMPLETE** (§7.18) — live-verified EN + AR on `employer01@cb.app`. **Three pillars, all following the established patterns:** **(A) Security** — a sixth vendor-neutral core service **Firebase App Check** (`AppCheckService` interface + `FirebaseAppCheckService` [only file importing `firebase_app_check`] + Noop + provider), activated **non-blocking after `runApp`** (mandate: never delays the first frame; on failure records + continues — proven live: App Check API disabled → placeholder token → app fully usable), plus a **`SecurityAuditLog`** foundation (routes auth-failure/permission-denied/rule-violation/app-check-failure to Analytics `security_event` + Crashlytics; wired at the two owner-scoped employer streams' permission-denied path), plus **hardened `firestore.rules`** (validation helpers: identity-field immutability `ownerUid`/`applicantUid`/`companyId`, size caps — the owner-update path can no longer repoint an applicant's identity — **deployed**) and **hardened `storage.rules`** (content-type + size caps, authored). **(B) Performance** — explicit Firestore `Settings` (persistence + 40 MB bounded cache), `.limit(300)` runaway guards on the employer streams. **(C) Image optimization** — dependency-free `AppImage.provider` decode-downsizing seam (built-in `ResizeImage`, no `cached_network_image`/KGP risk) routed through **all 7** avatar/logo sites + error-resilient `ApplicantAvatar`; upload-side `ImageOptimizer` (pure `dart:ui` downscale, never-enlarge) folded into the media seams. **Zero product-feature-to-feature deps.** `firebase_app_check` added + **build-verified** (no new KGP warning). `flutter analyze` clean; **449 tests pass** (+11). **Manual console steps** (App Check API enable + enforcement, Storage bucket, debug-token allow-listing, release providers) documented in §5.
 > **Phase 6 · M1 (Production Ready — Firebase & Backend) COMPLETE** (§7.17) — live-verified EN + AR on `employer01@cb.app` (real on-device Firebase). **Five vendor-neutral core services, each interface + single Firebase impl + Noop/in-memory + swap-point provider (the `AiService` pattern):** **Storage** (`StorageService` with upload progress + delete/replace + optional `StorageMetadata`; the two media seams `ProfileImageStorage`/`CompanyLogoStorage` rebased on it, + profile-photo/company-logo progress UI + Remove action), **Push Notifications** (`NotificationService` + `FirebaseNotificationService` absorbing the old `MessagingService`, token refresh, `PushTokenRegistrar` seam, + a `PushPreferences` category foundation), **Analytics** (`AnalyticsService` + vendor-neutral `AnalyticsRouteObserver` screen_views + `AnalyticsEvents` at key seams + a persisted **consent** lever), **Crashlytics** (`CrashReporter` + `FlutterError`/`PlatformDispatcher` handlers + user context uid/account_type), **Performance** (`PerformanceMonitor`/`PerfTrace` + upload traces). All telemetry **best-effort, non-blocking**. `firebase_analytics`/`crashlytics`/`performance` added; **build-verified**. Crashlytics/Performance **Gradle plugins deferred** (AGP 9 compat; runtime SDKs work without them). Live Storage upload **deferred** (default bucket unprovisioned). **Zero product-feature-to-feature deps; no new Firestore rules.** `flutter analyze` clean; **438 tests pass** (+26).
 
 ---
@@ -297,6 +299,12 @@ with real Gemini. Models are shaped so a future **Interview Report PDF** is a pu
   required** for basic collection. **Deferred:** the Crashlytics + Performance **Gradle plugins**
   (AGP 9 compat — §7.17/§10); the runtime SDKs work without them (they only add release
   mapping-upload + auto-instrumentation).
+- ⚠️ **Firebase App Check (P6·M2)** — SDK added + **activates on device** (debug provider;
+  `DefaultTokenRefresher` running). The **App Check API is NOT yet enabled** in the project, so
+  token fetch 403s → **placeholder token** and the app keeps working (**enforcement is OFF —
+  monitoring only**, the intended graceful state). To finish/enforce, see the **Manual production
+  console steps** checklist below (enable API → allow-list the debug token → register Play
+  Integrity → then enforce).
 - ⚠️ **Phone SMS delivery** — Firebase returns `17006 "SMS unable to be sent until
   this region enabled"`. To actually deliver codes: Console → Auth → Settings →
   **SMS region policy** (allow the region, e.g. Qatar/+974) **or** add a **test phone
@@ -310,6 +318,39 @@ with real Gemini. Models are shaped so a future **Interview Report PDF** is a pu
   Firebase CLI credentials (project owner `yshaltout0310@gmail.com`). **Live Gemini
   calls succeed.** If it ever regresses to "AI logic config is missing," re-run the
   Console AI Logic "Get started" flow (or re-PATCH `.../locations/global/config`).
+
+**Manual production console steps (deployment checklist — nothing here can be done
+headlessly from this environment; `gcloud`/`gsutil` absent).** These are the ONLY
+non-code steps between the current state and a fully-locked-down production backend.
+The app runs correctly today without any of them (everything degrades gracefully):
+
+1. **App Check — enable the API + register the debug token, then (later) enforce.**
+   - The app **activates App Check on device** (debug provider in debug builds, Play
+     Integrity in release) — verified live (`DebugAppCheckProvider` registered). But
+     the **App Check API is not yet enabled** in the project, so token fetch returns
+     `403 "Firebase App Check API has not been used in project 894890748117…"` and the
+     SDK falls back to a **placeholder token** — the app keeps working because
+     **enforcement is OFF** (monitoring only). This is the intended graceful state.
+   - To finish: **(a)** enable `firebaseappcheck.googleapis.com` (Console → App Check,
+     or the API library link in the 403). **(b)** Register the **debug token** printed
+     in logcat on each debug device: `Enter this debug secret into the allow list…`
+     (current emulator token: `e7834c02-c137-4fd7-beba-b34e41928abb` — **debug-only,
+     regenerated per install/keystore; do NOT ship it**). Console → App Check → Apps →
+     the Android app → **Manage debug tokens**. **(c)** Register the **Play Integrity**
+     provider for the release app (SHA-256 in Console). **(d)** Only once real traffic
+     shows tokens validating: **App Check → enforce** on Firestore / Storage / (and AI
+     Logic if desired). Enforcing before (a)–(c) would lock out all clients.
+2. **Cloud Storage bucket** (carried since P3·M3): Console → Storage → **Get Started**
+   (creates the default `.firebasestorage.app` bucket; may need Blaze), then
+   `firebase deploy --only storage` to push the **hardened `storage.rules`** (content-type
+   + size caps — authored in P6·M2, compiles, but can't deploy until the bucket exists).
+   Until then all uploads degrade to a localized error.
+3. **Crashlytics + Performance Gradle plugins** (deferred in P6·M1 for AGP-9 KGP risk):
+   add `com.google.firebase.crashlytics` + `com.google.firebase.firebase-perf` once
+   AGP-9-compatible versions are confirmed, then build-verify immediately.
+4. **App Check API note for tests/CI/headless runs:** if a future automated run signs in
+   without a registered debug token AND enforcement is later turned on, reads will be
+   denied — keep enforcement off until CI has a token strategy.
 
 **Deploying Firestore rules** (Node not on PATH; firebase CLI at
 `%APPDATA%\npm\firebase.cmd`):
@@ -1480,6 +1521,137 @@ unit-tested (need live backends — same policy as `FirebaseAuthRepository`/`Fir
 
 ---
 
+## 7.18 Phase 6 · Milestone 2 — Security & Performance ✅ COMPLETE
+
+> A hardening / optimization pass — **behavior-preserving** for every existing flow while making the backend
+> production-safe and the client lighter. Three pillars (Security / Performance / Image optimization), all built
+> to the established patterns (vendor-neutral service → single impl → noop → provider; best-effort/non-blocking;
+> typed seams; zero product-feature-to-feature deps). `flutter analyze` clean; **449 tests pass** (+11);
+> `firestore.rules` **deployed**; `firebase_app_check` added + **build-verified** (no new KGP warning).
+> **Four approved additions baked in:** (1) a **Security Audit Log** foundation; (2) **App Check graceful
+> fallback**; (3) **Security configuration documentation** (§5 manual-steps checklist); (4) a **performance
+> baseline** (below).
+
+**A · Security**
+- **Firebase App Check** — a sixth vendor-neutral core service (`lib/core/services/app_check/`):
+  `AppCheckService` interface (`activate`/`getToken`) + `FirebaseAppCheckService` (**only** file importing
+  `firebase_app_check`; debug provider in debug, Play Integrity/Device Check in release; token auto-refresh) +
+  `NoopAppCheckService` + `appCheckServiceProvider` (Firebase when `isReady`, else Noop). **Activated in `main()`
+  AFTER `runApp`, un-awaited** (`unawaited(_bootstrapAppCheck(container))`) so attestation **never delays the
+  first frame** (the mandate). A failed activation records a `SecurityEventType.appCheckFailure` via the audit
+  log and continues — the app stays usable.
+- **Security Audit Log** (`lib/core/services/security/security_audit_log.dart`) — `SecurityAuditLog` interface +
+  `SecurityEventType {authFailure, permissionDenied, ruleViolation, appCheckFailure, other}` (snake_case
+  `wireName`) + `TelemetrySecurityAuditLog` (routes to Analytics `security_event` event dimensioned by
+  `event_type`, + a Crashlytics breadcrumb, + a non-fatal when an error object is supplied) + `NoopSecurityAuditLog`
+  + `securityAuditLogProvider` (composes the existing analytics + crash services — no `isReady` gate needed).
+  Added `AnalyticsEvents.securityEvent` + `AnalyticsParams.eventType`/`reason` (validated by the events test).
+  **Concrete callers now:** the App Check failure path + the two owner-scoped employer Firestore streams
+  (`FirestoreEmployerJobsRepository`/`…ApplicantsRepository`), which record `permissionDenied` in their
+  `.handleError` when a `FirebaseException.code == 'permission-denied'` arrives (best-effort; injected via the
+  providers). **No UI** — a write-only foundation.
+- **Hardened `firestore.rules` (deployed).** Added reusable functions — `signedIn()`, `unchanged(field)`
+  (scalar immutability; tolerant so absent/absent passes), `capped(field, max)` (absent/null/`≤max` string).
+  Applied: **identity immutability** on update (`applications`: `applicantUid`/`ownerUid`/`companyId` can no
+  longer be repointed by the owner-update path — the key hardening; `jobs`/`companies`/`applicationNotes`:
+  `ownerUid` immutable) + **size caps** on free-text fields (users/company/job/note) + `employerActivity`
+  stays append-only. **Tolerant by design** so it can't deny a write the current models' `toJson` already
+  produces (would terminate the live listener — §7.13); verified live (all employer flows still read/write).
+  *Deliberately NOT enforced:* `createdAt` immutability (the update path re-serializes it, so a scalar equality
+  check would legitimately fail — documented) and a status *value* whitelist (kept a size cap instead, to avoid
+  an enum-drift deny).
+- **Hardened `storage.rules` (authored, not deployed — bucket unprovisioned).** Content-type + size caps:
+  `users/{uid}/profile.jpg` image `<5 MB`; `users/{uid}/resumes/**` `application/pdf` `<10 MB`;
+  `companies/{companyId}/**` image `<5 MB`. **Removed the broad `users/{uid}/**` catch-all** — Storage grants
+  access if ANY matching rule allows, so an unconditioned catch-all would BYPASS the caps; the app only writes
+  `profile.jpg` + `resumes/**`, so the specific matches cover it (default-deny is stricter). Delete (null
+  `request.resource`) is allowed past the image checks.
+
+**B · Performance**
+- **Firestore client settings** (`FirebaseService._configureFirestore`, run right after init, best-effort):
+  `Settings(persistenceEnabled: true, cacheSizeBytes: 40 MB)` — bounds the offline cache explicitly and serves
+  warm re-entry (employer dashboards) from cache first.
+- **Query runaway guards** — `.limit(300)` on `FirestoreEmployerJobsRepository.watchJobs` +
+  `FirestoreEmployerApplicantsRepository.watchApplicants` (equality-only query + Dart sort **unchanged**; the
+  cap only bounds a pathological owner — no behavior change at seed scale). **Composite indexes were
+  intentionally NOT added** (queries stay equality-only to avoid the `orderBy`-excludes-missing-field regression;
+  the index for a future server-side-ordered/cursor-paginated query is a documented follow-up when the
+  seeker→employer loop lands).
+
+**C · Image optimization**
+- **Display side** — `lib/shared/widgets/app_network_image.dart`: `AppImage.provider(url, {context, logicalSize})`
+  wraps `NetworkImage` in the built-in **`ResizeImage`** sized to the display box × devicePixelRatio
+  (decode-downsizing — a multi-MP photo no longer decodes at source res). **Dependency-free** — deliberately NOT
+  `cached_network_image` (pulls `flutter_cache_manager` + `sqflite` = native/KGP risk, §10). Routed through **all
+  7** raw-`NetworkImage` sites (profile, edit-profile, home, company-profile, edit-company, employer-home,
+  applicant-avatar). `ApplicantAvatar` is now a `StatefulWidget` that **falls back to the initial** on image error
+  (was a blank circle). *(No standalone `AppNetworkImage` widget was shipped — every site is a `DecorationImage`/
+  `CircleAvatar` provider, so the provider factory is the right seam; a widget can be added if a direct
+  `Image.network` use ever appears.)*
+- **Upload side** — `lib/core/services/cloud_storage/image_optimizer.dart`: `ImageOptimizer` interface +
+  `UiImageOptimizer` (pure `dart:ui`: decode → if longest edge > `maxDimension` re-decode at target → re-encode
+  PNG, and **only adopt the result when it's smaller** so it can never enlarge; any failure returns the original)
+  + `NoopImageOptimizer` + `imageOptimizerProvider`. Folded into `FirebaseProfileImageStorage`/
+  `FirebaseCompanyLogoStorage` before `StorageService.upload` (best-effort; content-type set to `image/png` only
+  when the re-encode is adopted). Complements the Storage size caps.
+
+**Bootstrap (`main.dart`):** App Check kicked off un-awaited after `runApp` (see above); the rest of the
+telemetry bootstrap unchanged.
+
+**Deps:** `firebase_app_check ^0.3.1` added; **build-verified** (`flutter build apk --debug` green — only the
+pre-existing benign `firebase_analytics` KGP *warning*; App Check introduced **no** new warning or break).
+
+**Tests (+11 → 449):** `security_audit_log_test` (5 — routing to analytics+crash, non-fatal on error, data
+merge, Noop, wire-name shape), `app_check_service_test` (1 — Noop activates/token), `image_optimizer_test` (4 —
+Noop passthrough, undecodable→original, within-cap unchanged, never-enlarge + still-decodable, via
+`tester.runAsync`), `app_network_image_test` (1 — `ResizeImage` width = logical×DPR, no-upscale, wraps
+`NetworkImage`). Existing suites stayed green (media-seam constructors gained an optional, defaulted param; the
+image-site edits are provider-only). Firebase impls (App Check) not unit-tested — same policy as the other
+Firebase impls.
+
+### VERIFIED live on emulator (`-gpu host`, Skia) — EN + AR, real Firebase (`employer01@cb.app`)
+- **App Check (device):** `DebugAppCheckProvider` registers the debug secret; `DefaultTokenRefresher.onRefresh`
+  runs → **App Check is active**. Token fetch returns `403 … App Check API has not been used …` → SDK uses a
+  **placeholder token** and **the app is fully usable** (enforcement off) — the **graceful fallback proven live**.
+  No `app_check_failure` security event (activation itself succeeded).
+- **Non-blocking startup:** moving activation after `runApp` cut the splash on-screen time (FA
+  `engagement_time_msec` for `screen_view=splash`) from **~50 s (awaited) → ~6.2 s (un-awaited)**; `am start -W`
+  WaitTime **~18.6 s → ~13.8 s**. (Debug build on a cold emulator — absolute numbers are baselines, not targets.)
+- **No regressions (rules):** after deploying the hardened rules + restarting, **EN + AR** both render Employer
+  Home (Acme-Robotics, **Applications 3 / Interviews 2** from the M3 seeded data), Settings, the language
+  switch, and the **Analytics dashboard** (Overview KPIs Applicants 3 / Interviews 2 / Avg-match 76, funnel
+  Applied 3 → Reviewed 3 → Interview 2 67%) — i.e. the `applications`/`jobs` reads + writes still pass the
+  tightened rules. Named `screen_view`s intact (`splash`/`employerHome`/`settings`/`employerAnalytics`).
+- **Images:** the logo/avatar sites render (fallback icon, since no logo/photo is set + Storage unprovisioned) —
+  the `AppImage` path is exercised; decode-downsizing + never-enlarge are covered by unit tests. Live upload/
+  downscale **deferred** with the Storage bucket (same caveat as P6·M1).
+
+### 📊 Performance baseline (addition #4 — for future comparison; debug build, cold `emulator-5554`, `-gpu host`)
+| Metric | Value | How measured |
+| --- | --- | --- |
+| Cold start (App Check **awaited**, pre-fix) | ~18.6 s WaitTime / ~50 s splash | `am start -W` + FA `engagement_time_msec(splash)` |
+| Cold start (App Check **un-awaited**, shipped) | **~13.8 s WaitTime / ~6.2 s splash** | same |
+| `FirebaseService` init logged | ~a few s after process start | `[FirebaseService] Initialized` |
+| Analytics dashboard load | renders within the 3 s capture window (instant from streams) | screenshot after tap |
+| Warm nav (home→settings→home→analytics) | sub-3 s per hop | FA `screen_view` cadence |
+| Profile/logo image load | N/A this pass (no remote images set; Storage unprovisioned) | — |
+
+> These are **debug, cold-emulator** numbers — deliberately rough. The point is a repeatable baseline: the
+> App-Check-after-`runApp` change is the one clear, measurable win (~8× faster splash).
+
+### Notes for the next session
+- **App Check is monitoring-only.** Do the §5 checklist (enable API → allow-list debug token → Play Integrity)
+  and only THEN enforce, or clients lock out. The debug token is per-install and must not be committed.
+- **Hardened-rules gotcha still applies** (§7.13): if you tighten a rule further, diff it against the model's
+  real `toJson()` first — a deny terminates the live snapshot listener until app restart.
+- **Image widget vs seam:** the shipped seam is the `AppImage.provider` factory (decoration/avatar sites). If a
+  direct `Image.network` surface appears (e.g. a resume thumbnail once Storage is live), add an `AppNetworkImage`
+  widget with `loadingBuilder`/`errorBuilder` alongside it.
+- **Composite indexes / cursor pagination** are the remaining perf follow-up, to land with the seeker→employer
+  Firestore loop (server-side `orderBy` + `startAfter`).
+
+---
+
 ## 8. Next steps
 
 **Phase 2 COMPLETE.** **Phase 3 · M1 (Jobs Platform) `6a6a72c`, M2 (Applications Center)
@@ -1675,9 +1847,18 @@ emulator (both languages), `analyze`+`test` before committing, one commit per mi
   traces. Deps added + **build-verified**. **Zero feature-to-feature deps; no new Firestore rules.** Live-verified
   EN+AR on device (438 pass). Deferred: live Storage upload (bucket unprovisioned) + the Crashlytics/Performance
   Gradle plugins (AGP 9).
-- **M2 — candidates (present a plan + wait for approval):** (a) provision Storage → finish live media + resume-file
-  view; (b) close the seeker→employer loop; (c) a notification-settings + analytics-consent UI wiring the P6·M1
-  seams; (d) AI Company Strength; (e) add the Crashlytics/Performance Gradle plugins once AGP-9-compatible.
+- **M2 — Security & Performance** ✅ *complete* (see §7.18). Firebase **App Check** (6th vendor-neutral core
+  service, activated non-blocking after `runApp`, graceful fallback), a **Security Audit Log** foundation
+  (Analytics `security_event` + Crashlytics; wired at the employer permission-denied paths), **hardened
+  `firestore.rules`** (identity-field immutability + size caps, **deployed**) + **hardened `storage.rules`**
+  (content-type + size caps), **Firestore `Settings`** (bounded persistence) + `.limit()` guards, and
+  **dependency-free image optimization** (`AppImage` decode-downsizing across all 7 sites + `ImageOptimizer`
+  upload downscale). **Zero feature-to-feature deps.** Live-verified EN+AR (449 pass). Manual console steps
+  (App Check enable/enforce, Storage bucket, debug-token allow-list, release providers) documented in §5.
+- **M3 — candidates (present a plan + wait for approval):** (a) provision Storage → finish live media + resume-file
+  view + live App Check enforcement; (b) close the seeker→employer loop (+ composite indexes / cursor pagination);
+  (c) a notification-settings + analytics-consent UI wiring the P6·M1 seams; (d) AI Company Strength; (e) add the
+  Crashlytics/Performance Gradle plugins once AGP-9-compatible.
 
 See §8 for candidate future work.
 
@@ -1720,12 +1901,13 @@ built-in Kotlin and breaks `assembleDebug` (`FilePickerPlugin` symbol not found)
 **`file_selector`** (already done). If you re-add a plugin and the build fails on
 `GeneratedPluginRegistrant`, suspect a KGP conflict.
 
-**No functional app bugs open.** `flutter analyze` clean; **438 tests pass** (as of P6·M1).
+**No functional app bugs open.** `flutter analyze` clean; **449 tests pass** (as of P6·M2).
 One known cosmetic limitation: pure-Latin runs can render reversed in the Arabic CV PDF
 (pdf-package bidi; §7.10) — Arabic content is correct. See §7.15/§7.16 "Notes" for the M3/M4 scope
-limitations and §7.17 "Notes" for P6·M1 (Storage default bucket unprovisioned → live upload deferred;
-Crashlytics/Performance Gradle plugins deferred for AGP 9; token-registrar/push-prefs/consent are
-wired seams with no UI consumer yet).
+limitations, §7.17 "Notes" for P6·M1, and §7.18 + §5 for P6·M2 (Storage default bucket unprovisioned →
+live media/upload + `storage.rules` deploy deferred; App Check active but **monitoring-only** until the API
+is enabled + debug token allow-listed + enforcement flipped; Crashlytics/Performance Gradle plugins deferred
+for AGP 9; token-registrar/push-prefs/consent are wired seams with no UI consumer yet).
 
 ---
 
