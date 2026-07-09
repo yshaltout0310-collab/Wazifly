@@ -8,6 +8,7 @@ import '../../../core/navigation/route_names.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/responsive.dart';
+import '../../../shared/widgets/app_network_image.dart';
 import '../../../shared/widgets/completion_indicator.dart';
 import '../application/company_providers.dart';
 import '../domain/company_stats.dart';
@@ -178,7 +179,10 @@ class _Header extends StatelessWidget {
             borderRadius: BorderRadius.circular(AppRadius.md),
             boxShadow: AppShadows.brandGlow,
             image: logoUrl != null
-                ? DecorationImage(image: NetworkImage(logoUrl!), fit: BoxFit.cover)
+                ? DecorationImage(
+                    image: AppImage.provider(logoUrl!,
+                        context: context, logicalSize: 52),
+                    fit: BoxFit.cover)
                 : null,
           ),
           alignment: Alignment.center,

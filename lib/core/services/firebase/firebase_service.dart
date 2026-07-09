@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 
@@ -29,10 +30,29 @@ class FirebaseService {
       debugPrint('[FirebaseService] Initialized: '
           '${DefaultFirebaseOptions.currentPlatform.projectId}');
 
+      // Pin the Firestore client cache explicitly (offline persistence is on by
+      // default on mobile, but bounding it makes the production posture explicit
+      // and serves warm re-entry — e.g. the employer dashboards — from cache
+      // first). Must run before the first Firestore access. Best-effort.
+      _configureFirestore();
+
       // Prepare Cloud Messaging (permissions + token). Best-effort.
       await FirebaseNotificationService.instance.initialize();
     } catch (e) {
       debugPrint('[FirebaseService] Init failed: $e');
+    }
+  }
+
+  /// Bounded offline cache (40 MB) with persistence on. Wrapped so a settings
+  /// failure never aborts initialization.
+  void _configureFirestore() {
+    try {
+      FirebaseFirestore.instance.settings = const Settings(
+        persistenceEnabled: true,
+        cacheSizeBytes: 40 * 1024 * 1024,
+      );
+    } catch (e) {
+      debugPrint('[FirebaseService] Firestore settings failed: $e');
     }
   }
 }

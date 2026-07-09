@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../features/auth/application/auth_providers.dart';
 import '../../../shared/models/job_posting.dart';
+import '../security/security_audit_log.dart';
 import 'firestore_employer_jobs_repository.dart';
 
 /// Owns an employer's job postings at `jobs/{jobId}` (write path).
@@ -30,7 +31,10 @@ abstract interface class EmployerJobsRepository {
 /// The app-wide employer-jobs repository. Firestore in production; overridden
 /// with an in-memory fake in tests. Swap this one binding to change the backend.
 final employerJobsRepositoryProvider = Provider<EmployerJobsRepository>(
-  (ref) => FirestoreEmployerJobsRepository(),
+  (ref) => FirestoreEmployerJobsRepository(
+    null,
+    ref.watch(securityAuditLogProvider),
+  ),
 );
 
 /// Reactive view of the signed-in employer's postings (companyId == uid in

@@ -8,6 +8,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/responsive.dart';
 import '../../../shared/models/company.dart';
+import '../../../shared/widgets/app_network_image.dart';
 import '../../../shared/widgets/primary_button.dart';
 import '../../auth/presentation/widgets/auth_error.dart';
 import '../application/company_edit_controller.dart';
@@ -319,7 +320,9 @@ class _LogoEditor extends ConsumerWidget {
                 boxShadow: AppShadows.brandGlow,
                 image: hasLogo
                     ? DecorationImage(
-                        image: NetworkImage(logoUrl!), fit: BoxFit.cover)
+                        image: AppImage.provider(logoUrl!,
+                            context: context, logicalSize: 104),
+                        fit: BoxFit.cover)
                     : null,
               ),
               child: working

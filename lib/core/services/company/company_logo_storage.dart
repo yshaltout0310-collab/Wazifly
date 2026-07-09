@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../cloud_storage/firebase_storage_service.dart';
+import '../cloud_storage/image_optimizer.dart';
 import '../cloud_storage/storage_paths.dart';
 import '../cloud_storage/storage_service.dart';
 
@@ -28,11 +29,13 @@ abstract interface class CompanyLogoStorage {
 }
 
 /// Production storage: writes to `companies/{companyId}/logo.jpg` via
-/// [StorageService].
+/// [StorageService], downscaling the image first via [ImageOptimizer].
 class FirebaseCompanyLogoStorage implements CompanyLogoStorage {
-  FirebaseCompanyLogoStorage(this._storage);
+  FirebaseCompanyLogoStorage(this._storage, [ImageOptimizer? optimizer])
+      : _optimizer = optimizer ?? const NoopImageOptimizer();
 
   final StorageService _storage;
+  final ImageOptimizer _optimizer;
 
   @override
   Future<String?> uploadCompanyLogo({
@@ -40,11 +43,13 @@ class FirebaseCompanyLogoStorage implements CompanyLogoStorage {
     required Uint8List bytes,
     String contentType = 'image/jpeg',
     void Function(StorageUploadProgress progress)? onProgress,
-  }) {
+  }) async {
+    final optimized = await _optimizer.optimize(bytes,
+        fallbackContentType: contentType);
     return _storage.upload(
       path: StoragePaths.companyLogo(companyId),
-      bytes: bytes,
-      metadata: StorageMetadata(contentType: contentType),
+      bytes: optimized.bytes,
+      metadata: StorageMetadata(contentType: optimized.contentType),
       onProgress: onProgress,
     );
   }
@@ -57,5 +62,8 @@ class FirebaseCompanyLogoStorage implements CompanyLogoStorage {
 /// The app-wide company-logo storage (swap this binding for tests/alternate
 /// backends).
 final companyLogoStorageProvider = Provider<CompanyLogoStorage>(
-  (ref) => FirebaseCompanyLogoStorage(ref.watch(storageServiceProvider)),
+  (ref) => FirebaseCompanyLogoStorage(
+    ref.watch(storageServiceProvider),
+    ref.watch(imageOptimizerProvider),
+  ),
 );

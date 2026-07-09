@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 
 import '../../../shared/models/job_posting.dart';
 import '../firebase/firebase_service.dart';
+import '../security/security_audit_log.dart';
 import 'employer_jobs_repository.dart';
 
 /// Firestore-backed [EmployerJobsRepository] — the production path.
@@ -14,12 +15,20 @@ import 'employer_jobs_repository.dart';
 /// soft-delete filtering + sort run in Dart. Mirrors `FirestoreCompanyRepository`.
 /// `companyId == ownerUid` in this milestone, so results are identical.
 class FirestoreEmployerJobsRepository implements EmployerJobsRepository {
-  FirestoreEmployerJobsRepository([FirebaseFirestore? firestore])
+  FirestoreEmployerJobsRepository([FirebaseFirestore? firestore, this._audit])
       : _firestore = firestore;
 
   final FirebaseFirestore? _firestore;
 
+  /// Optional audit trail — records a rules rejection so denied traffic is
+  /// observable in production (best-effort; null in tests).
+  final SecurityAuditLog? _audit;
+
   static const String _collection = 'jobs';
+
+  /// Runaway guard: never stream more than this many docs (seed scale is tiny;
+  /// this only bounds a pathological owner). Sort still runs in Dart.
+  static const int _maxDocs = 300;
 
   bool get _ready => FirebaseService.instance.isReady;
 
@@ -33,6 +42,7 @@ class FirestoreEmployerJobsRepository implements EmployerJobsRepository {
     // clause, so the list query is authorized rather than permission-denied.
     return _jobs
         .where('ownerUid', isEqualTo: companyId)
+        .limit(_maxDocs)
         .snapshots()
         .map((snap) {
       final list = snap.docs
@@ -43,6 +53,7 @@ class FirestoreEmployerJobsRepository implements EmployerJobsRepository {
       return list;
     }).handleError((Object e) {
       debugPrint('[EmployerJobs] watchJobs failed: $e');
+      _auditDenied(e);
     });
   }
 
@@ -83,6 +94,15 @@ class FirestoreEmployerJobsRepository implements EmployerJobsRepository {
       ..remove('id')
       ..['updatedAt'] = FieldValue.serverTimestamp();
     await _jobs.doc(posting.id).set(data, SetOptions(merge: true));
+  }
+
+  /// Records a permission-denied read to the security audit log (best-effort).
+  void _auditDenied(Object e) {
+    if (_audit != null &&
+        e is FirebaseException &&
+        e.code == 'permission-denied') {
+      _audit.record(SecurityEventType.permissionDenied, detail: 'jobs_read');
+    }
   }
 }
 

@@ -3,22 +3,57 @@ rules_version = '2';
 // Cloud Storage security rules for Career Bridge.
 //
 // Deploy with:  firebase deploy --only storage
-// (or paste into Firebase Console → Storage → Rules).
+// (requires the default bucket to be provisioned first — Console → Storage →
+// Get Started; see HANDOFF §5). Until then these ship authored-but-not-deployed.
+//
+// Phase 6 · Milestone 2 hardening: beyond owner-only access, uploads must be the
+// expected content type and under a size cap, so a tampered client can't store
+// arbitrary or oversized blobs (defence-in-depth alongside client-side
+// downscaling). Reads and deletes carry no body, so they're gated on ownership
+// only.
 service firebase.storage {
   match /b/{bucket}/o {
 
-    // A user may read and write only files under their own space at
-    // users/{uid}/**. The app writes users/<auth uid>/profile.jpg (profile
-    // photos) and users/<auth uid>/resumes/** from CloudStorageService.
-    match /users/{uid}/{allPaths=**} {
-      allow read, write: if request.auth != null && request.auth.uid == uid;
+    function signedIn() {
+      return request.auth != null;
     }
 
+    // A write is an image under [maxMB] megabytes — or a delete (null resource),
+    // which carries no body to validate.
+    function isImageUnder(maxMB) {
+      return request.resource == null
+          || (request.resource.contentType.matches('image/.*')
+              && request.resource.size < maxMB * 1024 * 1024);
+    }
+
+    // The user's own profile photo: users/{uid}/profile.jpg — image, < 5 MB.
+    match /users/{uid}/profile.jpg {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow write: if signedIn() && request.auth.uid == uid && isImageUnder(5);
+    }
+
+    // The user's own résumé files: users/{uid}/resumes/** — PDF, < 10 MB.
+    // (Reads/deletes carry no body, so they're gated on ownership only.)
+    match /users/{uid}/resumes/{allPaths=**} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow write: if signedIn() && request.auth.uid == uid
+                      && (request.resource == null
+                          || (request.resource.contentType == 'application/pdf'
+                              && request.resource.size < 10 * 1024 * 1024));
+    }
+
+    // NOTE: no broad `users/{uid}/**` catch-all — Storage grants access if ANY
+    // matching rule allows, so an unconditioned catch-all would bypass the
+    // content-type/size caps above. The app only writes profile.jpg + resumes/**;
+    // any other path is denied by default (add a specific match if that changes).
+
     // Company logos at companies/{companyId}/logo.jpg (companyId == owner uid).
-    // Readable by any signed-in user; writable only by the owning employer.
+    // Readable by any signed-in user (job listings surface the logo); writable
+    // only by the owning employer, and only as an image < 5 MB.
     match /companies/{companyId}/{allPaths=**} {
-      allow read: if request.auth != null;
-      allow write: if request.auth != null && request.auth.uid == companyId;
+      allow read: if signedIn();
+      allow write: if signedIn() && request.auth.uid == companyId
+                      && isImageUnder(5);
     }
 
     // Everything else is denied by default (no fall-through match).

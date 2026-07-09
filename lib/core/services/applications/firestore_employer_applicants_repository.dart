@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 
 import '../../../shared/models/application.dart';
 import '../firebase/firebase_service.dart';
+import '../security/security_audit_log.dart';
 import 'employer_applicants_repository.dart';
 
 /// Firestore-backed [EmployerApplicantsRepository] — the production path.
@@ -14,12 +15,18 @@ import 'employer_applicants_repository.dart';
 /// controller can roll back. Mirrors `FirestoreEmployerJobsRepository`.
 class FirestoreEmployerApplicantsRepository
     implements EmployerApplicantsRepository {
-  FirestoreEmployerApplicantsRepository([FirebaseFirestore? firestore])
+  FirestoreEmployerApplicantsRepository([FirebaseFirestore? firestore, this._audit])
       : _firestore = firestore;
 
   final FirebaseFirestore? _firestore;
 
+  /// Optional audit trail — records a rules rejection (best-effort; null in tests).
+  final SecurityAuditLog? _audit;
+
   static const String _collection = 'applications';
+
+  /// Runaway guard: cap the stream (seed scale is tiny). Sort still runs in Dart.
+  static const int _maxDocs = 300;
 
   bool get _ready => FirebaseService.instance.isReady;
 
@@ -31,6 +38,7 @@ class FirestoreEmployerApplicantsRepository
     if (!_ready) return Stream<List<Application>>.value(const []);
     return _apps
         .where('ownerUid', isEqualTo: ownerUid)
+        .limit(_maxDocs)
         .snapshots()
         .map((snap) {
       final list = snap.docs
@@ -40,6 +48,12 @@ class FirestoreEmployerApplicantsRepository
       return list;
     }).handleError((Object e) {
       debugPrint('[EmployerApplicants] watch failed: $e');
+      if (_audit != null &&
+          e is FirebaseException &&
+          e.code == 'permission-denied') {
+        _audit.record(SecurityEventType.permissionDenied,
+            detail: 'applications_read');
+      }
     });
   }
 

@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../features/auth/application/auth_providers.dart';
 import '../../../shared/models/application.dart';
+import '../security/security_audit_log.dart';
 import 'firestore_employer_applicants_repository.dart';
 
 /// Read/manage path for an **employer's** applicants at `applications/{id}`,
@@ -30,7 +31,10 @@ abstract interface class EmployerApplicantsRepository {
 /// with an in-memory fake in tests. Swap this one binding to change the backend.
 final employerApplicantsRepositoryProvider =
     Provider<EmployerApplicantsRepository>(
-  (ref) => FirestoreEmployerApplicantsRepository(),
+  (ref) => FirestoreEmployerApplicantsRepository(
+    null,
+    ref.watch(securityAuditLogProvider),
+  ),
 );
 
 /// Reactive view of the signed-in employer's applicants. Tracks the authenticated

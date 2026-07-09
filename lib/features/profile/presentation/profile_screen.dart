@@ -15,6 +15,7 @@ import '../../auth/application/auth_providers.dart';
 import '../../user_type/application/user_type_controller.dart';
 import '../../user_type/domain/user_type.dart';
 import '../application/profile_completion_provider.dart';
+import '../../../shared/widgets/app_network_image.dart';
 import '../../../shared/widgets/completion_indicator.dart';
 import 'profile_l10n.dart';
 
@@ -103,7 +104,8 @@ class _ProfileBody extends ConsumerWidget {
                   boxShadow: AppShadows.brandGlow,
                   image: profile.photoUrl != null
                       ? DecorationImage(
-                          image: NetworkImage(profile.photoUrl!),
+                          image: AppImage.provider(profile.photoUrl!,
+                              context: context, logicalSize: 104),
                           fit: BoxFit.cover,
                         )
                       : null,

@@ -23,6 +23,12 @@ abstract final class AnalyticsEvents {
   static const String profilePhotoUpload = 'profile_photo_upload';
   static const String companyLogoUpload = 'company_logo_upload';
 
+  // --- Security (audit foundation) ---
+  /// A security-sensitive event (auth failure, permission-denied, rule
+  /// violation, App Check failure) — dimensioned by `event_type`. Logged via
+  /// `SecurityAuditLog`, never directly by features.
+  static const String securityEvent = 'security_event';
+
   /// All events, for validation tests.
   static const List<String> all = [
     jobApply,
@@ -38,6 +44,7 @@ abstract final class AnalyticsEvents {
     recruiterInsightsGenerate,
     profilePhotoUpload,
     companyLogoUpload,
+    securityEvent,
   ];
 }
 
@@ -50,6 +57,12 @@ abstract final class AnalyticsParams {
   static const String type = 'type';
   static const String accountType = 'account_type';
   static const String source = 'source';
+
+  /// Security-event category (a `SecurityEventType.wireName`).
+  static const String eventType = 'event_type';
+
+  /// Short, non-PII descriptor for a security event (e.g. an error code).
+  static const String reason = 'reason';
 }
 
 /// Canonical user-property names.

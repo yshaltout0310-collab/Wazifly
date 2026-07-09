@@ -8,6 +8,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/responsive.dart';
 import '../../../shared/models/user_profile.dart';
+import '../../../shared/widgets/app_network_image.dart';
 import '../../../shared/widgets/primary_button.dart';
 import '../../auth/presentation/widgets/auth_error.dart';
 import '../application/profile_completion_provider.dart';
@@ -258,7 +259,9 @@ class _PhotoEditor extends ConsumerWidget {
                 boxShadow: AppShadows.brandGlow,
                 image: hasPhoto
                     ? DecorationImage(
-                        image: NetworkImage(photoUrl!), fit: BoxFit.cover)
+                        image: AppImage.provider(photoUrl!,
+                            context: context, logicalSize: 104),
+                        fit: BoxFit.cover)
                     : null,
               ),
               child: working

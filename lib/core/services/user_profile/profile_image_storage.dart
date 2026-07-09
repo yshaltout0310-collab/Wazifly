@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../cloud_storage/firebase_storage_service.dart';
+import '../cloud_storage/image_optimizer.dart';
 import '../cloud_storage/storage_paths.dart';
 import '../cloud_storage/storage_service.dart';
 
@@ -26,11 +27,14 @@ abstract interface class ProfileImageStorage {
   Future<void> deleteProfilePhoto(String uid);
 }
 
-/// Production storage: writes to `users/{uid}/profile.jpg` via [StorageService].
+/// Production storage: writes to `users/{uid}/profile.jpg` via [StorageService],
+/// downscaling the image first via [ImageOptimizer] (best-effort).
 class FirebaseProfileImageStorage implements ProfileImageStorage {
-  FirebaseProfileImageStorage(this._storage);
+  FirebaseProfileImageStorage(this._storage, [ImageOptimizer? optimizer])
+      : _optimizer = optimizer ?? const NoopImageOptimizer();
 
   final StorageService _storage;
+  final ImageOptimizer _optimizer;
 
   @override
   Future<String?> uploadProfilePhoto({
@@ -38,11 +42,13 @@ class FirebaseProfileImageStorage implements ProfileImageStorage {
     required Uint8List bytes,
     String contentType = 'image/jpeg',
     void Function(StorageUploadProgress progress)? onProgress,
-  }) {
+  }) async {
+    final optimized = await _optimizer.optimize(bytes,
+        fallbackContentType: contentType);
     return _storage.upload(
       path: StoragePaths.profilePhoto(uid),
-      bytes: bytes,
-      metadata: StorageMetadata(contentType: contentType),
+      bytes: optimized.bytes,
+      metadata: StorageMetadata(contentType: optimized.contentType),
       onProgress: onProgress,
     );
   }
@@ -55,5 +61,8 @@ class FirebaseProfileImageStorage implements ProfileImageStorage {
 /// The app-wide profile-image storage (swap this binding for tests/alternate
 /// backends).
 final profileImageStorageProvider = Provider<ProfileImageStorage>(
-  (ref) => FirebaseProfileImageStorage(ref.watch(storageServiceProvider)),
+  (ref) => FirebaseProfileImageStorage(
+    ref.watch(storageServiceProvider),
+    ref.watch(imageOptimizerProvider),
+  ),
 );

@@ -8,6 +8,7 @@ import '../../../core/navigation/route_names.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/responsive.dart';
+import '../../../shared/widgets/app_network_image.dart';
 import '../../auth/application/auth_providers.dart';
 import '../../user_type/application/user_type_controller.dart';
 import '../../user_type/domain/user_type.dart';
@@ -246,7 +247,9 @@ class _Header extends StatelessWidget {
             boxShadow: AppShadows.brandGlow,
             image: photoUrl != null
                 ? DecorationImage(
-                    image: NetworkImage(photoUrl!), fit: BoxFit.cover)
+                    image: AppImage.provider(photoUrl!,
+                        context: context, logicalSize: 52),
+                    fit: BoxFit.cover)
                 : null,
           ),
           alignment: Alignment.center,

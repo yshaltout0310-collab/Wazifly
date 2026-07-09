@@ -92,6 +92,11 @@ dependencies:
   # firebase_performance: custom traces + auto network/screen metrics behind a
   # vendor-neutral PerformanceMonitor. Requires the firebase-perf Gradle plugin.
   firebase_performance: ^0.10.0
+  # firebase_app_check: attests that requests come from a genuine app instance so
+  # the backend (Firestore/Storage/AI Logic) can reject scrapers/tampered clients.
+  # Behind a vendor-neutral AppCheckService; only firebase_app_check_service.dart
+  # imports it. Activation is best-effort — a failure never blocks startup.
+  firebase_app_check: ^0.3.1
 
   # ---------------------------------------------------------------------------
   # Phase 2 — AI features

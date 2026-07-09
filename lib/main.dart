@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -10,9 +11,11 @@ import 'core/services/analytics/analytics_consent.dart';
 import 'core/services/analytics/analytics_events.dart';
 import 'core/services/analytics/analytics_route_observer.dart';
 import 'core/services/analytics/firebase_analytics_service.dart';
+import 'core/services/app_check/firebase_app_check_service.dart';
 import 'core/services/crashlytics/firebase_crash_reporter.dart';
 import 'core/services/firebase/firebase_service.dart';
 import 'core/services/performance/firebase_performance_monitor.dart';
+import 'core/services/security/security_audit_log.dart';
 import 'core/services/storage/local_storage_service.dart';
 import 'features/auth/application/auth_providers.dart';
 import 'features/user_type/application/user_type_controller.dart';
@@ -50,6 +53,13 @@ Future<void> main() async {
       child: CareerBridgeApp(router: router),
     ),
   );
+
+  // Attest the app instance (App Check) — deliberately AFTER runApp and NOT
+  // awaited, so attestation never delays the first frame (the mandated
+  // "App Check must never block startup"). Token fetch is lazy; the first
+  // backend read tolerates the brief unattested window (and, with enforcement
+  // off, a placeholder token). A failure records + continues, app stays usable.
+  unawaited(_bootstrapAppCheck(container));
 }
 
 /// Wires Crashlytics error handlers, applies analytics consent, enables
@@ -84,6 +94,23 @@ Future<void> _bootstrapTelemetry(ProviderContainer container) async {
   });
 
   _bindTelemetryUserContext(container);
+}
+
+/// Activates Firebase App Check (device attestation) so the backend can reject
+/// requests from tampered clients / scrapers. Best-effort: if activation fails
+/// or App Check is unavailable, the app keeps running **unattested** and the
+/// failure is recorded via Crashlytics + the security audit log — the app must
+/// remain usable (App Check is monitored, not enforced, until the Console
+/// enforcement switch is flipped — see HANDOFF §5).
+Future<void> _bootstrapAppCheck(ProviderContainer container) async {
+  final appCheck = container.read(appCheckServiceProvider);
+  final ok = await appCheck.activate();
+  if (!ok) {
+    await container.read(securityAuditLogProvider).record(
+          SecurityEventType.appCheckFailure,
+          detail: 'activation_failed',
+        );
+  }
 }
 
 /// Associates crash reports + analytics with the signed-in user (id + account

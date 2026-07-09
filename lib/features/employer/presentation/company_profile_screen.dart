@@ -9,6 +9,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/responsive.dart';
 import '../../../shared/models/company.dart';
+import '../../../shared/widgets/app_network_image.dart';
 import '../../../shared/widgets/completion_indicator.dart';
 import '../../../shared/widgets/primary_button.dart';
 import '../../auth/application/auth_providers.dart';
@@ -95,7 +96,8 @@ class _CompanyBody extends ConsumerWidget {
                   boxShadow: AppShadows.brandGlow,
                   image: company.logoUrl != null
                       ? DecorationImage(
-                          image: NetworkImage(company.logoUrl!),
+                          image: AppImage.provider(company.logoUrl!,
+                              context: context, logicalSize: 104),
                           fit: BoxFit.cover)
                       : null,
                 ),
