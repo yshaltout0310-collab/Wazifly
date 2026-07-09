@@ -146,6 +146,22 @@ flutter:
     - assets/icons/
     - assets/data/
 
+  # ---------------------------------------------------------------------------
+  # Bundled fonts (offline-ready). Inter (Latin UI) + Cairo (Arabic) are shipped
+  # in-app instead of fetched at runtime by google_fonts, so text renders
+  # correctly on a cold OFFLINE first launch. Both are variable fonts — Flutter
+  # drives their weight axis from TextStyle.fontWeight, so all weights are
+  # available from the single file. See lib/core/theme/app_typography.dart.
+  # OFL-licensed (see docs/RELEASE.md → Third-party assets).
+  # ---------------------------------------------------------------------------
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter.ttf
+    - family: Cairo
+      fonts:
+        - asset: assets/fonts/Cairo.ttf
+
 # -----------------------------------------------------------------------------
 # Branded launcher icons (run: dart run flutter_launcher_icons)
 # -----------------------------------------------------------------------------

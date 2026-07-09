@@ -923,5 +923,7 @@
   "companyRemoveLogo": "Remove logo",
   "companyRemoveLogoTitle": "Remove logo?",
   "companyRemoveLogoBody": "Your company logo will be deleted.",
-  "remove": "Remove"
+  "remove": "Remove",
+
+  "offlineBannerMessage": "You're offline — showing saved data"
 }

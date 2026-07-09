@@ -8,6 +8,7 @@ import 'core/localization/locale_controller.dart';
 import 'core/navigation/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_controller.dart';
+import 'shared/widgets/offline_banner.dart';
 
 /// Root widget.
 ///
@@ -50,6 +51,11 @@ class CareerBridgeApp extends ConsumerWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
+
+      // Ambient, app-wide offline indicator (advisory only — never gates a
+      // feature). Wrapping via builder keeps it decoupled from every screen.
+      builder: (context, child) =>
+          OfflineBanner(child: child ?? const SizedBox.shrink()),
     );
   }
 }

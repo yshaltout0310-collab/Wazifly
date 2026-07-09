@@ -2530,4 +2530,8 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get remove => 'إزالة';
+
+  @override
+  String get offlineBannerMessage =>
+      'أنت غير متصل بالإنترنت — يتم عرض البيانات المحفوظة';
 }

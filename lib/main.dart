@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'app.dart';
 import 'core/navigation/app_router.dart';
@@ -12,6 +13,7 @@ import 'core/services/analytics/analytics_events.dart';
 import 'core/services/analytics/analytics_route_observer.dart';
 import 'core/services/analytics/firebase_analytics_service.dart';
 import 'core/services/app_check/firebase_app_check_service.dart';
+import 'core/services/build_info/build_info.dart';
 import 'core/services/crashlytics/firebase_crash_reporter.dart';
 import 'core/services/firebase/firebase_service.dart';
 import 'core/services/performance/firebase_performance_monitor.dart';
@@ -28,6 +30,12 @@ import 'features/user_type/application/user_type_controller.dart';
 /// break startup (the M1 telemetry principle).
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // The UI theme uses the Inter/Cairo fonts bundled under assets/fonts (see
+  // AppTypography), so it never needs the network for fonts. This is a
+  // belt-and-suspenders guard: it forbids google_fonts from ever fetching at
+  // runtime, keeping a cold OFFLINE first launch correct (no FOUT/fallback).
+  GoogleFonts.config.allowRuntimeFetching = false;
 
   // Load persisted preferences (theme, language, country, onboarding flag).
   final storage = await LocalStorageService.create();
@@ -86,6 +94,12 @@ Future<void> _bootstrapTelemetry(ProviderContainer container) async {
   await analytics.setEnabled(consentEnabled);
   await performance.setEnabled(true);
   await crash.setEnabled(true);
+
+  // Stamp every crash report with the release build metadata (bug-report reuse
+  // of the BuildInfo foundation) — best-effort.
+  final build = container.read(buildInfoProvider);
+  await crash.setCustomKey('app_version', build.fullVersion);
+  await crash.setCustomKey('build_type', build.buildType.name);
 
   // Keep telemetry consent in sync if it changes at runtime — no feature code
   // ever needs to branch on consent.

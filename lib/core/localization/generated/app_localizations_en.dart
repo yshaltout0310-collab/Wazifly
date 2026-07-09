@@ -2543,4 +2543,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get remove => 'Remove';
+
+  @override
+  String get offlineBannerMessage => 'You\'re offline — showing saved data';
 }

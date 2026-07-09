@@ -4735,6 +4735,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Remove'**
   String get remove;
+
+  /// No description provided for @offlineBannerMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re offline — showing saved data'**
+  String get offlineBannerMessage;
 }
 
 class _AppLocalizationsDelegate

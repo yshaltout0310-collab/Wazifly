@@ -870,5 +870,7 @@
   "companyRemoveLogo": "إزالة الشعار",
   "companyRemoveLogoTitle": "إزالة الشعار؟",
   "companyRemoveLogoBody": "سيتم حذف شعار شركتك.",
-  "remove": "إزالة"
+  "remove": "إزالة",
+
+  "offlineBannerMessage": "أنت غير متصل بالإنترنت — يتم عرض البيانات المحفوظة"
 }

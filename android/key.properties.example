@@ -1,0 +1,22 @@
+# Release signing configuration — TEMPLATE.
+#
+# Copy this file to `android/key.properties` (which is gitignored) and fill in
+# the real values for YOUR upload keystore. See docs/RELEASE.md → "Signing" for
+# how to generate the keystore with `keytool`.
+#
+# When android/key.properties is absent, the release build falls back to debug
+# signing (so dev/CI builds still run) — see android/app/build.gradle.kts.
+
+# Alias you chose when creating the keystore (keytool -alias).
+keyAlias=upload
+
+# Password for the key entry.
+keyPassword=CHANGE_ME
+
+# Absolute path (or path relative to the android/app module) to the .jks file.
+# Keep the keystore OUTSIDE the repo. Example:
+#   storeFile=C:/Users/you/keys/careerbridge-upload.jks
+storeFile=CHANGE_ME_ABSOLUTE_PATH/careerbridge-upload.jks
+
+# Password for the keystore itself.
+storePassword=CHANGE_ME

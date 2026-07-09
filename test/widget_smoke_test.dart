@@ -1,5 +1,7 @@
 import 'package:careerbridge/app.dart';
 import 'package:careerbridge/core/providers/app_providers.dart';
+import 'package:careerbridge/core/services/connectivity/io_connectivity_service.dart';
+import 'package:careerbridge/core/services/connectivity/noop_connectivity_service.dart';
 import 'package:careerbridge/core/services/storage/local_storage_service.dart';
 import 'package:careerbridge/features/splash/presentation/splash_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,6 +26,11 @@ void main() {
         overrides: [
           localStorageProvider.overrideWithValue(storage),
           fakeAuthOverride(),
+          // The real connectivity service polls with a periodic timer that
+          // would linger past the test; the app-wide OfflineBanner only needs an
+          // inert, always-online status here.
+          connectivityServiceProvider
+              .overrideWithValue(const NoopConnectivityService()),
         ],
         child: const CareerBridgeApp(),
       ),
