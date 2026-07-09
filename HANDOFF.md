@@ -1,7 +1,8 @@
 # Career Bridge — Session Handoff
 
 > Living handoff doc so a fresh Claude session can continue immediately.
-> Last updated: **Phase 6 · Milestone 4 (Production Polish) — COMPLETE** (see §7.20) — shared `StatusView` (loading/empty/error) unifies 8 screens, a11y semantics + tooltips, audits clean; live-verified EN + AR on the **release build**. **466 tests.** Production-readiness report in §7.20.
+> Last updated: **Phase 7 · Milestone 1 (Deployment Preparation — Google Play) — COMPLETE** (see §7.21) — **docs-only**, zero code/deps/config change: a full **Play submission kit** under `docs/store/` (store listing EN **+ Arabic**, asset specs incl. screenshot order, Data Safety, Play Console declarations, master release checklist) + **legal docs** under `docs/legal/` (Privacy Policy + Terms, with AI-transparency + ad-free commitment). Validation = `analyze` clean · **466 tests** · **release `.aab` builds**. App preserved exactly — no regressions.
+> **Phase 6 · Milestone 4 (Production Polish) — COMPLETE** (see §7.20) — shared `StatusView` (loading/empty/error) unifies 8 screens, a11y semantics + tooltips, audits clean; live-verified EN + AR on the **release build**. **466 tests.** Production-readiness report in §7.20.
 > **Phase 6 · Milestone 3 (Release Preparation) — COMPLETE** (see §7.19) — live-verified EN + AR on the **release build** (bundled fonts, offline banner, R8/minify on). Release runbook + QA checklist in `docs/`.
 > **Phase 6 · Milestone 2 (Security & Performance) — COMPLETE** (see §7.18) — live-verified EN + AR on `employer01@cb.app` (App Check active on device w/ graceful fallback, hardened rules deployed, no regressions).
 > **Phase 6 · Milestone 1 (Production Ready — Firebase & Backend) — COMPLETE** (see §7.17) — live-verified EN + AR on `employer01@cb.app` (real Firebase Analytics/Crashlytics/FCM on device).
@@ -1819,6 +1820,70 @@ Registered a fresh employer (`m4polish@cb.app`) to reach empty states.
   hand-rolling; further screens with the standard motif can be migrated incrementally.
 - Bespoke hero empties (`_NeedsResumeView`, `_AnalyzingView`, coach starter-chips) intentionally stay custom.
 - The white-on-emerald CTA contrast + a full TalkBack pass remain the only documented a11y follow-ups.
+
+---
+
+## 7.21 Phase 7 · Milestone 1 — Deployment Preparation (Google Play) ✅ COMPLETE
+
+> **Goal:** prepare every production artifact required for a successful Google Play submission — **without deploying**.
+> Deliberately **documentation-only**: **zero** changes to `lib/`, `pubspec.yaml`, Gradle, rules, or dependencies. The
+> app that builds today is the app that is documented. `flutter analyze` clean; **466 tests pass** (unchanged); the
+> **release `.aab` builds** under R8 (the substantive "release readiness" verification). Approved with 5 additions
+> (Arabic listing, AI transparency, screenshot order, equal two-sided positioning, permanent ad-free commitment).
+
+**Deliverables — a self-contained Play submission kit (8 new docs):**
+
+`docs/store/` (submission material):
+- **`README.md`** — kit index, submission order, a **fill-in tracker** (every `⟨FILL-IN⟩`: support email, legal entity,
+  jurisdiction, hosted Privacy-Policy/Terms/website URLs, keystore, test logins), and the authoritative product-facts table.
+- **`STORE_LISTING.md`** — app name, short + full description in **English (primary)** **and a naturally-adapted Arabic
+  draft** (not machine-translated; brand title kept, descriptions localized, both seeker + employer sides balanced),
+  category **Business**, contact/website placeholders, the **AI-transparency notice** (assist, not professional/legal
+  advice), and the **free + permanently ad-free** monetization statement.
+- **`STORE_ASSETS.md`** — **specs only, no art generated**: 512² icon (from `assets/icon/app_icon.png`), 1024×500
+  feature graphic, phone screenshots with a **recommended order that leads with the strongest features**
+  (Resume Analyzer → Job Matching → toolkit → Coach/CV → Employer analytics → Applicants → Interview → Arabic/RTL),
+  tablet/promo optional, capture guidance referencing the §10 emulator quirks.
+- **`DATA_SAFETY.md`** — the Play Data Safety form answered field-by-field, derived from the **real** data flows
+  (Auth/Firestore/Storage/Analytics+consent/Crashlytics/Performance/**Gemini via Firebase AI Logic**/FCM/App Check);
+  explicitly discloses résumé/profile text → Gemini; declares no location/financial/ads-ID; encrypted-in-transit +
+  deletion-on-request.
+- **`PLAY_CONSOLE.md`** — content rating (expected Everyone/PEGI 3), **target audience 18+**, permissions review (only
+  `INTERNET` + `POST_NOTIFICATIONS` → no sensitive-permission form), **ads = No / IAP = No** + ad-free commitment,
+  **app access** (email test logins + reviewer instructions, phone-OTP caveat), **closed-testing-before-production**
+  track plan, `AD_ID` verify-and-declare note.
+- **`RELEASE_CHECKLIST.md`** — the master ordered, tickable checklist (A–J: code/build → signing → assets → legal
+  hosting → Firebase console → store presence → declarations → QA → rollout → rollback), **cross-linking** RELEASE.md /
+  QA_CHECKLIST.md / the other kit docs rather than duplicating.
+
+`docs/legal/` (must be publicly hosted before submission):
+- **`PRIVACY_POLICY.md`** — production-ready, grounded in real flows, names every Google processor, dedicated
+  **AI-transparency** section, consent lever, deletion rights, 18+, **ad-free** clause. Marked as a template (counsel
+  review recommended); `⟨FILL-IN⟩`s for entity/contact/date.
+- **`TERMS_OF_SERVICE.md`** — eligibility 18+, acceptable use, user content + AI license, **AI-is-assistance-not-advice**,
+  no-outcome-guarantee, IP (incl. OFL fonts), free/ad-free with future-premium clause, disclaimers/liability, governing
+  law `⟨FILL-IN⟩`.
+
+**Reused conventions:** new docs live under the existing `docs/` tree beside `RELEASE.md`/`QA_CHECKLIST.md`, and
+**cross-link** them (single source of truth for build/console mechanics — no drift). Positioning throughout presents
+CareerBridge as **one AI platform serving Job Seekers and Employers equally**.
+
+### Verification (docs milestone — no runtime behavior changed)
+- `flutter analyze` → clean. `flutter test` → **466 pass** (nothing in `lib/` touched).
+- **`flutter build appbundle --release`** → the Play artifact builds under R8 (release readiness proven).
+- **Config audit reconciled into the docs** (all confirmed against the repo): package `com.careerbridge.careerbridge`,
+  `minSdk 23`, `version 1.0.0+1`, optional-`key.properties` signing with debug fallback, manifest permissions =
+  exactly `INTERNET` + `POST_NOTIFICATIONS`. No live emulator run is meaningful (no code changed); the `.aab` build is
+  the substantive check.
+
+### Notes for the next session
+- **Nothing in code blocks submission.** Before the *actual* Play upload, complete the `docs/store/README.md` fill-in
+  tracker (support email, legal entity, jurisdiction, effective dates), **host** the Privacy Policy (+ Terms) at public
+  URLs, and mint the **real upload keystore** + `key.properties` (RELEASE.md §3). Have the legal docs **counsel-reviewed**.
+- The pre-existing manual console steps (Storage bucket, App Check enable/enforce, optional Crashlytics/Perf plugins)
+  are folded into `RELEASE_CHECKLIST.md` §E — they degrade gracefully and don't block submission.
+- Optional polish: native-speaker review of the Arabic listing; capture the EN (and AR) screenshot sets per the
+  recommended order.
 
 ---
 
