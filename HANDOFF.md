@@ -1,7 +1,8 @@
 # Career Bridge — Session Handoff
 
 > Living handoff doc so a fresh Claude session can continue immediately.
-> Last updated: **Phase 6 · Milestone 3 (Release Preparation) — COMPLETE** (see §7.19) — live-verified EN + AR on the **release build** (bundled fonts, offline banner, R8/minify on). Release runbook + QA checklist in `docs/`.
+> Last updated: **Phase 6 · Milestone 4 (Production Polish) — COMPLETE** (see §7.20) — shared `StatusView` (loading/empty/error) unifies 8 screens, a11y semantics + tooltips, audits clean; live-verified EN + AR on the **release build**. **466 tests.** Production-readiness report in §7.20.
+> **Phase 6 · Milestone 3 (Release Preparation) — COMPLETE** (see §7.19) — live-verified EN + AR on the **release build** (bundled fonts, offline banner, R8/minify on). Release runbook + QA checklist in `docs/`.
 > **Phase 6 · Milestone 2 (Security & Performance) — COMPLETE** (see §7.18) — live-verified EN + AR on `employer01@cb.app` (App Check active on device w/ graceful fallback, hardened rules deployed, no regressions).
 > **Phase 6 · Milestone 1 (Production Ready — Firebase & Backend) — COMPLETE** (see §7.17) — live-verified EN + AR on `employer01@cb.app` (real Firebase Analytics/Crashlytics/FCM on device).
 > **Phase 2 COMPLETE** (M1 Resume Analyzer + M2 Job Matching + M3 Career Coach).
@@ -1738,6 +1739,89 @@ Installed `app-release.apk` (R8/minify on; debug-signing fallback). Launch `Stat
 
 ---
 
+## 7.20 Phase 6 · Milestone 4 — Production Polish ✅ COMPLETE
+
+> A **consolidation + hardening** pass — no new features, no new dependencies, no change to the security/Firebase/
+> repository layers. It unifies the duplicated UI-state code into one shared widget, layers in accessibility
+> semantics, and does audit/perf/validation sweeps. **Behavior-preserving**; `flutter analyze` clean; **466 tests
+> pass** (+6); release APK builds under R8. **Five approved additions baked in** (visual/l10n/reuse/code audits +
+> the production-readiness report below).
+
+**A · Shared `StatusView` (UX consistency + dead-code removal).** New `lib/shared/widgets/status_view.dart` —
+`StatusView.loading / .empty / .error`, the single full-screen state surface (beside `JobDetailView`/`OfflineBanner`;
+depends only on core theme/l10n → zero feature coupling). It **canonicalizes the audited drift**: the badge motif
+was 88-rounded / 84-circle / bare-56 / bare-64 with `lg`/`md` spacing and 0.35–0.7 opacities → **one 84 tinted
+circular badge, 40 icon, `lg`/`sm`/`xl` rhythm, 0.6 muted**. Migrated **8 screens** onto it and **deleted their
+private `_Loading`/`_Error`/`_Empty`/`_Busy` classes** (real dead-code removal): `job_matching`, `resume_analyzer`,
+`recommendations`, `interview_history`, `cv_preview`, `employer_jobs`, `employer_applicants`, `employer_analytics`.
+Bespoke animated hero states (`_NeedsResumeView`, `_AnalyzingView`, career-coach starter-chips empty) were
+**deliberately kept** — migrating them would be a redesign, not consistency. `StatusView` **does not self-animate**
+(matching the prior widgets, which were animated by their `AnimatedSwitcher` parents — avoids a double-animation and
+a pending-timer in tests).
+
+**B · Accessibility.** `StatusView` marks its title `header: true` and wraps the spinner in a `Semantics(label:
+commonLoading)` announcement. `OfflineBanner` is now a `Semantics(liveRegion: true)` (announced on connectivity
+change; decorative icon/text `ExcludeSemantics`). Filled **5 missing `IconButton` tooltips** (3 password-visibility
+toggles → localized Show/Hide password; CV entry delete; job-editor date picker) — every icon-only control now
+carries a semantic label. Avatars/logos are `DecorationImage` backgrounds (non-focusable/decorative, with the entity
+name as adjacent text → already correct). **Contrast:** the white-on-emerald gradient CTA is the established brand
+element used app-wide; per "do not redesign", it's **documented, not restyled** (bold text; darker gradient stops
+pass large-text AA).
+
+**C · Performance.** The migration removed ~13 duplicate state classes (fewer rebuild paths); `StatusView` is
+const-friendly and timer-free; no new continuous animations; the `main()` startup path is unchanged. Reviewed
+`ref.watch` scopes on the heaviest screens — already narrow; no risky changes forced (no-regression mandate).
+
+**D · Audits (the 5 additions).**
+- **Widget-reuse (#3):** confirmed none of the 13 shared widgets covers loading/empty/error → `StatusView` is a new
+  responsibility, not a duplicate.
+- **Visual consistency (#1):** audited spacing/typography/radius/elevation/animation/icon-size across the state
+  widgets — the drift found is exactly what `StatusView` canonicalizes; tokens (`AppSpacing`/`AppRadius`/…) already
+  consistent elsewhere.
+- **Localization (#2):** **zero hardcoded user-facing `Text` literals** in `lib/features` + `lib/shared` — every
+  string is `l10n.*`; RTL re-verified live. Terminology consistent. *Limitation:* AI-generated content language
+  follows the prompt (already handled since Phase 2).
+- **Production code (#4):** `flutter analyze` clean ⇒ the flutter_lints `unused_import` + `unused_element` lints are
+  **0** (no unused imports / dead private methods / unused classes); no `withOpacity` (all `withValues`); no
+  TODO/FIXME. The one real duplication (the state widgets) is removed by `StatusView`.
+
+**l10n:** +4 keys EN/AR (`commonLoading`, `commonRetry`, `commonShowPassword`, `commonHidePassword`).
+
+**Tests (+6 → 466):** `status_view_test` (5 — loading spinner + "loading" semantics, empty icon/title/message/action,
+error message + retry callback, custom retry label, AR localized default); `offline_banner_test` +1 (liveRegion).
+The **`render_all_locales` sweep stayed green** through all 8 migrations (renders each migrated screen's states in
+EN + AR with no overflow) — the primary regression gate.
+
+### VERIFIED live on emulator (`-gpu host`, Skia) — **release build** (R8/minify on), EN + AR
+Registered a fresh employer (`m4polish@cb.app`) to reach empty states.
+- **`StatusView.empty` (My Jobs) — AR + EN:** the unified **tinted circular badge** (briefcase) + title ("لم تنشر
+  أي وظائف بعد." / "You haven't posted any jobs yet.") + "Post your first job" CTA. Previously a bare icon — the
+  consistency win is visible on-device.
+- **Offline banner (AR):** airplane mode → the (now `liveRegion`) banner appears over the empty state; content stays
+  usable; restore → auto-hides.
+- **Accessibility:** password-visibility toggle shows its tooltip; **font scale 2×** on the empty state wraps the
+  title to two lines with **no clipping/overlap**.
+- **Fonts/RTL/branding:** Inter + Cairo render from the bundle; full RTL; release build launches clean (no crash /
+  no R8 regression).
+
+### 🏁 Production readiness report (addition #5)
+| Dimension | Status |
+| --- | --- |
+| **Architecture** | Feature-first + vendor-neutral seams intact; polish added one shared widget (`StatusView`) + semantics at shared seams; **zero feature-to-feature deps**; no new dependencies. |
+| **Accessibility** | Every icon-only control tooltip-labelled; `StatusView` headers + loading announcement; offline banner a live region; text-scale-safe to 2×; decorative images excluded. *Remaining:* full TalkBack sweep + white-on-emerald contrast are documented, non-blocking. |
+| **Performance** | ~13 duplicate classes removed; const/timer-free `StatusView`; Firestore 40 MB bounded cache + `.limit()` (P6·M2); image decode-downsizing (P6·M2); non-blocking App-Check-after-`runApp` startup (P6·M2). |
+| **Localization** | EN + AR complete; **no hardcoded strings**; full RTL; +4 common keys; live-verified both languages. |
+| **Testing** | **466 tests** (analyze clean); `render_all_locales` EN+AR sweep is the regression backbone; release APK + AAB build under R8. |
+| **Remaining manual deployment steps** | Per `docs/RELEASE.md` §7: create the real upload keystore + `key.properties`; provision the Storage bucket + `firebase deploy --only storage`; enable + enforce App Check (allow-list debug token, Play Integrity); optionally add the Crashlytics/Perf Gradle plugins once AGP-9-ready. **Nothing in code blocks on these.** |
+
+### Notes for the next session
+- **`StatusView` is the seam for all future state UX** — new screens should use it (loading/empty/error) rather than
+  hand-rolling; further screens with the standard motif can be migrated incrementally.
+- Bespoke hero empties (`_NeedsResumeView`, `_AnalyzingView`, coach starter-chips) intentionally stay custom.
+- The white-on-emerald CTA contrast + a full TalkBack pass remain the only documented a11y follow-ups.
+
+---
+
 ## 8. Next steps
 
 **Phase 2 COMPLETE.** **Phase 3 · M1 (Jobs Platform) `6a6a72c`, M2 (Applications Center)
@@ -1987,7 +2071,7 @@ built-in Kotlin and breaks `assembleDebug` (`FilePickerPlugin` symbol not found)
 **`file_selector`** (already done). If you re-add a plugin and the build fails on
 `GeneratedPluginRegistrant`, suspect a KGP conflict.
 
-**No functional app bugs open.** `flutter analyze` clean; **460 tests pass** (as of P6·M3).
+**No functional app bugs open.** `flutter analyze` clean; **466 tests pass** (as of P6·M4).
 One known cosmetic limitation: pure-Latin runs can render reversed in the Arabic CV PDF
 (pdf-package bidi; §7.10) — Arabic content is correct. See §7.15/§7.16 "Notes" for the M3/M4 scope
 limitations, §7.17 "Notes" for P6·M1, and §7.18 + §5 for P6·M2 (Storage default bucket unprovisioned →
