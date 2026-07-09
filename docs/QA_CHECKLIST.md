@@ -43,6 +43,10 @@ Android-12 splash path.
 - ☐ Employer: Home stats; My Jobs (create → auto-save → preview → publish);
   Applicants inbox + detail + status change; Analytics dashboard + AI insights.
 - ☐ Settings / Profile: edit + save; change password entry; notification toggles.
+- ☐ **State consistency (P6·M4):** loading / empty / error states render via the
+  shared `StatusView` — one tinted-badge motif, spacing, and typography across
+  screens (My Jobs / Applicants / Analytics / Interview history / Recommendations
+  / Job Matching / Resume Analyzer / CV preview), in EN + AR.
 
 ## 5. Offline readiness
 - ☐ **Airplane mode, cold start:** app launches; text renders with bundled fonts

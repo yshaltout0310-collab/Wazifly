@@ -7,6 +7,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/responsive.dart';
 import '../../../shared/widgets/primary_button.dart';
+import '../../../shared/widgets/status_view.dart';
 import '../application/resume_analyzer_controller.dart';
 import '../domain/resume_analysis.dart';
 import 'widgets/analysis_section.dart';
@@ -42,9 +43,10 @@ class ResumeAnalyzerScreen extends ConsumerWidget {
                     key: const ValueKey('analyzing'),
                     fileName: state.fileName,
                   ),
-                ResumeStatus.error => _ErrorView(
+                ResumeStatus.error => StatusView.error(
                     key: const ValueKey('error'),
                     message: _failureMessage(l10n, state.failure),
+                    retryLabel: l10n.resumeRetry,
                     onRetry: controller.pickAndAnalyze,
                   ),
                 ResumeStatus.success => _ResultsView(
@@ -175,51 +177,6 @@ class _AnalyzingView extends StatelessWidget {
 // ---------------------------------------------------------------------------
 // Error
 // ---------------------------------------------------------------------------
-class _ErrorView extends StatelessWidget {
-  const _ErrorView({required this.message, required this.onRetry, super.key});
-  final String message;
-  final VoidCallback onRetry;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
-
-    return Center(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(vertical: AppSpacing.xl),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 84,
-              height: 84,
-              decoration: BoxDecoration(
-                color: AppColors.error.withValues(alpha: 0.12),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(Icons.error_outline_rounded,
-                  color: AppColors.error, size: 42),
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            Text(
-              message,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.bodyLarge?.copyWith(height: 1.4),
-            ),
-            const SizedBox(height: AppSpacing.xl),
-            PrimaryButton(
-              label: l10n.resumeRetry,
-              icon: Icons.refresh_rounded,
-              onPressed: onRetry,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 // ---------------------------------------------------------------------------
 // Results
 // ---------------------------------------------------------------------------

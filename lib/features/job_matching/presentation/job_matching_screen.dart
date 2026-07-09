@@ -7,6 +7,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/responsive.dart';
 import '../../../shared/widgets/primary_button.dart';
+import '../../../shared/widgets/status_view.dart';
 import '../application/job_matching_controller.dart';
 import '../domain/job_match.dart';
 import 'widgets/job_match_card.dart';
@@ -48,19 +49,20 @@ class JobMatchingScreen extends ConsumerWidget {
                     key: const ValueKey('needsResume'),
                     onUpload: controller.pickAnalyzeAndMatch,
                   ),
-                JobMatchStatus.analyzingResume => _LoadingView(
+                JobMatchStatus.analyzingResume => StatusView.loading(
                     key: const ValueKey('analyzingResume'),
                     title: l10n.jobMatchAnalyzingResume,
-                    hint: l10n.jobMatchAnalyzingResumeHint,
+                    message: l10n.jobMatchAnalyzingResumeHint,
                   ),
-                JobMatchStatus.matching => _LoadingView(
+                JobMatchStatus.matching => StatusView.loading(
                     key: const ValueKey('matching'),
                     title: l10n.jobMatchMatching,
-                    hint: l10n.jobMatchMatchingHint,
+                    message: l10n.jobMatchMatchingHint,
                   ),
-                JobMatchStatus.error => _ErrorView(
+                JobMatchStatus.error => StatusView.error(
                     key: const ValueKey('error'),
                     message: _failureMessage(l10n, state.failure),
+                    retryLabel: l10n.jobMatchRetry,
                     onRetry: controller.retry,
                   ),
                 JobMatchStatus.success => _ResultsView(
@@ -127,96 +129,6 @@ class _NeedsResumeView extends StatelessWidget {
               icon: Icons.upload_file_rounded,
               onPressed: onUpload,
             ).animate(delay: 220.ms).fadeIn().moveY(begin: 12, end: 0),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Loading (matching / analyzing resume)
-// ---------------------------------------------------------------------------
-class _LoadingView extends StatelessWidget {
-  const _LoadingView({required this.title, required this.hint, super.key});
-  final String title;
-  final String hint;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const SizedBox(
-            width: 52,
-            height: 52,
-            child: CircularProgressIndicator(strokeWidth: 4),
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: theme.textTheme.titleMedium
-                ?.copyWith(fontWeight: FontWeight.w700),
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          Text(
-            hint,
-            textAlign: TextAlign.center,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Error
-// ---------------------------------------------------------------------------
-class _ErrorView extends StatelessWidget {
-  const _ErrorView({required this.message, required this.onRetry, super.key});
-  final String message;
-  final VoidCallback onRetry;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
-
-    return Center(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(vertical: AppSpacing.xl),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 84,
-              height: 84,
-              decoration: BoxDecoration(
-                color: AppColors.error.withValues(alpha: 0.12),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(Icons.error_outline_rounded,
-                  color: AppColors.error, size: 42),
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            Text(
-              message,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.bodyLarge?.copyWith(height: 1.4),
-            ),
-            const SizedBox(height: AppSpacing.xl),
-            PrimaryButton(
-              label: l10n.jobMatchRetry,
-              icon: Icons.refresh_rounded,
-              onPressed: onRetry,
-            ),
           ],
         ),
       ),

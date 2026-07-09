@@ -2546,4 +2546,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get offlineBannerMessage => 'You\'re offline — showing saved data';
+
+  @override
+  String get commonLoading => 'Loading…';
+
+  @override
+  String get commonRetry => 'Try again';
+
+  @override
+  String get commonShowPassword => 'Show password';
+
+  @override
+  String get commonHidePassword => 'Hide password';
 }

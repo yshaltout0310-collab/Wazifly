@@ -2534,4 +2534,16 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get offlineBannerMessage =>
       'أنت غير متصل بالإنترنت — يتم عرض البيانات المحفوظة';
+
+  @override
+  String get commonLoading => 'جارٍ التحميل…';
+
+  @override
+  String get commonRetry => 'إعادة المحاولة';
+
+  @override
+  String get commonShowPassword => 'إظهار كلمة المرور';
+
+  @override
+  String get commonHidePassword => 'إخفاء كلمة المرور';
 }

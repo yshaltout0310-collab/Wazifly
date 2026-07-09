@@ -362,6 +362,7 @@ class _CvBuilderScreenState extends ConsumerState<CvBuilderScreen> {
             maxLines: 1, overflow: TextOverflow.ellipsis),
         subtitle: subtitle.isEmpty ? null : Text(subtitle),
         trailing: IconButton(
+          tooltip: AppLocalizations.of(context).remove,
           icon: const Icon(Icons.delete_outline_rounded),
           color: AppColors.error,
           onPressed: onDelete,

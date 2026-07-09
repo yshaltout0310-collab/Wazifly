@@ -99,6 +99,9 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                   labelText: l10n.changePasswordCurrent,
                   prefixIcon: const Icon(Icons.lock_outline_rounded),
                   suffixIcon: IconButton(
+                    tooltip: _obscureCurrent
+                        ? l10n.commonShowPassword
+                        : l10n.commonHidePassword,
                     icon: Icon(_obscureCurrent
                         ? Icons.visibility_outlined
                         : Icons.visibility_off_outlined),
@@ -115,6 +118,9 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                   labelText: l10n.changePasswordNew,
                   prefixIcon: const Icon(Icons.lock_reset_rounded),
                   suffixIcon: IconButton(
+                    tooltip: _obscureNew
+                        ? l10n.commonShowPassword
+                        : l10n.commonHidePassword,
                     icon: Icon(_obscureNew
                         ? Icons.visibility_outlined
                         : Icons.visibility_off_outlined),

@@ -9,6 +9,7 @@ import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/responsive.dart';
 import '../../../shared/models/application.dart';
 import '../../../shared/widgets/application_status_style.dart';
+import '../../../shared/widgets/status_view.dart';
 import '../../../shared/widgets/search_field.dart';
 import '../application/employer_applicants_controller.dart';
 import '../application/employer_applicants_providers.dart';
@@ -121,7 +122,11 @@ class _EmployerApplicantsScreenState
                     const _StatusFilterBar(),
                     Expanded(
                       child: !anyApplicants
-                          ? _EmptyState()
+                          ? StatusView.empty(
+                              icon: Icons.groups_outlined,
+                              title: l10n.employerApplicantsEmpty,
+                              message: l10n.employerApplicantsEmptyHint,
+                            )
                           : groups.isEmpty
                               ? _NoResults()
                               : _ApplicantsList(
@@ -248,38 +253,6 @@ class _ApplicantsList extends ConsumerWidget {
   }
 }
 
-class _EmptyState extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.xl),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.groups_outlined,
-                size: 56,
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.35)),
-            const SizedBox(height: AppSpacing.md),
-            Text(l10n.employerApplicantsEmpty,
-                textAlign: TextAlign.center,
-                style: theme.textTheme.titleMedium
-                    ?.copyWith(fontWeight: FontWeight.w700)),
-            const SizedBox(height: AppSpacing.sm),
-            Text(l10n.employerApplicantsEmptyHint,
-                textAlign: TextAlign.center,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                    color:
-                        theme.colorScheme.onSurface.withValues(alpha: 0.6),
-                    height: 1.4)),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 class _NoResults extends StatelessWidget {
   @override

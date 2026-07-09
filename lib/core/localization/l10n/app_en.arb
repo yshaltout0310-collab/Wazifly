@@ -925,5 +925,10 @@
   "companyRemoveLogoBody": "Your company logo will be deleted.",
   "remove": "Remove",
 
-  "offlineBannerMessage": "You're offline — showing saved data"
+  "offlineBannerMessage": "You're offline — showing saved data",
+
+  "commonLoading": "Loading…",
+  "commonRetry": "Try again",
+  "commonShowPassword": "Show password",
+  "commonHidePassword": "Hide password"
 }

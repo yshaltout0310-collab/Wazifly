@@ -10,6 +10,7 @@ import '../../../core/utils/responsive.dart';
 import '../../../shared/models/job_posting.dart';
 import '../../../shared/widgets/primary_button.dart';
 import '../../../shared/widgets/search_field.dart';
+import '../../../shared/widgets/status_view.dart';
 import '../application/employer_jobs_controller.dart';
 import '../application/employer_jobs_providers.dart';
 import '../domain/job_status.dart';
@@ -90,9 +91,16 @@ class EmployerJobsScreen extends ConsumerWidget {
                     _StatusFilterBar(filter: filter),
                     Expanded(
                       child: !anyJobs
-                          ? _EmptyState(
-                              onCreate: () =>
-                                  context.pushNamed(RouteNames.createJob))
+                          ? StatusView.empty(
+                              icon: Icons.work_outline_rounded,
+                              title: l10n.employerJobsEmpty,
+                              action: PrimaryButton(
+                                label: l10n.employerJobsEmptyCta,
+                                expanded: false,
+                                onPressed: () =>
+                                    context.pushNamed(RouteNames.createJob),
+                              ),
+                            )
                           : jobs.isEmpty
                               ? _NoResults()
                               : _JobsList(jobs: jobs),
@@ -165,45 +173,6 @@ class _JobsList extends ConsumerWidget {
           onAction: (a) => runJobAction(context, ref, job, a),
         );
       },
-    );
-  }
-}
-
-class _EmptyState extends StatelessWidget {
-  const _EmptyState({required this.onCreate});
-  final VoidCallback onCreate;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.xl),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.work_outline_rounded,
-                size: 56,
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.35)),
-            const SizedBox(height: AppSpacing.md),
-            Text(
-              l10n.employerJobsEmpty,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.bodyLarge?.copyWith(
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-                height: 1.4,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            PrimaryButton(
-              label: l10n.employerJobsEmptyCta,
-              onPressed: onCreate,
-              expanded: false,
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

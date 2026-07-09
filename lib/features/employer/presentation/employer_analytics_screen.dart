@@ -11,6 +11,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/responsive.dart';
 import '../../../shared/widgets/primary_button.dart';
+import '../../../shared/widgets/status_view.dart';
 import '../../auth/presentation/widgets/auth_error.dart';
 import '../application/employer_analytics_providers.dart';
 import '../application/recruiter_insights_controller.dart';
@@ -63,47 +64,21 @@ class EmployerAnalyticsScreen extends ConsumerWidget {
         child: ResponsiveCenter(
           maxWidth: 760,
           child: loading
-              ? const Center(child: CircularProgressIndicator())
+              ? const StatusView.loading()
               : (!analytics.hasApplicants && !analytics.hasJobs)
-                  ? _Empty(l10n: l10n)
+                  ? StatusView.empty(
+                      icon: Icons.insights_rounded,
+                      title: l10n.analyticsEmptyTitle,
+                      message: l10n.analyticsEmptyBody,
+                      action: PrimaryButton(
+                        label: l10n.analyticsPostJob,
+                        icon: Icons.post_add_rounded,
+                        expanded: false,
+                        onPressed: () => context.pushNamed(RouteNames.createJob),
+                      ),
+                    )
                   : _Dashboard(analytics: analytics),
         ),
-      ),
-    );
-  }
-}
-
-class _Empty extends StatelessWidget {
-  const _Empty({required this.l10n});
-  final AppLocalizations l10n;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.all(AppSpacing.xl),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.insights_rounded,
-              size: 64, color: theme.colorScheme.primary.withValues(alpha: 0.7)),
-          const SizedBox(height: AppSpacing.lg),
-          Text(l10n.analyticsEmptyTitle,
-              style: theme.textTheme.titleLarge
-                  ?.copyWith(fontWeight: FontWeight.w800)),
-          const SizedBox(height: AppSpacing.sm),
-          Text(l10n.analyticsEmptyBody,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onSurface.withValues(alpha: 0.6))),
-          const SizedBox(height: AppSpacing.xl),
-          PrimaryButton(
-            label: l10n.analyticsPostJob,
-            icon: Icons.post_add_rounded,
-            expanded: false,
-            onPressed: () => context.pushNamed(RouteNames.createJob),
-          ),
-        ],
       ),
     );
   }

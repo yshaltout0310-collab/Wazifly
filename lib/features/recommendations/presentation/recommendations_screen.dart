@@ -7,7 +7,7 @@ import '../../../core/localization/generated/app_localizations.dart';
 import '../../../core/navigation/route_names.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/responsive.dart';
-import '../../../shared/widgets/primary_button.dart';
+import '../../../shared/widgets/status_view.dart';
 import '../../auth/presentation/widgets/auth_error.dart';
 import '../application/recommendations_controller.dart';
 import '../domain/recommendation_models.dart';
@@ -71,10 +71,12 @@ class RecommendationsScreen extends ConsumerWidget {
             child: KeyedSubtree(
               key: ValueKey(state.phase),
               child: switch (state.phase) {
-                RecommendationsPhase.loading => _Busy(message: l10n.recLoading),
-                RecommendationsPhase.error => _Error(
+                RecommendationsPhase.loading =>
+                  StatusView.loading(message: l10n.recLoading),
+                RecommendationsPhase.error => StatusView.error(
                     message: recFailureMessage(
                         l10n, state.failure ?? RecommendationFailure.unknown),
+                    retryLabel: l10n.recRetry,
                     onRetry: () => ref
                         .read(recommendationsControllerProvider.notifier)
                         .retry(),
@@ -285,63 +287,6 @@ class _HeaderCard extends StatelessWidget {
                     color:
                         theme.colorScheme.onSurface.withValues(alpha: 0.5))),
           ],
-        ],
-      ),
-    );
-  }
-}
-
-class _Busy extends StatelessWidget {
-  const _Busy({required this.message});
-  final String message;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const CircularProgressIndicator(),
-          const SizedBox(height: AppSpacing.md),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-            child: Text(message,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleMedium),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _Error extends StatelessWidget {
-  const _Error({required this.message, required this.onRetry});
-  final String message;
-  final VoidCallback onRetry;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final l10n = AppLocalizations.of(context);
-    return Padding(
-      padding: const EdgeInsets.all(AppSpacing.xl),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.error_outline_rounded,
-              size: 56, color: theme.colorScheme.error),
-          const SizedBox(height: AppSpacing.lg),
-          Text(message,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.titleMedium),
-          const SizedBox(height: AppSpacing.xl),
-          PrimaryButton(
-            label: l10n.recRetry,
-            icon: Icons.refresh_rounded,
-            expanded: false,
-            onPressed: onRetry,
-          ),
         ],
       ),
     );

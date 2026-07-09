@@ -47,4 +47,16 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.textContaining('غير متصل'), findsOneWidget);
   });
+
+  testWidgets('the offline bar is a live region for screen readers',
+      (tester) async {
+    await tester.pumpWidget(
+        _app(status: ConnectivityStatus.offline, locale: const Locale('en')));
+    await tester.pumpAndSettle();
+    expect(
+      find.byWidgetPredicate(
+          (w) => w is Semantics && w.properties.liveRegion == true),
+      findsWidgets,
+    );
+  });
 }

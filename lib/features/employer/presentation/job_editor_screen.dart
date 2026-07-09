@@ -464,6 +464,7 @@ class _DateRow extends StatelessWidget {
           if (value != null)
             TextButton(onPressed: onClear, child: Text(l10n.jobClearDate)),
           IconButton(
+            tooltip: label,
             onPressed: onPick,
             icon: const Icon(Icons.calendar_today_outlined, size: 20),
           ),

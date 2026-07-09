@@ -149,6 +149,9 @@ class _EmailAuthScreenState extends ConsumerState<EmailAuthScreen> {
                     autofillHints: const [AutofillHints.password],
                     validator: (v) => _validatePassword(v, l10n),
                     suffix: IconButton(
+                      tooltip: _obscure
+                          ? l10n.commonShowPassword
+                          : l10n.commonHidePassword,
                       icon: Icon(_obscure
                           ? Icons.visibility_outlined
                           : Icons.visibility_off_outlined),

@@ -872,5 +872,10 @@
   "companyRemoveLogoBody": "سيتم حذف شعار شركتك.",
   "remove": "إزالة",
 
-  "offlineBannerMessage": "أنت غير متصل بالإنترنت — يتم عرض البيانات المحفوظة"
+  "offlineBannerMessage": "أنت غير متصل بالإنترنت — يتم عرض البيانات المحفوظة",
+
+  "commonLoading": "جارٍ التحميل…",
+  "commonRetry": "إعادة المحاولة",
+  "commonShowPassword": "إظهار كلمة المرور",
+  "commonHidePassword": "إخفاء كلمة المرور"
 }

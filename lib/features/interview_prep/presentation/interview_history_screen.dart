@@ -8,6 +8,7 @@ import '../../../core/navigation/route_names.dart';
 import '../../../core/services/interview_store/in_memory_interview_history_repository.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/responsive.dart';
+import '../../../shared/widgets/status_view.dart';
 import '../domain/interview_models.dart';
 import 'interview_l10n.dart';
 import 'widgets/score_display.dart';
@@ -26,7 +27,10 @@ class InterviewHistoryScreen extends ConsumerWidget {
       body: SafeArea(
         child: ResponsiveCenter(
           child: sessions.isEmpty
-              ? _Empty(l10n: l10n)
+              ? StatusView.empty(
+                  icon: Icons.history_rounded,
+                  title: l10n.interviewHistoryEmpty,
+                )
               : ListView.separated(
                   padding: EdgeInsets.fromLTRB(context.horizontalGutter,
                       AppSpacing.lg, context.horizontalGutter, AppSpacing.xxl),
@@ -88,28 +92,3 @@ class _SessionTile extends StatelessWidget {
   }
 }
 
-class _Empty extends StatelessWidget {
-  const _Empty({required this.l10n});
-  final AppLocalizations l10n;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.all(AppSpacing.xl),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.history_rounded,
-              size: 64,
-              color: theme.colorScheme.onSurface.withValues(alpha: 0.3)),
-          const SizedBox(height: AppSpacing.lg),
-          Text(l10n.interviewHistoryEmpty,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.titleMedium?.copyWith(
-                  color: theme.colorScheme.onSurface.withValues(alpha: 0.7))),
-        ],
-      ),
-    );
-  }
-}

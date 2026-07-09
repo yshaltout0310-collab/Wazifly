@@ -4,6 +4,7 @@ import 'package:printing/printing.dart';
 
 import '../../../core/localization/generated/app_localizations.dart';
 import '../../../core/theme/app_dimensions.dart';
+import '../../../shared/widgets/status_view.dart';
 import '../application/cv_builder_controller.dart';
 import '../data/pdf/pdf_cv_generator.dart';
 import 'cv_l10n.dart';
@@ -50,7 +51,7 @@ class CvPreviewScreen extends ConsumerWidget {
         canChangeOrientation: false,
         canDebug: false,
         pdfFileName: _fileName(state.data.fullName),
-        loadingWidget: _Loading(message: l10n.cvGenerating),
+        loadingWidget: StatusView.loading(message: l10n.cvGenerating),
         onError: (context, error) => Center(
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.xl),
@@ -65,24 +66,5 @@ class CvPreviewScreen extends ConsumerWidget {
     final base = fullName.trim().isEmpty ? 'CV' : fullName.trim();
     final safe = base.replaceAll(RegExp(r'[^A-Za-z0-9؀-ۿ ]'), '');
     return '${safe.replaceAll(' ', '_')}_CV.pdf';
-  }
-}
-
-class _Loading extends StatelessWidget {
-  const _Loading({required this.message});
-  final String message;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const CircularProgressIndicator(),
-          const SizedBox(height: AppSpacing.md),
-          Text(message),
-        ],
-      ),
-    );
   }
 }

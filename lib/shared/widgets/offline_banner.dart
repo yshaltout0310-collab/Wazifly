@@ -45,30 +45,40 @@ class _OfflineBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    return Material(
-      color: AppColors.darkBackground,
-      child: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.wifi_off_rounded,
-                  size: 18, color: AppColors.white),
-              const SizedBox(width: 8),
-              Flexible(
-                child: Text(
-                  l10n.offlineBannerMessage,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: AppColors.white,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 13,
+    // A live region so a screen reader announces the connectivity change when
+    // the bar appears; the decorative icon is excluded so only the message is
+    // read.
+    return Semantics(
+      liveRegion: true,
+      container: true,
+      label: l10n.offlineBannerMessage,
+      child: Material(
+        color: AppColors.darkBackground,
+        child: SafeArea(
+          top: false,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.wifi_off_rounded,
+                    size: 18, color: AppColors.white),
+                const SizedBox(width: 8),
+                Flexible(
+                  child: ExcludeSemantics(
+                    child: Text(
+                      l10n.offlineBannerMessage,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: AppColors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 13,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
