@@ -1,7 +1,14 @@
 # Career Bridge — Session Handoff
 
 > Living handoff doc so a fresh Claude session can continue immediately.
-> Last updated: **Phase 7 · Milestone 1 (Deployment Preparation — Google Play) — COMPLETE** (see §7.21) — **docs-only**, zero code/deps/config change: a full **Play submission kit** under `docs/store/` (store listing EN **+ Arabic**, asset specs incl. screenshot order, Data Safety, Play Console declarations, master release checklist) + **legal docs** under `docs/legal/` (Privacy Policy + Terms, with AI-transparency + ad-free commitment). Validation = `analyze` clean · **466 tests** · **release `.aab` builds**. App preserved exactly — no regressions.
+> Last updated: **Phase 7 · Milestone 2 (Authentication Enhancements) — COMPLETE** (see §7.22) — **phone verification by
+> linking** (strengthens the existing account, never a phone-only sign-in) + **biometric login** (app-launch gate over
+> the persisted Firebase session; enrol once, "Not Now" remembered; availability-gated; logout/password-change
+> invalidate) + a new **Security Settings** screen. Two new vendor-neutral core seams (`BiometricService` [local_auth],
+> `SecureStore` [flutter_secure_storage] — store only the preference + trusted-device marker, never passwords). Existing
+> users unaffected (biometric off ⇒ identical flow, no migration). `MainActivity`→`FlutterFragmentActivity`. `analyze`
+> clean · **494 tests** (+28) · **live-verified EN + AR** (fingerprint enrol/enable, app-lock unlock, RTL Security). feat `09d78cb`.
+> **Phase 7 · Milestone 1 (Deployment Preparation — Google Play) — COMPLETE** (see §7.21) — **docs-only**, zero code/deps/config change: a full **Play submission kit** under `docs/store/` (store listing EN **+ Arabic**, asset specs incl. screenshot order, Data Safety, Play Console declarations, master release checklist) + **legal docs** under `docs/legal/` (Privacy Policy + Terms, with AI-transparency + ad-free commitment). Validation = `analyze` clean · **466 tests** · **release `.aab` builds**. App preserved exactly — no regressions.
 > **Phase 6 · Milestone 4 (Production Polish) — COMPLETE** (see §7.20) — shared `StatusView` (loading/empty/error) unifies 8 screens, a11y semantics + tooltips, audits clean; live-verified EN + AR on the **release build**. **466 tests.** Production-readiness report in §7.20.
 > **Phase 6 · Milestone 3 (Release Preparation) — COMPLETE** (see §7.19) — live-verified EN + AR on the **release build** (bundled fonts, offline banner, R8/minify on). Release runbook + QA checklist in `docs/`.
 > **Phase 6 · Milestone 2 (Security & Performance) — COMPLETE** (see §7.18) — live-verified EN + AR on `employer01@cb.app` (App Check active on device w/ graceful fallback, hardened rules deployed, no regressions).
@@ -1884,6 +1891,90 @@ CareerBridge as **one AI platform serving Job Seekers and Employers equally**.
   are folded into `RELEASE_CHECKLIST.md` §E — they degrade gracefully and don't block submission.
 - Optional polish: native-speaker review of the Arabic listing; capture the EN (and AR) screenshot sets per the
   recommended order.
+
+---
+
+## 7.22 Phase 7 · Milestone 2 — Authentication Enhancements ✅ COMPLETE (feat `09d78cb`)
+
+> **Production-grade account security: phone verification by linking + biometric login + Security Settings.** All behind
+> the established vendor-neutral seams (interface + single plugin impl + Noop/in-memory + one provider — the `AiService`
+> pattern), **zero product-feature-to-feature deps**, **existing auth/session behavior preserved**. Two new plugins
+> (`local_auth`, `flutter_secure_storage`) — the milestone's genuine blockers, **build-verified immediately** (no new
+> KGP warning). `flutter analyze` clean; **494 tests pass** (+28). **Live-verified EN + AR** on the emulator.
+
+**Two new core services** (`lib/core/services/`):
+- **`biometric/`** — `BiometricService` (`capability()` → available/notEnrolled/unavailable, `authenticate()` →
+  success/failed/unavailable/lockedOut) + `LocalAuthBiometricService` (**only file importing `local_auth`**;
+  `biometricOnly:false` so device-credential/PIN also satisfies) + `NoopBiometricService` (reports unavailable → app
+  never blocks) + `biometricServiceProvider`.
+- **`secure_store/`** — `SecureStore` (read/write/bool/delete/deleteAll) + `FlutterSecureStore` (**only file importing
+  `flutter_secure_storage`**; Android EncryptedSharedPreferences) + `InMemorySecureStore` (tests) + `SecureKeys` +
+  `secureStoreProvider`. Stores **only** the biometric preference + trusted-device marker + the "Not Now" flag —
+  **never passwords or session tokens** (Firebase persists its own session securely; the biometric gate sits in front).
+
+**Phone verification = LINK to the existing account (never phone-only sign-in — Decision 1):**
+- `AuthRepository` phone methods replaced: `verifyPhoneForLink` + `confirmAndLinkSmsCode` (use
+  `currentUser.linkWithCredential`, **preserving the original `AuthMethod`**) + `reauthenticateWithPassword`. New
+  `AuthErrorCode`s `requiresRecentLogin`/`phoneAlreadyInUse`/`credentialAlreadyLinked` (+ Firebase-code mappings + l10n).
+- `PhoneLinkController` (`autoDispose`) drives send→enter-code→link with a **resend cooldown / expiry countdown** Timer;
+  a single **`PhoneVerificationScreen`** (AnimatedSwitcher: number entry w/ country dial-code reuse → OTP) reached from
+  Security Settings. **The old `phone_auth_screen.dart` + `otp_verification_screen.dart` (phone SIGN-IN) were deleted**;
+  the Welcome "Continue with Phone" button was removed.
+
+**Biometric login (app-launch gate over the already-persisted Firebase session — Decision 3):**
+- `BiometricSettingsController` (`{capability, enabled, loaded}`; `enable()` requires a successful biometric confirm
+  then persists + sets a trusted-device id + clears "Not Now"; `disable()`; `reset()`; `shouldOfferEnrollment()`;
+  `declineEnrollment()`; `ensureLoaded()` for the splash gate; `gateActive = enabled && available`).
+- **Enrolment sheet** offered **once** after a fresh **email/Google** sign-in (`maybeOfferBiometricEnrollment`, awaited
+  before `goAfterAuth`), gated on capability, and a **"Not Now" is remembered** (never re-nags; re-enable in Settings).
+- **`SplashScreen`** now branches: session exists **AND** `gateActive` → **`AppLockScreen`** (auto-prompts biometrics;
+  success → `goToRoleHome`; fail/cancel → "Sign in another way" = sign-out → Welcome). Otherwise the flow is
+  **byte-for-byte identical to before** → **existing users unaffected, no migration** (biometric defaults off).
+- **Invalidation rules:** logout (`SettingsScreen._confirmLogout`) and a successful **password change**
+  (`ChangePasswordController`) both call `reset()` → a normal sign-in is required before biometric can be re-enabled
+  ("re-authentication when required", enforced by invalidation rather than gating the toggle).
+
+**New `lib/features/security/`** (depends only on core + the auth repository interface → zero feature-to-feature deps):
+`security_settings_screen.dart` (biometric toggle — **available→interactive / not-enrolled→disabled+hint /
+unavailable→hidden**; remove-trusted-device; verify-phone row showing "Verified ✓ ••••NNNN" once linked),
+`app_lock_screen.dart`, `biometric_enrollment_sheet.dart`, `biometric_settings_controller.dart`. Settings gains a
+**Security** entry (shield) between Change Password and Log out.
+
+**Native + deps:** `MainActivity` → **`FlutterFragmentActivity`** (required by `local_auth`); `USE_BIOMETRIC` in the
+manifest; iOS `NSFaceIDUsageDescription`. `local_auth ^2.3.0` + `flutter_secure_storage ^9.2.2` added; **debug APK +
+(earlier) release AAB build green** — no new KGP warning. **+~40 EN/AR l10n keys** (security/biometric/app-lock/
+phone-verify + `otpResendIn` placeholder), full RTL.
+
+**Tests (+28 → 494):** `secure_store_test` (in-memory store), `biometric_settings_controller_test` (offer/decline/
+enable-requires-auth/disable/reset/gateActive, with a `FakeBiometricService`), `phone_link_controller_test`
+(send→code→link + empty/short-code/error paths via `FakeAuthRepository`), `security_settings_screen_test`
+(available/not-enrolled/unavailable UI states), `auth_exception_test` (new code mappings); `render_all_locales` now
+renders `PhoneVerify`/`AppLock`/`Security` EN+AR; `FakeAuthRepository` extended with link/reauth spies;
+`change_password_controller_test` + `render_all_locales` + `widget_smoke_test` override the biometric/secure providers.
+
+### VERIFIED live on emulator (`-gpu host`, Skia `--no-enable-impeller`), EN + AR
+Enrolled a device PIN + fingerprint (`emu finger touch 1`). Persisted employer session (`m4polish@cb.app`).
+- **Existing user unaffected:** first launch (biometric off) → straight to Employer Home, no gate.
+- **EN:** Settings → **Security** (biometric toggle **available/interactive** since a fingerprint is enrolled) → enable →
+  **system fingerprint prompt** → "Biometric login enabled" + "Remove trusted device" appears. **Relaunch → AppLock →
+  auto fingerprint prompt → unlock → Home** (biometric persisted). **Verify phone**: 🇶🇦 +974 dial-code + field + Send
+  Code → request fires (loading) → **graceful backend-failure** (logcat `17499` reCAPTCHA/region not configured →
+  `onVerificationFailed` → localized snackbar, no crash, stays on entry). *(Full OTP→link needs Firebase phone-auth
+  backend config — reCAPTCHA Enterprise key / SMS region / a test number — the documented manual dependency; the link
+  logic itself is fully unit-tested.)*
+- **AR (RTL):** switched to العربية → **Security** screen fully mirrored (الأمان, toggle ON with icon on the right,
+  إزالة الجهاز الموثوق, التحقق من رقم الهاتف, chevrons/back mirrored) → **relaunch → AppLock gate → fingerprint unlock →
+  Arabic Employer Home**.
+
+### Notes for the next session
+- **`BiometricService` + `SecureStore` are the seams for any future sensitive gate** (re-auth before payments, etc.).
+- **Phone OTP→link end-to-end** needs the Firebase Console: enable phone-auth reCAPTCHA/App-Check or add a **test phone
+  number** (Auth → Phone), or allow the SMS region (§5). Until then it degrades gracefully.
+- Emulator biometric verification recipe: `adb shell locksettings set-pin 1234`; enroll via
+  `am start -a android.settings.FINGERPRINT_ENROLL` → I AGREE → `adb emu finger touch 1` ×~10 (watch `dumpsys
+  fingerprint` `"count"`); satisfy an in-app prompt with a single `emu finger touch 1`. The **system BiometricPrompt
+  screencaps as black** (it's a system surface) — expected, not a bug.
+- Consider promoting the OTP input to a shared widget if a second consumer appears (kept inline now — single consumer).
 
 ---
 
