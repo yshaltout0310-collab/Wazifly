@@ -1,7 +1,23 @@
 # Career Bridge — Session Handoff
 
 > Living handoff doc so a fresh Claude session can continue immediately.
-> Last updated: **Phase 7 · Milestone 3 (Multiple CV Repository) — COMPLETE** (see §7.23) — a **Firestore-backed**
+> Last updated: **Phase 7 · Milestone 4 (Internships & Learning) — COMPLETE** (see §7.24) — extends the job platform
+> with **internships** and a **learning-interests** profile, **reusing the existing Job / JobPosting / Application
+> architecture** (no parallel jobs stack). Internship metadata (funding · category · level · duration · **work mode
+> remote/hybrid/on-site** · **university eligibility** · **schedule** · **certificate** · stipend · **start/deadline
+> dates**) is an **embedded `InternshipDetails`** on `Job` + `JobPosting` (the `SalaryRange`/`JobMetrics` pattern, enums
+> in **shared** so the seeker `Job` never imports `features/employer`); `toJob()` projects it + `trainsBeginners` so the
+> shared `JobDetailView` renders an "Internship details" card + **Internship / Trains-beginners badges** (employer
+> preview == seeker view). New seeker **Internships browse** (scoped consumer of `JobsRepository` + facet filters;
+> detail reuses `/jobs/:id`). Employer job editor gains an **internship section** + a **"Train Beginners" toggle** (badge
+> now; **recommendation-weight hook only — no AI**). New core seam **`LearningProfileRepository`** (`users/{uid}/learning/
+> interests`; interface + Firestore-only-importer impl + in-memory + provider) behind a seeker **Learning Interests**
+> screen (5 categories, add/edit/delete/search, offline-bounded save). `Application` gains a denormalized **`isInternship`**
+> (stamped at apply) + an **Internships filter**; apply/track/withdraw reuse the flow unchanged (incl. multi-CV picker).
+> Also fixed a **latent seeker `_ActionBar` infinite-width bug** (§7.14 pattern) surfaced live by internships→job-detail;
+> job-detail tests now use the real `AppTheme`. `analyze` clean · **571 tests** (+44) · **live-verified EN + AR** (seeker
+> `appreg030157@cb.app`, real Firestore) · `users/{uid}/learning` rules **deployed**. feat `0dc6274`.
+> **Phase 7 · Milestone 3 (Multiple CV Repository) — COMPLETE** (see §7.23) — a **Firestore-backed**
 > `resumes/{resumeId}` repository for **multiple CVs** (create/import/rename/duplicate/archive/restore/set-default/
 > soft-delete), each carrying its own analysis/ATS/matches/recommendations; **tags** + **last-used** + **default
 > protection** (always ≥1 active CV) + **auto-default** + **import dedup**. Core seam `CvRepository` (interface +
@@ -2061,6 +2077,97 @@ badges + left-side ⋮, **إنشاء سيرة** FAB bottom-left).
 - Forward-ready (shaped, not built): **version history** (`version` + a `resumes/{id}/versions` subcollection),
   **sharing** (owner rule ready), **templates** (`CvSource` + Builder templates), **export history**
   (`resumes/{id}/exports`).
+
+---
+
+## 7.24 Phase 7 · Milestone 4 — Internships & Learning ✅ COMPLETE (feat `0dc6274`)
+
+> Extend the job platform with **internships** and a **learning-interests** profile, **reusing** the existing
+> Job/JobPosting/Application architecture (the milestone's "don't duplicate Jobs" mandate) and the vendor-neutral
+> core-seam pattern. `analyze` clean · **571 tests** (+44) · **live-verified EN + AR**; `users/{uid}/learning` rules **deployed**.
+
+### Internships (reuse by embedding + projection — no parallel jobs stack)
+- **`lib/shared/models/internship_details.dart`** — `InternshipDetails` value object embedded on `Job` + `JobPosting`
+  (exactly like `SalaryRange`/`JobMetrics`), with **7 enums in shared** (`InternshipFunding`, `InternshipCategory`,
+  `InternshipLevel`, `InternshipDuration`, **`WorkMode` remote/hybrid/on-site**, **`InternshipEligibility`**
+  university/fresh-grad/everyone, **`InternshipSchedule`** full/part/flexible) + `certificateProvided` + `stipendAmount`/
+  `currency` + **`startDate`/`applicationDeadline`**. Enums live in **shared** (not `features/employer`) so the seeker
+  `Job` embeds them without a seeker→employer dep. Fully defensive JSON + `copyWith` **clear-flags** per nullable field
+  (so editor chips can deselect-to-null). `internship_details_l10n.dart` (also shared) maps each enum → localized label.
+- **`Job`** (+`internship`/`trainsBeginners`/`isInternship`) and **`JobPosting`** (+ same + `isInternship`) extended
+  additively. **`JobPosting.toJob()`** projects `internship` (only when the type is Internship + non-empty) +
+  `trainsBeginners` so the seeker surface sees them with no per-feature change.
+- **`JobDetailView`** (shared) now renders **Internship / Trains-beginners highlight badges** + an **"Internship details"**
+  card (label→value rows using `intl` `DateFormat` for the dates). The employer **preview** and seeker **detail** render
+  identically (one widget).
+- **`lib/features/internships/`** — `InternshipsController` (a **scoped consumer** of `JobsRepository`: fetches jobs,
+  keeps `isInternship`, applies text + facet filters `funding/workMode/category/level` in-memory), `InternshipsScreen`
+  (search + filter sheet + `StatusView` states + count), `InternshipTile`, `InternshipFilterSheet`. **Detail reuses
+  `/jobs/:id`** (no dedicated detail screen — approved).
+- **Employer editor** (`job_editor_controller`/`job_editor_screen`) gains `setTrainBeginners`, `updateInternship`, and
+  `setInternshipWorkMode` (also derives the legacy `remote` bool so the seeker's `remoteOnly` filter keeps working) +
+  a **Train-Beginners switch** and an **internship section** (choice-chip groups + certificate switch + stipend field +
+  start/deadline date rows), shown only when `employmentType == Internship`. **Train Beginners is a persisted flag +
+  badge + documented recommendation-weight hook only — NO AI implemented** (per the milestone).
+
+### Learning Interests (new core seam)
+- **`lib/core/services/learning/`** — `LearningProfileRepository` interface + `FirestoreLearningProfileRepository`
+  (**only** cloud_firestore importer; one small doc at `users/{uid}/learning/interests`; graceful-degrade when not ready;
+  **offline-bounded save**: `set().timeout(2s)` → a timeout means the write is durably queued in the offline cache and is
+  treated as an **optimistic success** so the UI never hangs offline) + `InMemoryLearningProfileRepository` +
+  `learningProfileRepositoryProvider`/`learningProfileProvider`.
+- **`lib/shared/models/learning_profile.dart`** — `LearningProfile` (one flat list, 5 `LearningCategory` values) +
+  `LearningInterest` (deterministic FNV-1a de-dup id from category+label). Pure `added`/`edited`/`removed`/`search`/
+  `byCategory` transitions (the `CvDocument` pattern).
+- **`lib/features/learning/`** — `LearningController` (reads the reactive profile, applies a pure transition, persists;
+  search held in state), `LearningInterestsScreen` (5 category cards + search + failure snackbar), `InterestCategoryCard`
+  (add button + `InputChip`s), `InterestEditorSheet` (add/edit label+note).
+
+### Applications integration
+- **`Application`** gains a denormalized **`isInternship`** (stamped from `job.isInternship` in `Application.create`,
+  defensive JSON). `ApplicationsFilter` gains **`internshipsOnly`** + a chip in the filter sheet + `filteredApplications`
+  narrowing. Apply/track/withdraw + the **multi-CV picker** are reused **unchanged**.
+
+### Wiring / rules / tests
+- Home gains **Internships** + **Learning Interests** CTAs; routes `internships` (`/internships`) + `learning`
+  (`/learning`). ~70 EN + AR l10n keys (naturally-adapted Arabic). `firestore.rules`: owner-scoped
+  `users/{uid}/learning/{docId}` (read/write if `request.auth.uid == uid`) — **deployed**.
+- **+44 tests → 571**: `internship_details_test`, `job_internship_test` (`toJob` projection + backward-compat),
+  `learning_profile_test`, `learning_repository_test`, `learning_controller_test`, `internships_controller_test`,
+  `application_internship_test`; `job_detail_screen_test` now wraps in real `AppTheme` + adds an internship-detail render
+  guard; `render_all_locales` renders Internships + Learning EN + AR.
+
+### 🐞 Latent bug fixed (surfaced live)
+- The seeker **`_ActionBar`** in `job_detail_screen.dart` had the **§7.14 bug #2** shape — the "Ask coach"
+  `OutlinedButton` was **not** wrapped in `Expanded`, so the theme's full-width (`Size.fromHeight`, i.e. infinite-width)
+  button style asserted in the `Row`. Never verified live before (documented follow-up); the internships→`/jobs/:id`
+  flow surfaced it. **Fix:** wrap it in `Expanded` (both buttons now bounded). Regression guard: `job_detail_screen_test`
+  now uses the real `AppTheme`.
+
+### VERIFIED live on emulator (`-gpu host`, Skia `--no-enable-impeller`), EN + AR — real Firestore (offline cache)
+Seeker **`appreg030157@cb.app`**. **AR:** Internships list (٤ فرص تدريب, work-mode/funding/duration chips + يدرّب المبتدئين
+badge) → internship **detail** (تفاصيل التدريب card — all fields incl. work-mode هجين / eligibility طلاب الجامعات فقط /
+certificate شهادة مُقدَّمة / stipend USD 1200) → **Learning** (5 category cards) → **add** "Data Science" (persisted to
+Firestore offline cache, **survived a full app restart**, count → عنصر واحد) → **delete** (back to empty). **EN:**
+Internships list → **filter** Paid (→ 2 results, badge "1") → UX Design Intern **detail** (Funding Paid / Work mode
+On-site / Schedule Full-time / Duration 6–12 months / Category Design / Level Graduate / Eligibility Fresh graduates /
+Certificate No certificate / Stipend 900 USD) → **Apply** ("Application submitted", button → Applied) → **Learning** (5
+categories, LTR). Settings language switch AR↔EN confirmed.
+
+### Notes for the next session
+- **Emulator DNS is currently broken** (`unknown host firestore.googleapis.com`; WiFi up but the 10.0.2.3 forwarder
+  isn't resolving) → the app runs **offline** (offline banner shows, Firestore writes queue in the local cache and sync
+  on reconnect). This is an **env issue** (§10-style), not an app defect — all seeker flows verified against the offline
+  cache. A fresh session on a healthy emulator can confirm the server round-trip + re-verify.
+- **Employer internship editor was NOT live-verified this session** — switching to `employer01@cb.app` needs auth, which
+  the broken DNS blocks. It is **test-verified** (`render_all_locales` JobEditor EN+AR under real `AppTheme` +
+  `job_editor_controller` unit tests + the shared `JobDetailView` internship render). Re-verify live when DNS is healthy:
+  employer → create job → type Internship → fill funding/work-mode/eligibility/schedule/certificate/dates + Train
+  Beginners → Preview (shows the same `JobDetailView`) → publish.
+- **AI is intentionally NOT implemented** — `trainsBeginners` + the learning interests are persisted signals + a
+  documented hook for a future beginner-weighted recommendations pass; the milestone said "prepare the architecture only".
+- **Future-ready (shaped, not built):** Mentors / Learning Marketplace / Career Learning Paths / University Partnerships
+  all anchor on the `users/{uid}/learning/*` namespace + the internship `level`/`eligibility` axes.
 
 ---
 
