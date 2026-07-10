@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../auth/application/auth_providers.dart';
+import '../../security/application/biometric_settings_controller.dart';
 
 enum ChangePasswordStatus { idle, submitting, success, error }
 
@@ -72,6 +73,9 @@ class ChangePasswordController extends StateNotifier<ChangePasswordState> {
             currentPassword: currentPassword,
             newPassword: newPassword,
           );
+      // A sensitive credential change disables biometric login: a normal
+      // sign-in is required again before it can be re-enabled.
+      await _ref.read(biometricSettingsControllerProvider.notifier).reset();
       state = const ChangePasswordState(status: ChangePasswordStatus.success);
       return true;
     } catch (e) {

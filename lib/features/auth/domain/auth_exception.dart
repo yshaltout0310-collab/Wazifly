@@ -10,6 +10,17 @@ enum AuthErrorCode {
   invalidOtp,
   operationNotAllowed,
   cancelled,
+
+  /// The operation needs a recent sign-in (Firebase `requires-recent-login`) —
+  /// the UI prompts the user to re-authenticate first.
+  requiresRecentLogin,
+
+  /// The phone number is already linked to a different account.
+  phoneAlreadyInUse,
+
+  /// The current account already has a phone number linked.
+  credentialAlreadyLinked,
+
   unknown,
 }
 
@@ -35,8 +46,15 @@ class AuthException implements Exception {
       'network-request-failed' => AuthErrorCode.network,
       'too-many-requests' => AuthErrorCode.tooManyRequests,
       'invalid-phone-number' => AuthErrorCode.invalidPhone,
-      'invalid-verification-code' => AuthErrorCode.invalidOtp,
+      'invalid-verification-code' ||
+      'invalid-verification-id' =>
+        AuthErrorCode.invalidOtp,
       'operation-not-allowed' => AuthErrorCode.operationNotAllowed,
+      'requires-recent-login' => AuthErrorCode.requiresRecentLogin,
+      'credential-already-in-use' ||
+      'account-exists-with-different-credential' =>
+        AuthErrorCode.phoneAlreadyInUse,
+      'provider-already-linked' => AuthErrorCode.credentialAlreadyLinked,
       'web-context-canceled' ||
       'cancelled' ||
       'canceled' =>

@@ -122,6 +122,22 @@ dependencies:
   # share / print / save sheet for exporting the generated CV.
   printing: ^5.13.1
 
+  # ---------------------------------------------------------------------------
+  # Phase 7 — Authentication Enhancements (biometric login + secure storage)
+  # ---------------------------------------------------------------------------
+  # local_auth: on-device biometric / device-credential authentication (Face ID,
+  # fingerprint, PIN/pattern/passcode). Used ONLY to gate access to the already-
+  # persisted Firebase session — it never stores or replaces credentials. Wrapped
+  # behind the vendor-neutral BiometricService (the only file importing it) so the
+  # rest of the app stays platform-agnostic. Requires MainActivity to extend
+  # FlutterFragmentActivity (see android/.../MainActivity.kt).
+  local_auth: ^2.3.0
+  # flutter_secure_storage: OS-backed secure storage (Android Keystore /
+  # EncryptedSharedPreferences, iOS Keychain). Stores ONLY the biometric
+  # preference + trusted-device marker — never passwords or session tokens
+  # (Firebase persists its own session securely). Wrapped behind SecureStore.
+  flutter_secure_storage: ^9.2.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

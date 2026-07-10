@@ -13,6 +13,7 @@ import '../../../core/utils/responsive.dart';
 import '../../../shared/models/app_user.dart';
 import '../../auth/application/auth_providers.dart';
 import '../../onboarding/presentation/onboarding_screen.dart';
+import '../../security/application/biometric_settings_controller.dart';
 import '../../user_type/application/user_type_controller.dart';
 import '../../user_type/domain/user_type.dart';
 import '../application/notifications_controller.dart';
@@ -102,6 +103,9 @@ class SettingsScreen extends ConsumerWidget {
     // Clear the device-persisted role so the next account picks its own
     // (job seekers and employers now land on different dashboards).
     await ref.read(userTypeControllerProvider.notifier).clear();
+    // Logout disables biometric login for this session: a normal sign-in is
+    // required before it can be re-enabled.
+    await ref.read(biometricSettingsControllerProvider.notifier).reset();
     if (!context.mounted) return;
     context.goNamed(RouteNames.welcome);
   }
@@ -156,6 +160,14 @@ class SettingsScreen extends ConsumerWidget {
                       trailing: const Icon(Icons.chevron_right_rounded),
                       onTap: () =>
                           context.pushNamed(RouteNames.changePassword),
+                    ),
+                  if (user != null)
+                    SettingsTile(
+                      icon: Icons.security_rounded,
+                      title: l10n.securityTitle,
+                      subtitle: l10n.securitySubtitle,
+                      trailing: const Icon(Icons.chevron_right_rounded),
+                      onTap: () => context.pushNamed(RouteNames.security),
                     ),
                   SettingsTile(
                     icon: Icons.logout_rounded,

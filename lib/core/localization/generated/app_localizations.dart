@@ -4765,6 +4765,222 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Hide password'**
   String get commonHidePassword;
+
+  /// No description provided for @errRequiresRecentLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Please sign in again to continue.'**
+  String get errRequiresRecentLogin;
+
+  /// No description provided for @errPhoneAlreadyInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone number is already linked to another account.'**
+  String get errPhoneAlreadyInUse;
+
+  /// No description provided for @errPhoneAlreadyLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'A phone number is already linked to this account.'**
+  String get errPhoneAlreadyLinked;
+
+  /// No description provided for @otpResendIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend code in {time}'**
+  String otpResendIn(String time);
+
+  /// No description provided for @securityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Security'**
+  String get securityTitle;
+
+  /// No description provided for @securitySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Biometric login and phone verification'**
+  String get securitySubtitle;
+
+  /// No description provided for @securityBiometricSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Biometric login'**
+  String get securityBiometricSection;
+
+  /// No description provided for @securityBiometricTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Biometric login'**
+  String get securityBiometricTitle;
+
+  /// No description provided for @securityBiometricSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Use Face ID or fingerprint to unlock the app'**
+  String get securityBiometricSubtitle;
+
+  /// No description provided for @securityBiometricNotEnrolled.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up a fingerprint or face unlock in your device settings to use this.'**
+  String get securityBiometricNotEnrolled;
+
+  /// No description provided for @securityBiometricUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Biometric login isn\'t available on this device.'**
+  String get securityBiometricUnavailable;
+
+  /// No description provided for @securityRemoveDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove trusted device'**
+  String get securityRemoveDevice;
+
+  /// No description provided for @securityRemoveDeviceSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off biometric login on this device'**
+  String get securityRemoveDeviceSubtitle;
+
+  /// No description provided for @securityRemoveDeviceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove trusted device?'**
+  String get securityRemoveDeviceTitle;
+
+  /// No description provided for @securityRemoveDeviceBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Biometric login will be turned off on this device. You can enable it again anytime.'**
+  String get securityRemoveDeviceBody;
+
+  /// No description provided for @securityDeviceRemovedSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Trusted device removed.'**
+  String get securityDeviceRemovedSnack;
+
+  /// No description provided for @securityPhoneSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone verification'**
+  String get securityPhoneSection;
+
+  /// No description provided for @securityVerifyPhoneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify phone number'**
+  String get securityVerifyPhoneTitle;
+
+  /// No description provided for @securityVerifyPhoneSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a verified phone number to strengthen your account security.'**
+  String get securityVerifyPhoneSubtitle;
+
+  /// No description provided for @securityPhoneVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified'**
+  String get securityPhoneVerified;
+
+  /// No description provided for @securityPhoneNotVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a verified phone number to your account'**
+  String get securityPhoneNotVerified;
+
+  /// No description provided for @phoneLinkedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number verified and linked.'**
+  String get phoneLinkedSuccess;
+
+  /// No description provided for @biometricPromptTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable faster sign-in?'**
+  String get biometricPromptTitle;
+
+  /// No description provided for @biometricPromptBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Use Face ID or your fingerprint to sign in next time — quicker and just as secure.'**
+  String get biometricPromptBody;
+
+  /// No description provided for @biometricEnable.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable'**
+  String get biometricEnable;
+
+  /// No description provided for @biometricNotNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get biometricNotNow;
+
+  /// No description provided for @biometricEnabledSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Biometric login enabled.'**
+  String get biometricEnabledSnack;
+
+  /// No description provided for @biometricDisabledSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Biometric login disabled.'**
+  String get biometricDisabledSnack;
+
+  /// No description provided for @biometricFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t verify. Please try again.'**
+  String get biometricFailed;
+
+  /// No description provided for @biometricReasonEnable.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm it\'s you to enable biometric login'**
+  String get biometricReasonEnable;
+
+  /// No description provided for @biometricReasonUnlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock Career Bridge'**
+  String get biometricReasonUnlock;
+
+  /// No description provided for @appLockTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome back'**
+  String get appLockTitle;
+
+  /// No description provided for @appLockSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock to continue'**
+  String get appLockSubtitle;
+
+  /// No description provided for @appLockFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication failed. Try again or sign in another way.'**
+  String get appLockFailed;
+
+  /// No description provided for @appLockRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get appLockRetry;
+
+  /// No description provided for @appLockSignInAnother.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in another way'**
+  String get appLockSignInAnother;
 }
 
 class _AppLocalizationsDelegate

@@ -10,6 +10,7 @@ import '../../../core/utils/responsive.dart';
 import '../../../shared/widgets/app_logo.dart';
 import '../../../shared/widgets/aurora_background.dart';
 import '../../../shared/widgets/primary_button.dart';
+import '../../security/presentation/biometric_enrollment_sheet.dart';
 import '../application/auth_providers.dart';
 import 'auth_navigation.dart';
 import 'widgets/auth_error.dart';
@@ -30,6 +31,9 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
     setState(() => _googleLoading = true);
     try {
       await ref.read(authRepositoryProvider).signInWithGoogle();
+      if (!mounted) return;
+      // Offer biometric login once (respects a prior "Not Now"); never blocks.
+      await maybeOfferBiometricEnrollment(context, ref);
       if (!mounted) return;
       goAfterAuth(context, ref);
     } catch (e) {
@@ -92,12 +96,6 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                     loading: _googleLoading,
                     onPressed: _google,
                   ).animate(delay: 440.ms).fadeIn().moveY(begin: 16, end: 0),
-                  const SizedBox(height: AppSpacing.md),
-                  AuthMethodButton(
-                    label: l10n.continueWithPhone,
-                    icon: Icons.phone_outlined,
-                    onPressed: () => context.pushNamed(RouteNames.phoneAuth),
-                  ).animate(delay: 520.ms).fadeIn().moveY(begin: 16, end: 0),
                   const Spacer(flex: 1),
                   Text(
                     l10n.termsNote,

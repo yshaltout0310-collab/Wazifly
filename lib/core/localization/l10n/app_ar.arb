@@ -877,5 +877,49 @@
   "commonLoading": "جارٍ التحميل…",
   "commonRetry": "إعادة المحاولة",
   "commonShowPassword": "إظهار كلمة المرور",
-  "commonHidePassword": "إخفاء كلمة المرور"
+  "commonHidePassword": "إخفاء كلمة المرور",
+
+  "errRequiresRecentLogin": "يرجى تسجيل الدخول مرة أخرى للمتابعة.",
+  "errPhoneAlreadyInUse": "رقم الهاتف هذا مرتبط بحساب آخر بالفعل.",
+  "errPhoneAlreadyLinked": "يوجد رقم هاتف مرتبط بهذا الحساب بالفعل.",
+
+  "otpResendIn": "إعادة إرسال الرمز خلال {time}",
+  "@otpResendIn": {
+    "placeholders": { "time": { "type": "String" } }
+  },
+
+  "securityTitle": "الأمان",
+  "securitySubtitle": "تسجيل الدخول بالسمات الحيوية والتحقق من الهاتف",
+  "securityBiometricSection": "تسجيل الدخول بالسمات الحيوية",
+  "securityBiometricTitle": "تسجيل الدخول بالبصمة",
+  "securityBiometricSubtitle": "استخدم بصمة الوجه أو الإصبع لفتح التطبيق",
+  "securityBiometricNotEnrolled": "قم بإعداد بصمة إصبع أو فتح بالوجه في إعدادات جهازك لاستخدام هذه الميزة.",
+  "securityBiometricUnavailable": "تسجيل الدخول بالسمات الحيوية غير متاح على هذا الجهاز.",
+  "securityRemoveDevice": "إزالة الجهاز الموثوق",
+  "securityRemoveDeviceSubtitle": "إيقاف تسجيل الدخول بالبصمة على هذا الجهاز",
+  "securityRemoveDeviceTitle": "إزالة الجهاز الموثوق؟",
+  "securityRemoveDeviceBody": "سيتم إيقاف تسجيل الدخول بالبصمة على هذا الجهاز. يمكنك تفعيله مرة أخرى في أي وقت.",
+  "securityDeviceRemovedSnack": "تمت إزالة الجهاز الموثوق.",
+  "securityPhoneSection": "التحقق من الهاتف",
+  "securityVerifyPhoneTitle": "التحقق من رقم الهاتف",
+  "securityVerifyPhoneSubtitle": "أضِف رقم هاتف مُتحقَّقًا منه لتعزيز أمان حسابك.",
+  "securityPhoneVerified": "مُتحقَّق منه",
+  "securityPhoneNotVerified": "أضِف رقم هاتف مُتحقَّقًا منه إلى حسابك",
+  "phoneLinkedSuccess": "تم التحقق من رقم الهاتف وربطه.",
+
+  "biometricPromptTitle": "تفعيل تسجيل دخول أسرع؟",
+  "biometricPromptBody": "استخدم بصمة الوجه أو الإصبع لتسجيل الدخول في المرة القادمة — أسرع وبنفس الأمان.",
+  "biometricEnable": "تفعيل",
+  "biometricNotNow": "ليس الآن",
+  "biometricEnabledSnack": "تم تفعيل تسجيل الدخول بالبصمة.",
+  "biometricDisabledSnack": "تم إيقاف تسجيل الدخول بالبصمة.",
+  "biometricFailed": "تعذّر التحقق. يرجى المحاولة مرة أخرى.",
+  "biometricReasonEnable": "أكِّد هويتك لتفعيل تسجيل الدخول بالبصمة",
+  "biometricReasonUnlock": "افتح Career Bridge",
+
+  "appLockTitle": "مرحبًا بعودتك",
+  "appLockSubtitle": "افتح للمتابعة",
+  "appLockFailed": "فشل التحقق. حاول مرة أخرى أو سجّل الدخول بطريقة أخرى.",
+  "appLockRetry": "إعادة المحاولة",
+  "appLockSignInAnother": "تسجيل الدخول بطريقة أخرى"
 }

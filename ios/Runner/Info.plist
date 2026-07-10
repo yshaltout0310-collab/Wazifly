@@ -68,5 +68,8 @@
 		</array>
 		<key>UIStatusBarHidden</key>
 		<false/>
+		<!-- Required by local_auth for Face ID: explains why the app uses it. -->
+		<key>NSFaceIDUsageDescription</key>
+		<string>Career Bridge uses Face ID to quickly and securely unlock your account.</string>
 	</dict>
 </plist>

@@ -9,7 +9,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// throws without a live Firebase app, so every test overrides
 /// [authRepositoryProvider] with this fake.
 class FakeAuthRepository implements AuthRepository {
-  FakeAuthRepository({this.user, this.changePasswordError});
+  FakeAuthRepository({
+    this.user,
+    this.changePasswordError,
+    this.linkPhoneError,
+  });
 
   /// The "signed-in" user surfaced by [currentUser] / [authStateChanges].
   final AppUser? user;
@@ -17,11 +21,20 @@ class FakeAuthRepository implements AuthRepository {
   /// When set, [changePassword] throws this (used to exercise failure paths).
   final Object? changePasswordError;
 
+  /// When set, [confirmAndLinkSmsCode] throws this.
+  final Object? linkPhoneError;
+
   /// Records the last [changePassword] arguments for assertions.
   ({String current, String next})? lastPasswordChange;
 
   /// Records the last [updateProfile] arguments for assertions.
   ({String? displayName, String? photoUrl})? lastProfileUpdate;
+
+  /// Records the phone number linked via [confirmAndLinkSmsCode].
+  String? linkedPhone;
+
+  /// Records the last [reauthenticateWithPassword] argument.
+  String? lastReauthPassword;
 
   static const _fakeUser = AppUser(
     uid: 'test-uid',
@@ -57,20 +70,28 @@ class FakeAuthRepository implements AuthRepository {
   Future<AppUser> signInWithGoogle() async => _fakeUser;
 
   @override
-  Future<void> verifyPhoneNumber({
+  Future<void> verifyPhoneForLink({
     required String phoneNumber,
     required PhoneCodeSent onCodeSent,
     required PhoneVerificationFailed onFailed,
-    PhoneAutoVerified? onAutoVerified,
+    PhoneLinked? onAutoLinked,
   }) async =>
       onCodeSent('test-verification-id');
 
   @override
-  Future<AppUser> confirmSmsCode({
+  Future<AppUser> confirmAndLinkSmsCode({
     required String verificationId,
     required String smsCode,
-  }) async =>
-      _fakeUser.copyWithPhone(phoneNumber: '+97412345678');
+  }) async {
+    if (linkPhoneError != null) throw linkPhoneError!;
+    linkedPhone = '+97412345678';
+    return (user ?? _fakeUser).copyWithPhone(phoneNumber: linkedPhone!);
+  }
+
+  @override
+  Future<void> reauthenticateWithPassword(String password) async {
+    lastReauthPassword = password;
+  }
 
   @override
   Future<void> changePassword({
@@ -91,9 +112,11 @@ class FakeAuthRepository implements AuthRepository {
 }
 
 extension on AppUser {
+  // Linking preserves the original sign-in method — the account is merely
+  // strengthened with a verified phone number.
   AppUser copyWithPhone({required String phoneNumber}) => AppUser(
         uid: uid,
-        method: AuthMethod.phone,
+        method: method,
         email: email,
         phoneNumber: phoneNumber,
         displayName: displayName,

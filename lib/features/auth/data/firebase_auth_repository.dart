@@ -84,20 +84,24 @@ class FirebaseAuthRepository implements AuthRepository {
       });
 
   @override
-  Future<void> verifyPhoneNumber({
+  Future<void> verifyPhoneForLink({
     required String phoneNumber,
     required PhoneCodeSent onCodeSent,
     required PhoneVerificationFailed onFailed,
-    PhoneAutoVerified? onAutoVerified,
+    PhoneLinked? onAutoLinked,
   }) async {
     await _auth.verifyPhoneNumber(
       phoneNumber: phoneNumber.trim(),
       verificationCompleted: (PhoneAuthCredential credential) async {
-        if (onAutoVerified == null) return;
+        if (onAutoLinked == null) return;
         try {
-          final cred = await _auth.signInWithCredential(credential);
-          final user = _map(cred.user, method: AuthMethod.phone);
-          if (user != null) onAutoVerified(user);
+          // LINK to the existing account (never signInWithCredential — that
+          // would create/switch to a phone-only account).
+          final user = _auth.currentUser;
+          if (user == null) return;
+          final cred = await user.linkWithCredential(credential);
+          final linked = _map(cred.user);
+          if (linked != null) onAutoLinked(linked);
         } catch (_) {/* fall back to manual entry */}
       },
       verificationFailed: (FirebaseAuthException e) =>
@@ -109,17 +113,33 @@ class FirebaseAuthRepository implements AuthRepository {
   }
 
   @override
-  Future<AppUser> confirmSmsCode({
+  Future<AppUser> confirmAndLinkSmsCode({
     required String verificationId,
     required String smsCode,
   }) =>
       _guard(() async {
+        final user = _auth.currentUser;
+        if (user == null) throw const AuthException(AuthErrorCode.userNotFound);
         final credential = PhoneAuthProvider.credential(
           verificationId: verificationId,
           smsCode: smsCode.trim(),
         );
-        final cred = await _auth.signInWithCredential(credential);
-        return _map(cred.user, method: AuthMethod.phone)!;
+        final cred = await user.linkWithCredential(credential);
+        // Preserve the original sign-in method; the account is merely
+        // strengthened with a verified phone number.
+        return _map(cred.user)!;
+      });
+
+  @override
+  Future<void> reauthenticateWithPassword(String password) => _guard(() async {
+        final user = _auth.currentUser;
+        final email = user?.email;
+        if (user == null || email == null) {
+          throw const AuthException(AuthErrorCode.userNotFound);
+        }
+        final credential =
+            EmailAuthProvider.credential(email: email, password: password);
+        await user.reauthenticateWithCredential(credential);
       });
 
   @override

@@ -43,3 +43,15 @@ void goAfterAuth(BuildContext context, WidgetRef ref) {
     context.goNamed(RouteNames.home);
   }
 }
+
+/// Routes a user who ALREADY has a valid session to their role home. Used by the
+/// splash and the biometric app-lock screen (which unlock an existing session);
+/// unlike [goAfterAuth] it does not re-create the profile/company docs.
+void goToRoleHome(BuildContext context, WidgetRef ref) {
+  final type = ref.read(userTypeControllerProvider);
+  context.goNamed(switch (type) {
+    null => RouteNames.userType,
+    UserType.employer => RouteNames.employerHome,
+    UserType.jobSeeker => RouteNames.home,
+  });
+}

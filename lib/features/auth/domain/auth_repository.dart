@@ -4,7 +4,10 @@ import 'auth_exception.dart';
 /// Phone-verification callbacks.
 typedef PhoneCodeSent = void Function(String verificationId);
 typedef PhoneVerificationFailed = void Function(AuthException error);
-typedef PhoneAutoVerified = void Function(AppUser user);
+
+/// Fired when the platform auto-retrieves the SMS code and the phone is linked
+/// to the current account without manual entry (Android instant verification).
+typedef PhoneLinked = void Function(AppUser user);
 
 /// Authentication contract.
 ///
@@ -34,21 +37,30 @@ abstract interface class AuthRepository {
   // --- Google ---
   Future<AppUser> signInWithGoogle();
 
-  // --- Phone / OTP ---
-  /// Starts verification. On platforms that support it, [onAutoVerified] may
-  /// fire and complete sign-in automatically; otherwise [onCodeSent] provides
-  /// the verification id used by [confirmSmsCode].
-  Future<void> verifyPhoneNumber({
+  // --- Phone / OTP (verification-by-linking; strengthens an existing account) ---
+  /// Starts phone verification in order to **link** the number to the currently
+  /// signed-in account (never a phone-only sign-in). On platforms that support
+  /// it, [onAutoLinked] may fire and complete linking automatically; otherwise
+  /// [onCodeSent] provides the verification id used by [confirmAndLinkSmsCode].
+  Future<void> verifyPhoneForLink({
     required String phoneNumber,
     required PhoneCodeSent onCodeSent,
     required PhoneVerificationFailed onFailed,
-    PhoneAutoVerified? onAutoVerified,
+    PhoneLinked? onAutoLinked,
   });
 
-  Future<AppUser> confirmSmsCode({
+  /// Links the verified phone credential to the current account and returns the
+  /// updated user (now carrying [AppUser.phoneNumber]). Requires a signed-in
+  /// user; throws [AuthException] on failure (e.g. wrong code → invalidOtp,
+  /// number in use → phoneAlreadyInUse, stale login → requiresRecentLogin).
+  Future<AppUser> confirmAndLinkSmsCode({
     required String verificationId,
     required String smsCode,
   });
+
+  /// Re-authenticates the current email/password user with [password]. Used to
+  /// clear a `requires-recent-login` state before a sensitive operation.
+  Future<void> reauthenticateWithPassword(String password);
 
   // --- Account management ---
   /// Re-authenticates with [currentPassword] and sets [newPassword]. Only valid

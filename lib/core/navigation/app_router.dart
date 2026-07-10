@@ -3,9 +3,10 @@ import 'package:go_router/go_router.dart';
 
 import '../localization/generated/app_localizations.dart';
 import '../../features/auth/presentation/email_auth_screen.dart';
-import '../../features/auth/presentation/otp_verification_screen.dart';
-import '../../features/auth/presentation/phone_auth_screen.dart';
+import '../../features/auth/presentation/phone_verification_screen.dart';
 import '../../features/auth/presentation/welcome_screen.dart';
+import '../../features/security/presentation/app_lock_screen.dart';
+import '../../features/security/presentation/security_settings_screen.dart';
 import '../../features/country_selection/presentation/country_selection_screen.dart';
 import '../../features/employer/presentation/company_profile_screen.dart';
 import '../../features/employer/presentation/edit_company_screen.dart';
@@ -101,17 +102,9 @@ abstract final class AppRouter {
         pageBuilder: _fade(const EmailAuthScreen()),
       ),
       GoRoute(
-        path: RouteNames.phoneAuthPath,
-        name: RouteNames.phoneAuth,
-        pageBuilder: _fade(const PhoneAuthScreen()),
-      ),
-      GoRoute(
-        path: RouteNames.otpPath,
-        name: RouteNames.otp,
-        pageBuilder: (context, state) {
-          final args = state.extra as OtpArgs;
-          return _fadePage(OtpVerificationScreen(args: args), state);
-        },
+        path: RouteNames.appLockPath,
+        name: RouteNames.appLock,
+        pageBuilder: _fade(const AppLockScreen()),
       ),
       GoRoute(
         path: RouteNames.userTypePath,
@@ -325,6 +318,18 @@ abstract final class AppRouter {
             path: 'change-password',
             name: RouteNames.changePassword,
             pageBuilder: _fade(const ChangePasswordScreen()),
+          ),
+          GoRoute(
+            path: 'security',
+            name: RouteNames.security,
+            pageBuilder: _fade(const SecuritySettingsScreen()),
+            routes: [
+              GoRoute(
+                path: 'phone',
+                name: RouteNames.phoneVerify,
+                pageBuilder: _fade(const PhoneVerificationScreen()),
+              ),
+            ],
           ),
         ],
       ),

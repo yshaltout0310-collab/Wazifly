@@ -1,12 +1,17 @@
 import 'package:careerbridge/core/localization/generated/app_localizations.dart';
 import 'package:careerbridge/core/localization/locale_controller.dart';
 import 'package:careerbridge/core/providers/app_providers.dart';
+import 'package:careerbridge/core/services/biometric/biometric_providers.dart';
+import 'package:careerbridge/core/services/biometric/noop_biometric_service.dart';
+import 'package:careerbridge/core/services/secure_store/in_memory_secure_store.dart';
+import 'package:careerbridge/core/services/secure_store/secure_store_provider.dart';
 import 'package:careerbridge/core/services/storage/local_storage_service.dart';
 import 'package:careerbridge/core/services/storage/storage_keys.dart';
 import 'package:careerbridge/features/auth/presentation/email_auth_screen.dart';
-import 'package:careerbridge/features/auth/presentation/otp_verification_screen.dart';
-import 'package:careerbridge/features/auth/presentation/phone_auth_screen.dart';
+import 'package:careerbridge/features/auth/presentation/phone_verification_screen.dart';
 import 'package:careerbridge/features/auth/presentation/welcome_screen.dart';
+import 'package:careerbridge/features/security/presentation/app_lock_screen.dart';
+import 'package:careerbridge/features/security/presentation/security_settings_screen.dart';
 import 'package:careerbridge/features/country_selection/presentation/country_selection_screen.dart';
 import 'package:careerbridge/features/employer/presentation/company_profile_screen.dart';
 import 'package:careerbridge/features/employer/presentation/edit_company_screen.dart';
@@ -57,6 +62,10 @@ Widget _host(LocalStorageService storage, Widget child, Locale locale) {
     overrides: [
       localStorageProvider.overrideWithValue(storage),
       fakeAuthOverride(),
+      // Security screens must not touch real biometric / keychain plugins in
+      // the test harness.
+      biometricServiceProvider.overrideWithValue(const NoopBiometricService()),
+      secureStoreProvider.overrideWithValue(InMemorySecureStore()),
     ],
     child: MaterialApp(
       locale: locale,
@@ -86,10 +95,9 @@ void main() {
     'Onboarding': () => const OnboardingScreen(),
     'Welcome': () => const WelcomeScreen(),
     'EmailAuth': () => const EmailAuthScreen(),
-    'PhoneAuth': () => const PhoneAuthScreen(),
-    'Otp': () => const OtpVerificationScreen(
-          args: OtpArgs(verificationId: 'vid', phoneNumber: '+97412345678'),
-        ),
+    'PhoneVerify': () => const PhoneVerificationScreen(),
+    'AppLock': () => const AppLockScreen(),
+    'Security': () => const SecuritySettingsScreen(),
     'UserType': () => const UserTypeSelectionScreen(),
     'Home': () => const HomeScreen(),
     'Settings': () => const SettingsScreen(),

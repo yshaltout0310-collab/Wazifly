@@ -11,6 +11,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../features/auth/application/auth_providers.dart';
 import '../../../features/onboarding/application/onboarding_controller.dart';
+import '../../../features/security/application/biometric_settings_controller.dart';
 import '../../../features/user_type/application/user_type_controller.dart';
 import '../../../features/user_type/domain/user_type.dart';
 
@@ -44,6 +45,18 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     final user = ref.read(authRepositoryProvider).currentUser;
     if (user == null) {
       context.goNamed(RouteNames.welcome);
+      return;
+    }
+
+    // Biometric app-lock gate: only when a session exists AND the user enabled
+    // biometric login AND the device can currently satisfy it. Otherwise the
+    // flow is byte-for-byte identical to before (existing users are unaffected).
+    final biometric = await ref
+        .read(biometricSettingsControllerProvider.notifier)
+        .ensureLoaded();
+    if (!mounted) return;
+    if (biometric.gateActive) {
+      context.goNamed(RouteNames.appLock);
       return;
     }
 

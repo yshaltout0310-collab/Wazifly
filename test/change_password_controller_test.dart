@@ -1,3 +1,6 @@
+import 'package:careerbridge/core/services/biometric/biometric_providers.dart';
+import 'package:careerbridge/core/services/secure_store/in_memory_secure_store.dart';
+import 'package:careerbridge/core/services/secure_store/secure_store_provider.dart';
 import 'package:careerbridge/features/auth/application/auth_providers.dart';
 import 'package:careerbridge/features/auth/domain/auth_exception.dart';
 import 'package:careerbridge/features/profile/application/change_password_controller.dart';
@@ -5,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'support/fake_auth.dart';
+import 'support/fake_biometric.dart';
 
 ProviderContainer _container({Object? changePasswordError}) {
   final container = ProviderContainer(
@@ -12,6 +16,10 @@ ProviderContainer _container({Object? changePasswordError}) {
       authRepositoryProvider.overrideWithValue(
         FakeAuthRepository(changePasswordError: changePasswordError),
       ),
+      // A successful password change resets biometric login — keep that off the
+      // real keychain/biometric plugins in tests.
+      biometricServiceProvider.overrideWithValue(FakeBiometricService()),
+      secureStoreProvider.overrideWithValue(InMemorySecureStore()),
     ],
   );
   addTearDown(container.dispose);

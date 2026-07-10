@@ -930,5 +930,49 @@
   "commonLoading": "Loading…",
   "commonRetry": "Try again",
   "commonShowPassword": "Show password",
-  "commonHidePassword": "Hide password"
+  "commonHidePassword": "Hide password",
+
+  "errRequiresRecentLogin": "Please sign in again to continue.",
+  "errPhoneAlreadyInUse": "This phone number is already linked to another account.",
+  "errPhoneAlreadyLinked": "A phone number is already linked to this account.",
+
+  "otpResendIn": "Resend code in {time}",
+  "@otpResendIn": {
+    "placeholders": { "time": { "type": "String" } }
+  },
+
+  "securityTitle": "Security",
+  "securitySubtitle": "Biometric login and phone verification",
+  "securityBiometricSection": "Biometric login",
+  "securityBiometricTitle": "Biometric login",
+  "securityBiometricSubtitle": "Use Face ID or fingerprint to unlock the app",
+  "securityBiometricNotEnrolled": "Set up a fingerprint or face unlock in your device settings to use this.",
+  "securityBiometricUnavailable": "Biometric login isn't available on this device.",
+  "securityRemoveDevice": "Remove trusted device",
+  "securityRemoveDeviceSubtitle": "Turn off biometric login on this device",
+  "securityRemoveDeviceTitle": "Remove trusted device?",
+  "securityRemoveDeviceBody": "Biometric login will be turned off on this device. You can enable it again anytime.",
+  "securityDeviceRemovedSnack": "Trusted device removed.",
+  "securityPhoneSection": "Phone verification",
+  "securityVerifyPhoneTitle": "Verify phone number",
+  "securityVerifyPhoneSubtitle": "Add a verified phone number to strengthen your account security.",
+  "securityPhoneVerified": "Verified",
+  "securityPhoneNotVerified": "Add a verified phone number to your account",
+  "phoneLinkedSuccess": "Phone number verified and linked.",
+
+  "biometricPromptTitle": "Enable faster sign-in?",
+  "biometricPromptBody": "Use Face ID or your fingerprint to sign in next time — quicker and just as secure.",
+  "biometricEnable": "Enable",
+  "biometricNotNow": "Not now",
+  "biometricEnabledSnack": "Biometric login enabled.",
+  "biometricDisabledSnack": "Biometric login disabled.",
+  "biometricFailed": "Couldn't verify. Please try again.",
+  "biometricReasonEnable": "Confirm it's you to enable biometric login",
+  "biometricReasonUnlock": "Unlock Career Bridge",
+
+  "appLockTitle": "Welcome back",
+  "appLockSubtitle": "Unlock to continue",
+  "appLockFailed": "Authentication failed. Try again or sign in another way.",
+  "appLockRetry": "Try again",
+  "appLockSignInAnother": "Sign in another way"
 }

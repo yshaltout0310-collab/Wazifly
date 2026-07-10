@@ -2546,4 +2546,124 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get commonHidePassword => 'إخفاء كلمة المرور';
+
+  @override
+  String get errRequiresRecentLogin => 'يرجى تسجيل الدخول مرة أخرى للمتابعة.';
+
+  @override
+  String get errPhoneAlreadyInUse => 'رقم الهاتف هذا مرتبط بحساب آخر بالفعل.';
+
+  @override
+  String get errPhoneAlreadyLinked => 'يوجد رقم هاتف مرتبط بهذا الحساب بالفعل.';
+
+  @override
+  String otpResendIn(String time) {
+    return 'إعادة إرسال الرمز خلال $time';
+  }
+
+  @override
+  String get securityTitle => 'الأمان';
+
+  @override
+  String get securitySubtitle =>
+      'تسجيل الدخول بالسمات الحيوية والتحقق من الهاتف';
+
+  @override
+  String get securityBiometricSection => 'تسجيل الدخول بالسمات الحيوية';
+
+  @override
+  String get securityBiometricTitle => 'تسجيل الدخول بالبصمة';
+
+  @override
+  String get securityBiometricSubtitle =>
+      'استخدم بصمة الوجه أو الإصبع لفتح التطبيق';
+
+  @override
+  String get securityBiometricNotEnrolled =>
+      'قم بإعداد بصمة إصبع أو فتح بالوجه في إعدادات جهازك لاستخدام هذه الميزة.';
+
+  @override
+  String get securityBiometricUnavailable =>
+      'تسجيل الدخول بالسمات الحيوية غير متاح على هذا الجهاز.';
+
+  @override
+  String get securityRemoveDevice => 'إزالة الجهاز الموثوق';
+
+  @override
+  String get securityRemoveDeviceSubtitle =>
+      'إيقاف تسجيل الدخول بالبصمة على هذا الجهاز';
+
+  @override
+  String get securityRemoveDeviceTitle => 'إزالة الجهاز الموثوق؟';
+
+  @override
+  String get securityRemoveDeviceBody =>
+      'سيتم إيقاف تسجيل الدخول بالبصمة على هذا الجهاز. يمكنك تفعيله مرة أخرى في أي وقت.';
+
+  @override
+  String get securityDeviceRemovedSnack => 'تمت إزالة الجهاز الموثوق.';
+
+  @override
+  String get securityPhoneSection => 'التحقق من الهاتف';
+
+  @override
+  String get securityVerifyPhoneTitle => 'التحقق من رقم الهاتف';
+
+  @override
+  String get securityVerifyPhoneSubtitle =>
+      'أضِف رقم هاتف مُتحقَّقًا منه لتعزيز أمان حسابك.';
+
+  @override
+  String get securityPhoneVerified => 'مُتحقَّق منه';
+
+  @override
+  String get securityPhoneNotVerified =>
+      'أضِف رقم هاتف مُتحقَّقًا منه إلى حسابك';
+
+  @override
+  String get phoneLinkedSuccess => 'تم التحقق من رقم الهاتف وربطه.';
+
+  @override
+  String get biometricPromptTitle => 'تفعيل تسجيل دخول أسرع؟';
+
+  @override
+  String get biometricPromptBody =>
+      'استخدم بصمة الوجه أو الإصبع لتسجيل الدخول في المرة القادمة — أسرع وبنفس الأمان.';
+
+  @override
+  String get biometricEnable => 'تفعيل';
+
+  @override
+  String get biometricNotNow => 'ليس الآن';
+
+  @override
+  String get biometricEnabledSnack => 'تم تفعيل تسجيل الدخول بالبصمة.';
+
+  @override
+  String get biometricDisabledSnack => 'تم إيقاف تسجيل الدخول بالبصمة.';
+
+  @override
+  String get biometricFailed => 'تعذّر التحقق. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get biometricReasonEnable => 'أكِّد هويتك لتفعيل تسجيل الدخول بالبصمة';
+
+  @override
+  String get biometricReasonUnlock => 'افتح Career Bridge';
+
+  @override
+  String get appLockTitle => 'مرحبًا بعودتك';
+
+  @override
+  String get appLockSubtitle => 'افتح للمتابعة';
+
+  @override
+  String get appLockFailed =>
+      'فشل التحقق. حاول مرة أخرى أو سجّل الدخول بطريقة أخرى.';
+
+  @override
+  String get appLockRetry => 'إعادة المحاولة';
+
+  @override
+  String get appLockSignInAnother => 'تسجيل الدخول بطريقة أخرى';
 }

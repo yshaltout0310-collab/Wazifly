@@ -2558,4 +2558,126 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commonHidePassword => 'Hide password';
+
+  @override
+  String get errRequiresRecentLogin => 'Please sign in again to continue.';
+
+  @override
+  String get errPhoneAlreadyInUse =>
+      'This phone number is already linked to another account.';
+
+  @override
+  String get errPhoneAlreadyLinked =>
+      'A phone number is already linked to this account.';
+
+  @override
+  String otpResendIn(String time) {
+    return 'Resend code in $time';
+  }
+
+  @override
+  String get securityTitle => 'Security';
+
+  @override
+  String get securitySubtitle => 'Biometric login and phone verification';
+
+  @override
+  String get securityBiometricSection => 'Biometric login';
+
+  @override
+  String get securityBiometricTitle => 'Biometric login';
+
+  @override
+  String get securityBiometricSubtitle =>
+      'Use Face ID or fingerprint to unlock the app';
+
+  @override
+  String get securityBiometricNotEnrolled =>
+      'Set up a fingerprint or face unlock in your device settings to use this.';
+
+  @override
+  String get securityBiometricUnavailable =>
+      'Biometric login isn\'t available on this device.';
+
+  @override
+  String get securityRemoveDevice => 'Remove trusted device';
+
+  @override
+  String get securityRemoveDeviceSubtitle =>
+      'Turn off biometric login on this device';
+
+  @override
+  String get securityRemoveDeviceTitle => 'Remove trusted device?';
+
+  @override
+  String get securityRemoveDeviceBody =>
+      'Biometric login will be turned off on this device. You can enable it again anytime.';
+
+  @override
+  String get securityDeviceRemovedSnack => 'Trusted device removed.';
+
+  @override
+  String get securityPhoneSection => 'Phone verification';
+
+  @override
+  String get securityVerifyPhoneTitle => 'Verify phone number';
+
+  @override
+  String get securityVerifyPhoneSubtitle =>
+      'Add a verified phone number to strengthen your account security.';
+
+  @override
+  String get securityPhoneVerified => 'Verified';
+
+  @override
+  String get securityPhoneNotVerified =>
+      'Add a verified phone number to your account';
+
+  @override
+  String get phoneLinkedSuccess => 'Phone number verified and linked.';
+
+  @override
+  String get biometricPromptTitle => 'Enable faster sign-in?';
+
+  @override
+  String get biometricPromptBody =>
+      'Use Face ID or your fingerprint to sign in next time — quicker and just as secure.';
+
+  @override
+  String get biometricEnable => 'Enable';
+
+  @override
+  String get biometricNotNow => 'Not now';
+
+  @override
+  String get biometricEnabledSnack => 'Biometric login enabled.';
+
+  @override
+  String get biometricDisabledSnack => 'Biometric login disabled.';
+
+  @override
+  String get biometricFailed => 'Couldn\'t verify. Please try again.';
+
+  @override
+  String get biometricReasonEnable =>
+      'Confirm it\'s you to enable biometric login';
+
+  @override
+  String get biometricReasonUnlock => 'Unlock Career Bridge';
+
+  @override
+  String get appLockTitle => 'Welcome back';
+
+  @override
+  String get appLockSubtitle => 'Unlock to continue';
+
+  @override
+  String get appLockFailed =>
+      'Authentication failed. Try again or sign in another way.';
+
+  @override
+  String get appLockRetry => 'Try again';
+
+  @override
+  String get appLockSignInAnother => 'Sign in another way';
 }

@@ -19,6 +19,9 @@ String localizedAuthMessage(AppLocalizations l10n, Object error) {
     AuthErrorCode.invalidOtp => l10n.errInvalidOtpCode,
     AuthErrorCode.operationNotAllowed => l10n.errOperationNotAllowed,
     AuthErrorCode.cancelled => l10n.errCancelled,
+    AuthErrorCode.requiresRecentLogin => l10n.errRequiresRecentLogin,
+    AuthErrorCode.phoneAlreadyInUse => l10n.errPhoneAlreadyInUse,
+    AuthErrorCode.credentialAlreadyLinked => l10n.errPhoneAlreadyLinked,
     AuthErrorCode.unknown => l10n.authFailed,
   };
 }

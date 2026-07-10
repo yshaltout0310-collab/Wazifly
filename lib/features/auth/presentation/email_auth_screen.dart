@@ -7,6 +7,7 @@ import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/responsive.dart';
 import '../../../shared/widgets/app_logo.dart';
 import '../../../shared/widgets/primary_button.dart';
+import '../../security/presentation/biometric_enrollment_sheet.dart';
 import '../application/auth_providers.dart';
 import 'auth_navigation.dart';
 import 'widgets/auth_error.dart';
@@ -66,6 +67,9 @@ class _EmailAuthScreenState extends ConsumerState<EmailAuthScreen> {
       } else {
         await repo.signInWithEmail(email: email, password: password);
       }
+      if (!mounted) return;
+      // Offer biometric login once (respects a prior "Not Now"); never blocks.
+      await maybeOfferBiometricEnrollment(context, ref);
       if (!mounted) return;
       goAfterAuth(context, ref);
     } catch (e) {

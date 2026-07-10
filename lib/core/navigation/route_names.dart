@@ -8,14 +8,16 @@ abstract final class RouteNames {
   static const String onboarding = 'onboarding';
   static const String welcome = 'welcome';
   static const String emailAuth = 'emailAuth';
-  static const String phoneAuth = 'phoneAuth';
-  static const String otp = 'otp';
   static const String userType = 'userType';
+  // Biometric app-lock gate (shown at launch over an existing session).
+  static const String appLock = 'appLock';
   static const String home = 'home';
   static const String settings = 'settings';
   static const String profile = 'profile';
   static const String editProfile = 'editProfile';
   static const String changePassword = 'changePassword';
+  static const String security = 'security';
+  static const String phoneVerify = 'phoneVerify';
   static const String resumeAnalyzer = 'resumeAnalyzer';
   static const String jobMatching = 'jobMatching';
   static const String careerCoach = 'careerCoach';
@@ -48,14 +50,15 @@ abstract final class RouteNames {
   static const String onboardingPath = '/onboarding';
   static const String welcomePath = '/welcome';
   static const String emailAuthPath = '/auth/email';
-  static const String phoneAuthPath = '/auth/phone';
-  static const String otpPath = '/auth/otp';
   static const String userTypePath = '/user-type';
+  static const String appLockPath = '/app-lock';
   static const String homePath = '/home';
   static const String settingsPath = '/settings';
   static const String profilePath = '/settings/profile';
   static const String editProfilePath = '/settings/profile/edit';
   static const String changePasswordPath = '/settings/change-password';
+  static const String securityPath = '/settings/security';
+  static const String phoneVerifyPath = '/settings/security/phone';
   static const String resumeAnalyzerPath = '/resume-analyzer';
   static const String jobMatchingPath = '/job-matching';
   static const String careerCoachPath = '/career-coach';
