@@ -494,11 +494,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get cvEnhanceFailed => 'تعذّر تحسين سيرتك الذاتية. حاول مرة أخرى.';
 
   @override
-  String get cvErrNetwork =>
-      'لا يوجد اتصال بالإنترنت. تحقّق من شبكتك وحاول مجددًا.';
+  String get cvErrNetwork => 'خطأ في الشبكة. تحقق من اتصالك وحاول مجددًا.';
 
   @override
-  String get cvErrQuota => 'خدمة الذكاء الاصطناعي مشغولة الآن. حاول بعد قليل.';
+  String get cvErrQuota =>
+      'خدمة الذكاء الاصطناعي مشغولة حاليًا. يرجى المحاولة لاحقًا.';
 
   @override
   String get cvErrEmpty =>
@@ -2666,4 +2666,273 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get appLockSignInAnother => 'تسجيل الدخول بطريقة أخرى';
+
+  @override
+  String get featMyCvs => 'سِيَري الذاتية';
+
+  @override
+  String get cvLibraryTitle => 'سِيَري الذاتية';
+
+  @override
+  String get cvSearchHint => 'ابحث في السير والوسوم';
+
+  @override
+  String get cvFilterActive => 'نشطة';
+
+  @override
+  String get cvFilterArchived => 'مؤرشفة';
+
+  @override
+  String get cvSort => 'ترتيب';
+
+  @override
+  String get cvSortUpdated => 'الأحدث تحديثًا';
+
+  @override
+  String get cvSortName => 'الاسم';
+
+  @override
+  String get cvSortAts => 'تقييم ATS';
+
+  @override
+  String get cvSortLastUsed => 'آخر استخدام';
+
+  @override
+  String get cvEmptyTitle => 'لا توجد سير ذاتية بعد';
+
+  @override
+  String get cvEmptyBody => 'أنشئ سيرتك الأولى أو استورد سيرة موجودة.';
+
+  @override
+  String get cvArchivedEmptyTitle => 'لا توجد سير مؤرشفة';
+
+  @override
+  String get cvArchivedEmptyBody => 'ستظهر السير المؤرشفة هنا.';
+
+  @override
+  String get cvCreate => 'إنشاء سيرة';
+
+  @override
+  String get cvImport => 'استيراد سيرة';
+
+  @override
+  String get cvDefaultBadge => 'افتراضية';
+
+  @override
+  String get cvArchivedBadge => 'مؤرشفة';
+
+  @override
+  String get cvSourceBuilt => 'مُنشأة';
+
+  @override
+  String get cvSourceImported => 'مستوردة';
+
+  @override
+  String cvAtsScore(int score) {
+    return 'ATS $score';
+  }
+
+  @override
+  String cvVersion(int version) {
+    return 'الإصدار $version';
+  }
+
+  @override
+  String get cvNameLabel => 'اسم السيرة';
+
+  @override
+  String get cvDefaultNewName => 'سيرتي الذاتية';
+
+  @override
+  String get cvCopySuffix => '(نسخة)';
+
+  @override
+  String get cvTagsLabel => 'الوسوم';
+
+  @override
+  String get cvTagsHint => 'مثال: Flutter، Backend، تدريب';
+
+  @override
+  String get cvSave => 'حفظ';
+
+  @override
+  String get cvActionOpen => 'التعديل في منشئ السيرة';
+
+  @override
+  String get cvActionRename => 'إعادة تسمية';
+
+  @override
+  String get cvActionEditTags => 'تعديل الوسوم';
+
+  @override
+  String get cvActionDuplicate => 'تكرار';
+
+  @override
+  String get cvActionSetDefault => 'تعيين كافتراضية';
+
+  @override
+  String get cvActionArchive => 'أرشفة';
+
+  @override
+  String get cvActionRestore => 'استعادة';
+
+  @override
+  String get cvActionDelete => 'حذف';
+
+  @override
+  String get cvCreateTitle => 'سيرة جديدة';
+
+  @override
+  String get cvRenameTitle => 'إعادة تسمية السيرة';
+
+  @override
+  String get cvEditTagsTitle => 'تعديل الوسوم';
+
+  @override
+  String get cvDeleteTitle => 'حذف هذه السيرة؟';
+
+  @override
+  String get cvDeleteBody => 'ستتم إزالة هذه السيرة من مستودعك.';
+
+  @override
+  String get cvArchiveTitle => 'أرشفة هذه السيرة؟';
+
+  @override
+  String get cvArchiveBody => 'السير المؤرشفة مخفية ويمكن استعادتها في أي وقت.';
+
+  @override
+  String get cvDefaultSet => 'تم تحديث السيرة الافتراضية';
+
+  @override
+  String get cvArchivedDone => 'تمت أرشفة السيرة';
+
+  @override
+  String get cvRestoredDone => 'تمت استعادة السيرة';
+
+  @override
+  String get cvDeletedDone => 'تم حذف السيرة';
+
+  @override
+  String get cvLastActiveTitle => 'احتفظ بسيرة واحدة على الأقل';
+
+  @override
+  String get cvLastActiveBody =>
+      'يجب أن تحتفظ دائمًا بسيرة نشطة واحدة على الأقل. أنشئ أو استعد سيرة أخرى قبل إزالة هذه.';
+
+  @override
+  String get cvImporting => 'جارٍ تحليل سيرتك…';
+
+  @override
+  String get cvImportedDone => 'تم استيراد السيرة';
+
+  @override
+  String get cvImportReplacedDone => 'تم استبدال السيرة';
+
+  @override
+  String get cvImportDuplicateTitle => 'تبدو هذه السيرة مألوفة';
+
+  @override
+  String cvImportDuplicateBody(String name) {
+    return 'لقد استوردت ملفًا مطابقًا بالفعل باسم «$name». ماذا تريد أن تفعل؟';
+  }
+
+  @override
+  String get cvImportReplace => 'استبدال الموجودة';
+
+  @override
+  String get cvImportAsNew => 'استيراد كنسخة جديدة';
+
+  @override
+  String get cvErrNotConfigured =>
+      'خدمة الذكاء الاصطناعي غير مهيأة بعد. يرجى المحاولة لاحقًا.';
+
+  @override
+  String get cvErrImportNoText =>
+      'تعذّر قراءة أي نص من هذا الملف. جرّب سيرة نصية.';
+
+  @override
+  String get cvErrImportFailed => 'فشل الاستيراد. جرّب ملفًا آخر.';
+
+  @override
+  String get cvErrInvalid => 'تعذّرت المعالجة. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get cvErrUnknown => 'حدث خطأ ما. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get cvLastUsedNever => 'لم تُستخدم بعد';
+
+  @override
+  String get cvLastUsedToday => 'آخر استخدام اليوم';
+
+  @override
+  String cvLastUsedAgo(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'آخر استخدام قبل $days أيام',
+      one: 'آخر استخدام أمس',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String cvLastAppliedAt(String job, String company) {
+    return 'تقدّمت إلى $job في $company';
+  }
+
+  @override
+  String get cvDetailContent => 'محتوى السيرة';
+
+  @override
+  String get cvDetailNoContent =>
+      'لا يوجد محتوى في هذه السيرة بعد. افتحها في منشئ السيرة لإضافة التفاصيل.';
+
+  @override
+  String get cvAiSection => 'رؤى الذكاء الاصطناعي';
+
+  @override
+  String get cvAiNoAnalysis => 'لم تُحلَّل بعد';
+
+  @override
+  String get cvAiAttachAnalysis => 'إرفاق أحدث تحليل';
+
+  @override
+  String get cvAiRunMatching => 'البحث عن وظائف مطابقة';
+
+  @override
+  String get cvAiMatching => 'جارٍ البحث عن مطابقات…';
+
+  @override
+  String get cvAiMatchesTitle => 'أفضل الوظائف المطابقة';
+
+  @override
+  String get cvAiNeedAnalysis =>
+      'حلّل هذه السيرة أولًا للعثور على وظائف مطابقة.';
+
+  @override
+  String get cvAiAttachRecommendations => 'إرفاق أحدث التوصيات';
+
+  @override
+  String get cvAiRecommendationsTitle => 'التوصيات';
+
+  @override
+  String get cvBuilderSaveToRepo => 'حفظ في سِيَري';
+
+  @override
+  String get cvBuilderSaved => 'تم الحفظ في سِيَري';
+
+  @override
+  String get cvPickerTitle => 'اختر سيرة ذاتية';
+
+  @override
+  String get cvPickerSubtitle => 'أي سيرة تريد إرسالها؟';
+
+  @override
+  String get cvPickerApply => 'التقديم بهذه السيرة';
+
+  @override
+  String jobsAppliedWithCv(String name) {
+    return 'تم التقديم بـ $name';
+  }
 }

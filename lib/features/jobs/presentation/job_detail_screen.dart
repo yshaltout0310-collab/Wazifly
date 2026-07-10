@@ -7,11 +7,15 @@ import '../../../core/navigation/route_names.dart';
 import '../../../core/services/analytics/analytics_events.dart';
 import '../../../core/services/analytics/firebase_analytics_service.dart';
 import '../../../core/services/applications/in_memory_applications_repository.dart';
+import '../../../core/services/cv_repository/cv_document.dart';
+import '../../../core/services/cv_repository/cv_repository.dart';
+import '../../../core/services/cv_repository/last_selected_cv.dart';
 import '../../../core/services/jobs/saved_jobs_store.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/responsive.dart';
 import '../../../shared/models/job.dart';
+import '../../../shared/widgets/cv_picker_sheet.dart';
 import '../../../shared/widgets/job_detail_view.dart';
 import '../../job_matching/domain/job_match.dart';
 import '../application/job_detail_controller.dart';
@@ -278,34 +282,7 @@ class _ActionBar extends ConsumerWidget {
             const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: FilledButton.icon(
-                onPressed: applied
-                    ? null
-                    : () async {
-                        // Mock apply creates an Application (Pending) in the
-                        // shared applications repository — the single source of
-                        // truth the Applications Center reads.
-                        final app = await ref
-                            .read(applicationsRepositoryProvider)
-                            .apply(job: job);
-                        ref.read(analyticsServiceProvider).logEvent(
-                          AnalyticsEvents.jobApply,
-                          parameters: {AnalyticsParams.jobId: job.id},
-                        );
-                        if (!context.mounted) return;
-                        ScaffoldMessenger.of(context)
-                          ..hideCurrentSnackBar()
-                          ..showSnackBar(SnackBar(
-                            behavior: SnackBarBehavior.floating,
-                            content: Text(l10n.jobsApplyConfirm),
-                            action: SnackBarAction(
-                              label: l10n.jobsViewApplication,
-                              onPressed: () => context.pushNamed(
-                                RouteNames.applicationDetail,
-                                pathParameters: {'id': app.id},
-                              ),
-                            ),
-                          ));
-                      },
+                onPressed: applied ? null : () => _apply(context, ref, l10n),
                 icon: Icon(
                     applied
                         ? Icons.check_circle_rounded
@@ -318,6 +295,63 @@ class _ActionBar extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  /// Applies to [job]. If the user keeps ≥ 2 active CVs, first asks which CV to
+  /// submit (preselecting the last-used / default one and remembering the
+  /// choice). The chosen CV's "last used" info is updated automatically.
+  Future<void> _apply(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l10n,
+  ) async {
+    final activeCvs = ref.read(activeCvsProvider);
+    CvDocument? chosen;
+    if (activeCvs.length >= 2) {
+      final preselected = ref.read(lastSelectedCvProvider) ??
+          ref.read(defaultCvProvider)?.id;
+      chosen = await showCvPickerSheet(context,
+          cvs: activeCvs, preselectedId: preselected);
+      if (chosen == null) return; // dismissed → don't apply
+    } else if (activeCvs.length == 1) {
+      chosen = activeCvs.first;
+    }
+
+    final app = await ref.read(applicationsRepositoryProvider).apply(
+          job: job,
+          cvId: chosen?.id ?? '',
+          cvName: chosen?.name ?? '',
+        );
+
+    // Remember + stamp the CV's last-used info (auto-update on application).
+    if (chosen != null) {
+      await ref.read(lastSelectedCvProvider.notifier).set(chosen.id);
+      await ref.read(cvRepositoryProvider).updateCv(
+            chosen.markUsed(DateTime.now(),
+                jobTitle: job.title, company: job.company),
+          );
+    }
+
+    ref.read(analyticsServiceProvider).logEvent(
+      AnalyticsEvents.jobApply,
+      parameters: {AnalyticsParams.jobId: job.id},
+    );
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(
+        behavior: SnackBarBehavior.floating,
+        content: Text(chosen != null
+            ? l10n.jobsAppliedWithCv(chosen.name)
+            : l10n.jobsApplyConfirm),
+        action: SnackBarAction(
+          label: l10n.jobsViewApplication,
+          onPressed: () => context.pushNamed(
+            RouteNames.applicationDetail,
+            pathParameters: {'id': app.id},
+          ),
+        ),
+      ));
   }
 }
 

@@ -33,13 +33,19 @@ class InMemoryApplicationsRepository implements ApplicationsRepository {
   }
 
   @override
-  Future<Application> apply({required Job job}) async {
+  Future<Application> apply({
+    required Job job,
+    String cvId = '',
+    String cvName = '',
+  }) async {
     final existing = _indexOfJob(job.id);
     if (existing != -1) return _items[existing];
     final app = Application.create(
       id: 'app_${_seq++}',
       job: job,
       now: _clock(),
+      cvId: cvId,
+      cvName: cvName,
     );
     _items.insert(0, app); // newest first
     _emit();

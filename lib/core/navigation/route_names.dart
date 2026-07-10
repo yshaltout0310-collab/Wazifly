@@ -27,6 +27,8 @@ abstract final class RouteNames {
   static const String applicationDetail = 'applicationDetail';
   static const String cvBuilder = 'cvBuilder';
   static const String cvPreview = 'cvPreview';
+  static const String cvLibrary = 'cvLibrary';
+  static const String cvDetail = 'cvDetail';
   static const String interviewPrep = 'interviewPrep';
   static const String interviewHistory = 'interviewHistory';
   static const String interviewSessionDetail = 'interviewSessionDetail';
@@ -68,6 +70,8 @@ abstract final class RouteNames {
   static const String applicationDetailPath = '/applications/:id';
   static const String cvBuilderPath = '/cv-builder';
   static const String cvPreviewPath = '/cv-builder/preview';
+  static const String cvLibraryPath = '/cvs';
+  static const String cvDetailPath = '/cvs/:id';
   static const String interviewPrepPath = '/interview-prep';
   static const String interviewHistoryPath = '/interview-prep/history';
   static const String interviewSessionDetailPath = '/interview-prep/history/:id';

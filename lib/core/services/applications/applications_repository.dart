@@ -11,9 +11,14 @@ abstract interface class ApplicationsRepository {
   /// Emits the current applications list and re-emits on every change.
   Stream<List<Application>> watchApplications();
 
-  /// Creates a Pending application for [job]. Idempotent per `job.id`: if one
-  /// already exists it is returned unchanged.
-  Future<Application> apply({required Job job});
+  /// Creates a Pending application for [job], optionally recording the [cvId] /
+  /// [cvName] the seeker submitted. Idempotent per `job.id`: if one already
+  /// exists it is returned unchanged.
+  Future<Application> apply({
+    required Job job,
+    String cvId = '',
+    String cvName = '',
+  });
 
   /// Advances the application [id] to [status], appending a history event.
   Future<void> updateStatus(String id, ApplicationStatus status);

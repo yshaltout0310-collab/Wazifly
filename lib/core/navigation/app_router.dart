@@ -21,6 +21,8 @@ import '../../features/employer/presentation/job_preview_screen.dart';
 import '../../features/applications/presentation/application_detail_screen.dart';
 import '../../features/cv_builder/presentation/cv_builder_screen.dart';
 import '../../features/cv_builder/presentation/cv_preview_screen.dart';
+import '../../features/cv_repository/presentation/cv_detail_screen.dart';
+import '../../features/cv_repository/presentation/cv_library_screen.dart';
 import '../../features/applications/presentation/applications_screen.dart';
 import '../../features/career_coach/presentation/career_coach_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
@@ -152,12 +154,31 @@ abstract final class AppRouter {
       GoRoute(
         path: RouteNames.cvBuilderPath,
         name: RouteNames.cvBuilder,
-        pageBuilder: _fade(const CvBuilderScreen()),
+        // Optional String `extra` = the id of a stored CV to edit + save back.
+        pageBuilder: (context, state) => _fadePage(
+          CvBuilderScreen(cvId: state.extra as String?),
+          state,
+        ),
         routes: [
           GoRoute(
             path: 'preview',
             name: RouteNames.cvPreview,
             pageBuilder: _fade(const CvPreviewScreen()),
+          ),
+        ],
+      ),
+      GoRoute(
+        path: RouteNames.cvLibraryPath,
+        name: RouteNames.cvLibrary,
+        pageBuilder: _fade(const CvLibraryScreen()),
+        routes: [
+          GoRoute(
+            path: ':id',
+            name: RouteNames.cvDetail,
+            pageBuilder: (context, state) => _fadePage(
+              CvDetailScreen(cvId: state.pathParameters['id'] ?? ''),
+              state,
+            ),
           ),
         ],
       ),

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/localization/generated/app_localizations.dart';
 import '../../../core/navigation/route_names.dart';
+import '../../../core/services/cv_repository/cv_repository.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/responsive.dart';
@@ -19,7 +20,10 @@ import 'widgets/entry_editors.dart';
 /// The CV Builder edit form: seeded from the profile (+ resume analysis),
 /// hand-editable, with an AI "enhance" step and a preview/export handoff.
 class CvBuilderScreen extends ConsumerStatefulWidget {
-  const CvBuilderScreen({super.key});
+  const CvBuilderScreen({this.cvId, super.key});
+
+  /// When set, the Builder edits this stored CV and can save back to it.
+  final String? cvId;
 
   @override
   ConsumerState<CvBuilderScreen> createState() => _CvBuilderScreenState();
@@ -44,7 +48,30 @@ class _CvBuilderScreenState extends ConsumerState<CvBuilderScreen> {
   @override
   void initState() {
     super.initState();
+    final notifier = ref.read(cvBuilderControllerProvider.notifier);
+    final cvId = widget.cvId;
+    if (cvId != null) {
+      final cv = ref.read(cvByIdProvider(cvId));
+      if (cv != null) {
+        notifier.beginEditing(cvId, cv.content);
+        _seedFrom(cv.content);
+        return;
+      }
+    }
+    notifier.stopEditing();
     _seedFrom(ref.read(cvBuilderControllerProvider).data);
+  }
+
+  Future<void> _saveToRepository() async {
+    _sync();
+    final l10n = AppLocalizations.of(context);
+    final ok =
+        await ref.read(cvBuilderControllerProvider.notifier).saveToRepository();
+    if (!mounted) return;
+    if (ok) {
+      showAuthSnack(context, l10n.cvBuilderSaved);
+      context.pop();
+    }
   }
 
   @override
@@ -138,6 +165,12 @@ class _CvBuilderScreenState extends ConsumerState<CvBuilderScreen> {
       appBar: AppBar(
         title: Text(l10n.cvBuilderTitle),
         actions: [
+          if (widget.cvId != null)
+            IconButton(
+              tooltip: l10n.cvBuilderSaveToRepo,
+              icon: const Icon(Icons.save_outlined),
+              onPressed: _saveToRepository,
+            ),
           IconButton(
             tooltip: l10n.cvResetFromProfile,
             icon: const Icon(Icons.refresh_rounded),

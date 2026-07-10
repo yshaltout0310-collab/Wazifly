@@ -1037,13 +1037,13 @@ abstract class AppLocalizations {
   /// No description provided for @cvErrNetwork.
   ///
   /// In en, this message translates to:
-  /// **'No internet connection. Check your network and try again.'**
+  /// **'Network error. Check your connection and try again.'**
   String get cvErrNetwork;
 
   /// No description provided for @cvErrQuota.
   ///
   /// In en, this message translates to:
-  /// **'The AI service is busy right now. Please try again shortly.'**
+  /// **'The AI service is busy right now. Please try again later.'**
   String get cvErrQuota;
 
   /// No description provided for @cvErrEmpty.
@@ -4981,6 +4981,498 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sign in another way'**
   String get appLockSignInAnother;
+
+  /// No description provided for @featMyCvs.
+  ///
+  /// In en, this message translates to:
+  /// **'My CVs'**
+  String get featMyCvs;
+
+  /// No description provided for @cvLibraryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My CVs'**
+  String get cvLibraryTitle;
+
+  /// No description provided for @cvSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search CVs and tags'**
+  String get cvSearchHint;
+
+  /// No description provided for @cvFilterActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get cvFilterActive;
+
+  /// No description provided for @cvFilterArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'Archived'**
+  String get cvFilterArchived;
+
+  /// No description provided for @cvSort.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort'**
+  String get cvSort;
+
+  /// No description provided for @cvSortUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Recently updated'**
+  String get cvSortUpdated;
+
+  /// No description provided for @cvSortName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get cvSortName;
+
+  /// No description provided for @cvSortAts.
+  ///
+  /// In en, this message translates to:
+  /// **'ATS score'**
+  String get cvSortAts;
+
+  /// No description provided for @cvSortLastUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Last used'**
+  String get cvSortLastUsed;
+
+  /// No description provided for @cvEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No CVs yet'**
+  String get cvEmptyTitle;
+
+  /// No description provided for @cvEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your first CV or import an existing resume.'**
+  String get cvEmptyBody;
+
+  /// No description provided for @cvArchivedEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No archived CVs'**
+  String get cvArchivedEmptyTitle;
+
+  /// No description provided for @cvArchivedEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Archived CVs will appear here.'**
+  String get cvArchivedEmptyBody;
+
+  /// No description provided for @cvCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create CV'**
+  String get cvCreate;
+
+  /// No description provided for @cvImport.
+  ///
+  /// In en, this message translates to:
+  /// **'Import CV'**
+  String get cvImport;
+
+  /// No description provided for @cvDefaultBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get cvDefaultBadge;
+
+  /// No description provided for @cvArchivedBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Archived'**
+  String get cvArchivedBadge;
+
+  /// No description provided for @cvSourceBuilt.
+  ///
+  /// In en, this message translates to:
+  /// **'Built'**
+  String get cvSourceBuilt;
+
+  /// No description provided for @cvSourceImported.
+  ///
+  /// In en, this message translates to:
+  /// **'Imported'**
+  String get cvSourceImported;
+
+  /// No description provided for @cvAtsScore.
+  ///
+  /// In en, this message translates to:
+  /// **'ATS {score}'**
+  String cvAtsScore(int score);
+
+  /// No description provided for @cvVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'v{version}'**
+  String cvVersion(int version);
+
+  /// No description provided for @cvNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'CV name'**
+  String get cvNameLabel;
+
+  /// No description provided for @cvDefaultNewName.
+  ///
+  /// In en, this message translates to:
+  /// **'My CV'**
+  String get cvDefaultNewName;
+
+  /// No description provided for @cvCopySuffix.
+  ///
+  /// In en, this message translates to:
+  /// **'(copy)'**
+  String get cvCopySuffix;
+
+  /// No description provided for @cvTagsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Tags'**
+  String get cvTagsLabel;
+
+  /// No description provided for @cvTagsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Flutter, Backend, Internship'**
+  String get cvTagsHint;
+
+  /// No description provided for @cvSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get cvSave;
+
+  /// No description provided for @cvActionOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit in CV Builder'**
+  String get cvActionOpen;
+
+  /// No description provided for @cvActionRename.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get cvActionRename;
+
+  /// No description provided for @cvActionEditTags.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit tags'**
+  String get cvActionEditTags;
+
+  /// No description provided for @cvActionDuplicate.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate'**
+  String get cvActionDuplicate;
+
+  /// No description provided for @cvActionSetDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Set as default'**
+  String get cvActionSetDefault;
+
+  /// No description provided for @cvActionArchive.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive'**
+  String get cvActionArchive;
+
+  /// No description provided for @cvActionRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get cvActionRestore;
+
+  /// No description provided for @cvActionDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get cvActionDelete;
+
+  /// No description provided for @cvCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New CV'**
+  String get cvCreateTitle;
+
+  /// No description provided for @cvRenameTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename CV'**
+  String get cvRenameTitle;
+
+  /// No description provided for @cvEditTagsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit tags'**
+  String get cvEditTagsTitle;
+
+  /// No description provided for @cvDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this CV?'**
+  String get cvDeleteTitle;
+
+  /// No description provided for @cvDeleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This CV will be removed from your repository.'**
+  String get cvDeleteBody;
+
+  /// No description provided for @cvArchiveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive this CV?'**
+  String get cvArchiveTitle;
+
+  /// No description provided for @cvArchiveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Archived CVs are hidden but can be restored anytime.'**
+  String get cvArchiveBody;
+
+  /// No description provided for @cvDefaultSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Default CV updated'**
+  String get cvDefaultSet;
+
+  /// No description provided for @cvArchivedDone.
+  ///
+  /// In en, this message translates to:
+  /// **'CV archived'**
+  String get cvArchivedDone;
+
+  /// No description provided for @cvRestoredDone.
+  ///
+  /// In en, this message translates to:
+  /// **'CV restored'**
+  String get cvRestoredDone;
+
+  /// No description provided for @cvDeletedDone.
+  ///
+  /// In en, this message translates to:
+  /// **'CV deleted'**
+  String get cvDeletedDone;
+
+  /// No description provided for @cvLastActiveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep at least one CV'**
+  String get cvLastActiveTitle;
+
+  /// No description provided for @cvLastActiveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You must always have at least one active CV. Create or restore another before removing this one.'**
+  String get cvLastActiveBody;
+
+  /// No description provided for @cvImporting.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyzing your resume…'**
+  String get cvImporting;
+
+  /// No description provided for @cvImportedDone.
+  ///
+  /// In en, this message translates to:
+  /// **'CV imported'**
+  String get cvImportedDone;
+
+  /// No description provided for @cvImportReplacedDone.
+  ///
+  /// In en, this message translates to:
+  /// **'CV replaced'**
+  String get cvImportReplacedDone;
+
+  /// No description provided for @cvImportDuplicateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This resume looks familiar'**
+  String get cvImportDuplicateTitle;
+
+  /// No description provided for @cvImportDuplicateBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You already imported an identical file as “{name}”. What would you like to do?'**
+  String cvImportDuplicateBody(String name);
+
+  /// No description provided for @cvImportReplace.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace existing'**
+  String get cvImportReplace;
+
+  /// No description provided for @cvImportAsNew.
+  ///
+  /// In en, this message translates to:
+  /// **'Import as new copy'**
+  String get cvImportAsNew;
+
+  /// No description provided for @cvErrNotConfigured.
+  ///
+  /// In en, this message translates to:
+  /// **'AI isn\'t set up yet. Please try again later.'**
+  String get cvErrNotConfigured;
+
+  /// No description provided for @cvErrImportNoText.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t read any text from that PDF. Try a text-based resume.'**
+  String get cvErrImportNoText;
+
+  /// No description provided for @cvErrImportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Import failed. Please try another file.'**
+  String get cvErrImportFailed;
+
+  /// No description provided for @cvErrInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t process that. Please try again.'**
+  String get cvErrInvalid;
+
+  /// No description provided for @cvErrUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong. Please try again.'**
+  String get cvErrUnknown;
+
+  /// No description provided for @cvLastUsedNever.
+  ///
+  /// In en, this message translates to:
+  /// **'Not used yet'**
+  String get cvLastUsedNever;
+
+  /// No description provided for @cvLastUsedToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Last used today'**
+  String get cvLastUsedToday;
+
+  /// No description provided for @cvLastUsedAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =1{Last used yesterday} other{Last used {days} days ago}}'**
+  String cvLastUsedAgo(int days);
+
+  /// No description provided for @cvLastAppliedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Applied to {job} at {company}'**
+  String cvLastAppliedAt(String job, String company);
+
+  /// No description provided for @cvDetailContent.
+  ///
+  /// In en, this message translates to:
+  /// **'CV content'**
+  String get cvDetailContent;
+
+  /// No description provided for @cvDetailNoContent.
+  ///
+  /// In en, this message translates to:
+  /// **'This CV has no content yet. Open it in the CV Builder to add details.'**
+  String get cvDetailNoContent;
+
+  /// No description provided for @cvAiSection.
+  ///
+  /// In en, this message translates to:
+  /// **'AI insights'**
+  String get cvAiSection;
+
+  /// No description provided for @cvAiNoAnalysis.
+  ///
+  /// In en, this message translates to:
+  /// **'Not analyzed yet'**
+  String get cvAiNoAnalysis;
+
+  /// No description provided for @cvAiAttachAnalysis.
+  ///
+  /// In en, this message translates to:
+  /// **'Attach latest analysis'**
+  String get cvAiAttachAnalysis;
+
+  /// No description provided for @cvAiRunMatching.
+  ///
+  /// In en, this message translates to:
+  /// **'Find matching jobs'**
+  String get cvAiRunMatching;
+
+  /// No description provided for @cvAiMatching.
+  ///
+  /// In en, this message translates to:
+  /// **'Finding matches…'**
+  String get cvAiMatching;
+
+  /// No description provided for @cvAiMatchesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Top job matches'**
+  String get cvAiMatchesTitle;
+
+  /// No description provided for @cvAiNeedAnalysis.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyze this CV first to find matching jobs.'**
+  String get cvAiNeedAnalysis;
+
+  /// No description provided for @cvAiAttachRecommendations.
+  ///
+  /// In en, this message translates to:
+  /// **'Attach latest recommendations'**
+  String get cvAiAttachRecommendations;
+
+  /// No description provided for @cvAiRecommendationsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommendations'**
+  String get cvAiRecommendationsTitle;
+
+  /// No description provided for @cvBuilderSaveToRepo.
+  ///
+  /// In en, this message translates to:
+  /// **'Save to My CVs'**
+  String get cvBuilderSaveToRepo;
+
+  /// No description provided for @cvBuilderSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved to My CVs'**
+  String get cvBuilderSaved;
+
+  /// No description provided for @cvPickerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a CV'**
+  String get cvPickerTitle;
+
+  /// No description provided for @cvPickerSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Which CV do you want to submit?'**
+  String get cvPickerSubtitle;
+
+  /// No description provided for @cvPickerApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply with this CV'**
+  String get cvPickerApply;
+
+  /// No description provided for @jobsAppliedWithCv.
+  ///
+  /// In en, this message translates to:
+  /// **'Applied with {name}'**
+  String jobsAppliedWithCv(String name);
 }
 
 class _AppLocalizationsDelegate

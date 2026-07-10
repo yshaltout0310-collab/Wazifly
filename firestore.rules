@@ -118,6 +118,25 @@ service cloud.firestore {
                        capped('text', 5000);
     }
 
+    // CV repository at resumes/{resumeId} (Phase 7 · Milestone 3). Each CV
+    // belongs only to its owner (ownerUid) — no cross-user reads. Create pins
+    // ownership; update/delete are owner-only and can't repoint ownerUid.
+    // Free-text fields (name) are capped; the content/analysis maps are the
+    // app's own serialized models.
+    match /resumes/{resumeId} {
+      allow read: if signedIn() &&
+                     resource.data.ownerUid == request.auth.uid;
+      allow create: if signedIn() &&
+                       request.resource.data.ownerUid == request.auth.uid &&
+                       capped('name', 200);
+      allow update: if signedIn() &&
+                       resource.data.ownerUid == request.auth.uid &&
+                       unchanged('ownerUid') &&
+                       capped('name', 200);
+      allow delete: if signedIn() &&
+                       resource.data.ownerUid == request.auth.uid;
+    }
+
     // Owner-private employer activity log at employerActivity/{id} — the
     // foundation for future auditing. Append-only: only the owner may create or
     // read (no update/delete), so the trail can't be rewritten.

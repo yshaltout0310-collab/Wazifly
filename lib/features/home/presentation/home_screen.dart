@@ -55,6 +55,11 @@ class HomeScreen extends ConsumerWidget {
         route: RouteNames.cvBuilder,
       ),
       (
+        icon: Icons.folder_copy_outlined,
+        label: l10n.featMyCvs,
+        route: RouteNames.cvLibrary,
+      ),
+      (
         icon: Icons.record_voice_over_outlined,
         label: l10n.featInterviewPrep,
         route: RouteNames.interviewPrep,

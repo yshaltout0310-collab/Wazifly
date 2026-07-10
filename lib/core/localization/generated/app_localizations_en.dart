@@ -498,11 +498,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cvErrNetwork =>
-      'No internet connection. Check your network and try again.';
+      'Network error. Check your connection and try again.';
 
   @override
   String get cvErrQuota =>
-      'The AI service is busy right now. Please try again shortly.';
+      'The AI service is busy right now. Please try again later.';
 
   @override
   String get cvErrEmpty =>
@@ -2680,4 +2680,274 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appLockSignInAnother => 'Sign in another way';
+
+  @override
+  String get featMyCvs => 'My CVs';
+
+  @override
+  String get cvLibraryTitle => 'My CVs';
+
+  @override
+  String get cvSearchHint => 'Search CVs and tags';
+
+  @override
+  String get cvFilterActive => 'Active';
+
+  @override
+  String get cvFilterArchived => 'Archived';
+
+  @override
+  String get cvSort => 'Sort';
+
+  @override
+  String get cvSortUpdated => 'Recently updated';
+
+  @override
+  String get cvSortName => 'Name';
+
+  @override
+  String get cvSortAts => 'ATS score';
+
+  @override
+  String get cvSortLastUsed => 'Last used';
+
+  @override
+  String get cvEmptyTitle => 'No CVs yet';
+
+  @override
+  String get cvEmptyBody =>
+      'Create your first CV or import an existing resume.';
+
+  @override
+  String get cvArchivedEmptyTitle => 'No archived CVs';
+
+  @override
+  String get cvArchivedEmptyBody => 'Archived CVs will appear here.';
+
+  @override
+  String get cvCreate => 'Create CV';
+
+  @override
+  String get cvImport => 'Import CV';
+
+  @override
+  String get cvDefaultBadge => 'Default';
+
+  @override
+  String get cvArchivedBadge => 'Archived';
+
+  @override
+  String get cvSourceBuilt => 'Built';
+
+  @override
+  String get cvSourceImported => 'Imported';
+
+  @override
+  String cvAtsScore(int score) {
+    return 'ATS $score';
+  }
+
+  @override
+  String cvVersion(int version) {
+    return 'v$version';
+  }
+
+  @override
+  String get cvNameLabel => 'CV name';
+
+  @override
+  String get cvDefaultNewName => 'My CV';
+
+  @override
+  String get cvCopySuffix => '(copy)';
+
+  @override
+  String get cvTagsLabel => 'Tags';
+
+  @override
+  String get cvTagsHint => 'e.g. Flutter, Backend, Internship';
+
+  @override
+  String get cvSave => 'Save';
+
+  @override
+  String get cvActionOpen => 'Edit in CV Builder';
+
+  @override
+  String get cvActionRename => 'Rename';
+
+  @override
+  String get cvActionEditTags => 'Edit tags';
+
+  @override
+  String get cvActionDuplicate => 'Duplicate';
+
+  @override
+  String get cvActionSetDefault => 'Set as default';
+
+  @override
+  String get cvActionArchive => 'Archive';
+
+  @override
+  String get cvActionRestore => 'Restore';
+
+  @override
+  String get cvActionDelete => 'Delete';
+
+  @override
+  String get cvCreateTitle => 'New CV';
+
+  @override
+  String get cvRenameTitle => 'Rename CV';
+
+  @override
+  String get cvEditTagsTitle => 'Edit tags';
+
+  @override
+  String get cvDeleteTitle => 'Delete this CV?';
+
+  @override
+  String get cvDeleteBody => 'This CV will be removed from your repository.';
+
+  @override
+  String get cvArchiveTitle => 'Archive this CV?';
+
+  @override
+  String get cvArchiveBody =>
+      'Archived CVs are hidden but can be restored anytime.';
+
+  @override
+  String get cvDefaultSet => 'Default CV updated';
+
+  @override
+  String get cvArchivedDone => 'CV archived';
+
+  @override
+  String get cvRestoredDone => 'CV restored';
+
+  @override
+  String get cvDeletedDone => 'CV deleted';
+
+  @override
+  String get cvLastActiveTitle => 'Keep at least one CV';
+
+  @override
+  String get cvLastActiveBody =>
+      'You must always have at least one active CV. Create or restore another before removing this one.';
+
+  @override
+  String get cvImporting => 'Analyzing your resume…';
+
+  @override
+  String get cvImportedDone => 'CV imported';
+
+  @override
+  String get cvImportReplacedDone => 'CV replaced';
+
+  @override
+  String get cvImportDuplicateTitle => 'This resume looks familiar';
+
+  @override
+  String cvImportDuplicateBody(String name) {
+    return 'You already imported an identical file as “$name”. What would you like to do?';
+  }
+
+  @override
+  String get cvImportReplace => 'Replace existing';
+
+  @override
+  String get cvImportAsNew => 'Import as new copy';
+
+  @override
+  String get cvErrNotConfigured =>
+      'AI isn\'t set up yet. Please try again later.';
+
+  @override
+  String get cvErrImportNoText =>
+      'We couldn\'t read any text from that PDF. Try a text-based resume.';
+
+  @override
+  String get cvErrImportFailed => 'Import failed. Please try another file.';
+
+  @override
+  String get cvErrInvalid => 'We couldn\'t process that. Please try again.';
+
+  @override
+  String get cvErrUnknown => 'Something went wrong. Please try again.';
+
+  @override
+  String get cvLastUsedNever => 'Not used yet';
+
+  @override
+  String get cvLastUsedToday => 'Last used today';
+
+  @override
+  String cvLastUsedAgo(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Last used $days days ago',
+      one: 'Last used yesterday',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String cvLastAppliedAt(String job, String company) {
+    return 'Applied to $job at $company';
+  }
+
+  @override
+  String get cvDetailContent => 'CV content';
+
+  @override
+  String get cvDetailNoContent =>
+      'This CV has no content yet. Open it in the CV Builder to add details.';
+
+  @override
+  String get cvAiSection => 'AI insights';
+
+  @override
+  String get cvAiNoAnalysis => 'Not analyzed yet';
+
+  @override
+  String get cvAiAttachAnalysis => 'Attach latest analysis';
+
+  @override
+  String get cvAiRunMatching => 'Find matching jobs';
+
+  @override
+  String get cvAiMatching => 'Finding matches…';
+
+  @override
+  String get cvAiMatchesTitle => 'Top job matches';
+
+  @override
+  String get cvAiNeedAnalysis => 'Analyze this CV first to find matching jobs.';
+
+  @override
+  String get cvAiAttachRecommendations => 'Attach latest recommendations';
+
+  @override
+  String get cvAiRecommendationsTitle => 'Recommendations';
+
+  @override
+  String get cvBuilderSaveToRepo => 'Save to My CVs';
+
+  @override
+  String get cvBuilderSaved => 'Saved to My CVs';
+
+  @override
+  String get cvPickerTitle => 'Choose a CV';
+
+  @override
+  String get cvPickerSubtitle => 'Which CV do you want to submit?';
+
+  @override
+  String get cvPickerApply => 'Apply with this CV';
+
+  @override
+  String jobsAppliedWithCv(String name) {
+    return 'Applied with $name';
+  }
 }

@@ -23,6 +23,8 @@ import 'package:careerbridge/features/employer/presentation/job_editor_screen.da
 import 'package:careerbridge/features/applications/presentation/applications_screen.dart';
 import 'package:careerbridge/features/cv_builder/presentation/cv_builder_screen.dart';
 import 'package:careerbridge/features/cv_builder/presentation/cv_preview_screen.dart';
+import 'package:careerbridge/features/cv_repository/presentation/cv_detail_screen.dart';
+import 'package:careerbridge/features/cv_repository/presentation/cv_library_screen.dart';
 import 'package:careerbridge/features/interview_prep/presentation/interview_history_screen.dart';
 import 'package:careerbridge/features/interview_prep/presentation/interview_prep_screen.dart';
 import 'package:careerbridge/features/career_coach/presentation/career_coach_screen.dart';
@@ -97,6 +99,8 @@ void main() {
     'EmailAuth': () => const EmailAuthScreen(),
     'PhoneVerify': () => const PhoneVerificationScreen(),
     'AppLock': () => const AppLockScreen(),
+    'CvLibrary': () => const CvLibraryScreen(),
+    'CvDetail': () => const CvDetailScreen(cvId: 'x'),
     'Security': () => const SecuritySettingsScreen(),
     'UserType': () => const UserTypeSelectionScreen(),
     'Home': () => const HomeScreen(),

@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/services/ai/ai_exception.dart';
+import '../../../core/services/cv_repository/cv_repository.dart';
 import '../../../core/services/resume_store/resume_analysis_store.dart';
 import '../../auth/application/auth_providers.dart';
 import '../../profile/application/profile_completion_provider.dart';
@@ -70,6 +71,35 @@ class CvBuilderController extends StateNotifier<CvBuilderState> {
   CvBuilderController.seeded(this._ref, CvBuilderState initial) : super(initial);
 
   final Ref _ref;
+
+  /// When set, the Builder is editing a specific stored CV and can save back to
+  /// it (via [saveToRepository]). Null = the ad-hoc single-draft mode (unchanged
+  /// legacy behavior).
+  String? editingCvId;
+
+  /// Begins editing a stored CV's [content] (from the CV repository).
+  void beginEditing(String cvId, CvData content) {
+    editingCvId = cvId;
+    _ref.read(cvDraftStoreProvider).write(content);
+    state = state.copyWith(
+        status: CvBuilderStatus.editing, data: content, clearFailure: true);
+  }
+
+  /// Leaves CV-editing mode (back to the ad-hoc draft).
+  void stopEditing() => editingCvId = null;
+
+  /// Persists the current content back onto the stored CV (bumping its version).
+  /// Returns false if not editing a stored CV.
+  Future<bool> saveToRepository() async {
+    final id = editingCvId;
+    if (id == null) return false;
+    final cv = _ref.read(cvByIdProvider(id));
+    if (cv == null) return false;
+    await _ref
+        .read(cvRepositoryProvider)
+        .updateCv(cv.withContent(state.data, DateTime.now()));
+    return true;
+  }
 
   void _init() {
     final user = _ref.read(authRepositoryProvider).currentUser;

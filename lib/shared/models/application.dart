@@ -96,6 +96,8 @@ class Application extends Equatable {
     this.companyName = '',
     this.source = ApplicationSource.careerBridge,
     this.applicant,
+    this.cvId = '',
+    this.cvName = '',
   });
 
   final String id;
@@ -124,6 +126,10 @@ class Application extends Equatable {
   /// The employer-facing applicant snapshot (null for legacy / seeker-only apps).
   final ApplicantSnapshot? applicant;
 
+  /// The CV the seeker submitted with this application (empty if none chosen).
+  final String cvId;
+  final String cvName;
+
   /// Creates a fresh Pending application from a [job], captured at [now].
   ///
   /// The employer-side identity fields + [applicant] snapshot are optional so the
@@ -139,6 +145,8 @@ class Application extends Equatable {
     String companyName = '',
     ApplicationSource source = ApplicationSource.careerBridge,
     ApplicantSnapshot? applicant,
+    String cvId = '',
+    String cvName = '',
   }) =>
       Application(
         id: id,
@@ -161,6 +169,8 @@ class Application extends Equatable {
         companyName: companyName,
         source: source,
         applicant: applicant,
+        cvId: cvId,
+        cvName: cvName,
       );
 
   /// Returns a copy advanced to [status] at [at], **appending** a history event
@@ -191,6 +201,8 @@ class Application extends Equatable {
     String? companyName,
     ApplicationSource? source,
     ApplicantSnapshot? applicant,
+    String? cvId,
+    String? cvName,
   }) =>
       Application(
         id: id,
@@ -209,6 +221,8 @@ class Application extends Equatable {
         companyName: companyName ?? this.companyName,
         source: source ?? this.source,
         applicant: applicant ?? this.applicant,
+        cvId: cvId ?? this.cvId,
+        cvName: cvName ?? this.cvName,
       );
 
   Map<String, dynamic> toJson() => {
@@ -228,6 +242,8 @@ class Application extends Equatable {
         'companyName': companyName,
         'source': source.name,
         if (applicant != null) 'applicant': applicant!.toJson(),
+        if (cvId.isNotEmpty) 'cvId': cvId,
+        if (cvName.isNotEmpty) 'cvName': cvName,
       };
 
   factory Application.fromJson(Map<String, dynamic> json) {
@@ -254,6 +270,8 @@ class Application extends Equatable {
           ? ApplicantSnapshot.fromJson(
               Map<String, dynamic>.from(json['applicant'] as Map))
           : null,
+      cvId: (json['cvId'] ?? json['cv_id'] ?? '').toString(),
+      cvName: (json['cvName'] ?? json['cv_name'] ?? '').toString(),
     );
   }
 
@@ -275,6 +293,8 @@ class Application extends Equatable {
         companyName,
         source,
         applicant,
+        cvId,
+        cvName,
       ];
 
   static List<ApplicationEvent> _parseHistory(Object? raw) {

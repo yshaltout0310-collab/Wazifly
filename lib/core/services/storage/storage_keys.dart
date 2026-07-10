@@ -19,4 +19,7 @@ abstract final class StorageKeys {
 
   /// Analytics collection consent (opt-out foundation; defaults enabled).
   static const String analyticsConsent = 'pref_analytics_consent';
+
+  /// The CV the user last submitted with a job application (apply-picker memory).
+  static const String lastSelectedCvId = 'pref_last_selected_cv_id';
 }
