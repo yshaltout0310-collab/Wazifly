@@ -9,21 +9,34 @@ import '../../../shared/models/job.dart';
 
 /// Search + status filter for the My Applications list.
 class ApplicationsFilter extends Equatable {
-  const ApplicationsFilter({this.text = '', this.statuses = const {}});
+  const ApplicationsFilter({
+    this.text = '',
+    this.statuses = const {},
+    this.internshipsOnly = false,
+  });
 
   final String text;
   final Set<ApplicationStatus> statuses;
 
-  bool get isActive => text.trim().isNotEmpty || statuses.isNotEmpty;
+  /// When true, show only internship applications.
+  final bool internshipsOnly;
 
-  ApplicationsFilter copyWith({String? text, Set<ApplicationStatus>? statuses}) =>
+  bool get isActive =>
+      text.trim().isNotEmpty || statuses.isNotEmpty || internshipsOnly;
+
+  ApplicationsFilter copyWith({
+    String? text,
+    Set<ApplicationStatus>? statuses,
+    bool? internshipsOnly,
+  }) =>
       ApplicationsFilter(
         text: text ?? this.text,
         statuses: statuses ?? this.statuses,
+        internshipsOnly: internshipsOnly ?? this.internshipsOnly,
       );
 
   @override
-  List<Object?> get props => [text, statuses];
+  List<Object?> get props => [text, statuses, internshipsOnly];
 }
 
 class ApplicationsFilterController extends StateNotifier<ApplicationsFilter> {
@@ -36,6 +49,9 @@ class ApplicationsFilterController extends StateNotifier<ApplicationsFilter> {
     next.contains(status) ? next.remove(status) : next.add(status);
     state = state.copyWith(statuses: next);
   }
+
+  void toggleInternshipsOnly() =>
+      state = state.copyWith(internshipsOnly: !state.internshipsOnly);
 
   void clear() => state = const ApplicationsFilter();
 }
@@ -52,6 +68,7 @@ final filteredApplicationsProvider = Provider<List<Application>>((ref) {
   final text = filter.text.trim().toLowerCase();
 
   final list = all.where((a) {
+    if (filter.internshipsOnly && !a.isInternship) return false;
     if (filter.statuses.isNotEmpty && !filter.statuses.contains(a.status)) {
       return false;
     }

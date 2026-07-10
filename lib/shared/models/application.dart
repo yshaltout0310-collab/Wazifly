@@ -98,6 +98,7 @@ class Application extends Equatable {
     this.applicant,
     this.cvId = '',
     this.cvName = '',
+    this.isInternship = false,
   });
 
   final String id;
@@ -129,6 +130,10 @@ class Application extends Equatable {
   /// The CV the seeker submitted with this application (empty if none chosen).
   final String cvId;
   final String cvName;
+
+  /// Denormalized at apply time: whether the applied job is an internship (lets
+  /// the Applications Center offer an Internships filter without a job lookup).
+  final bool isInternship;
 
   /// Creates a fresh Pending application from a [job], captured at [now].
   ///
@@ -171,6 +176,7 @@ class Application extends Equatable {
         applicant: applicant,
         cvId: cvId,
         cvName: cvName,
+        isInternship: job.isInternship,
       );
 
   /// Returns a copy advanced to [status] at [at], **appending** a history event
@@ -203,6 +209,7 @@ class Application extends Equatable {
     ApplicantSnapshot? applicant,
     String? cvId,
     String? cvName,
+    bool? isInternship,
   }) =>
       Application(
         id: id,
@@ -223,6 +230,7 @@ class Application extends Equatable {
         applicant: applicant ?? this.applicant,
         cvId: cvId ?? this.cvId,
         cvName: cvName ?? this.cvName,
+        isInternship: isInternship ?? this.isInternship,
       );
 
   Map<String, dynamic> toJson() => {
@@ -244,6 +252,7 @@ class Application extends Equatable {
         if (applicant != null) 'applicant': applicant!.toJson(),
         if (cvId.isNotEmpty) 'cvId': cvId,
         if (cvName.isNotEmpty) 'cvName': cvName,
+        if (isInternship) 'isInternship': true,
       };
 
   factory Application.fromJson(Map<String, dynamic> json) {
@@ -272,6 +281,8 @@ class Application extends Equatable {
           : null,
       cvId: (json['cvId'] ?? json['cv_id'] ?? '').toString(),
       cvName: (json['cvName'] ?? json['cv_name'] ?? '').toString(),
+      isInternship:
+          json['isInternship'] == true || json['is_internship'] == true,
     );
   }
 
@@ -295,6 +306,7 @@ class Application extends Equatable {
         applicant,
         cvId,
         cvName,
+        isInternship,
       ];
 
   static List<ApplicationEvent> _parseHistory(Object? raw) {

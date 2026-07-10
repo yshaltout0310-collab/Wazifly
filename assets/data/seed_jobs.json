@@ -152,5 +152,96 @@
     "remote": false,
     "requiredSkills": ["Leadership", "Mobile", "Agile", "Mentorship", "System Design"],
     "description": "Lead a mobile engineering team: hiring, mentoring, delivery, and technical direction. Strong mobile background (Flutter or native) required."
+  },
+  {
+    "id": "flutter-intern",
+    "title": "Flutter Developer Intern",
+    "company": "Northwind Apps",
+    "location": "Doha, Qatar",
+    "employmentType": "Internship",
+    "seniority": "Entry",
+    "remote": false,
+    "requiredSkills": ["Flutter", "Dart", "Git"],
+    "description": "Join our mobile team as a Flutter intern. Learn production Flutter, ship real features under mentorship, and grow your fundamentals. No prior industry experience required — we train beginners.",
+    "trainsBeginners": true,
+    "internship": {
+      "funding": "paid",
+      "category": "software",
+      "level": "undergraduate",
+      "duration": "threeToSixMonths",
+      "workMode": "hybrid",
+      "eligibility": "universityStudents",
+      "schedule": "fullTime",
+      "certificateProvided": true,
+      "stipendAmount": 1200,
+      "currency": "USD"
+    }
+  },
+  {
+    "id": "data-analyst-intern",
+    "title": "Data Analyst Intern",
+    "company": "Cedar Labs",
+    "location": "Remote",
+    "employmentType": "Internship",
+    "seniority": "Entry",
+    "remote": true,
+    "requiredSkills": ["SQL", "Python", "Excel"],
+    "description": "A remote data internship: build dashboards, run analyses, and support the analytics team. Great for students exploring data careers.",
+    "trainsBeginners": true,
+    "internship": {
+      "funding": "unpaid",
+      "category": "data",
+      "level": "undergraduate",
+      "duration": "oneToThreeMonths",
+      "workMode": "remote",
+      "eligibility": "openToEveryone",
+      "schedule": "partTime",
+      "certificateProvided": true
+    }
+  },
+  {
+    "id": "ux-design-intern",
+    "title": "UX Design Intern",
+    "company": "BluePeak",
+    "location": "Dubai, UAE",
+    "employmentType": "Internship",
+    "seniority": "Entry",
+    "remote": false,
+    "requiredSkills": ["Figma", "UI Design", "Prototyping"],
+    "description": "Support the product design team on real features: wireframes, prototypes, and usability testing. Open to fresh graduates.",
+    "internship": {
+      "funding": "paid",
+      "category": "design",
+      "level": "graduate",
+      "duration": "sixToTwelveMonths",
+      "workMode": "onsite",
+      "eligibility": "freshGraduates",
+      "schedule": "fullTime",
+      "certificateProvided": false,
+      "stipendAmount": 900,
+      "currency": "USD"
+    }
+  },
+  {
+    "id": "marketing-intern",
+    "title": "Marketing Intern",
+    "company": "Skyline Systems",
+    "location": "Riyadh, Saudi Arabia",
+    "employmentType": "Internship",
+    "seniority": "Entry",
+    "remote": false,
+    "requiredSkills": ["Social Media", "Content", "Analytics"],
+    "description": "Learn digital marketing hands-on: campaigns, content, and analytics. A flexible-schedule internship suited to students and career switchers.",
+    "trainsBeginners": true,
+    "internship": {
+      "funding": "unpaid",
+      "category": "marketing",
+      "level": "careerSwitcher",
+      "duration": "upTo1Month",
+      "workMode": "hybrid",
+      "eligibility": "openToEveryone",
+      "schedule": "flexible",
+      "certificateProvided": true
+    }
   }
 ]

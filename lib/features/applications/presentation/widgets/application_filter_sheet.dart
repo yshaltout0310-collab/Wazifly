@@ -76,6 +76,21 @@ class ApplicationFilterSheet extends ConsumerWidget {
                   ),
               ],
             ),
+            const SizedBox(height: AppSpacing.md),
+            FilterChip(
+              avatar: const Icon(Icons.school_outlined, size: 18),
+              label: Text(l10n.internshipBadge),
+              selected: filter.internshipsOnly,
+              onSelected: (_) => controller.toggleInternshipsOnly(),
+              selectedColor: theme.colorScheme.primary.withValues(alpha: 0.18),
+              checkmarkColor: theme.colorScheme.primary,
+              labelStyle: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: filter.internshipsOnly
+                    ? AppColors.emeraldDark
+                    : theme.colorScheme.onSurface,
+              ),
+            ),
             const SizedBox(height: AppSpacing.lg),
             SizedBox(
               width: double.infinity,

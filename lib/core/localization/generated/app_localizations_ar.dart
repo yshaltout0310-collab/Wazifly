@@ -2935,4 +2935,284 @@ class AppLocalizationsAr extends AppLocalizations {
   String jobsAppliedWithCv(String name) {
     return 'تم التقديم بـ $name';
   }
+
+  @override
+  String get homeInternships => 'التدريب';
+
+  @override
+  String get homeInternshipsSubtitle => 'ابحث وتقدَّم لفرص التدريب';
+
+  @override
+  String get homeLearning => 'اهتمامات التعلُّم';
+
+  @override
+  String get homeLearningSubtitle => 'تابع ما تريد تعلُّمه';
+
+  @override
+  String get internshipsTitle => 'فرص التدريب';
+
+  @override
+  String get internshipsSearchHint => 'ابحث في فرص التدريب';
+
+  @override
+  String internshipsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count فرصة تدريب',
+      many: '$count فرصة تدريب',
+      few: '$count فرص تدريب',
+      two: 'فرصتا تدريب',
+      one: 'فرصة تدريب واحدة',
+      zero: 'لا توجد فرص تدريب',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get internshipsEmptyTitle => 'لا توجد فرص تدريب بعد';
+
+  @override
+  String get internshipsEmptyBody =>
+      'ستظهر فرص التدريب الجديدة هنا. عد للتحقق قريبًا.';
+
+  @override
+  String get internshipsNoResultsTitle => 'لا نتائج';
+
+  @override
+  String get internshipsNoResultsBody =>
+      'لا توجد فرص تدريب تطابق بحثك أو عوامل التصفية.';
+
+  @override
+  String get internshipsError =>
+      'تعذّر تحميل فرص التدريب. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get internshipBadge => 'تدريب';
+
+  @override
+  String get trainsBeginnersBadge => 'يدرّب المبتدئين';
+
+  @override
+  String get internshipFilterTitle => 'تصفية فرص التدريب';
+
+  @override
+  String get internshipDetailsSection => 'تفاصيل التدريب';
+
+  @override
+  String get internshipFunding => 'التمويل';
+
+  @override
+  String get internshipFundingPaid => 'مدفوع';
+
+  @override
+  String get internshipFundingUnpaid => 'غير مدفوع';
+
+  @override
+  String get internshipCategory => 'المجال';
+
+  @override
+  String get internshipCategorySoftware => 'برمجيات';
+
+  @override
+  String get internshipCategoryDesign => 'تصميم';
+
+  @override
+  String get internshipCategoryData => 'بيانات';
+
+  @override
+  String get internshipCategoryMarketing => 'تسويق';
+
+  @override
+  String get internshipCategoryBusiness => 'أعمال';
+
+  @override
+  String get internshipCategoryEngineering => 'هندسة';
+
+  @override
+  String get internshipCategoryOther => 'أخرى';
+
+  @override
+  String get internshipLevel => 'المستوى';
+
+  @override
+  String get internshipLevelHighSchool => 'طالب ثانوي';
+
+  @override
+  String get internshipLevelUndergraduate => 'طالب جامعي';
+
+  @override
+  String get internshipLevelGraduate => 'خرّيج دراسات عليا';
+
+  @override
+  String get internshipLevelBootcamp => 'معسكر تدريبي';
+
+  @override
+  String get internshipLevelCareerSwitcher => 'مُغيّر مسار مهني';
+
+  @override
+  String get internshipDuration => 'المدة';
+
+  @override
+  String get internshipDurationUpTo1Month => 'حتى شهر واحد';
+
+  @override
+  String get internshipDurationOneToThree => '١–٣ أشهر';
+
+  @override
+  String get internshipDurationThreeToSix => '٣–٦ أشهر';
+
+  @override
+  String get internshipDurationSixToTwelve => '٦–١٢ شهرًا';
+
+  @override
+  String get internshipWorkMode => 'نمط العمل';
+
+  @override
+  String get internshipWorkModeOnsite => 'في المقر';
+
+  @override
+  String get internshipWorkModeRemote => 'عن بُعد';
+
+  @override
+  String get internshipWorkModeHybrid => 'هجين';
+
+  @override
+  String get internshipEligibility => 'الأهلية';
+
+  @override
+  String get internshipEligibilityUniversity => 'طلاب الجامعات فقط';
+
+  @override
+  String get internshipEligibilityFreshGrad => 'الخريجون الجدد';
+
+  @override
+  String get internshipEligibilityEveryone => 'متاح للجميع';
+
+  @override
+  String get internshipSchedule => 'الدوام';
+
+  @override
+  String get internshipScheduleFullTime => 'دوام كامل';
+
+  @override
+  String get internshipSchedulePartTime => 'دوام جزئي';
+
+  @override
+  String get internshipScheduleFlexible => 'مرن';
+
+  @override
+  String get internshipCertificate => 'الشهادة';
+
+  @override
+  String get internshipCertificateProvided => 'شهادة مُقدَّمة';
+
+  @override
+  String get internshipCertificateNone => 'بدون شهادة';
+
+  @override
+  String get internshipStartDate => 'تاريخ البدء المتوقع';
+
+  @override
+  String get internshipDeadline => 'آخر موعد للتقديم';
+
+  @override
+  String get internshipStipend => 'المكافأة';
+
+  @override
+  String get jobEditorTrainBeginners => 'تدريب المبتدئين';
+
+  @override
+  String get jobEditorTrainBeginnersHint =>
+      'أظهِر شارة مناسبة للمبتدئين على هذه الوظيفة وأعطِ الأولوية للمرشحين المبتدئين في التوصيات المستقبلية.';
+
+  @override
+  String get jobEditorInternshipHint =>
+      'اختر نوع التوظيف «تدريب» لإضافة تفاصيل التدريب.';
+
+  @override
+  String get jobEditorPickDate => 'اختر تاريخًا';
+
+  @override
+  String get jobEditorClear => 'مسح';
+
+  @override
+  String get learningTitle => 'اهتمامات التعلُّم';
+
+  @override
+  String get learningSearchHint => 'ابحث في اهتماماتك';
+
+  @override
+  String get learningEmptyTitle => 'لا توجد اهتمامات تعلُّم بعد';
+
+  @override
+  String get learningEmptyBody =>
+      'أضِف المسارات المهنية والمهارات والتقنيات والمجالات والأهداف التي تريد تطويرها.';
+
+  @override
+  String get learningNoResults => 'لا توجد اهتمامات تطابق بحثك.';
+
+  @override
+  String get learningAdd => 'إضافة';
+
+  @override
+  String get learningAddTitle => 'إضافة اهتمام';
+
+  @override
+  String get learningEditTitle => 'تعديل الاهتمام';
+
+  @override
+  String get learningLabelHint => 'مثال: تعلُّم الآلة';
+
+  @override
+  String get learningNoteHint => 'أضِف ملاحظة (اختياري)';
+
+  @override
+  String get learningSave => 'حفظ';
+
+  @override
+  String get learningCancel => 'إلغاء';
+
+  @override
+  String get learningDelete => 'حذف';
+
+  @override
+  String get learningSaveFailed =>
+      'تعذّر حفظ تغييراتك. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get learningNotSignedIn => 'يرجى تسجيل الدخول لإدارة اهتماماتك.';
+
+  @override
+  String get learningEmptyCategory => 'لا شيء هنا بعد';
+
+  @override
+  String get learningCatCareerPaths => 'المسارات المهنية المهتم بها';
+
+  @override
+  String get learningCatSkills => 'مهارات أريد تعلُّمها';
+
+  @override
+  String get learningCatTechnologies => 'التقنيات المفضّلة';
+
+  @override
+  String get learningCatIndustries => 'المجالات المفضّلة';
+
+  @override
+  String get learningCatGoals => 'أهداف التعلُّم';
+
+  @override
+  String learningItemsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count عنصر',
+      many: '$count عنصرًا',
+      few: '$count عناصر',
+      two: 'عنصران',
+      one: 'عنصر واحد',
+      zero: 'لا شيء',
+    );
+    return '$_temp0';
+  }
 }

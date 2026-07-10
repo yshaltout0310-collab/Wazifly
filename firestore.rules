@@ -45,6 +45,14 @@ service cloud.firestore {
                       && capped('headline', 200)
                       && capped('location', 200)
                       && capped('bio', 4000);
+
+      // Learning interests at users/{uid}/learning/{docId} (Phase 7 · Milestone
+      // 4). A small owner-private document (the `interests` doc) holding the
+      // seeker's career paths / skills / technologies / industries / goals. Only
+      // the owner may read or write; uid is scoped by the parent path.
+      match /learning/{docId} {
+        allow read, write: if signedIn() && request.auth.uid == uid;
+      }
     }
 
     // Company documents at companies/{companyId} (companyId == owner uid in

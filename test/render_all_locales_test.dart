@@ -29,8 +29,10 @@ import 'package:careerbridge/features/interview_prep/presentation/interview_hist
 import 'package:careerbridge/features/interview_prep/presentation/interview_prep_screen.dart';
 import 'package:careerbridge/features/career_coach/presentation/career_coach_screen.dart';
 import 'package:careerbridge/features/home/presentation/home_screen.dart';
+import 'package:careerbridge/features/internships/presentation/internships_screen.dart';
 import 'package:careerbridge/features/job_matching/presentation/job_matching_screen.dart';
 import 'package:careerbridge/features/jobs/presentation/jobs_screen.dart';
+import 'package:careerbridge/features/learning/presentation/learning_interests_screen.dart';
 import 'package:careerbridge/features/language_selection/presentation/language_selection_screen.dart';
 import 'package:careerbridge/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:careerbridge/features/profile/presentation/change_password_screen.dart';
@@ -112,6 +114,8 @@ void main() {
     'JobMatching': () => const JobMatchingScreen(),
     'CareerCoach': () => const CareerCoachScreen(),
     'Jobs': () => const JobsScreen(),
+    'Internships': () => const InternshipsScreen(),
+    'Learning': () => const LearningInterestsScreen(),
     'Applications': () => const ApplicationsScreen(),
     'CvBuilder': () => const CvBuilderScreen(),
     'CvPreview': () => const CvPreviewScreen(),

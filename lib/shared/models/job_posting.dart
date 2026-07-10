@@ -4,6 +4,7 @@ import '../../features/employer/domain/employment_type.dart';
 import '../../features/employer/domain/job_experience.dart';
 import '../../features/employer/domain/job_status.dart';
 import '../../features/employer/domain/salary_period.dart';
+import 'internship_details.dart';
 import 'job.dart';
 
 /// An optional salary range on a posting.
@@ -157,6 +158,8 @@ class JobPosting extends Equatable {
     this.experience,
     this.salary,
     this.openings,
+    this.internship,
+    this.trainsBeginners = false,
     this.status = JobStatus.draft,
     this.publishedAt,
     this.opensAt,
@@ -189,6 +192,15 @@ class JobPosting extends Equatable {
   /// Number of open positions (optional; defaults to 1 for display).
   final int? openings;
 
+  /// Optional internship metadata (present only when this posting is an
+  /// internship). Embedded like [salary]/[metrics] — additive and defensive.
+  final InternshipDetails? internship;
+
+  /// Employer opt-in marking the role beginner-friendly ("Train Beginners").
+  /// Independent of internship status; drives a visible badge + a future
+  /// beginner-weighted recommendation signal.
+  final bool trainsBeginners;
+
   // Lifecycle.
   final JobStatus status;
   final DateTime? publishedAt;
@@ -214,6 +226,9 @@ class JobPosting extends Equatable {
   bool get isLive => status == JobStatus.published && !isDeleted;
   bool get isEditable => !isDeleted;
   int get displayOpenings => openings ?? 1;
+
+  /// Whether this posting is an internship (by employment type).
+  bool get isInternship => employmentType == EmploymentType.internship;
 
   bool isExpiredAt(DateTime now) =>
       expiresAt != null && expiresAt!.isBefore(now);
@@ -247,6 +262,11 @@ class JobPosting extends Equatable {
       );
 
   /// The public projection consumed by the preview + (future) seeker platform.
+  ///
+  /// Projects the internship metadata + [trainsBeginners] so the seeker's
+  /// `JobDetailView` and the internship browse render them from the shared [Job]
+  /// — reuse by projection, not duplication. Internship details are carried only
+  /// for internships (so a normal job never leaks a stray internship block).
   Job toJob() => Job(
         id: id,
         title: title,
@@ -257,6 +277,11 @@ class JobPosting extends Equatable {
         description: description,
         requiredSkills: requiredSkills,
         remote: remote,
+        internship:
+            isInternship && internship != null && !internship!.isEmpty
+                ? internship
+                : null,
+        trainsBeginners: trainsBeginners,
       );
 
   /// Transitions to [next], appending a history entry and stamping the audit /
@@ -310,6 +335,8 @@ class JobPosting extends Equatable {
         experience: experience,
         salary: salary,
         openings: openings,
+        internship: internship,
+        trainsBeginners: trainsBeginners,
         status: JobStatus.draft,
         metrics: JobMetrics.zero,
         statusHistory: [JobStatusChange(status: JobStatus.draft, at: now, by: by)],
@@ -333,6 +360,9 @@ class JobPosting extends Equatable {
     JobExperience? experience,
     SalaryRange? salary,
     int? openings,
+    InternshipDetails? internship,
+    bool clearInternship = false,
+    bool? trainsBeginners,
     JobStatus? status,
     DateTime? publishedAt,
     DateTime? opensAt,
@@ -361,6 +391,8 @@ class JobPosting extends Equatable {
         experience: experience ?? this.experience,
         salary: salary ?? this.salary,
         openings: openings ?? this.openings,
+        internship: clearInternship ? null : (internship ?? this.internship),
+        trainsBeginners: trainsBeginners ?? this.trainsBeginners,
         status: status ?? this.status,
         publishedAt: publishedAt ?? this.publishedAt,
         opensAt: opensAt ?? this.opensAt,
@@ -390,6 +422,8 @@ class JobPosting extends Equatable {
         'experience': experience?.name,
         'salary': salary?.toJson(),
         'openings': openings,
+        if (internship != null) 'internship': internship!.toJson(),
+        'trainsBeginners': trainsBeginners,
         'status': status.name,
         'publishedAt': publishedAt?.toIso8601String(),
         'opensAt': opensAt?.toIso8601String(),
@@ -422,6 +456,12 @@ class JobPosting extends Equatable {
           ? SalaryRange.fromJson(Map<String, dynamic>.from(json['salary'] as Map))
           : null,
       openings: _intOrNull(json['openings']),
+      internship: json['internship'] is Map
+          ? InternshipDetails.fromJson(
+              Map<String, dynamic>.from(json['internship'] as Map))
+          : null,
+      trainsBeginners:
+          json['trainsBeginners'] == true || json['trains_beginners'] == true,
       status: JobStatus.fromName(json['status']),
       publishedAt: _date(json['publishedAt'] ?? json['published_at']),
       opensAt: _date(json['opensAt'] ?? json['opens_at']),
@@ -455,6 +495,8 @@ class JobPosting extends Equatable {
         experience,
         salary,
         openings,
+        internship,
+        trainsBeginners,
         status,
         publishedAt,
         opensAt,

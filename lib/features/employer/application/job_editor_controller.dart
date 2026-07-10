@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/services/jobs/employer_jobs_repository.dart';
+import '../../../shared/models/internship_details.dart';
 import '../../../shared/models/job_posting.dart';
 import '../../auth/application/auth_providers.dart';
 import '../domain/employment_type.dart';
@@ -143,6 +144,25 @@ class JobEditorController extends StateNotifier<JobEditorState> {
   void setSalary(SalaryRange? v) => _mutate((d) => d.copyWith(salary: v));
   void setOpensAt(DateTime? v) => _mutate((d) => d.copyWith(opensAt: v));
   void setExpiresAt(DateTime? v) => _mutate((d) => d.copyWith(expiresAt: v));
+
+  // --- Internship + beginner-friendly ---
+
+  void setTrainBeginners(bool v) =>
+      _mutate((d) => d.copyWith(trainsBeginners: v));
+
+  /// Applies [f] to the draft's internship block (creating a blank one if none).
+  void updateInternship(
+          InternshipDetails Function(InternshipDetails) f) =>
+      _mutate((d) =>
+          d.copyWith(internship: f(d.internship ?? const InternshipDetails())));
+
+  /// Sets the internship work mode and keeps the legacy [JobPosting.remote] bool
+  /// in sync (remote/hybrid → remote true) so the seeker's remote filter works.
+  void setInternshipWorkMode(WorkMode? v) => _mutate((d) => d.copyWith(
+        internship: (d.internship ?? const InternshipDetails())
+            .copyWith(workMode: v, clearWorkMode: v == null),
+        remote: v?.isRemoteish ?? d.remote,
+      ));
 
   // --- validation ---
 

@@ -2950,4 +2950,278 @@ class AppLocalizationsEn extends AppLocalizations {
   String jobsAppliedWithCv(String name) {
     return 'Applied with $name';
   }
+
+  @override
+  String get homeInternships => 'Internships';
+
+  @override
+  String get homeInternshipsSubtitle => 'Find and apply to internships';
+
+  @override
+  String get homeLearning => 'Learning Interests';
+
+  @override
+  String get homeLearningSubtitle => 'Track what you want to learn';
+
+  @override
+  String get internshipsTitle => 'Internships';
+
+  @override
+  String get internshipsSearchHint => 'Search internships';
+
+  @override
+  String internshipsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count internships',
+      one: '1 internship',
+      zero: 'No internships',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get internshipsEmptyTitle => 'No internships yet';
+
+  @override
+  String get internshipsEmptyBody =>
+      'New internship openings will appear here. Check back soon.';
+
+  @override
+  String get internshipsNoResultsTitle => 'No matches';
+
+  @override
+  String get internshipsNoResultsBody =>
+      'No internships match your search or filters.';
+
+  @override
+  String get internshipsError =>
+      'We couldn\'t load internships. Please try again.';
+
+  @override
+  String get internshipBadge => 'Internship';
+
+  @override
+  String get trainsBeginnersBadge => 'Trains beginners';
+
+  @override
+  String get internshipFilterTitle => 'Filter internships';
+
+  @override
+  String get internshipDetailsSection => 'Internship details';
+
+  @override
+  String get internshipFunding => 'Funding';
+
+  @override
+  String get internshipFundingPaid => 'Paid';
+
+  @override
+  String get internshipFundingUnpaid => 'Unpaid';
+
+  @override
+  String get internshipCategory => 'Category';
+
+  @override
+  String get internshipCategorySoftware => 'Software';
+
+  @override
+  String get internshipCategoryDesign => 'Design';
+
+  @override
+  String get internshipCategoryData => 'Data';
+
+  @override
+  String get internshipCategoryMarketing => 'Marketing';
+
+  @override
+  String get internshipCategoryBusiness => 'Business';
+
+  @override
+  String get internshipCategoryEngineering => 'Engineering';
+
+  @override
+  String get internshipCategoryOther => 'Other';
+
+  @override
+  String get internshipLevel => 'Level';
+
+  @override
+  String get internshipLevelHighSchool => 'High school';
+
+  @override
+  String get internshipLevelUndergraduate => 'Undergraduate';
+
+  @override
+  String get internshipLevelGraduate => 'Graduate';
+
+  @override
+  String get internshipLevelBootcamp => 'Bootcamp';
+
+  @override
+  String get internshipLevelCareerSwitcher => 'Career switcher';
+
+  @override
+  String get internshipDuration => 'Duration';
+
+  @override
+  String get internshipDurationUpTo1Month => 'Up to 1 month';
+
+  @override
+  String get internshipDurationOneToThree => '1–3 months';
+
+  @override
+  String get internshipDurationThreeToSix => '3–6 months';
+
+  @override
+  String get internshipDurationSixToTwelve => '6–12 months';
+
+  @override
+  String get internshipWorkMode => 'Work mode';
+
+  @override
+  String get internshipWorkModeOnsite => 'On-site';
+
+  @override
+  String get internshipWorkModeRemote => 'Remote';
+
+  @override
+  String get internshipWorkModeHybrid => 'Hybrid';
+
+  @override
+  String get internshipEligibility => 'Eligibility';
+
+  @override
+  String get internshipEligibilityUniversity => 'University students only';
+
+  @override
+  String get internshipEligibilityFreshGrad => 'Fresh graduates';
+
+  @override
+  String get internshipEligibilityEveryone => 'Open to everyone';
+
+  @override
+  String get internshipSchedule => 'Schedule';
+
+  @override
+  String get internshipScheduleFullTime => 'Full-time';
+
+  @override
+  String get internshipSchedulePartTime => 'Part-time';
+
+  @override
+  String get internshipScheduleFlexible => 'Flexible';
+
+  @override
+  String get internshipCertificate => 'Certificate';
+
+  @override
+  String get internshipCertificateProvided => 'Certificate provided';
+
+  @override
+  String get internshipCertificateNone => 'No certificate';
+
+  @override
+  String get internshipStartDate => 'Expected start';
+
+  @override
+  String get internshipDeadline => 'Application deadline';
+
+  @override
+  String get internshipStipend => 'Stipend';
+
+  @override
+  String get jobEditorTrainBeginners => 'Train beginners';
+
+  @override
+  String get jobEditorTrainBeginnersHint =>
+      'Show a beginner-friendly badge on this job and prioritize beginner candidates in future recommendations.';
+
+  @override
+  String get jobEditorInternshipHint =>
+      'Set the employment type to Internship to add internship details.';
+
+  @override
+  String get jobEditorPickDate => 'Pick a date';
+
+  @override
+  String get jobEditorClear => 'Clear';
+
+  @override
+  String get learningTitle => 'Learning Interests';
+
+  @override
+  String get learningSearchHint => 'Search your interests';
+
+  @override
+  String get learningEmptyTitle => 'No learning interests yet';
+
+  @override
+  String get learningEmptyBody =>
+      'Add the career paths, skills, technologies, industries, and goals you want to grow toward.';
+
+  @override
+  String get learningNoResults => 'No interests match your search.';
+
+  @override
+  String get learningAdd => 'Add';
+
+  @override
+  String get learningAddTitle => 'Add interest';
+
+  @override
+  String get learningEditTitle => 'Edit interest';
+
+  @override
+  String get learningLabelHint => 'e.g. Machine Learning';
+
+  @override
+  String get learningNoteHint => 'Add a note (optional)';
+
+  @override
+  String get learningSave => 'Save';
+
+  @override
+  String get learningCancel => 'Cancel';
+
+  @override
+  String get learningDelete => 'Delete';
+
+  @override
+  String get learningSaveFailed =>
+      'Couldn\'t save your changes. Please try again.';
+
+  @override
+  String get learningNotSignedIn => 'Please sign in to manage your interests.';
+
+  @override
+  String get learningEmptyCategory => 'Nothing here yet';
+
+  @override
+  String get learningCatCareerPaths => 'Interested career paths';
+
+  @override
+  String get learningCatSkills => 'Skills I want to learn';
+
+  @override
+  String get learningCatTechnologies => 'Preferred technologies';
+
+  @override
+  String get learningCatIndustries => 'Preferred industries';
+
+  @override
+  String get learningCatGoals => 'Learning goals';
+
+  @override
+  String learningItemsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items',
+      one: '1 item',
+      zero: 'None',
+    );
+    return '$_temp0';
+  }
 }

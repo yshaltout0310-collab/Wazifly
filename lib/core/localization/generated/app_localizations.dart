@@ -5473,6 +5473,504 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Applied with {name}'**
   String jobsAppliedWithCv(String name);
+
+  /// No description provided for @homeInternships.
+  ///
+  /// In en, this message translates to:
+  /// **'Internships'**
+  String get homeInternships;
+
+  /// No description provided for @homeInternshipsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Find and apply to internships'**
+  String get homeInternshipsSubtitle;
+
+  /// No description provided for @homeLearning.
+  ///
+  /// In en, this message translates to:
+  /// **'Learning Interests'**
+  String get homeLearning;
+
+  /// No description provided for @homeLearningSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Track what you want to learn'**
+  String get homeLearningSubtitle;
+
+  /// No description provided for @internshipsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Internships'**
+  String get internshipsTitle;
+
+  /// No description provided for @internshipsSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search internships'**
+  String get internshipsSearchHint;
+
+  /// No description provided for @internshipsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No internships} =1{1 internship} other{{count} internships}}'**
+  String internshipsCount(int count);
+
+  /// No description provided for @internshipsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No internships yet'**
+  String get internshipsEmptyTitle;
+
+  /// No description provided for @internshipsEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'New internship openings will appear here. Check back soon.'**
+  String get internshipsEmptyBody;
+
+  /// No description provided for @internshipsNoResultsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No matches'**
+  String get internshipsNoResultsTitle;
+
+  /// No description provided for @internshipsNoResultsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'No internships match your search or filters.'**
+  String get internshipsNoResultsBody;
+
+  /// No description provided for @internshipsError.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t load internships. Please try again.'**
+  String get internshipsError;
+
+  /// No description provided for @internshipBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Internship'**
+  String get internshipBadge;
+
+  /// No description provided for @trainsBeginnersBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Trains beginners'**
+  String get trainsBeginnersBadge;
+
+  /// No description provided for @internshipFilterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter internships'**
+  String get internshipFilterTitle;
+
+  /// No description provided for @internshipDetailsSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Internship details'**
+  String get internshipDetailsSection;
+
+  /// No description provided for @internshipFunding.
+  ///
+  /// In en, this message translates to:
+  /// **'Funding'**
+  String get internshipFunding;
+
+  /// No description provided for @internshipFundingPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid'**
+  String get internshipFundingPaid;
+
+  /// No description provided for @internshipFundingUnpaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Unpaid'**
+  String get internshipFundingUnpaid;
+
+  /// No description provided for @internshipCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get internshipCategory;
+
+  /// No description provided for @internshipCategorySoftware.
+  ///
+  /// In en, this message translates to:
+  /// **'Software'**
+  String get internshipCategorySoftware;
+
+  /// No description provided for @internshipCategoryDesign.
+  ///
+  /// In en, this message translates to:
+  /// **'Design'**
+  String get internshipCategoryDesign;
+
+  /// No description provided for @internshipCategoryData.
+  ///
+  /// In en, this message translates to:
+  /// **'Data'**
+  String get internshipCategoryData;
+
+  /// No description provided for @internshipCategoryMarketing.
+  ///
+  /// In en, this message translates to:
+  /// **'Marketing'**
+  String get internshipCategoryMarketing;
+
+  /// No description provided for @internshipCategoryBusiness.
+  ///
+  /// In en, this message translates to:
+  /// **'Business'**
+  String get internshipCategoryBusiness;
+
+  /// No description provided for @internshipCategoryEngineering.
+  ///
+  /// In en, this message translates to:
+  /// **'Engineering'**
+  String get internshipCategoryEngineering;
+
+  /// No description provided for @internshipCategoryOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get internshipCategoryOther;
+
+  /// No description provided for @internshipLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Level'**
+  String get internshipLevel;
+
+  /// No description provided for @internshipLevelHighSchool.
+  ///
+  /// In en, this message translates to:
+  /// **'High school'**
+  String get internshipLevelHighSchool;
+
+  /// No description provided for @internshipLevelUndergraduate.
+  ///
+  /// In en, this message translates to:
+  /// **'Undergraduate'**
+  String get internshipLevelUndergraduate;
+
+  /// No description provided for @internshipLevelGraduate.
+  ///
+  /// In en, this message translates to:
+  /// **'Graduate'**
+  String get internshipLevelGraduate;
+
+  /// No description provided for @internshipLevelBootcamp.
+  ///
+  /// In en, this message translates to:
+  /// **'Bootcamp'**
+  String get internshipLevelBootcamp;
+
+  /// No description provided for @internshipLevelCareerSwitcher.
+  ///
+  /// In en, this message translates to:
+  /// **'Career switcher'**
+  String get internshipLevelCareerSwitcher;
+
+  /// No description provided for @internshipDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration'**
+  String get internshipDuration;
+
+  /// No description provided for @internshipDurationUpTo1Month.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to 1 month'**
+  String get internshipDurationUpTo1Month;
+
+  /// No description provided for @internshipDurationOneToThree.
+  ///
+  /// In en, this message translates to:
+  /// **'1–3 months'**
+  String get internshipDurationOneToThree;
+
+  /// No description provided for @internshipDurationThreeToSix.
+  ///
+  /// In en, this message translates to:
+  /// **'3–6 months'**
+  String get internshipDurationThreeToSix;
+
+  /// No description provided for @internshipDurationSixToTwelve.
+  ///
+  /// In en, this message translates to:
+  /// **'6–12 months'**
+  String get internshipDurationSixToTwelve;
+
+  /// No description provided for @internshipWorkMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Work mode'**
+  String get internshipWorkMode;
+
+  /// No description provided for @internshipWorkModeOnsite.
+  ///
+  /// In en, this message translates to:
+  /// **'On-site'**
+  String get internshipWorkModeOnsite;
+
+  /// No description provided for @internshipWorkModeRemote.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote'**
+  String get internshipWorkModeRemote;
+
+  /// No description provided for @internshipWorkModeHybrid.
+  ///
+  /// In en, this message translates to:
+  /// **'Hybrid'**
+  String get internshipWorkModeHybrid;
+
+  /// No description provided for @internshipEligibility.
+  ///
+  /// In en, this message translates to:
+  /// **'Eligibility'**
+  String get internshipEligibility;
+
+  /// No description provided for @internshipEligibilityUniversity.
+  ///
+  /// In en, this message translates to:
+  /// **'University students only'**
+  String get internshipEligibilityUniversity;
+
+  /// No description provided for @internshipEligibilityFreshGrad.
+  ///
+  /// In en, this message translates to:
+  /// **'Fresh graduates'**
+  String get internshipEligibilityFreshGrad;
+
+  /// No description provided for @internshipEligibilityEveryone.
+  ///
+  /// In en, this message translates to:
+  /// **'Open to everyone'**
+  String get internshipEligibilityEveryone;
+
+  /// No description provided for @internshipSchedule.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule'**
+  String get internshipSchedule;
+
+  /// No description provided for @internshipScheduleFullTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Full-time'**
+  String get internshipScheduleFullTime;
+
+  /// No description provided for @internshipSchedulePartTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Part-time'**
+  String get internshipSchedulePartTime;
+
+  /// No description provided for @internshipScheduleFlexible.
+  ///
+  /// In en, this message translates to:
+  /// **'Flexible'**
+  String get internshipScheduleFlexible;
+
+  /// No description provided for @internshipCertificate.
+  ///
+  /// In en, this message translates to:
+  /// **'Certificate'**
+  String get internshipCertificate;
+
+  /// No description provided for @internshipCertificateProvided.
+  ///
+  /// In en, this message translates to:
+  /// **'Certificate provided'**
+  String get internshipCertificateProvided;
+
+  /// No description provided for @internshipCertificateNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No certificate'**
+  String get internshipCertificateNone;
+
+  /// No description provided for @internshipStartDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected start'**
+  String get internshipStartDate;
+
+  /// No description provided for @internshipDeadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Application deadline'**
+  String get internshipDeadline;
+
+  /// No description provided for @internshipStipend.
+  ///
+  /// In en, this message translates to:
+  /// **'Stipend'**
+  String get internshipStipend;
+
+  /// No description provided for @jobEditorTrainBeginners.
+  ///
+  /// In en, this message translates to:
+  /// **'Train beginners'**
+  String get jobEditorTrainBeginners;
+
+  /// No description provided for @jobEditorTrainBeginnersHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Show a beginner-friendly badge on this job and prioritize beginner candidates in future recommendations.'**
+  String get jobEditorTrainBeginnersHint;
+
+  /// No description provided for @jobEditorInternshipHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Set the employment type to Internship to add internship details.'**
+  String get jobEditorInternshipHint;
+
+  /// No description provided for @jobEditorPickDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a date'**
+  String get jobEditorPickDate;
+
+  /// No description provided for @jobEditorClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get jobEditorClear;
+
+  /// No description provided for @learningTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Learning Interests'**
+  String get learningTitle;
+
+  /// No description provided for @learningSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search your interests'**
+  String get learningSearchHint;
+
+  /// No description provided for @learningEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No learning interests yet'**
+  String get learningEmptyTitle;
+
+  /// No description provided for @learningEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the career paths, skills, technologies, industries, and goals you want to grow toward.'**
+  String get learningEmptyBody;
+
+  /// No description provided for @learningNoResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No interests match your search.'**
+  String get learningNoResults;
+
+  /// No description provided for @learningAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get learningAdd;
+
+  /// No description provided for @learningAddTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add interest'**
+  String get learningAddTitle;
+
+  /// No description provided for @learningEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit interest'**
+  String get learningEditTitle;
+
+  /// No description provided for @learningLabelHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Machine Learning'**
+  String get learningLabelHint;
+
+  /// No description provided for @learningNoteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a note (optional)'**
+  String get learningNoteHint;
+
+  /// No description provided for @learningSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get learningSave;
+
+  /// No description provided for @learningCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get learningCancel;
+
+  /// No description provided for @learningDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get learningDelete;
+
+  /// No description provided for @learningSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t save your changes. Please try again.'**
+  String get learningSaveFailed;
+
+  /// No description provided for @learningNotSignedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Please sign in to manage your interests.'**
+  String get learningNotSignedIn;
+
+  /// No description provided for @learningEmptyCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing here yet'**
+  String get learningEmptyCategory;
+
+  /// No description provided for @learningCatCareerPaths.
+  ///
+  /// In en, this message translates to:
+  /// **'Interested career paths'**
+  String get learningCatCareerPaths;
+
+  /// No description provided for @learningCatSkills.
+  ///
+  /// In en, this message translates to:
+  /// **'Skills I want to learn'**
+  String get learningCatSkills;
+
+  /// No description provided for @learningCatTechnologies.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferred technologies'**
+  String get learningCatTechnologies;
+
+  /// No description provided for @learningCatIndustries.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferred industries'**
+  String get learningCatIndustries;
+
+  /// No description provided for @learningCatGoals.
+  ///
+  /// In en, this message translates to:
+  /// **'Learning goals'**
+  String get learningCatGoals;
+
+  /// No description provided for @learningItemsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{None} =1{1 item} other{{count} items}}'**
+  String learningItemsCount(int count);
 }
 
 class _AppLocalizationsDelegate

@@ -269,15 +269,21 @@ class _ActionBar extends ConsumerWidget {
       ),
       child: SafeArea(
         top: false,
+        // Both buttons are Expanded so the theme's full-width (Size.fromHeight,
+        // i.e. infinite-width) button style resolves to a bounded width in this
+        // Row rather than asserting (the §7.14 bug #2 pattern, now that the
+        // internships flow surfaces this seeker detail screen live).
         child: Row(
           children: [
-            OutlinedButton.icon(
-              onPressed: () => context.pushNamed(
-                RouteNames.careerCoach,
-                extra: l10n.jobsCoachSeed(job.title, job.company),
+            Expanded(
+              child: OutlinedButton.icon(
+                onPressed: () => context.pushNamed(
+                  RouteNames.careerCoach,
+                  extra: l10n.jobsCoachSeed(job.title, job.company),
+                ),
+                icon: const Icon(Icons.psychology_outlined, size: 20),
+                label: Text(l10n.jobsAskCoach),
               ),
-              icon: const Icon(Icons.psychology_outlined, size: 20),
-              label: Text(l10n.jobsAskCoach),
             ),
             const SizedBox(width: AppSpacing.sm),
             Expanded(

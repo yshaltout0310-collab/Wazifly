@@ -29,9 +29,11 @@ import '../../features/home/presentation/home_screen.dart';
 import '../../features/interview_prep/presentation/interview_history_screen.dart';
 import '../../features/interview_prep/presentation/interview_prep_screen.dart';
 import '../../features/interview_prep/presentation/interview_session_detail_screen.dart';
+import '../../features/internships/presentation/internships_screen.dart';
 import '../../features/job_matching/presentation/job_matching_screen.dart';
 import '../../features/jobs/presentation/job_detail_screen.dart';
 import '../../features/jobs/presentation/jobs_screen.dart';
+import '../../features/learning/presentation/learning_interests_screen.dart';
 import '../../features/language_selection/presentation/language_selection_screen.dart';
 import '../../features/onboarding/presentation/onboarding_screen.dart';
 import '../../features/profile/presentation/change_password_screen.dart';
@@ -218,6 +220,16 @@ abstract final class AppRouter {
         path: RouteNames.recommendationsPath,
         name: RouteNames.recommendations,
         pageBuilder: _fade(const RecommendationsScreen()),
+      ),
+      GoRoute(
+        path: RouteNames.internshipsPath,
+        name: RouteNames.internships,
+        pageBuilder: _fade(const InternshipsScreen()),
+      ),
+      GoRoute(
+        path: RouteNames.learningPath,
+        name: RouteNames.learning,
+        pageBuilder: _fade(const LearningInterestsScreen()),
       ),
       GoRoute(
         path: RouteNames.applicationDetailPath,

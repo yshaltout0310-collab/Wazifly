@@ -136,6 +136,20 @@ class HomeScreen extends ConsumerWidget {
                         onTap: () =>
                             context.pushNamed(RouteNames.applications),
                       ).animate(delay: 210.ms).fadeIn().moveY(begin: 10, end: 0),
+                      const SizedBox(height: AppSpacing.sm),
+                      _PlatformCta(
+                        icon: Icons.school_outlined,
+                        title: l10n.homeInternships,
+                        subtitle: l10n.homeInternshipsSubtitle,
+                        onTap: () => context.pushNamed(RouteNames.internships),
+                      ).animate(delay: 260.ms).fadeIn().moveY(begin: 10, end: 0),
+                      const SizedBox(height: AppSpacing.sm),
+                      _PlatformCta(
+                        icon: Icons.auto_stories_outlined,
+                        title: l10n.homeLearning,
+                        subtitle: l10n.homeLearningSubtitle,
+                        onTap: () => context.pushNamed(RouteNames.learning),
+                      ).animate(delay: 310.ms).fadeIn().moveY(begin: 10, end: 0),
                     ],
                   ),
                 ),

@@ -6,6 +6,8 @@ import '../../../core/localization/generated/app_localizations.dart';
 import '../../../core/navigation/route_names.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/responsive.dart';
+import '../../../shared/models/internship_details.dart';
+import '../../../shared/models/internship_details_l10n.dart';
 import '../../../shared/models/job_posting.dart';
 import '../../../shared/widgets/chip_input.dart';
 import '../application/job_editor_controller.dart';
@@ -37,6 +39,7 @@ class _JobEditorScreenState extends ConsumerState<JobEditorScreen> {
   late final TextEditingController _salaryMin;
   late final TextEditingController _salaryMax;
   late final TextEditingController _currency;
+  late final TextEditingController _stipend;
   late SalaryPeriod _period;
 
   JobEditorController get _controller =>
@@ -57,6 +60,8 @@ class _JobEditorScreenState extends ConsumerState<JobEditorScreen> {
         TextEditingController(text: draft.salary?.max?.toString() ?? '');
     _currency =
         TextEditingController(text: draft.salary?.currency ?? 'USD');
+    _stipend = TextEditingController(
+        text: draft.internship?.stipendAmount?.toString() ?? '');
     _period = draft.salary?.period ?? SalaryPeriod.yearly;
   }
 
@@ -69,6 +74,7 @@ class _JobEditorScreenState extends ConsumerState<JobEditorScreen> {
     _salaryMin.dispose();
     _salaryMax.dispose();
     _currency.dispose();
+    _stipend.dispose();
     super.dispose();
   }
 
@@ -94,6 +100,145 @@ class _JobEditorScreenState extends ConsumerState<JobEditorScreen> {
       lastDate: DateTime(now.year + 5),
     );
     if (picked != null) onPick(picked);
+  }
+
+  /// The internship-details editor, shown only when the employment type is
+  /// Internship. Each choice group toggles the corresponding [InternshipDetails]
+  /// field (tap the selected chip to clear it).
+  List<Widget> _internshipSection(AppLocalizations l10n, InternshipDetails? d) {
+    return [
+      _Label(l10n.internshipDetailsSection),
+      _choiceGroup<InternshipFunding>(
+        l10n.internshipFunding,
+        InternshipFunding.values,
+        d?.funding,
+        (v) => v.label(l10n),
+        (v) => _controller.updateInternship((cur) => v == null
+            ? cur.copyWith(clearFunding: true)
+            : cur.copyWith(funding: v)),
+      ),
+      _choiceGroup<WorkMode>(
+        l10n.internshipWorkMode,
+        WorkMode.values,
+        d?.workMode,
+        (v) => v.label(l10n),
+        _controller.setInternshipWorkMode,
+      ),
+      _choiceGroup<InternshipSchedule>(
+        l10n.internshipSchedule,
+        InternshipSchedule.values,
+        d?.schedule,
+        (v) => v.label(l10n),
+        (v) => _controller.updateInternship((cur) => v == null
+            ? cur.copyWith(clearSchedule: true)
+            : cur.copyWith(schedule: v)),
+      ),
+      _choiceGroup<InternshipDuration>(
+        l10n.internshipDuration,
+        InternshipDuration.values,
+        d?.duration,
+        (v) => v.label(l10n),
+        (v) => _controller.updateInternship((cur) => v == null
+            ? cur.copyWith(clearDuration: true)
+            : cur.copyWith(duration: v)),
+      ),
+      _choiceGroup<InternshipCategory>(
+        l10n.internshipCategory,
+        InternshipCategory.values,
+        d?.category,
+        (v) => v.label(l10n),
+        (v) => _controller.updateInternship((cur) => v == null
+            ? cur.copyWith(clearCategory: true)
+            : cur.copyWith(category: v)),
+      ),
+      _choiceGroup<InternshipLevel>(
+        l10n.internshipLevel,
+        InternshipLevel.values,
+        d?.level,
+        (v) => v.label(l10n),
+        (v) => _controller.updateInternship((cur) => v == null
+            ? cur.copyWith(clearLevel: true)
+            : cur.copyWith(level: v)),
+      ),
+      _choiceGroup<InternshipEligibility>(
+        l10n.internshipEligibility,
+        InternshipEligibility.values,
+        d?.eligibility,
+        (v) => v.label(l10n),
+        (v) => _controller.updateInternship((cur) => v == null
+            ? cur.copyWith(clearEligibility: true)
+            : cur.copyWith(eligibility: v)),
+      ),
+      SwitchListTile(
+        contentPadding: EdgeInsets.zero,
+        title: Text(l10n.internshipCertificateProvided),
+        value: d?.certificateProvided ?? false,
+        onChanged: (v) => _controller
+            .updateInternship((cur) => cur.copyWith(certificateProvided: v)),
+      ),
+      const SizedBox(height: AppSpacing.sm),
+      TextField(
+        controller: _stipend,
+        keyboardType: TextInputType.number,
+        onChanged: (v) {
+          final n = int.tryParse(v.trim());
+          _controller.updateInternship((cur) =>
+              n == null ? cur.copyWith(clearStipend: true) : cur.copyWith(stipendAmount: n));
+        },
+        decoration: InputDecoration(labelText: l10n.internshipStipend),
+      ),
+      const SizedBox(height: AppSpacing.md),
+      _DateRow(
+        label: l10n.internshipStartDate,
+        value: d?.startDate,
+        onPick: () => _pickDate(
+            d?.startDate,
+            (picked) => _controller.updateInternship(
+                (cur) => cur.copyWith(startDate: picked))),
+        onClear: () => _controller
+            .updateInternship((cur) => cur.copyWith(clearStartDate: true)),
+      ),
+      _DateRow(
+        label: l10n.internshipDeadline,
+        value: d?.applicationDeadline,
+        onPick: () => _pickDate(
+            d?.applicationDeadline,
+            (picked) => _controller.updateInternship(
+                (cur) => cur.copyWith(applicationDeadline: picked))),
+        onClear: () => _controller.updateInternship(
+            (cur) => cur.copyWith(clearApplicationDeadline: true)),
+      ),
+    ];
+  }
+
+  /// A titled single-select chip group; tapping the selected chip clears it
+  /// (passes null to [onSelect]).
+  Widget _choiceGroup<T>(
+    String title,
+    List<T> values,
+    T? selected,
+    String Function(T) label,
+    void Function(T?) onSelect,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _Label(title),
+        Wrap(
+          spacing: AppSpacing.sm,
+          runSpacing: AppSpacing.xs,
+          children: [
+            for (final v in values)
+              ChoiceChip(
+                label: Text(label(v)),
+                selected: selected == v,
+                onSelected: (_) => onSelect(selected == v ? null : v),
+              ),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.lg),
+      ],
+    );
   }
 
   Future<void> _onPublish() async {
@@ -384,6 +529,28 @@ class _JobEditorScreenState extends ConsumerState<JobEditorScreen> {
                 ),
                 if (errText(JobField.availability) != null)
                   _FieldError(errText(JobField.availability)!),
+                const SizedBox(height: AppSpacing.lg),
+                const Divider(),
+                const SizedBox(height: AppSpacing.sm),
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(l10n.jobEditorTrainBeginners),
+                  subtitle: Text(l10n.jobEditorTrainBeginnersHint),
+                  value: state.draft.trainsBeginners,
+                  onChanged: _controller.setTrainBeginners,
+                ),
+                if (state.draft.isInternship) ...[
+                  const SizedBox(height: AppSpacing.lg),
+                  ..._internshipSection(l10n, state.draft.internship),
+                ] else ...[
+                  const SizedBox(height: AppSpacing.sm),
+                  Text(l10n.jobEditorInternshipHint,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withValues(alpha: 0.55))),
+                ],
               ],
             ),
           ),

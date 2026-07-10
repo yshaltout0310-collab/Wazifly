@@ -63,6 +63,10 @@ void main() {
 
   testWidgets('HomeScreen renders dashboard with toolkit tiles',
       (tester) async {
+    // Tall surface so the lazy toolkit grid (below the platform CTAs) is built
+    // during the initial pump rather than needing a mid-test scroll.
+    await tester.binding.setSurfaceSize(const Size(800, 1600));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
     final storage = await _storage({StorageKeys.userType: 'jobSeeker'});
     await tester.pumpWidget(_host(storage, const HomeScreen()));
     await tester.pump(const Duration(milliseconds: 600));
