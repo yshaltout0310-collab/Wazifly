@@ -1,7 +1,15 @@
 # Career Bridge — Session Handoff
 
 > Living handoff doc so a fresh Claude session can continue immediately.
-> Last updated: **Phase 7 · Milestone 2 (Authentication Enhancements) — COMPLETE** (see §7.22) — **phone verification by
+> Last updated: **Phase 7 · Milestone 3 (Multiple CV Repository) — COMPLETE** (see §7.23) — a **Firestore-backed**
+> `resumes/{resumeId}` repository for **multiple CVs** (create/import/rename/duplicate/archive/restore/set-default/
+> soft-delete), each carrying its own analysis/ATS/matches/recommendations; **tags** + **last-used** + **default
+> protection** (always ≥1 active CV) + **auto-default** + **import dedup**. Core seam `CvRepository` (interface +
+> Firestore impl + in-memory + providers) so CV Builder (optional `cvId` edit-and-save-back) + AI features integrate
+> via **core only** (zero feature-to-feature deps). Apply flow gains a **CV picker** (≥2 CVs, remembers last). Home
+> "My CVs" tile; `resumes` rules **deployed**. `analyze` clean · **527 tests** (+33) · **live-verified EN + AR** with
+> real Firestore (create→persist→auto-default, default-protection block, RTL library). feat `0b01504`.
+> **Phase 7 · Milestone 2 (Authentication Enhancements) — COMPLETE** (see §7.22) — **phone verification by
 > linking** (strengthens the existing account, never a phone-only sign-in) + **biometric login** (app-launch gate over
 > the persisted Firebase session; enrol once, "Not Now" remembered; availability-gated; logout/password-change
 > invalidate) + a new **Security Settings** screen. Two new vendor-neutral core seams (`BiometricService` [local_auth],
@@ -1975,6 +1983,84 @@ Enrolled a device PIN + fingerprint (`emu finger touch 1`). Persisted employer s
   fingerprint` `"count"`); satisfy an in-app prompt with a single `emu finger touch 1`. The **system BiometricPrompt
   screencaps as black** (it's a system surface) — expected, not a bug.
 - Consider promoting the OTP input to a shared widget if a second consumer appears (kept inline now — single consumer).
+
+---
+
+## 7.23 Phase 7 · Milestone 3 — Multiple CV Repository ✅ COMPLETE (feat `0b01504`)
+
+> A **Firestore-backed** repository for keeping **multiple CVs**, each with its own AI results, integrated with the
+> existing AI features **via core seams only** (zero feature-to-feature deps). `flutter analyze` clean; **527 tests**
+> (+33); **live-verified EN + AR** on the emulator with **real Firestore** (`resumes/{resumeId}` rules deployed).
+
+**Core service `lib/core/services/cv_repository/`** (the `AiService`/`UserProfileRepository` seam — placed in **core** so
+CV Builder + the AI features depend on core, never on the CV feature):
+- **`CvDocument`** aggregate = metadata (`name`, `tags`, `status{active,archived}`, `isDefault`, `version`, `source
+  {built,imported}`, `createdAt`/`updatedAt`, soft-delete `deletedAt`, last-used `lastUsedAt`/`lastAppliedJobTitle`/
+  `lastAppliedCompany`, `importHash`) + **content** (reuses `CvData`) + **per-CV AI** (`ResumeAnalysis` + derived
+  `atsScore`, **owned** `CvMatchResult` list, `CvRecommendationSummary` — the last two decoupled from job_matching/
+  recommendations). Pure lifecycle methods (the `JobPosting` pattern): `renamed`/`archived`/`restored`/`asDefault`/
+  `withContent`(++version)/`withAnalysis`/`withMatches`/`markUsed`/`softDeleted`/`duplicatedAs`. Deterministic FNV-1a
+  `contentHash` + `hashBytes` for import dedup. (Reuses `CvData`/`ResumeAnalysis` **models** exactly as the existing
+  `cv_draft_store`/`resume_analysis_store` core seams already do — model reuse, not feature-logic coupling.)
+- **`CvRepository`** interface + **`FirestoreCvRepository`** (ONLY cloud_firestore importer for CVs; `resumes/{resumeId}`;
+  `where ownerUid == uid` + `.limit(300)` + **client-side sort + soft-delete exclusion** to avoid a composite index;
+  `setDefault` = a batch enforcing a single default; graceful-degrade when `!isReady`) + `InMemoryCvRepository` +
+  `cvRepositoryProvider` + `cvDocumentsProvider`/`activeCvsProvider`/`defaultCvProvider`/`cvByIdProvider.family`.
+- **`LastSelectedCvController`** (persists the apply-picker's last choice via `LocalStorageService`, `StorageKeys.lastSelectedCvId`).
+
+**Feature `lib/features/cv_repository/`** (depends only on core + the auth/resume-analyzer/job-matching *providers* +
+navigation): **`CvLibraryController`** (search over **name + tags**, status filter, sort) + `visibleCvsProvider`;
+**`CvActionsController`** (create/import/rename/duplicate/archive/restore/set-default/soft-delete) enforcing the five
+approved additions — **(1)** the first CV is **auto-default**, **(2)** removing the default **auto-promotes** another
+active CV, **(3)** the user always keeps **≥1 active CV** (delete/archive of the last is **blocked** with a localized
+message), **(4)** **tags** (searchable), **(5)** **import dedup** by source-PDF hash → Replace / Import-as-new / Cancel;
+**`CvAiController`** writes each CV's own analysis/matches/recommendations back onto the doc (reads the shared core
+seams + the job-matching repo — the AI features stay unaware of CVs). Screens: **CV Library** (search/filter/sort chips,
+`StatusView` empty/loading, Create/Import FAB sheet, per-card overflow menu) + **CV Detail** (metadata badges, content
+card → Edit in Builder, AI-insights card: ATS gauge / matches / recommendations with analysis-gating). Shared
+`cv_picker_sheet.dart` (choose-CV-to-submit).
+
+**Integrations (core seams + navigation only — no new feature-to-feature deps):**
+- **CV Builder** gains an optional **`cvId`** (route `extra`): loads that CV's content, edits + AI-enhances, and a
+  **"Save to My CVs"** action writes it back (`withContent`, ++version). **No `cvId` ⇒ byte-for-byte the old
+  single-draft behavior** (no regression).
+- **Import** reuses the **resume-analysis pipeline** (approved) → creates a `CvDocument(source: imported)` with the
+  analysis attached.
+- **Apply flow** (`job_detail_screen`): with **≥2 active CVs** a `cvPickerSheet` appears (preselects last-used/default,
+  **remembers** the choice, stamps the CV's **last-used**); 0–1 CV applies directly. Shared **`Application`** gained
+  optional `cvId`/`cvName` (additive; `apply({job, cvId?, cvName?})`).
+- Home **"My CVs"** tile (`RouteNames.cvLibrary`); routes `cvLibrary` (`/cvs`) + `cvDetail` (`/cvs/:id`).
+- **`resumes/{resumeId}` `firestore.rules`** (owner-scoped, `ownerUid` immutable on update, `name` capped) — **DEPLOYED**.
+
+**Tests (+33 → 527):** `cv_document_test` (lifecycle + JSON round-trip + content/byte hashing), `cv_repository_test`
+(soft-delete exclusion, owner-scoping, **setDefault single-default invariant**), `cv_library_controller_test`
+(search name+tags / filter / sort), `cv_actions_controller_test` (**auto-default**, **last-CV protection**,
+**default auto-promotion**, import-new/replace), `last_selected_cv_test`, `apply_with_cv_test`; `render_all_locales`
+now renders `CvLibrary` + `CvDetail` EN + AR.
+
+### VERIFIED live on emulator (`-gpu host`, Skia `--no-enable-impeller`), EN + AR — **real Firestore**
+On a **seeker** account (`appreg030157@cb.app`): Home → **My CVs** → CV Library loads from Firestore (empty state) →
+**Create CV** (name + a "Flutter" tag) → **persisted to `resumes/{…}`** → CV **Detail** shows **Default** (auto-default)
++ **Built** + **v1** + "Not used yet" + content card (Edit in CV Builder) + AI-insights (Not analyzed / Find-matching
+gated on analysis). List **card** shows the badges + overflow menu (**"Set as default" correctly hidden** when already
+default). **Default protection proven:** deleting the only active CV is **blocked** with *"You must always have at
+least one active CV…"*. **AR (RTL):** switched to العربية → CV Library fully mirrored (**سِيَري الذاتية** title, RTL
+search **ابحث في السير والوسوم**, **نشطة/مؤرشفة** chips, the same persisted **My CV** card with **افتراضية/مُنشأة**
+badges + left-side ⋮, **إنشاء سيرة** FAB bottom-left).
+
+### Notes for the next session
+- **The `resumes` rules are deployed** — the CV feature is fully live. A running app must be **relaunched** after any
+  future rules change (a denied Firestore listener stays in loading state and doesn't auto-recover — the §7.13 lesson;
+  this was hit live before deploying and fixed by deploying + relaunch).
+- **Emulator was wiped** this session (GPU-surface corruption after cold-boot — §10; `-wipe-data` cleared it). The
+  device now has a **fresh seeker session `appreg030157@cb.app`** with **one CV ("My CV", default)** and language
+  persisted **Arabic**; no biometric enabled (fresh install).
+- **AI write-back scope:** analysis + ATS are fully wired (imported at import; attachable from the last analysis);
+  matches use the job-matching repo → owned `CvMatchResult`; recommendations snapshot from the core store. Per-CV
+  analysis for *built* CVs is attached from the Resume Analyzer's cached result (a PDF-less CV isn't auto-scored).
+- Forward-ready (shaped, not built): **version history** (`version` + a `resumes/{id}/versions` subcollection),
+  **sharing** (owner rule ready), **templates** (`CvSource` + Builder templates), **export history**
+  (`resumes/{id}/exports`).
 
 ---
 
