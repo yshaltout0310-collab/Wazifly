@@ -1,7 +1,25 @@
 # Career Bridge — Session Handoff
 
 > Living handoff doc so a fresh Claude session can continue immediately.
-> Last updated: **Phase 7 · Milestone 4 (Internships & Learning) — COMPLETE** (see §7.24) — extends the job platform
+> Last updated: **Phase 7 · Milestone 5 (Deployment & Publishing) — COMPLETE** (see §7.25) — a **review /
+> reconcile / verify / sign-off** milestone that finishes **every remaining production task except the actual Play
+> upload**. Behavior-preserving: no new deps, no rules change, no architectural impact. **One code change** — the
+> Android manifest now **strips the advertising ID** (`com.google.android.gms.permission.AD_ID`, merged by
+> `firebase_analytics`) via `tools:node="remove"`, **verified absent from the merged release manifest** and guarded by
+> new `test/android_manifest_test.dart` (+3 tests → **574**) — so the "no ads / no advertising ID" Play declaration is
+> provably true at the artifact level. **Doc drift closed** (the P7·M1 store kit predated M2–M4): `USE_BIOMETRIC` added
+> to the Play permissions/Data-Safety docs; biometric + secure-storage declared **device-local / not collected**; the
+> `resumes`/`learning` collections confirmed covered; test baseline 466→574; store listing (EN + AR) now surfaces
+> biometric login / multiple CVs / internships / learning. **New headline doc `docs/PRODUCTION_READINESS.md`** — an
+> evidence-backed **Go/No-Go report** (final status table + all 9 dimensions + a "Remaining Before Publish" checklist of
+> only the non-automatable manual actions), cross-linking (not duplicating) RELEASE.md / RELEASE_CHECKLIST.md.
+> **Security audit clean** (secrets gitignored & untracked, no hardcoded secrets, App Check debug token not in code,
+> only normal permissions, no cleartext). `analyze` clean · **574 tests** · release `.apk` (73.0 MB) + `.aab` (71.3 MB)
+> build under R8 · **live-verified EN + AR on the release build** (Home incl. Internships/Learning tiles → Settings →
+> Arabic RTL; a host-GPU/Impeller raster crash on `-gpu host` was isolated to the emulator per §10 and cleanly rendered
+> under `-gpu swiftshader_indirect`). Remaining before publish are **all user-side manual steps** (real keystore, host
+> legal docs, Storage bucket, App Check enforce, Play Console). feat (this milestone).
+> **Phase 7 · Milestone 4 (Internships & Learning) — COMPLETE** (see §7.24) — extends the job platform
 > with **internships** and a **learning-interests** profile, **reusing the existing Job / JobPosting / Application
 > architecture** (no parallel jobs stack). Internship metadata (funding · category · level · duration · **work mode
 > remote/hybrid/on-site** · **university eligibility** · **schedule** · **certificate** · stipend · **start/deadline
@@ -2168,6 +2186,84 @@ categories, LTR). Settings language switch AR↔EN confirmed.
   documented hook for a future beginner-weighted recommendations pass; the milestone said "prepare the architecture only".
 - **Future-ready (shaped, not built):** Mentors / Learning Marketplace / Career Learning Paths / University Partnerships
   all anchor on the `users/{uid}/learning/*` namespace + the internship `level`/`eligibility` axes.
+
+---
+
+## 7.25 Phase 7 · Milestone 5 — Deployment & Publishing ✅ COMPLETE
+
+> **Goal:** finish **every remaining production task except the actual Google Play upload.** This is a **review →
+> reconcile → verify → sign-off** milestone, not a feature build — almost all production infra already existed
+> (release build/R8/signing config, the `docs/store/` Play kit, `docs/legal/` templates, `RELEASE.md`/`QA_CHECKLIST.md`,
+> hardened+deployed `firestore.rules`). Its value is (a) closing the **documentation drift** that P7·M2–M4 introduced
+> after the P7·M1 store kit was frozen, (b) **executing** the one deferred production verification (advertising-ID),
+> and (c) producing a single evidence-backed **Go/No-Go readiness report**. Behavior-preserving: **no new deps, no
+> rules change, no architectural impact.** `analyze` clean · **574 tests** (+3) · release `.apk`+`.aab` build under R8.
+
+### The one code change — advertising ID (AD_ID) stripped
+- **Finding (verified):** the merged **release** manifest pulled in `com.google.android.gms.permission.AD_ID` (merged by
+  `firebase_analytics`). Career Bridge uses **no advertising ID**, so `PLAY_CONSOLE.md` §7 had left this as a
+  "verify-at-build-time" TODO. This milestone executed the verification.
+- **Fix:** `android/app/src/main/AndroidManifest.xml` now declares `xmlns:tools` and
+  `<uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove"/>`. **Re-built the
+  release APK and confirmed `AD_ID` is absent from the merged manifest** (`grep` count 0; `USE_BIOMETRIC` present).
+  `tools:` attributes are build-time-only (no runtime effect) — cannot affect behavior/rendering.
+- **Regression guard:** new **`test/android_manifest_test.dart`** (3 tests → **574**) asserts the app requests exactly
+  `INTERNET`/`POST_NOTIFICATIONS`/`USE_BIOMETRIC`, that `AD_ID` is removed, and that no dangerous permission appears.
+
+### Documentation drift closed (P7·M1 store kit predated M2–M4)
+- **`docs/store/PLAY_CONSOLE.md`** — permissions table now lists **3** perms (added `USE_BIOMETRIC`, normal, no runtime
+  prompt); the AD_ID note resolved to the verified "removed → declare not-used" outcome.
+- **`docs/store/DATA_SAFETY.md`** — declares **biometric data = not collected** (`local_auth` `BiometricPrompt` is
+  on-device; never transmitted) and **secure-storage flags = on-device-only** (`flutter_secure_storage` holds only the
+  biometric preference + trusted-device marker, never passwords/tokens); confirms `resumes` + `users/{uid}/learning` are
+  already covered by the existing "Résumé / CV & career content" row.
+- **`docs/store/README.md`** — product-facts permissions row updated (3 perms + AD_ID removed).
+- **`docs/store/RELEASE_CHECKLIST.md`** — baseline 466→**574**; AD_ID line resolved; AI-transparency line added;
+  cross-links the new readiness report.
+- **`docs/RELEASE.md`** — validation table gains a manifest/permissions row + an AD_ID merged-manifest check; test
+  baseline → 574.
+- **`docs/store/STORE_LISTING.md`** — light EN **+ AR** additions surfacing what shipped since M1: **biometric login,
+  multiple CVs, internships browsing, learning interests** (kept well under the 4,000-char limit).
+
+### New headline deliverable — `docs/PRODUCTION_READINESS.md`
+An **evidence-backed Go/No-Go report** (not a duplicate of the mechanics checklist — it **cross-links** RELEASE.md /
+RELEASE_CHECKLIST.md / DATA_SAFETY.md). Contents: **(1)** a **final production status table** separating ✅ completed
+engineering (Release build · Play paperwork · Firebase code/rules · Security · AI · Monitoring) from ⚠️ manual
+pre-launch (Legal hosting · Upload keystore · App Check enforce · Storage bucket); **(2)** the verification evidence
+(analyze/test/build results); **(3)** all **9 dimensions** — Release build · Firebase · Security · Google Play · Legal ·
+Privacy · QA · AI · Monitoring · Rollback; **(4)** the **versioning strategy** (`1.0.0+1` confirmed for the first
+submission; semver marketing + strictly-increasing build code); **(5)** a closing **"Remaining Before Publish"**
+checklist containing **only** the non-automatable manual actions.
+
+### Security audit (results → the readiness report §5)
+- `.gitignore` covers `google-services.json` / `android/key.properties` / `*.jks`; **none is git-tracked**;
+  `firebase_options.dart` is committed (client identifiers, not secrets); **no hardcoded secrets** in `lib/`; the App
+  Check **debug token is not in code**. Manifest: single exported launcher activity, no `usesCleartextTraffic`, no
+  `android:debuggable`. All egress HTTPS. The merged manifest's other permissions (`ACCESS_NETWORK_STATE`, `WAKE_LOCK`,
+  `USE_FINGERPRINT`, c2dm `RECEIVE`, `READ_GSERVICES`, install-referrer, Privacy-Sandbox `ACCESS_ADSERVICES_*`) are all
+  **normal**, merged by Firebase/Messaging/`local_auth`, and trigger **no Play permissions-declaration form**.
+
+### VERIFIED live on emulator — **release build** (R8/minify, AD_ID stripped), EN + AR
+Installed `app-release.apk` on `emulator-5554` (seeker `appreg030157@cb.app`, persisted session).
+- **EN:** Home rendered fully — Browse Jobs, My Applications, **Internships** ("Find and apply to internships"),
+  **Learning Interests** ("Track what you want to learn"), AI toolkit cards. Navigated Home → **Settings** (Account /
+  Security "Biometric login and phone verification" / Language / Theme / notification toggles) — **responsive**.
+- **AR (RTL):** switched Settings → Language → العربية → full mirror: "الإعدادات" with back-arrow on the right,
+  "الحساب"/"التفضيلات" right-aligned, "الأمان — تسجيل الدخول بالسمات الحيوية والتحقق من الهاتف", toggles mirrored, Cairo
+  font. Switched back to EN.
+- **⚠️ Emulator GPU note (not an app defect — §10):** under `-gpu host`, the first launch rendered the Home screen but a
+  cold-boot **ANR** then a deterministic **`1.raster`-thread `SIGSEGV/SIGABRT` inside `libflutter.so`** (zero app code in
+  the backtrace) blocked interaction — the classic host-GPU/**Impeller-on-emulator** crash. Re-launching the emulator
+  with **`-gpu swiftshader_indirect`** (software renderer, bypasses the host Vulkan driver) rendered **cleanly and
+  stably** through the whole EN+AR sweep. This isolates the crash to the emulator's graphics stack; the release build +
+  AD_ID change are unaffected. **A physical-device QA pass (already a documented pre-launch item) should confirm Impeller
+  on real hardware** — where Impeller is the supported default.
+
+### Remaining before publish (all user-side, non-automatable — see `docs/PRODUCTION_READINESS.md`)
+Real upload keystore + `key.properties`; fill legal/store `⟨FILL-IN⟩`s + counsel-review + **host** Privacy Policy/Terms;
+provision the **Storage bucket** + `firebase deploy --only storage`; **App Check** enable→Play-Integrity→enforce;
+*(optional)* Crashlytics/Perf Gradle plugins; Play Console create/sign/list/declare/closed-test. **Nothing in code
+blocks launch** — all degrade gracefully.
 
 ---
 
