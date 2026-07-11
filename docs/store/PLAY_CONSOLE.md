@@ -41,16 +41,20 @@ Answer the IARC questionnaire truthfully; expected result: **Everyone / PEGI 3**
 
 ## 3. Permissions review
 
-The app requests only two Android permissions (see
+The app requests only three Android permissions (see
 `android/app/src/main/AndroidManifest.xml`):
 
 | Permission | Why it's needed | Sensitive? |
 | --- | --- | --- |
 | `android.permission.INTERNET` | All Firebase/Gemini network calls. | No (normal) |
 | `android.permission.POST_NOTIFICATIONS` | Firebase Cloud Messaging push notifications (Android 13+ runtime prompt). | No (normal, but runtime-requested) |
+| `android.permission.USE_BIOMETRIC` | Optional biometric / device-credential unlock for the app-launch login gate (`local_auth`). Normal permission — **no runtime prompt**; feature degrades gracefully when no biometric is enrolled. | No (normal) |
 
 - **No dangerous/sensitive permissions** (no location, camera, contacts,
   storage-broad, SMS, phone, `QUERY_ALL_PACKAGES`, accessibility, etc.).
+  `USE_BIOMETRIC` is a **normal** (install-time) permission, not a dangerous one —
+  it authenticates against the device's own biometric hardware and **never reads
+  or transmits biometric data** (see [`DATA_SAFETY.md`](DATA_SAFETY.md) §3).
 - Therefore **no Play "Sensitive app permissions" / Permissions Declaration
   form** is triggered.
 - The `<queries>` `PROCESS_TEXT` entry is the Flutter-engine default (package
@@ -126,12 +130,17 @@ Google requires (especially for newer/personal developer accounts) a period of
 | COVID-19 / contact-tracing | No |
 | Data safety | **Completed** — see [`DATA_SAFETY.md`](DATA_SAFETY.md) |
 | Privacy policy | **Required** — host `../legal/PRIVACY_POLICY.md` and enter the URL |
-| Advertising ID permission (`AD_ID`) | Not used — **no** ad/advertising ID; ensure the merged manifest does not add it, or declare "not used" |
+| Advertising ID permission (`AD_ID`) | **Not used.** `firebase_analytics` merges `com.google.android.gms.permission.AD_ID`; the app **removes it** in the manifest (`tools:node="remove"`), so the shipped artifact carries no advertising ID. Declare **"advertising ID not used."** |
 
-> **AD_ID note:** Firebase Analytics can pull in the `com.google.android.gms`
-> `AD_ID` permission via manifest merge on some versions. If the merged manifest
-> includes `AD_ID`, either (a) declare in the Console that the app **does not use
-> the advertising ID** (accurate — we don't), or (b) explicitly remove it with a
-> manifest `<uses-permission tools:node="remove">`. Verify the merged manifest at
-> build time and pick the honest answer. *(This is a declaration/verification
-> step — no code change is made in this milestone.)*
+> **AD_ID note (resolved in Phase 7 · Milestone 5):** verification of the merged
+> **release** manifest confirmed that `firebase_analytics` pulls in
+> `com.google.android.gms.permission.AD_ID` by default. Because Career Bridge uses
+> **no advertising ID**, the source manifest now explicitly strips it:
+> ```xml
+> <uses-permission android:name="com.google.android.gms.permission.AD_ID"
+>     tools:node="remove"/>
+> ```
+> (`android/app/src/main/AndroidManifest.xml`, guarded by
+> `test/android_manifest_test.dart`). In the Play Console, declare that the app
+> **does not use the advertising ID** — now provably true at the artifact level.
+> Re-verify the merged manifest after any Firebase dependency bump.

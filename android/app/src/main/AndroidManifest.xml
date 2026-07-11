@@ -1,4 +1,5 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <!-- Internet for Firebase; notifications for Firebase Cloud Messaging. -->
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
@@ -6,6 +7,15 @@
          gate (local_auth). USE_BIOMETRIC is a normal permission (no runtime
          prompt); the feature degrades gracefully when no biometric is enrolled. -->
     <uses-permission android:name="android.permission.USE_BIOMETRIC"/>
+
+    <!-- Career Bridge does NOT use the advertising ID. firebase_analytics merges
+         com.google.android.gms.permission.AD_ID by default (verified in the merged
+         release manifest); remove it so the shipped artifact provably carries no
+         advertising ID. This keeps the app consistent with the "no ads / no
+         advertising ID" Play Data Safety declaration (see docs/store/DATA_SAFETY.md
+         and docs/store/PLAY_CONSOLE.md §7). -->
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID"
+        tools:node="remove"/>
 
     <application
         android:label="Career Bridge"

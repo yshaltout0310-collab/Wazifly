@@ -75,7 +75,7 @@ a `⟨FILL-IN: …⟩` marker. Nothing ships blank. Track completion here:
 | Monetization | Free · **no ads** · no in-app purchases / subscriptions |
 | First version | `1.0.0` (build code `1`) — `pubspec.yaml` `version: 1.0.0+1` |
 | `minSdk` | 23 |
-| Permissions | `INTERNET`, `POST_NOTIFICATIONS` (only) |
+| Permissions | `INTERNET`, `POST_NOTIFICATIONS`, `USE_BIOMETRIC` (all normal; advertising-ID `AD_ID` explicitly removed) |
 | Firebase project | `careerbridge-97-f58c9` (number `894890748117`) |
 | Languages | English (LTR) + Arabic (full RTL) |
 | Brand colors | Emerald `#0E9F6E` (icon), `#0B7D57` (splash), dark `#101413` |

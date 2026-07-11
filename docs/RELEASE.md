@@ -257,16 +257,19 @@ up yet; this is the documented foundation.
 | # | Step | Command | Pass criteria |
 | --- | --- | --- | --- |
 | 1 | Static analysis | `flutter analyze` | `No issues found!` |
-| 2 | Tests | `flutter test` | all pass (see HANDOFF for the current count) |
+| 2 | Tests | `flutter test` | all pass (**574** baseline; see HANDOFF for the current count) |
 | 3 | Asset verification | `grep -roE "assets/[A-Za-z0-9_./-]+" lib/` vs `pubspec.yaml` | every declared asset used or reserved (§10) |
 | 4 | Fonts present | (covered by `test/font_bundling_test.dart` in step 2) | Inter+Cairo load from the bundle |
-| 5 | Release APK | `flutter build apk --release` | builds, R8 succeeds |
-| 6 | Release AAB | `flutter build appbundle --release` | builds |
-| 7 | Install smoke | `adb install -r build/app/outputs/flutter-apk/app-release.apk` | launches, no crash |
+| 5 | Manifest/permissions | (covered by `test/android_manifest_test.dart` in step 2) | only INTERNET/POST_NOTIFICATIONS/USE_BIOMETRIC; `AD_ID` removed |
+| 6 | Release APK | `flutter build apk --release` | builds, R8 succeeds |
+| 7 | Release AAB | `flutter build appbundle --release` | builds |
+| 8 | AD_ID check (merged manifest) | inspect `build/app/intermediates/merged_manifest/release/.../AndroidManifest.xml` | **no** `com.google.android.gms.permission.AD_ID` |
+| 9 | Install smoke | `adb install -r build/app/outputs/flutter-apk/app-release.apk` | launches, no crash |
 
-> Automation note: steps 1, 2, 5, 6 are pure CLI and deterministic; step 3 is a
-> simple diff; step 7 needs a device/emulator. A `scripts/release_check.sh` that
-> chains 1→6 and fails on the first non-zero exit is the intended next step.
+> Automation note: steps 1, 2, 6, 7 are pure CLI and deterministic; step 3 is a
+> simple diff; step 8 is a grep over the build output; step 9 needs a device/
+> emulator. A `scripts/release_check.sh` that chains 1→8 and fails on the first
+> non-zero exit is the intended next step.
 
 ---
 

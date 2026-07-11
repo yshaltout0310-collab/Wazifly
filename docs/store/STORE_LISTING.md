@@ -47,6 +47,10 @@ Land the right role faster with a complete AI toolkit:
   feedback and a personalized improvement plan.
 • For You — a personalized hub of recommended jobs, skills to learn, courses,
   and a step-by-step career roadmap.
+• Multiple CVs — keep several tailored resumes in one place and choose the right
+  one for each application.
+• Internships & Learning — browse internships and track the skills and topics
+  you want to grow.
 
 Browse and search jobs, save the ones you like, and track every application in
 one place.
@@ -66,6 +70,8 @@ Hire smarter with a full recruiting workspace:
 ── BUILT FOR EVERYONE ──
 • Fully bilingual: English and Arabic, with complete RTL layout.
 • Clean, modern Material design that works offline for saved content.
+• Secure sign-in — optional biometric (fingerprint/face) unlock protects your
+  account.
 • Privacy-conscious: analytics are consent-based, and your data is handled per
   our Privacy Policy.
 
@@ -79,7 +85,7 @@ Career Bridge is free to use and ad-free.
 
 Download Career Bridge and build your future — one smart step at a time.
 ```
-*(≈1,900 chars — well under the 4,000 limit; room to expand per Play keyword
+*(≈2,150 chars — well under the 4,000 limit; room to expand per Play keyword
 tuning.)*
 
 ### Category & tags
@@ -140,6 +146,9 @@ Career Bridge منصّة مهنية مدعومة بالذكاء الاصطناع
   تقييم مفصّل وخطة تحسين مخصّصة.
 • «مخصّص لك» — لوحة مخصّصة بالوظائف المقترحة والمهارات والدورات وخارطة طريق
   مهنية خطوة بخطوة.
+• سير ذاتية متعدّدة — احتفظ بعدّة سير مخصّصة في مكان واحد واختر الأنسب لكل طلب.
+• التدريب والتعلّم — تصفّح فرص التدريب وتابع المهارات والمجالات التي تريد
+  تطويرها.
 
 تصفّح الوظائف وابحث فيها، واحفظ ما يعجبك، وتابع جميع طلباتك في مكان واحد.
 
@@ -157,6 +166,7 @@ Career Bridge منصّة مهنية مدعومة بالذكاء الاصطناع
 ── مصمَّم للجميع ──
 • ثنائي اللغة بالكامل: العربية والإنجليزية مع تخطيط كامل من اليمين إلى اليسار.
 • تصميم عصري وأنيق يعمل دون اتصال للمحتوى المحفوظ.
+• تسجيل دخول آمن — فتح اختياري بالبصمة أو الوجه لحماية حسابك.
 • يراعي الخصوصية: التحليلات قائمة على الموافقة، وتُعالَج بياناتك وفق سياسة
   الخصوصية.
 

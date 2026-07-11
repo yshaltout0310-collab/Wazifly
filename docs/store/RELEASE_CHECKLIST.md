@@ -8,6 +8,11 @@
 > [`PLAY_CONSOLE.md`](PLAY_CONSOLE.md), [`STORE_LISTING.md`](STORE_LISTING.md),
 > [`STORE_ASSETS.md`](STORE_ASSETS.md), [`../QA_CHECKLIST.md`](../QA_CHECKLIST.md).
 >
+> For the **evidence-backed readiness assessment** (what is verified vs. what is
+> still a manual pre-launch step, with a final status table and Go/No-Go gate) see
+> [`../PRODUCTION_READINESS.md`](../PRODUCTION_READINESS.md). This checklist is the
+> *mechanics*; that report is the *sign-off*.
+>
 > Work top-to-bottom. Do not skip a section.
 
 ---
@@ -15,7 +20,7 @@
 ## A. Code & build readiness
 
 - ☐ `flutter analyze` → **No issues found!**
-- ☐ `flutter test` → all pass (current baseline: **466**).
+- ☐ `flutter test` → all pass (current baseline: **574**).
 - ☐ Confirm `pubspec.yaml` `version:` is correct for this release
   (first release `1.0.0+1`; every later upload needs a higher `+buildCode`).
 - ☐ `flutter build appbundle --release --dart-define=APP_VERSION=<v> --dart-define=BUILD_NUMBER=<n>`
@@ -85,7 +90,10 @@ These degrade gracefully if skipped, but a production release should complete th
 - ☐ **Data safety** form completed ([`DATA_SAFETY.md`](DATA_SAFETY.md)).
 - ☐ **Ads** = No; **IAP** = No (§4).
 - ☐ **App access** — test logins + reviewer instructions provided (§5).
-- ☐ **AD_ID** — verify merged manifest; declare "advertising ID not used" (§7).
+- ☐ **AD_ID** — advertising ID is **removed** in the manifest (`tools:node="remove"`,
+  guarded by `test/android_manifest_test.dart`); declare "advertising ID not used" (§7).
+- ☐ **AI transparency** — coaching/analysis is AI-generated and framed as
+  assistance, not professional/legal advice (listing + Privacy Policy + Terms).
 - ☐ Government/financial/health/news declarations = No (§7).
 
 ## H. Pre-submission QA

@@ -61,9 +61,31 @@ their own use).
 - **Health & fitness**
 - **Contacts** / **Calendar** / **SMS or call logs**
 - **Web browsing history**
-- **Installed apps** / device or other IDs for advertising (**no ad SDK**)
+- **Installed apps** / device or other IDs for advertising (**no ad SDK**; the
+  `AD_ID` permission is explicitly removed from the manifest — see
+  [`PLAY_CONSOLE.md`](PLAY_CONSOLE.md) §7)
 - **Audio**, **music files**, other files/docs beyond the résumé PDF the user
   explicitly selects
+- **Biometric data** — the optional biometric/device-credential unlock uses the
+  Android **`local_auth`** plugin (system `BiometricPrompt`). Authentication
+  happens **entirely on-device**; the app never reads, stores, or transmits any
+  fingerprint/face data. Declare **biometric data = not collected**.
+
+### On-device-only data (never leaves the device — not "collected")
+- **Biometric preference + trusted-device marker + "Not Now" flag** are stored in
+  OS-backed secure storage (**`flutter_secure_storage`** → Android
+  EncryptedSharedPreferences). These are small local flags — **no passwords, no
+  session tokens** — and are **never sent off the device**, so they are not a Play
+  "collected" data type (Firebase persists its own session securely; the biometric
+  gate simply sits in front of it).
+- **Analytics consent choice** and locale/onboarding flags live in local
+  preferences on-device.
+
+> **New Firestore collections since v0 of this form** — `resumes/{resumeId}` (the
+> multiple-CV repository) and `users/{uid}/learning/{docId}` (learning interests)
+> are **owner-private** career content already covered by the **"Résumé / CV &
+> career content"** row in §2; no new *type* of data is introduced, and both are
+> gated to the owner by `firestore.rules`. No Data Safety change beyond this note.
 
 ## 4. Security practices (declare)
 
