@@ -1,7 +1,24 @@
 # Career Bridge — Session Handoff
 
 > Living handoff doc so a fresh Claude session can continue immediately.
-> Last updated: **Phase 7 · Milestone 5 (Deployment & Publishing) — COMPLETE** (see §7.25) — a **review /
+> Last updated: **Stabilization Milestone (9 bug fixes) — COMPLETE** (see §7.26) — a **bug-fix / stabilization**
+> milestone (no new features): root-cause fixes, existing behavior preserved, no architecture change. `analyze` clean ·
+> **592 tests** (+18) · release `.apk` builds under R8 · **live-verified EN + AR** on the release build. **(1) Google
+> Sign-In** — root cause is Firebase config (empty `oauth_client`, no SHA-1), not code; added a clearer
+> `AuthErrorCode.configurationError` mapping + **`docs/GOOGLE_SIGNIN_SETUP.md`** runbook (debug SHA-1/256 + console
+> steps — user-side). **(2/3) Job/Internship Details layout** — internship label→value row now **responsive** (stacks
+> under ~260px so a long word can't be squeezed into a sliver and wrap char-by-char) + meta chips/badges hardened
+> (`Flexible`+ellipsis, no narrow overflow); all job-detail entry points already share one route (Coach/Recommended ==
+> Browse). **(4) RTL/bidi "SQL"→"LQS"** — was **PDF-only**; `ats_template` now picks direction **per text run** (Latin
+> LTR, Arabic RTL) instead of a page-level rtl; the Flutter UI was already correct. **(5) Default country Qatar** —
+> `CountryController` defaults to Qatar; Browse Jobs opens country-scoped (remote always included) + a country filter in
+> the sheet; country threaded into Job Matching/Coach/Interview prompts; user can change/clear. **(6) Currency QAR** —
+> new offline peg-based `CurrencyConverter`; internship stipend shows **"QAR 4,368 (~ USD 1,200)"**; defaults→QAR.
+> **(7) Arabic job content** — `titleAr`/`descriptionAr`/`locationAr` on `Job` + all **18 seed jobs** (natural Arabic),
+> shown when locale=ar with **English fallback**; employmentType/seniority chips localized. **(8) Interview** — **Copy**
+> button on "Sample strong answer" → clipboard + "Copied to clipboard." snackbar. **(9) CV PDF** — adaptive per-link
+> scheme-stripped URLs (long GitHub/LinkedIn no longer overflow). feat `a603549`.
+> **Phase 7 · Milestone 5 (Deployment & Publishing) — COMPLETE** (see §7.25) — a **review /
 > reconcile / verify / sign-off** milestone that finishes **every remaining production task except the actual Play
 > upload**. Behavior-preserving: no new deps, no rules change, no architectural impact. **One code change** — the
 > Android manifest now **strips the advertising ID** (`com.google.android.gms.permission.AD_ID`, merged by
@@ -2264,6 +2281,97 @@ Real upload keystore + `key.properties`; fill legal/store `⟨FILL-IN⟩`s + cou
 provision the **Storage bucket** + `firebase deploy --only storage`; **App Check** enable→Play-Integrity→enforce;
 *(optional)* Crashlytics/Perf Gradle plugins; Play Console create/sign/list/declare/closed-test. **Nothing in code
 blocks launch** — all degrade gracefully.
+
+---
+
+## 7.26 Stabilization Milestone — 9 Bug Fixes ✅ COMPLETE (feat `a603549`)
+
+> **Bug-fix / stabilization only — no new features.** Root-cause fixes, existing behavior preserved, no architecture
+> change, minimal blast radius. `analyze` clean · **592 tests** (+18) · release `.apk` builds under R8 · **live-verified
+> EN + AR** on the release build. Investigation used 5 parallel Explore agents; each bug's root cause was confirmed
+> before touching code (and bugs 2/3 were reproduced live first).
+
+**1 · Google Sign-In (config, not code).** The app signs in with Firebase federated `signInWithProvider(GoogleAuthProvider())`
+(no `google_sign_in` plugin); `android/app/google-services.json` has an **empty `oauth_client: []`** and **no SHA-1** ever
+registered, so the OAuth handshake can't complete → the old opaque "Something went wrong." **Fix (code):** map the
+config-failure Firebase codes (`internal-error`/`admin-restricted-operation`/`app-not-authorized`/`invalid-oauth-*`/
+`missing-client-identifier`/`unauthorized-domain`) → new **`AuthErrorCode.configurationError`** → `errConfiguration`
+(EN/AR). **Fix (docs):** **`docs/GOOGLE_SIGNIN_SETUP.md`** — the debug SHA-1 (`22:A0:…:CE`) + SHA-256, and the exact
+console steps (enable Google provider → register SHA → refresh json → verify on a **real device**). These console steps
+are **user-side** (chosen: code diagnostics + runbook).
+
+**2 / 3 · Job & Internship Details layout.** Investigation found the current build already renders these screens cleanly
+at normal widths, and **all job-detail entry points share ONE `/jobs/:id` route** (Job Matching results aren't even
+tappable; Recommendations pushes the same route) — so Coach/Recommended details are byte-identical to Browse. The real
+root cause of the reported "character-by-character vertical text" is a **narrow-width starvation**: the internship
+label→value row had a fixed `SizedBox(width:130)` label + `Expanded` value, so on a tight layout the value collapses and
+a long word wraps per-character. **Fix:** new `_DetailRow` in `job_detail_view.dart` — side-by-side when there's room,
+**stacked (value beneath label) under ~260px** so the value always gets full width; hardened `_HighlightBadge`/`_MetaChip`
+(`Flexible` + `TextOverflow.ellipsis` — no narrow-width overflow) and the seeker `_MatchSection` loading row. Regression
+guard: **`test/internship_detail_layout_test.dart`** renders the internship card at 360px + 220px in EN + AR with no
+overflow.
+
+**4 · RTL/bidi "SQL"→"LQS" (PDF only).** The Flutter UI was already correct (no manual reversal, no forced
+`Directionality(rtl)`). The reversal was exclusively the CV **PDF**: `ats_template` set a page-level `pw.TextDirection.rtl`
+and the `pdf` package runs **no** Unicode bidi, so Latin runs emitted right-to-left. **Fix:** removed the page-level
+direction; every content string goes through a new **`_txt`** that picks direction **per run** (Arabic→RTL, else LTR)
+with document-aligned paragraphs (`crossAxisAlignment` end for RTL) — Latin (skills/URLs/email) stays LTR while Arabic
+stays RTL. Contact line is `forceLtr` (email/phone dominant).
+
+**9 · CV PDF formatting (same file).** Long GitHub/LinkedIn URLs were joined into one `pw.Text` with no break points →
+overflow. **Fix:** `_cleanUrl` strips `https://`/`www.`/trailing slash + inserts a zero-width space after each `/`; each
+link renders on **its own line**. Empty sections were already suppressed. Both fixes also apply to the on-screen WYSIWYG
+`PdfPreview` (same code path); `render_all_locales` CvPreview EN + AR still pass (the PDF generates in both locales).
+
+**5 · Default country = Qatar (full scope).** `CountryController` now defaults to **`CountriesData.defaultCountry`**
+(Qatar) instead of null (a persisted choice still overrides). Browse Jobs `_load` seeds the location filter to the user's
+country, and `SeedJobsRepository` location match now **includes remote jobs** (open regardless of country). New
+**country dropdown** in `JobFilterSheet` (🇶🇦 Qatar default + "All countries"); `setCountry(String?)` on the browse
+controller; `clearFilters` restores the default country. Country is threaded as context into **Job Matching** (rank
+prompt: "Based in … prefer roles there or remote"), **Career Coach** (system instruction), and **Interview** (via
+`InterviewContext.country`). Live-verified: Browse shows **13 jobs** (Qatar + remote; 5 on-site non-Qatar filtered out).
+
+**6 · Currency QAR + dual display.** New **`lib/core/utils/currency_converter.dart`** — offline peg-based table (QAR/AED/
+SAR/JOD exact pegs, EGP/EUR/GBP approximate). `formatDual(1200,'USD')` → **"QAR 4,368 (~ USD 1,200)"**; same-currency →
+single value; unknown → original untouched. Applied to the internship stipend (`job_detail_view`). Defaults flipped
+USD→QAR were **not** forced onto seed data (no salary on seeker jobs); the converter handles the USD stipends. Unit test
+`test/currency_converter_test.dart`.
+
+**7 · Arabic job content (all user-facing fields).** Added optional **`titleAr`/`descriptionAr`/`locationAr`** to the
+seeker `Job` (+ defensive `fromJson` incl. snake_case) with `titleFor(lang)`/`descriptionFor(lang)`/`locationFor(lang)`
+(ar variant when present, **English fallback** otherwise). Translated **all 18 seed jobs** (title + description + location)
+into natural Arabic (companies/skills kept — brand/technical). New **`lib/shared/models/job_l10n.dart`** localizes the
+controlled-vocab `employmentType`/`seniority` chip strings via existing `empType*`/`jobExp*` keys. Rendered in
+`JobDetailView`, `job_list_tile`, `internship_tile`, `job_match_card` (RecJobCard already uses AI-localized content).
+Unit test `test/job_localization_test.dart`. Live-verified: Arabic titles ("مهندس تطبيقات جوّال (Flutter)"), Arabic
+descriptions, Arabic locations ("الدوحة، قطر").
+
+**8 · Interview copy button.** A copy `IconButton` beside "Sample strong answer" (`interview_prep_screen`) →
+`Clipboard.setData` → reuses `showAuthSnack(l10n.commonCopiedToClipboard)` ("Copied to clipboard." / "تم النسخ إلى
+الحافظة."). New l10n `commonCopy`/`commonCopiedToClipboard`.
+
+### Test-setup notes (for the next session)
+- The country default made `CountryController` (→ `localStorageProvider`) transitively read by the interview controller
+  (`buildContext`) and the jobs browse controller. Three test files gained a **`localStorageProvider` override**
+  (`interview_prep_flow`, `interview_prep_screen`, `jobs_browse_controller`); the coach fake repo got the new `country`
+  param. `jobs_browse_controller_test` was rewritten to assert the Qatar-default + `setCountry` behavior.
+- **AD_ID / manifest test** and the P7·M5 deployment docs are unaffected (still 574→now 592 with these +18).
+
+### VERIFIED live on emulator (`-gpu swiftshader_indirect`, seeker `appreg030157@cb.app`) — release build, EN + AR
+`-gpu host` still Impeller-crashes on this emulator (§10) → used the **software renderer** (stable). **AR:** Browse Jobs
+= **13 jobs** with Arabic titles/locations + localized type/level chips; filter sheet shows **الدولة → 🇶🇦 Qatar** +
+localized chips; internship detail = Arabic title + **Arabic description** + stipend **"QAR 4,368 (~ USD 1,200)"** + clean
+label→value card. **EN:** internship detail stipend **"QAR 4,368 (~ USD 1,200)"**, English description (fallback), clean
+card. Bugs 4/8/9 covered by passing PDF-render (`render_all_locales` CvPreview EN+AR) + feedback-card + unit tests (the
+default CV was empty, so no on-device PDF eyeball; the per-run bidi is logic-verified).
+
+### Remaining / notes
+- **Bug 1 needs the user:** enable the Google provider + register SHA-1/256 in the Firebase console, refresh
+  `google-services.json`, and verify on a **real device** (Google sign-in is flaky on bare emulators) — see
+  `docs/GOOGLE_SIGNIN_SETUP.md`. Nothing else here depends on it.
+- Emulator now has the **release APK** with a seeker session, **English** locale (last toggle), 1 empty CV.
+- The `_countryLine`/country prompt additions are gentle preferences (not hard filters) — the AI still returns all ranked
+  jobs.
 
 ---
 
