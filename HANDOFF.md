@@ -1,7 +1,28 @@
 # Career Bridge — Session Handoff
 
 > Living handoff doc so a fresh Claude session can continue immediately.
-> Last updated: **Stabilization Milestone (9 bug fixes) — COMPLETE** (see §7.26) — a **bug-fix / stabilization**
+> Last updated: **Follow-up Stabilization — job-detail vertical text + Qatar defaults — COMPLETE** (see §7.27, feat
+> `6cfcc97`) — a **bug-fix / stabilization** round (no new features) for real-device reports still open after the prior
+> 9-fix milestone. Each was **reproduced live before touching code**. **(2) "Vertical text" in Job Details (For You →
+> Recommended → View Job)** — the prior fix targeted the internship label→value row in `job_detail_view.dart`, but the
+> REAL culprit is the seeker **`_MatchSection` in `job_detail_screen.dart`**: each match-prompt state paired an
+> `Expanded(message)` with an **unconstrained action button** (Analyze resume / See match / Retry) in one `Row`; on a
+> narrow device with a large system font the button starves the message to a sliver → Flutter wraps it
+> character-by-character. Recommended jobs open this panel in the **no-resume** state (wide "Analyze resume" button), so
+> the For You path surfaced it. **Fix:** the action stacks **beneath** the message (full-width message, end-aligned
+> action); loading state (no button) unchanged; score row → `Wrap`. Reproduced at **360dp + font scale 1.8** (EN + AR)
+> and confirmed fixed. **(3) Browse Jobs defaults to Qatar** (`CountriesData.defaultCountry`) **independent of the
+> persisted profile country** — it previously seeded from the profile country, so a device whose onboarding country
+> isn't Qatar never opened on Qatar; still changeable in the filter sheet. **(4) Career Coach bases advice on Qatar** —
+> the country was only a soft "tailor … when relevant" system hint (replies drifted global); now a **firm directive**
+> (name Qatar cities/employers, quote QAR, default all figures to Qatar) mirroring Job Matching + coach market defaults
+> to Qatar; verified live (Doha / QAR / "in Qatar" / "في قطر"). **(1) Google Sign-In** re-verified **app-side correct**
+> (Firebase `signInWithProvider` + `configurationError` mapping + runbook); root cause remains Firebase console config
+> (empty `oauth_client`, no SHA-1) — **user-side, no code change**. `analyze` clean · **595 tests** (+3) · release `.apk`
+> (73.1 MB) builds under R8 · **live-verified EN + AR**. Known limitation: the Home AI-toolkit feature grid overflows at
+> extreme font scale (≥1.8) on narrow devices (pre-existing `childAspectRatio`, out of reported scope — see §10).
+>
+> **Stabilization Milestone (9 bug fixes) — COMPLETE** (see §7.26) — a **bug-fix / stabilization**
 > milestone (no new features): root-cause fixes, existing behavior preserved, no architecture change. `analyze` clean ·
 > **592 tests** (+18) · release `.apk` builds under R8 · **live-verified EN + AR** on the release build. **(1) Google
 > Sign-In** — root cause is Firebase config (empty `oauth_client`, no SHA-1), not code; added a clearer
@@ -2375,6 +2396,77 @@ default CV was empty, so no on-device PDF eyeball; the per-run bidi is logic-ver
 
 ---
 
+## 7.27 Follow-up Stabilization — Job-Detail Vertical Text + Qatar Defaults ✅ COMPLETE (feat `6cfcc97`)
+
+> **Bug-fix / stabilization only — no new features.** Four real-device reports still open after §7.26. Each root cause
+> was **reproduced live on the emulator before touching code** (issues 2/3/4) or re-verified via source audit (issue 1).
+> `analyze` clean · **595 tests** (+3) · release `.apk` (73.1 MB) builds under R8 · **live-verified EN + AR** at both
+> normal and extreme (360dp + font scale 1.8) conditions. Investigation used 4 parallel Explore agents.
+
+**2 · "Vertical text" in Job Details (For You → Recommended → View Job) — the prior fix was in the wrong file.**
+§7.26 hardened the internship label→value `_DetailRow` in `job_detail_view.dart`, but that row only ever wraps by *word*
+(all its values are short/multi-word) — it never produced the reported one-character-per-line text. Reproducing the
+exact path live (For You → recommended internship → View job) at **360dp + font scale 1.8** showed the real culprit: the
+seeker **`_MatchSection` in `lib/features/jobs/presentation/job_detail_screen.dart`**. Each non-loading match-prompt
+state (`!hasResume` / `idle` / `error`) was a single `Row` of `Icon + Expanded(message) + <action button>`. The action
+buttons ("Analyze resume" / "See match" / "Retry") are **unconstrained** — at a large text scale on a narrow width the
+button consumes most of the row and the `Expanded` message collapses to a sliver, so Flutter breaks it
+**character-by-character** (`Se / e / ho / w / we / ll / yo / u`). Recommended jobs open this panel in the **no-resume**
+state (widest button), which is exactly why the For You path surfaced it while a resume-analyzed Browse session did not.
+**Fix:** a shared `prompt(icon, color, message, action)` helper renders the message row (icon + `Expanded` text, always
+full width) with the **action stacked beneath it, end-aligned** (`Column` + `Align`). The `loading` state keeps its
+`Row` (no button → the `Expanded` text already gets full width). The `_MatchResult` score row (`score% + band chip`)
+became a `Wrap` so it can't `RenderFlex`-overflow at large scale either. **All job-detail entry points still share the
+one `/jobs/:id` route**, so this fixes Browse / Internships / Coach deep-links identically. Regression guard:
+`test/job_detail_screen_test.dart` gained a `textScale` host param + a test (EN + AR) at 360×800 / scale 1.8 asserting
+the message keeps a wide layout (`msgRect.width > 180`) and the action sits **below** it.
+
+**3 · Browse Jobs now defaults to Qatar independent of the persisted profile country.** On this emulator Browse already
+scoped to Qatar (13 = Qatar + remote) — because its persisted `pref_selected_country` *was* Qatar. On the user's device
+the persisted profile country is **not** Qatar (set during onboarding), and §7.26's Browse default read exactly that
+persisted country (`countryControllerProvider?.name`), so Browse never opened on the Qatar market. **Fix:**
+`jobs_browse_controller` (`_load` + `clearFilters`) now seeds the location filter to **`CountriesData.defaultCountry.name`
+(Qatar)** directly, dropping the `country_controller` import. This is a deliberate product call — the app is Qatar-first
+(QAR currency, Qatar seed jobs), so Browse opens on the Qatar market for everyone; users still change/clear it in the
+filter sheet (`setCountry`), and remote roles are always included. The persisted country still drives phone/profile.
+Guard: `jobs_browse_controller_test` gained "Browse defaults to Qatar even when the profile country is not Qatar" (Egypt
+persisted → `query.location == 'Qatar'`).
+
+**4 · Career Coach now anchors advice to Qatar.** §7.26 threaded `country` into the coach but only as a **soft system
+hint** ("The user is based in … tailor … *when relevant*"), unlike Job Matching's firm user-prompt line — so replies
+drifted to generic global advice. **Fix:** `career_coach_repository_impl._systemInstruction` now emits a **firm
+directive** ("The job market is <country>. Base ALL job-market, salary, employer, and opportunity advice on <country>:
+name <country> cities/employers, quote salaries in the local currency, reflect <country> hiring norms, default every
+example and figure to <country> unless the user explicitly asks about another location"). `career_coach_controller` now
+defaults the coach market to **`CountriesData.defaultCountry.name` (Qatar)** (consistent with Browse), dropping its
+`country_controller` import. Verified live (EN): "In-demand tech jobs in **Qatar**", "Companies across **Doha**",
+salaries "**8,000 QAR** and **18,000 QAR**", "employers in **Qatar**?". (AR): "…لبدء مسيرتك المهنية **في قطر**".
+
+**1 · Google Sign-In — re-verified app-side correct, no code change.** Source audit reconfirmed the app uses Firebase
+federated `signInWithProvider(GoogleAuthProvider())` (no `google_sign_in` plugin), `configurationError` maps the config
+Firebase codes to the clear EN/AR message, and `docs/GOOGLE_SIGNIN_SETUP.md` documents the console steps. Root cause
+remains **Firebase console config** — `android/app/google-services.json` still has `oauth_client: []` and no SHA-1
+registered. This is **user-side** (enable Google provider → register debug + Play SHA-1/256 → refresh json → verify on a
+real device); nothing in the app can complete the OAuth handshake without it. Not reproduced by signing out on-device to
+avoid losing the live test session (no password to return) — the config gap is verifiable directly from the empty
+`oauth_client`.
+
+### VERIFIED live on emulator (`careerbridge_pixel`, seeker `appreg030157@cb.app`) — EN + AR
+Reproduced the bug **before** the fix (match panel showing `Se / e / ho / w / we / ll / yo / u` at 360dp + font 1.8 via
+For You → recommended internship), then confirmed fixed on the rebuilt app: message wraps by word full-width, "Analyze
+resume" stacked below (EN); "اعرف مدى تطابقك — حلّل سيرتك الذاتية أولًا." + "تحليل السيرة" below (AR). Browse filter sheet
+= **🇶🇦 Qatar / 13 results** (EN and AR). Coach → Doha/QAR/Qatar (EN) and "في قطر" (AR). Set/reset device font via
+`adb shell settings put system font_scale` and width via `adb shell wm density 480` (→360dp) / `wm density reset`.
+
+### Known limitation (out of reported scope)
+At **font scale ≥ ~1.8 on a narrow device**, the Home "Your AI toolkit" feature grid (`home_screen.dart` `SliverGrid`,
+`childAspectRatio: 1.42`) overflows its cells ("BOTTOM OVERFLOWED BY … PIXELS", worse in Arabic — longer labels). This
+is **pre-existing** (not one of the four reported bugs) and only manifests at extreme accessibility font sizes; a future
+pass could switch the grid to `mainAxisExtent` / a lower aspect ratio or let cards size intrinsically. Left untouched
+here to keep the blast radius on the reported issues.
+
+---
+
 ## 8. Next steps
 
 **Phase 2 COMPLETE.** **Phase 3 · M1 (Jobs Platform) `6a6a72c`, M2 (Applications Center)
@@ -2594,6 +2686,11 @@ next milestone until the current is verified. Prefer real integrations over mock
 ---
 
 ## 10. Known issues & environment quirks
+
+**Home AI-toolkit feature grid overflows at extreme font scale (open, pre-existing — see §7.27).** At system font
+scale ≥ ~1.8 on a narrow device (≈360dp), `home_screen.dart`'s `SliverGrid` (`childAspectRatio: 1.42`) overflows its
+cells ("BOTTOM OVERFLOWED BY … PIXELS", worse in Arabic). Not one of the reported bugs; only manifests at extreme
+accessibility sizes. Fix candidate: `mainAxisExtent` / lower aspect ratio / intrinsic-height cards.
 
 **Emulator (`emulator-5554`) rendering/input — important for on-device verification:**
 - **Impeller breaks `adb screencap`** (frozen/stale frames). **Always run with
