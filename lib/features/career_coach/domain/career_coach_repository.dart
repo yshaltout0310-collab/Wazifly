@@ -17,5 +17,6 @@ abstract interface class CareerCoachRepository {
     required List<ChatMessage> history,
     required String languageCode,
     ResumeAnalysis? resume,
+    String? country,
   });
 }

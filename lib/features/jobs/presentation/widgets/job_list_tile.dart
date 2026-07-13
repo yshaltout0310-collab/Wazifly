@@ -4,6 +4,7 @@ import '../../../../core/localization/generated/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
 import '../../../../shared/models/job.dart';
+import '../../../../shared/models/job_l10n.dart';
 
 /// A tappable job row for the browse/saved lists: title, company, meta chips,
 /// an optional "Applied" badge, and a bookmark toggle.
@@ -28,6 +29,7 @@ class JobListTile extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final dark = theme.brightness == Brightness.dark;
+    final lang = Localizations.localeOf(context).languageCode;
 
     return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.sm + 2),
@@ -56,7 +58,7 @@ class JobListTile extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            job.title,
+                            job.titleFor(lang),
                             style: theme.textTheme.titleMedium
                                 ?.copyWith(fontWeight: FontWeight.w800),
                           ),
@@ -96,16 +98,16 @@ class JobListTile extends StatelessWidget {
                       icon: job.remote
                           ? Icons.public_rounded
                           : Icons.place_outlined,
-                      label: job.location,
+                      label: job.locationFor(lang),
                     ),
                     if (job.employmentType.isNotEmpty)
                       _MetaChip(
                           icon: Icons.work_outline_rounded,
-                          label: job.employmentType),
+                          label: localizedEmploymentType(l10n, job.employmentType)),
                     if (job.seniority.isNotEmpty)
                       _MetaChip(
                           icon: Icons.trending_up_rounded,
-                          label: job.seniority),
+                          label: localizedSeniority(l10n, job.seniority)),
                     if (applied)
                       Container(
                         padding: const EdgeInsets.symmetric(

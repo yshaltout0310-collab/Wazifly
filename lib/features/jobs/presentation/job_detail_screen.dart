@@ -162,8 +162,10 @@ class _MatchSection extends ConsumerWidget {
               height: 20,
               child: CircularProgressIndicator(strokeWidth: 2.4)),
           const SizedBox(width: AppSpacing.md),
-          Text(l10n.jobsMatchLoading,
-              style: theme.textTheme.bodyMedium),
+          Expanded(
+            child: Text(l10n.jobsMatchLoading,
+                style: theme.textTheme.bodyMedium),
+          ),
         ])),
       MatchStatus.error => shell(Row(children: [
           const Icon(Icons.error_outline_rounded, color: AppColors.warning),

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/localization/generated/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
+import '../../../../shared/models/job_l10n.dart';
 import '../../domain/job_match.dart';
 
 /// A single ranked job result: header (title/company + score ring), meta chips
@@ -20,6 +21,7 @@ class JobMatchCard extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final dark = theme.brightness == Brightness.dark;
+    final lang = Localizations.localeOf(context).languageCode;
     final job = match.job;
     final band = _band(l10n, match.matchScore);
 
@@ -45,7 +47,7 @@ class JobMatchCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      job.title,
+                      job.titleFor(lang),
                       style: theme.textTheme.titleMedium
                           ?.copyWith(fontWeight: FontWeight.w800),
                     ),
@@ -74,15 +76,16 @@ class JobMatchCard extends StatelessWidget {
                 icon: job.remote
                     ? Icons.public_rounded
                     : Icons.place_outlined,
-                label: job.location,
+                label: job.locationFor(lang),
               ),
               if (job.employmentType.isNotEmpty)
                 _MetaChip(
                     icon: Icons.work_outline_rounded,
-                    label: job.employmentType),
+                    label: localizedEmploymentType(l10n, job.employmentType)),
               if (job.seniority.isNotEmpty)
                 _MetaChip(
-                    icon: Icons.trending_up_rounded, label: job.seniority),
+                    icon: Icons.trending_up_rounded,
+                    label: localizedSeniority(l10n, job.seniority)),
             ],
           ),
           Container(

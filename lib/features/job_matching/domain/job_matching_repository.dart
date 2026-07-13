@@ -14,9 +14,12 @@ abstract interface class JobMatchingRepository {
   ///
   /// Throws `JobMatchingException(noJobs)` if there are no jobs to rank, and
   /// `AiException` if the AI call fails or returns an unusable result.
+  /// [country], when set, is the seeker's location context (Qatar by default) —
+  /// the model gently prefers roles there or remote, all else equal.
   Future<List<JobMatch>> matchJobs({
     required ResumeAnalysis analysis,
     required String languageCode,
+    String? country,
   });
 
   /// Scores a single [job] against [analysis] — used by the Jobs platform's
@@ -26,5 +29,6 @@ abstract interface class JobMatchingRepository {
     required ResumeAnalysis analysis,
     required Job job,
     required String languageCode,
+    String? country,
   });
 }

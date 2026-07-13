@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/localization/locale_controller.dart';
+import '../../country_selection/application/country_controller.dart';
 import '../../../core/services/ai/ai_exception.dart';
 import '../../../core/services/chat_store/chat_history_store.dart';
 import '../../../core/services/resume_store/resume_analysis_store.dart';
@@ -109,12 +110,15 @@ class CareerCoachController extends StateNotifier<CareerCoachState> {
     final languageCode =
         _ref.read(localeControllerProvider)?.languageCode ?? 'en';
     final resume = _ref.read(lastResumeAnalysisProvider);
+    final country = _ref.read(countryControllerProvider)?.name;
 
     await _sub?.cancel();
-    _sub = _ref
-        .read(careerCoachRepositoryProvider)
-        .reply(history: history, languageCode: languageCode, resume: resume)
-        .listen(
+    _sub = _ref.read(careerCoachRepositoryProvider).reply(
+          history: history,
+          languageCode: languageCode,
+          resume: resume,
+          country: country,
+        ).listen(
           _onChunk,
           onError: _onError,
           onDone: _onDone,

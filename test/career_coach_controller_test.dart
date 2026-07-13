@@ -21,6 +21,7 @@ class _FakeRepo implements CareerCoachRepository {
     required List<ChatMessage> history,
     required String languageCode,
     ResumeAnalysis? resume,
+    String? country,
   }) async* {
     if (error != null) throw error!;
     for (final c in chunks) {

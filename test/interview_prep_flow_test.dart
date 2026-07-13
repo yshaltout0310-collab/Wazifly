@@ -1,5 +1,7 @@
 import 'package:careerbridge/core/localization/generated/app_localizations.dart';
 import 'package:careerbridge/core/localization/locale_controller.dart';
+import 'package:careerbridge/core/providers/app_providers.dart';
+import 'package:careerbridge/core/services/storage/local_storage_service.dart';
 import 'package:careerbridge/features/interview_prep/application/interview_controller.dart';
 import 'package:careerbridge/features/interview_prep/domain/interview_models.dart';
 import 'package:careerbridge/features/interview_prep/presentation/interview_prep_screen.dart';
@@ -8,8 +10,11 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'support/fake_auth.dart';
+
+late LocalStorageService _storage;
 
 const _questions = [
   InterviewQuestion(id: 'q1', text: 'Tell me about a hard problem.', focus: 'problem-solving'),
@@ -50,6 +55,7 @@ InterviewSession _session({bool completed = false}) {
 Widget _host(Locale locale, InterviewState seeded) {
   return ProviderScope(
     overrides: [
+      localStorageProvider.overrideWithValue(_storage),
       fakeAuthOverride(),
       interviewControllerProvider
           .overrideWith((ref) => InterviewController.seeded(ref, seeded)),
@@ -69,7 +75,11 @@ Widget _host(Locale locale, InterviewState seeded) {
 }
 
 void main() {
-  setUp(() => GoogleFonts.config.allowRuntimeFetching = false);
+  setUp(() async {
+    GoogleFonts.config.allowRuntimeFetching = false;
+    SharedPreferences.setMockInitialValues({});
+    _storage = await LocalStorageService.create();
+  });
 
   for (final locale in const [Locale('en'), Locale('ar')]) {
     final tag = locale.languageCode.toUpperCase();

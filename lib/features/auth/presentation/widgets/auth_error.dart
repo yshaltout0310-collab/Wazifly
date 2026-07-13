@@ -22,6 +22,7 @@ String localizedAuthMessage(AppLocalizations l10n, Object error) {
     AuthErrorCode.requiresRecentLogin => l10n.errRequiresRecentLogin,
     AuthErrorCode.phoneAlreadyInUse => l10n.errPhoneAlreadyInUse,
     AuthErrorCode.credentialAlreadyLinked => l10n.errPhoneAlreadyLinked,
+    AuthErrorCode.configurationError => l10n.errConfiguration,
     AuthErrorCode.unknown => l10n.authFailed,
   };
 }

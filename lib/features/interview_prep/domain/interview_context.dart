@@ -18,10 +18,15 @@ class InterviewContext {
     this.cvExperiences = const [],
     this.jobTitle = '',
     this.jobRequiredSkills = const [],
+    this.country = '',
   });
 
   /// Resolved target role the interview practises for.
   final String role;
+
+  /// The candidate's location context (Qatar by default) — lets the model tune
+  /// examples/expectations to the region.
+  final String country;
 
   // Profile
   final String candidateName;

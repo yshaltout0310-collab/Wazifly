@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/localization/locale_controller.dart';
+import '../../country_selection/application/country_controller.dart';
 import '../../../core/services/ai/ai_exception.dart';
 import '../../../core/services/resume_store/resume_analysis_store.dart';
 import '../../resume_analyzer/domain/resume_analysis.dart';
@@ -180,9 +181,11 @@ class JobMatchingController extends StateNotifier<JobMatchingState> {
     try {
       final languageCode =
           _ref.read(localeControllerProvider)?.languageCode ?? 'en';
+      final country = _ref.read(countryControllerProvider)?.name;
       final matches = await _ref.read(jobMatchingRepositoryProvider).matchJobs(
             analysis: analysis,
             languageCode: languageCode,
+            country: country,
           );
       if (!mounted) return;
       state =

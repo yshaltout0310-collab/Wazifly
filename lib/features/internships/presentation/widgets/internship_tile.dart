@@ -20,6 +20,7 @@ class InternshipTile extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final dark = theme.brightness == Brightness.dark;
+    final lang = Localizations.localeOf(context).languageCode;
     final d = job.internship;
 
     return Container(
@@ -41,7 +42,7 @@ class InternshipTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(job.title,
+                Text(job.titleFor(lang),
                     style: theme.textTheme.titleMedium
                         ?.copyWith(fontWeight: FontWeight.w800)),
                 const SizedBox(height: 2),
@@ -63,7 +64,7 @@ class InternshipTile extends StatelessWidget {
                           icon: (d?.workMode?.isRemoteish ?? job.remote)
                               ? Icons.public_rounded
                               : Icons.place_outlined,
-                          label: job.location),
+                          label: job.locationFor(lang)),
                     if (d?.funding != null)
                       _Chip(
                           icon: Icons.payments_outlined,

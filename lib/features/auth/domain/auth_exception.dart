@@ -21,6 +21,13 @@ enum AuthErrorCode {
   /// The current account already has a phone number linked.
   credentialAlreadyLinked,
 
+  /// A provider (e.g. Google) is not fully configured for this app — most often
+  /// a missing OAuth client / unregistered SHA-1 fingerprint, or a Firebase
+  /// internal error from the federated sign-in handshake. Surfaced with a
+  /// clearer message than [unknown] so the failure isn't opaque. See
+  /// docs/GOOGLE_SIGNIN_SETUP.md.
+  configurationError,
+
   unknown,
 }
 
@@ -56,9 +63,21 @@ class AuthException implements Exception {
         AuthErrorCode.phoneAlreadyInUse,
       'provider-already-linked' => AuthErrorCode.credentialAlreadyLinked,
       'web-context-canceled' ||
+      'user-cancelled' ||
       'cancelled' ||
       'canceled' =>
         AuthErrorCode.cancelled,
+      // Federated (Google) sign-in against a project with no OAuth client /
+      // unregistered SHA-1 typically surfaces as one of these — map them to a
+      // clear "configuration" message instead of the opaque generic error.
+      'internal-error' ||
+      'admin-restricted-operation' ||
+      'app-not-authorized' ||
+      'invalid-oauth-client-id' ||
+      'invalid-oauth-provider' ||
+      'missing-client-identifier' ||
+      'unauthorized-domain' =>
+        AuthErrorCode.configurationError,
       _ => AuthErrorCode.unknown,
     };
     return AuthException(mapped, message);

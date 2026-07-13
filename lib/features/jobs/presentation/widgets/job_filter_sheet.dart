@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/constants/countries_data.dart';
 import '../../../../core/localization/generated/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
+import '../../../../shared/models/job_l10n.dart';
 import '../../application/jobs_browse_controller.dart';
 
 /// Bottom sheet to filter jobs by remote, employment type, and seniority.
@@ -54,6 +56,42 @@ class JobFilterSheet extends ConsumerWidget {
               ],
             ),
             const SizedBox(height: AppSpacing.sm),
+            _GroupLabel(l10n.jobsCountry),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(AppRadius.md),
+                border: Border.all(
+                    color: theme.colorScheme.outline.withValues(alpha: 0.6)),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.place_outlined, size: 20),
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(
+                    child: DropdownButton<String?>(
+                      value: query.location,
+                      isExpanded: true,
+                      underline: const SizedBox.shrink(),
+                      items: [
+                        DropdownMenuItem<String?>(
+                          value: null,
+                          child: Text(l10n.jobsAllCountries),
+                        ),
+                        for (final c in CountriesData.all)
+                          DropdownMenuItem<String?>(
+                            value: c.name,
+                            child: Text('${c.flag}  ${c.name}',
+                                overflow: TextOverflow.ellipsis),
+                          ),
+                      ],
+                      onChanged: controller.setCountry,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
             SwitchListTile.adaptive(
               contentPadding: EdgeInsets.zero,
               value: query.remoteOnly,
@@ -68,6 +106,7 @@ class JobFilterSheet extends ConsumerWidget {
                 options: state.typeOptions,
                 selected: query.employmentTypes,
                 onToggle: controller.toggleType,
+                labelBuilder: (o) => localizedEmploymentType(l10n, o),
               ),
             ],
             if (state.seniorityOptions.isNotEmpty) ...[
@@ -77,6 +116,7 @@ class JobFilterSheet extends ConsumerWidget {
                 options: state.seniorityOptions,
                 selected: query.seniorities,
                 onToggle: controller.toggleSeniority,
+                labelBuilder: (o) => localizedSeniority(l10n, o),
               ),
             ],
             const SizedBox(height: AppSpacing.lg),
@@ -118,11 +158,15 @@ class _ChipWrap extends StatelessWidget {
     required this.options,
     required this.selected,
     required this.onToggle,
+    this.labelBuilder,
   });
 
   final List<String> options;
   final Set<String> selected;
   final ValueChanged<String> onToggle;
+
+  /// Maps a raw option value to its localized display label (identity if null).
+  final String Function(String)? labelBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -133,7 +177,7 @@ class _ChipWrap extends StatelessWidget {
       children: [
         for (final option in options)
           FilterChip(
-            label: Text(option),
+            label: Text(labelBuilder?.call(option) ?? option),
             selected: selected.contains(option),
             onSelected: (_) => onToggle(option),
             selectedColor: AppColors.emerald.withValues(alpha: 0.18),

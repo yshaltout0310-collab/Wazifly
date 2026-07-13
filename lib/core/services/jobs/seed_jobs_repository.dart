@@ -65,7 +65,11 @@ class SeedJobsRepository implements JobsRepository {
           !query.seniorities.contains(j.seniority)) {
         return false;
       }
-      if (loc != null && loc.isNotEmpty &&
+      // Country/location filter keeps jobs in that place PLUS remote jobs
+      // (remote roles are open regardless of the seeker's country).
+      if (loc != null &&
+          loc.isNotEmpty &&
+          !j.remote &&
           !j.location.toLowerCase().contains(loc)) {
         return false;
       }

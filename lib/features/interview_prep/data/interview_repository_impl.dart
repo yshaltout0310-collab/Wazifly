@@ -191,11 +191,13 @@ Write 2 to 4 short paragraphs in $language. Plain text only — no Markdown, no 
   String _contextBlock(InterviewContext ctx) {
     if (!ctx.hasPersonalization &&
         ctx.headline.isEmpty &&
-        ctx.experienceLevel.isEmpty) {
+        ctx.experienceLevel.isEmpty &&
+        ctx.country.isEmpty) {
       return '';
     }
     final b = StringBuffer('Candidate profile (tailor questions to this):\n');
     if (ctx.candidateName.isNotEmpty) b.writeln('- Name: ${ctx.candidateName}');
+    if (ctx.country.isNotEmpty) b.writeln('- Based in: ${ctx.country}');
     if (ctx.headline.isNotEmpty) b.writeln('- Headline: ${ctx.headline}');
     if (ctx.experienceLevel.isNotEmpty) {
       b.writeln('- Experience level: ${ctx.experienceLevel}');

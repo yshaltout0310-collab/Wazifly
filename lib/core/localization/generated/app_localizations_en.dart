@@ -904,6 +904,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'This sign-in method isn\'t enabled yet.';
 
   @override
+  String get errConfiguration =>
+      'Google sign-in isn\'t fully set up yet. Please use email sign-in, or try again later.';
+
+  @override
   String get errCancelled => 'Sign-in was cancelled.';
 
   @override
@@ -1190,6 +1194,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get jobsRemoteOnly => 'Remote only';
+
+  @override
+  String get jobsCountry => 'Country';
+
+  @override
+  String get jobsAllCountries => 'All countries';
 
   @override
   String get jobsEmploymentType => 'Employment type';
@@ -2552,6 +2562,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commonRetry => 'Try again';
+
+  @override
+  String get commonCopy => 'Copy';
+
+  @override
+  String get commonCopiedToClipboard => 'Copied to clipboard.';
 
   @override
   String get commonShowPassword => 'Show password';

@@ -1,17 +1,25 @@
 import 'package:careerbridge/core/localization/generated/app_localizations.dart';
 import 'package:careerbridge/core/localization/locale_controller.dart';
+import 'package:careerbridge/core/providers/app_providers.dart';
+import 'package:careerbridge/core/services/storage/local_storage_service.dart';
 import 'package:careerbridge/features/interview_prep/presentation/interview_prep_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'support/fake_auth.dart';
 
+late LocalStorageService _storage;
+
 Widget _host(Locale locale) {
   return ProviderScope(
-    overrides: [fakeAuthOverride()],
+    overrides: [
+      localStorageProvider.overrideWithValue(_storage),
+      fakeAuthOverride(),
+    ],
     child: MaterialApp(
       locale: locale,
       localizationsDelegates: const [
@@ -27,7 +35,11 @@ Widget _host(Locale locale) {
 }
 
 void main() {
-  setUp(() => GoogleFonts.config.allowRuntimeFetching = false);
+  setUp(() async {
+    GoogleFonts.config.allowRuntimeFetching = false;
+    SharedPreferences.setMockInitialValues({});
+    _storage = await LocalStorageService.create();
+  });
 
   for (final locale in const [Locale('en'), Locale('ar')]) {
     final tag = locale.languageCode.toUpperCase();

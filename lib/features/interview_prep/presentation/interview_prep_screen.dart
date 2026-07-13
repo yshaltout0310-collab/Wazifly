@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -522,9 +523,27 @@ class _FeedbackCard extends StatelessWidget {
           ],
           if (feedback.sampleAnswer.isNotEmpty) ...[
             const SizedBox(height: AppSpacing.md),
-            Text(l10n.interviewSampleAnswer,
-                style: theme.textTheme.labelLarge
-                    ?.copyWith(fontWeight: FontWeight.w700)),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(l10n.interviewSampleAnswer,
+                      style: theme.textTheme.labelLarge
+                          ?.copyWith(fontWeight: FontWeight.w700)),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.copy_rounded, size: 18),
+                  tooltip: l10n.commonCopy,
+                  visualDensity: VisualDensity.compact,
+                  onPressed: () async {
+                    await Clipboard.setData(
+                        ClipboardData(text: feedback.sampleAnswer));
+                    if (context.mounted) {
+                      showAuthSnack(context, l10n.commonCopiedToClipboard);
+                    }
+                  },
+                ),
+              ],
+            ),
             const SizedBox(height: 4),
             Container(
               width: double.infinity,

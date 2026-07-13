@@ -20,6 +20,9 @@ class Job extends Equatable {
     required this.description,
     required this.requiredSkills,
     required this.remote,
+    this.titleAr,
+    this.descriptionAr,
+    this.locationAr,
     this.internship,
     this.trainsBeginners = false,
   });
@@ -37,6 +40,24 @@ class Job extends Equatable {
   final String description;
   final List<String> requiredSkills;
   final bool remote;
+
+  /// Optional Arabic renderings of the free-text fields (seed/employer content).
+  /// When the app runs in Arabic these are shown; when absent the English value
+  /// is used as a graceful fallback (see [titleFor]/[descriptionFor]/
+  /// [locationFor]). Company names, skills (technical terms) are intentionally
+  /// not translated.
+  final String? titleAr;
+  final String? descriptionAr;
+  final String? locationAr;
+
+  /// Picks the Arabic variant when [lang] is `ar` and it is non-empty; otherwise
+  /// falls back to the base (English) value.
+  static String _pick(String base, String? ar, String lang) =>
+      (lang == 'ar' && ar != null && ar.trim().isNotEmpty) ? ar : base;
+
+  String titleFor(String lang) => _pick(title, titleAr, lang);
+  String descriptionFor(String lang) => _pick(description, descriptionAr, lang);
+  String locationFor(String lang) => _pick(location, locationAr, lang);
 
   /// Optional internship metadata (present only for internships). Projected
   /// from `JobPosting.internship`; drives the internship browse/detail extras.
@@ -66,6 +87,10 @@ class Job extends Equatable {
         requiredSkills: _parseStringList(
             json['requiredSkills'] ?? json['required_skills'] ?? json['skills']),
         remote: _parseBool(json['remote']),
+        titleAr: _parseOptString(json['titleAr'] ?? json['title_ar']),
+        descriptionAr:
+            _parseOptString(json['descriptionAr'] ?? json['description_ar']),
+        locationAr: _parseOptString(json['locationAr'] ?? json['location_ar']),
         internship: json['internship'] is Map
             ? InternshipDetails.fromJson(
                 Map<String, dynamic>.from(json['internship'] as Map))
@@ -73,6 +98,11 @@ class Job extends Equatable {
         trainsBeginners: _parseBool(
             json['trainsBeginners'] ?? json['trains_beginners']),
       );
+
+  static String? _parseOptString(Object? raw) {
+    final s = raw?.toString().trim();
+    return (s == null || s.isEmpty) ? null : s;
+  }
 
   static List<String> _parseStringList(Object? raw) {
     if (raw is! List) return const [];
@@ -99,6 +129,9 @@ class Job extends Equatable {
         description,
         requiredSkills,
         remote,
+        titleAr,
+        descriptionAr,
+        locationAr,
         internship,
         trainsBeginners,
       ];

@@ -23,6 +23,7 @@ class CareerCoachRepositoryImpl implements CareerCoachRepository {
     required List<ChatMessage> history,
     required String languageCode,
     ResumeAnalysis? resume,
+    String? country,
   }) {
     final turns = [
       for (final m in history)
@@ -32,11 +33,12 @@ class CareerCoachRepositoryImpl implements CareerCoachRepository {
     ];
     return _ai.streamChat(
       turns,
-      systemInstruction: _systemInstruction(languageCode, resume),
+      systemInstruction: _systemInstruction(languageCode, resume, country),
     );
   }
 
-  String _systemInstruction(String languageCode, ResumeAnalysis? resume) {
+  String _systemInstruction(
+      String languageCode, ResumeAnalysis? resume, String? country) {
     final language = languageCode == 'ar' ? 'Arabic' : 'English';
     final buffer = StringBuffer()
       ..writeln(
@@ -52,6 +54,12 @@ class CareerCoachRepositoryImpl implements CareerCoachRepository {
           'lines with "- ".')
       ..writeln('- Stay on career, job-search, and professional-growth topics; '
           'politely redirect unrelated requests.');
+
+    if (country != null && country.trim().isNotEmpty) {
+      buffer.writeln('- The user is based in ${country.trim()}. Tailor '
+          'job-market, salary, and opportunity advice to that region when '
+          'relevant.');
+    }
 
     if (resume != null) {
       buffer

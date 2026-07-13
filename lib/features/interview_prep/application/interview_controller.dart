@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/localization/locale_controller.dart';
+import '../../country_selection/application/country_controller.dart';
 import '../../../core/services/ai/ai_exception.dart';
 import '../../../core/services/cv_store/cv_draft_store.dart';
 import '../../../core/services/interview_store/in_memory_interview_history_repository.dart';
@@ -172,6 +173,7 @@ class InterviewController extends StateNotifier<InterviewState> {
       cvExperiences: cvExperiences,
       jobTitle: job?.title ?? '',
       jobRequiredSkills: job?.requiredSkills ?? const [],
+      country: _ref.read(countryControllerProvider)?.name ?? '',
     );
   }
 

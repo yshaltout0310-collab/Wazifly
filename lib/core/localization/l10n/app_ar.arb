@@ -318,6 +318,7 @@
   "errInvalidPhone": "أدخل رقم هاتف صالحًا.",
   "errInvalidOtpCode": "الرمز غير صحيح. يرجى المحاولة مرة أخرى.",
   "errOperationNotAllowed": "طريقة تسجيل الدخول هذه غير مفعّلة بعد.",
+  "errConfiguration": "لم يتم إعداد تسجيل الدخول عبر Google بالكامل بعد. يرجى استخدام البريد الإلكتروني أو المحاولة لاحقًا.",
   "errCancelled": "تم إلغاء تسجيل الدخول.",
 
   "passwordResetSent": "تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك.",
@@ -411,6 +412,8 @@
   "jobsFilters": "عوامل التصفية",
   "jobsClearFilters": "مسح",
   "jobsRemoteOnly": "عن بُعد فقط",
+  "jobsCountry": "الدولة",
+  "jobsAllCountries": "كل الدول",
   "jobsEmploymentType": "نوع التوظيف",
   "jobsSeniority": "المستوى",
   "jobsShowResults": "{count, plural, =0{لا نتائج} =1{عرض نتيجة واحدة} other{عرض {count} نتيجة}}",
@@ -876,6 +879,8 @@
 
   "commonLoading": "جارٍ التحميل…",
   "commonRetry": "إعادة المحاولة",
+  "commonCopy": "نسخ",
+  "commonCopiedToClipboard": "تم النسخ إلى الحافظة.",
   "commonShowPassword": "إظهار كلمة المرور",
   "commonHidePassword": "إخفاء كلمة المرور",
 

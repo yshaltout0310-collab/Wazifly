@@ -325,6 +325,7 @@
   "errInvalidPhone": "Enter a valid phone number.",
   "errInvalidOtpCode": "That code isn't correct. Please try again.",
   "errOperationNotAllowed": "This sign-in method isn't enabled yet.",
+  "errConfiguration": "Google sign-in isn't fully set up yet. Please use email sign-in, or try again later.",
   "errCancelled": "Sign-in was cancelled.",
 
   "passwordResetSent": "Password reset link sent to your email.",
@@ -421,6 +422,8 @@
   "jobsFilters": "Filters",
   "jobsClearFilters": "Clear",
   "jobsRemoteOnly": "Remote only",
+  "jobsCountry": "Country",
+  "jobsAllCountries": "All countries",
   "jobsEmploymentType": "Employment type",
   "jobsSeniority": "Seniority",
   "jobsShowResults": "{count, plural, =0{No results} =1{Show 1 result} other{Show {count} results}}",
@@ -929,6 +932,8 @@
 
   "commonLoading": "Loading…",
   "commonRetry": "Try again",
+  "commonCopy": "Copy",
+  "commonCopiedToClipboard": "Copied to clipboard.",
   "commonShowPassword": "Show password",
   "commonHidePassword": "Hide password",
 

@@ -1790,6 +1790,12 @@ abstract class AppLocalizations {
   /// **'This sign-in method isn\'t enabled yet.'**
   String get errOperationNotAllowed;
 
+  /// No description provided for @errConfiguration.
+  ///
+  /// In en, this message translates to:
+  /// **'Google sign-in isn\'t fully set up yet. Please use email sign-in, or try again later.'**
+  String get errConfiguration;
+
   /// No description provided for @errCancelled.
   ///
   /// In en, this message translates to:
@@ -2311,6 +2317,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Remote only'**
   String get jobsRemoteOnly;
+
+  /// No description provided for @jobsCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'Country'**
+  String get jobsCountry;
+
+  /// No description provided for @jobsAllCountries.
+  ///
+  /// In en, this message translates to:
+  /// **'All countries'**
+  String get jobsAllCountries;
 
   /// No description provided for @jobsEmploymentType.
   ///
@@ -4753,6 +4771,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Try again'**
   String get commonRetry;
+
+  /// No description provided for @commonCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get commonCopy;
+
+  /// No description provided for @commonCopiedToClipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied to clipboard.'**
+  String get commonCopiedToClipboard;
 
   /// No description provided for @commonShowPassword.
   ///

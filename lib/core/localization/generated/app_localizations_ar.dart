@@ -893,6 +893,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get errOperationNotAllowed => 'طريقة تسجيل الدخول هذه غير مفعّلة بعد.';
 
   @override
+  String get errConfiguration =>
+      'لم يتم إعداد تسجيل الدخول عبر Google بالكامل بعد. يرجى استخدام البريد الإلكتروني أو المحاولة لاحقًا.';
+
+  @override
   String get errCancelled => 'تم إلغاء تسجيل الدخول.';
 
   @override
@@ -1178,6 +1182,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get jobsRemoteOnly => 'عن بُعد فقط';
+
+  @override
+  String get jobsCountry => 'الدولة';
+
+  @override
+  String get jobsAllCountries => 'كل الدول';
 
   @override
   String get jobsEmploymentType => 'نوع التوظيف';
@@ -2540,6 +2550,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get commonRetry => 'إعادة المحاولة';
+
+  @override
+  String get commonCopy => 'نسخ';
+
+  @override
+  String get commonCopiedToClipboard => 'تم النسخ إلى الحافظة.';
 
   @override
   String get commonShowPassword => 'إظهار كلمة المرور';

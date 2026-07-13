@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/services/jobs/jobs_repository.dart';
 import '../../../core/services/jobs/seed_jobs_repository.dart';
+import '../../../features/country_selection/application/country_controller.dart';
 import '../../../shared/models/job.dart';
 
 enum JobsStatus { loading, ready, error }
@@ -75,10 +76,16 @@ class JobsBrowseController extends StateNotifier<JobsBrowseState> {
   Future<void> _load() async {
     try {
       final all = await _repo.fetchJobs();
+      // Default the location filter to the user's country (Qatar by default) so
+      // Browse Jobs opens scoped to their region; they can widen it in filters.
+      final country = _ref.read(countryControllerProvider)?.name;
+      final query = _withLocation(state.query, country);
+      final results = await _repo.searchJobs(query);
       state = state.copyWith(
         status: JobsStatus.ready,
         allJobs: all,
-        results: all,
+        results: results,
+        query: query,
         typeOptions: _distinct(all.map((j) => j.employmentType)),
         seniorityOptions: _distinct(all.map((j) => j.seniority)),
       );
@@ -99,8 +106,27 @@ class JobsBrowseController extends StateNotifier<JobsBrowseState> {
   void toggleRemote() =>
       _apply(state.query.copyWith(remoteOnly: !state.query.remoteOnly));
 
-  void clearFilters() =>
-      _apply(JobQuery(text: state.query.text)); // keep the text, drop filters
+  /// Sets (or clears, when [country] is null/blank) the country location filter.
+  void setCountry(String? country) =>
+      _apply(_withLocation(state.query, country));
+
+  void clearFilters() {
+    // Keep the text; drop the other filters but restore the default country.
+    final country = _ref.read(countryControllerProvider)?.name;
+    _apply(_withLocation(JobQuery(text: state.query.text), country));
+  }
+
+  /// Returns [q] with its location set to [country] (or cleared when blank).
+  /// Constructed directly because `copyWith` can't set location back to null.
+  JobQuery _withLocation(JobQuery q, String? country) => JobQuery(
+        text: q.text,
+        employmentTypes: q.employmentTypes,
+        seniorities: q.seniorities,
+        remoteOnly: q.remoteOnly,
+        location: (country != null && country.trim().isNotEmpty) ? country : null,
+        limit: q.limit,
+        offset: q.offset,
+      );
 
   Future<void> _apply(JobQuery query) async {
     final results = await _repo.searchJobs(query);

@@ -34,6 +34,7 @@ class JobMatchingRepositoryImpl implements JobMatchingRepository {
   Future<List<JobMatch>> matchJobs({
     required ResumeAnalysis analysis,
     required String languageCode,
+    String? country,
   }) async {
     final jobs = await _jobs.fetchJobs();
     if (jobs.isEmpty) {
@@ -42,7 +43,7 @@ class JobMatchingRepositoryImpl implements JobMatchingRepository {
 
     final byId = {for (final j in jobs) j.id: j};
     final json = await _ai.generateJson(
-      _buildPrompt(analysis, jobs, languageCode),
+      _buildPrompt(analysis, jobs, languageCode, country),
       systemInstruction: _systemInstruction,
     );
 
@@ -74,9 +75,10 @@ class JobMatchingRepositoryImpl implements JobMatchingRepository {
     required ResumeAnalysis analysis,
     required Job job,
     required String languageCode,
+    String? country,
   }) async {
     final json = await _ai.generateJson(
-      _buildSingleJobPrompt(analysis, job, languageCode),
+      _buildSingleJobPrompt(analysis, job, languageCode, country),
       systemInstruction: _systemInstruction,
     );
     // The single-job prompt returns the match object directly (no wrapper).
@@ -87,6 +89,7 @@ class JobMatchingRepositoryImpl implements JobMatchingRepository {
     ResumeAnalysis analysis,
     Job job,
     String languageCode,
+    String? country,
   ) {
     final language = languageCode == 'ar' ? 'Arabic' : 'English';
     return '''
@@ -96,7 +99,7 @@ CANDIDATE PROFILE (derived from their resume):
 - Summary: ${analysis.summary}
 - Strengths: ${_join(analysis.strengths)}
 - Weaknesses: ${_join(analysis.weaknesses)}
-- Skills to develop: ${_join(analysis.missingSkills)}
+- Skills to develop: ${_join(analysis.missingSkills)}${_countryLine(country)}
 
 JOB:
 - title: ${job.title}
@@ -125,6 +128,7 @@ Rules:
     ResumeAnalysis analysis,
     List<Job> jobs,
     String languageCode,
+    String? country,
   ) {
     final language = languageCode == 'ar' ? 'Arabic' : 'English';
     final jobsBlock = jobs
@@ -146,7 +150,7 @@ CANDIDATE PROFILE (derived from their resume):
 - Summary: ${analysis.summary}
 - Strengths: ${_join(analysis.strengths)}
 - Weaknesses: ${_join(analysis.weaknesses)}
-- Skills to develop: ${_join(analysis.missingSkills)}
+- Skills to develop: ${_join(analysis.missingSkills)}${_countryLine(country)}
 
 JOBS:
 $jobsBlock
@@ -174,6 +178,12 @@ Rules:
 
   static String _join(List<String> items) =>
       items.isEmpty ? 'none' : items.join(', ');
+
+  /// A candidate-location line for the prompt (empty when no country is known).
+  static String _countryLine(String? country) =>
+      (country != null && country.trim().isNotEmpty)
+          ? '\n- Based in: ${country.trim()} (all else equal, gently prefer roles there or remote)'
+          : '';
 }
 
 /// The app-wide job matching repository (uses the bound [aiServiceProvider]

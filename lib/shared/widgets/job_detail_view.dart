@@ -4,10 +4,12 @@ import 'package:intl/intl.dart';
 import '../../core/localization/generated/app_localizations.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_dimensions.dart';
+import '../../core/utils/currency_converter.dart';
 import '../../core/utils/responsive.dart';
 import '../models/internship_details.dart';
 import '../models/internship_details_l10n.dart';
 import '../models/job.dart';
+import '../models/job_l10n.dart';
 
 /// The public job body — title, company, meta chips, description, and required
 /// skills — rendered from a shared [Job].
@@ -36,13 +38,14 @@ class JobDetailView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
+    final lang = Localizations.localeOf(context).languageCode;
 
     return ListView(
       padding: padding ??
           EdgeInsets.fromLTRB(context.horizontalGutter, AppSpacing.lg,
               context.horizontalGutter, AppSpacing.lg),
       children: [
-        Text(job.title,
+        Text(job.titleFor(lang),
             style: theme.textTheme.headlineSmall
                 ?.copyWith(fontWeight: FontWeight.w800)),
         if (job.company.isNotEmpty) ...[
@@ -82,17 +85,18 @@ class JobDetailView extends StatelessWidget {
                       ? Icons.public_rounded
                       : Icons.place_outlined,
                   label: job.remote
-                      ? '${job.location} · ${l10n.jobsRemote}'
-                      : job.location)
+                      ? '${job.locationFor(lang)} · ${l10n.jobsRemote}'
+                      : job.locationFor(lang))
             else if (job.remote)
               _MetaChip(icon: Icons.public_rounded, label: l10n.jobsRemote),
             if (job.employmentType.isNotEmpty)
               _MetaChip(
                   icon: Icons.work_outline_rounded,
-                  label: job.employmentType),
+                  label: localizedEmploymentType(l10n, job.employmentType)),
             if (job.seniority.isNotEmpty)
               _MetaChip(
-                  icon: Icons.trending_up_rounded, label: job.seniority),
+                  icon: Icons.trending_up_rounded,
+                  label: localizedSeniority(l10n, job.seniority)),
           ],
         ),
         if (job.internship != null && !job.internship!.isEmpty) ...[
@@ -107,7 +111,7 @@ class JobDetailView extends StatelessWidget {
         if (job.description.isNotEmpty) ...[
           _SectionTitle(l10n.jobsDescription),
           const SizedBox(height: AppSpacing.sm),
-          Text(job.description,
+          Text(job.descriptionFor(lang),
               style: theme.textTheme.bodyMedium?.copyWith(height: 1.5)),
           const SizedBox(height: AppSpacing.lg),
         ],
@@ -178,9 +182,14 @@ class _HighlightBadge extends StatelessWidget {
         children: [
           Icon(icon, size: 14, color: color),
           const SizedBox(width: 6),
-          Text(label,
-              style: theme.textTheme.labelMedium
-                  ?.copyWith(color: color, fontWeight: FontWeight.w700)),
+          // Flexible + ellipsis so the badge shrinks on very narrow layouts
+          // instead of overflowing.
+          Flexible(
+            child: Text(label,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.labelMedium
+                    ?.copyWith(color: color, fontWeight: FontWeight.w700)),
+          ),
         ],
       ),
     );
@@ -220,7 +229,10 @@ class _InternshipSection extends StatelessWidget {
             : l10n.internshipCertificateNone
       ),
       if (d.isPaid && d.stipendAmount != null)
-        (l10n.internshipStipend, '${d.stipendAmount} ${d.currency}'),
+        (
+          l10n.internshipStipend,
+          CurrencyConverter.formatDual(d.stipendAmount!, d.currency)
+        ),
       if (d.startDate != null)
         (l10n.internshipStartDate, dateFmt.format(d.startDate!)),
       if (d.applicationDeadline != null)
@@ -244,26 +256,52 @@ class _InternshipSection extends StatelessWidget {
           for (final (label, value) in rows)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 3),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: 130,
-                    child: Text(label,
-                        style: theme.textTheme.labelLarge?.copyWith(
-                            color: theme.colorScheme.onSurface
-                                .withValues(alpha: 0.6))),
-                  ),
-                  Expanded(
-                    child: Text(value,
-                        style: theme.textTheme.bodyMedium
-                            ?.copyWith(fontWeight: FontWeight.w600)),
-                  ),
-                ],
-              ),
+              child: _DetailRow(label: label, value: value),
             ),
         ],
       ),
+    );
+  }
+}
+
+/// A label→value row for the internship-details card. Side-by-side when there is
+/// room; stacked (value beneath the label) when space is tight — a narrow device
+/// or a large text scale. Stacking guarantees the value always gets the full
+/// width, so a long word can never be squeezed into a sliver and wrap
+/// character-by-character (the vertical-text symptom).
+class _DetailRow extends StatelessWidget {
+  const _DetailRow({required this.label, required this.value});
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final labelStyle = theme.textTheme.labelLarge
+        ?.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.6));
+    final valueStyle =
+        theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600);
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < 260) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(label, style: labelStyle),
+              const SizedBox(height: 2),
+              Text(value, style: valueStyle),
+            ],
+          );
+        }
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(width: 130, child: Text(label, style: labelStyle)),
+            Expanded(child: Text(value, style: valueStyle)),
+          ],
+        );
+      },
     );
   }
 }
@@ -289,9 +327,12 @@ class _MetaChip extends StatelessWidget {
               size: 15,
               color: theme.colorScheme.onSurface.withValues(alpha: 0.6)),
           const SizedBox(width: 6),
-          Text(label,
-              style: theme.textTheme.labelMedium?.copyWith(
-                  color: theme.colorScheme.onSurface.withValues(alpha: 0.85))),
+          Flexible(
+            child: Text(label,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.labelMedium?.copyWith(
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.85))),
+          ),
         ],
       ),
     );

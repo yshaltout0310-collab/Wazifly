@@ -8,8 +8,14 @@ import '../../shared/models/country_model.dart';
 abstract final class CountriesData {
   CountriesData._();
 
+  /// The app's default country (Qatar) — pre-selected in onboarding and used as
+  /// the default location context for Browse Jobs / Job Matching / Coach /
+  /// Interviews until the user changes it.
+  static const CountryModel defaultCountry =
+      CountryModel(isoCode: 'QA', name: 'Qatar', dialCode: '+974', flag: '🇶🇦');
+
   static const List<CountryModel> all = [
-    CountryModel(isoCode: 'QA', name: 'Qatar', dialCode: '+974', flag: '🇶🇦'),
+    defaultCountry,
     CountryModel(isoCode: 'EG', name: 'Egypt', dialCode: '+20', flag: '🇪🇬'),
     CountryModel(isoCode: 'SA', name: 'Saudi Arabia', dialCode: '+966', flag: '🇸🇦'),
     CountryModel(isoCode: 'AE', name: 'United Arab Emirates', dialCode: '+971', flag: '🇦🇪'),
