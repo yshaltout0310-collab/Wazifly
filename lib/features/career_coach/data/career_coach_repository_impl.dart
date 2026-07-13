@@ -56,9 +56,15 @@ class CareerCoachRepositoryImpl implements CareerCoachRepository {
           'politely redirect unrelated requests.');
 
     if (country != null && country.trim().isNotEmpty) {
-      buffer.writeln('- The user is based in ${country.trim()}. Tailor '
-          'job-market, salary, and opportunity advice to that region when '
-          'relevant.');
+      final c = country.trim();
+      // A firm directive (not a soft "when relevant" hint) so replies actually
+      // center on the target market — mirrors the Job Matching prompt's
+      // `Based in:` line. Otherwise the model drifts to generic global advice.
+      buffer.writeln('- The job market is $c. Base ALL job-market, salary, '
+          'employer, and opportunity advice on $c: name $c cities/employers, '
+          'quote salaries in the local currency, and reflect $c hiring norms. '
+          'Default every example and figure to $c unless the user explicitly '
+          'asks about another location.');
     }
 
     if (resume != null) {

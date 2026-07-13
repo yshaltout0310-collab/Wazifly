@@ -2,9 +2,9 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/constants/countries_data.dart';
 import '../../../core/services/jobs/jobs_repository.dart';
 import '../../../core/services/jobs/seed_jobs_repository.dart';
-import '../../../features/country_selection/application/country_controller.dart';
 import '../../../shared/models/job.dart';
 
 enum JobsStatus { loading, ready, error }
@@ -76,10 +76,12 @@ class JobsBrowseController extends StateNotifier<JobsBrowseState> {
   Future<void> _load() async {
     try {
       final all = await _repo.fetchJobs();
-      // Default the location filter to the user's country (Qatar by default) so
-      // Browse Jobs opens scoped to their region; they can widen it in filters.
-      final country = _ref.read(countryControllerProvider)?.name;
-      final query = _withLocation(state.query, country);
+      // Default the location filter to Qatar (the app's home market) so Browse
+      // opens on the Qatar market for everyone; users can change or clear it in
+      // the filter sheet. Deliberately NOT the persisted profile country — a
+      // seeker whose profile country is elsewhere should still land on Qatar by
+      // default (remote roles are always included regardless of country).
+      final query = _withLocation(state.query, CountriesData.defaultCountry.name);
       final results = await _repo.searchJobs(query);
       state = state.copyWith(
         status: JobsStatus.ready,
@@ -111,9 +113,9 @@ class JobsBrowseController extends StateNotifier<JobsBrowseState> {
       _apply(_withLocation(state.query, country));
 
   void clearFilters() {
-    // Keep the text; drop the other filters but restore the default country.
-    final country = _ref.read(countryControllerProvider)?.name;
-    _apply(_withLocation(JobQuery(text: state.query.text), country));
+    // Keep the text; drop the other filters but restore the Qatar default.
+    _apply(_withLocation(
+        JobQuery(text: state.query.text), CountriesData.defaultCountry.name));
   }
 
   /// Returns [q] with its location set to [country] (or cleared when blank).

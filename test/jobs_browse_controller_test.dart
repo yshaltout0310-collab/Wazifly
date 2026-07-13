@@ -67,6 +67,29 @@ void main() {
     expect(c.read(jobsBrowseControllerProvider).query.location, 'Qatar');
   });
 
+  test('Browse defaults to Qatar even when the profile country is not Qatar',
+      () async {
+    // The user's device had a non-Qatar profile country persisted from
+    // onboarding; Browse must still open on the Qatar market by default.
+    SharedPreferences.setMockInitialValues({
+      'pref_selected_country': jsonEncode({
+        'isoCode': 'EG',
+        'name': 'Egypt',
+        'dialCode': '+20',
+        'flag': '🇪🇬',
+      }),
+    });
+    _storage = await LocalStorageService.create();
+
+    final c = _container();
+    addTearDown(c.dispose);
+    c.read(jobsBrowseControllerProvider);
+    await pumpEventQueue();
+
+    expect(c.read(jobsBrowseControllerProvider).query.location, 'Qatar');
+    expect(_ids(c.read(jobsBrowseControllerProvider)), ['a', 'b']);
+  });
+
   test('setCountry widens/changes the country filter', () async {
     final c = _container();
     addTearDown(c.dispose);

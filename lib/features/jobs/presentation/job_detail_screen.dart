@@ -130,32 +130,52 @@ class _MatchSection extends ConsumerWidget {
           child: child,
         );
 
+    // An icon + message with a trailing action button. The action drops onto
+    // its own end-aligned line beneath the message: pairing an `Expanded` text
+    // with an unconstrained button in a single `Row` let a large text scale (or
+    // a narrow width) starve the text to a sliver and wrap it
+    // character-by-character (the vertical-text symptom). Stacking guarantees
+    // the message always gets the full width.
+    Widget prompt(IconData icon, Color iconColor, String message, Widget action) =>
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(children: [
+              Icon(icon, color: iconColor),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Text(message,
+                    style: theme.textTheme.bodyMedium?.copyWith(height: 1.35)),
+              ),
+            ]),
+            const SizedBox(height: AppSpacing.sm),
+            Align(alignment: AlignmentDirectional.centerEnd, child: action),
+          ],
+        );
+
     if (!state.hasResume) {
-      return shell(Row(children: [
-        const Icon(Icons.insights_rounded, color: AppColors.emerald),
-        const SizedBox(width: AppSpacing.sm),
-        Expanded(
-            child: Text(l10n.jobsMatchNoResume,
-                style: theme.textTheme.bodyMedium?.copyWith(height: 1.35))),
+      return shell(prompt(
+        Icons.insights_rounded,
+        AppColors.emerald,
+        l10n.jobsMatchNoResume,
         TextButton(
           onPressed: () => context.pushNamed(RouteNames.resumeAnalyzer),
           child: Text(l10n.jobsAnalyzeResume),
         ),
-      ]));
+      ));
     }
 
     return switch (state.matchStatus) {
-      MatchStatus.idle => shell(Row(children: [
-          const Icon(Icons.insights_rounded, color: AppColors.emerald),
-          const SizedBox(width: AppSpacing.sm),
-          Expanded(
-              child: Text(l10n.jobsMatchPrompt,
-                  style: theme.textTheme.bodyMedium?.copyWith(height: 1.35))),
+      MatchStatus.idle => shell(prompt(
+          Icons.insights_rounded,
+          AppColors.emerald,
+          l10n.jobsMatchPrompt,
           FilledButton.tonal(
             onPressed: controller.computeMatch,
             child: Text(l10n.jobsSeeMatch),
           ),
-        ])),
+        )),
+      // Loading has no action button, so the Expanded text keeps the full width.
       MatchStatus.loading => shell(Row(children: [
           const SizedBox(
               width: 20,
@@ -167,13 +187,14 @@ class _MatchSection extends ConsumerWidget {
                 style: theme.textTheme.bodyMedium),
           ),
         ])),
-      MatchStatus.error => shell(Row(children: [
-          const Icon(Icons.error_outline_rounded, color: AppColors.warning),
-          const SizedBox(width: AppSpacing.sm),
-          Expanded(child: Text(l10n.jobMatchErrUnknown)),
+      MatchStatus.error => shell(prompt(
+          Icons.error_outline_rounded,
+          AppColors.warning,
+          l10n.jobMatchErrUnknown,
           TextButton(
-              onPressed: controller.computeMatch, child: Text(l10n.jobMatchRetry)),
-        ])),
+              onPressed: controller.computeMatch,
+              child: Text(l10n.jobMatchRetry)),
+        )),
       MatchStatus.ready => shell(_MatchResult(match: state.match!)),
     };
   }
@@ -192,12 +213,16 @@ class _MatchResult extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
+        // Wrap (not Row) so the score + band chip flow onto a second line under
+        // a large text scale instead of overflowing.
+        Wrap(
+          spacing: AppSpacing.sm,
+          runSpacing: AppSpacing.xs,
+          crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             Text('${match.matchScore}%',
                 style: theme.textTheme.headlineSmall
                     ?.copyWith(color: band.color, fontWeight: FontWeight.w800)),
-            const SizedBox(width: AppSpacing.sm),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(

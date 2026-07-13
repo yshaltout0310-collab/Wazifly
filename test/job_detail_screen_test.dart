@@ -23,7 +23,7 @@ const _job = Job(
   remote: true,
 );
 
-Widget _host(Locale locale) {
+Widget _host(Locale locale, {double textScale = 1.0}) {
   return ProviderScope(
     overrides: [
       jobDetailControllerProvider('x').overrideWith(
@@ -47,6 +47,11 @@ Widget _host(Locale locale) {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: supportedLocales,
+      builder: (context, child) => MediaQuery(
+        data: MediaQuery.of(context)
+            .copyWith(textScaler: TextScaler.linear(textScale)),
+        child: child!,
+      ),
       home: const JobDetailScreen(jobId: 'x'),
     ),
   );
@@ -77,6 +82,40 @@ void main() {
           findsOneWidget);
       // A required-skill chip renders.
       expect(find.text('CI/CD'), findsOneWidget);
+    });
+  }
+
+  // Regression: the no-resume match prompt paired an `Expanded` message with an
+  // unconstrained action button in a single Row. On a narrow device with a large
+  // font scale the button starved the message to a sliver and it wrapped
+  // character-by-character (the "vertical text" bug on For You → job detail).
+  // The action now stacks beneath the message, so the message keeps full width.
+  for (final locale in const [Locale('en'), Locale('ar')]) {
+    final tag = locale.languageCode.toUpperCase();
+    testWidgets('match prompt keeps a wide message at a large text scale ($tag)',
+        (tester) async {
+      await tester.binding.setSurfaceSize(const Size(360, 800));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_host(locale, textScale: 1.8));
+      await tester.pump(const Duration(milliseconds: 400));
+
+      expect(tester.takeException(), isNull, reason: 'threw during render ($tag)');
+
+      final l10n = await AppLocalizations.delegate.load(locale);
+      final message = find.text(l10n.jobsMatchNoResume);
+      final action = find.widgetWithText(TextButton, l10n.jobsAnalyzeResume);
+      expect(message, findsOneWidget);
+      expect(action, findsOneWidget);
+
+      // The message keeps a wide layout (not squeezed into a per-character
+      // sliver) and the action sits below it rather than beside it.
+      final msgRect = tester.getRect(message);
+      final actRect = tester.getRect(action);
+      expect(msgRect.width, greaterThan(180),
+          reason: 'message was starved to a sliver ($tag)');
+      expect(actRect.top, greaterThan(msgRect.top),
+          reason: 'action should stack beneath the message ($tag)');
     });
   }
 
