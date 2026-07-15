@@ -2,6 +2,7 @@
 // (defined in auth_repository.dart); we pass inline closures regardless.
 import 'package:firebase_auth/firebase_auth.dart'
     hide PhoneCodeSent, PhoneVerificationFailed;
+import 'package:flutter/foundation.dart';
 
 import '../../../shared/models/app_user.dart';
 import '../domain/auth_exception.dart';
@@ -75,13 +76,49 @@ class FirebaseAuthRepository implements AuthRepository {
       _guard(() => _auth.sendPasswordResetEmail(email: email.trim()));
 
   @override
-  Future<AppUser> signInWithGoogle() => _guard(() async {
-        final provider = GoogleAuthProvider()
-          ..addScope('email')
-          ..addScope('profile');
-        final cred = await _auth.signInWithProvider(provider);
-        return _map(cred.user, method: AuthMethod.google)!;
-      });
+  Future<AppUser> signInWithGoogle() async {
+    // Not routed through [_guard]: the federated `signInWithProvider` handshake
+    // can fail with a *non*-FirebaseAuthException (a PlatformException from a
+    // missing OAuth client / unregistered SHA-1, or a cancelled Custom Tab),
+    // which _guard would rethrow raw as an opaque error. Here we log the exact
+    // cause for on-device diagnosis and always surface a typed [AuthException].
+    try {
+      final provider = GoogleAuthProvider()
+        ..addScope('email')
+        ..addScope('profile');
+      final cred = await _auth.signInWithProvider(provider);
+      return _map(cred.user, method: AuthMethod.google)!;
+    } on FirebaseAuthException catch (e) {
+      debugPrint('[Auth] Google sign-in FirebaseAuthException: '
+          'code=${e.code} message=${e.message}');
+      throw AuthException.fromFirebaseCode(e.code, e.message);
+    } catch (e) {
+      // Raw type + message go to logcat (visible via `adb logcat`) so a config
+      // failure is diagnosable on a real device — see docs/GOOGLE_SIGNIN_SETUP.md.
+      debugPrint('[Auth] Google sign-in failed (${e.runtimeType}): $e');
+      throw AuthException(_classifyGoogleError(e), e.toString());
+    }
+  }
+
+  /// Classifies a non-[FirebaseAuthException] Google sign-in failure from its
+  /// message: a user-dismissed Custom Tab → [AuthErrorCode.cancelled]; a
+  /// connectivity failure → [AuthErrorCode.network]; anything else is treated as
+  /// a provider/OAuth **configuration** problem (the common real-device cause:
+  /// the Google provider isn't enabled / no SHA-1 registered / empty
+  /// `oauth_client` in `google-services.json`).
+  static AuthErrorCode _classifyGoogleError(Object e) {
+    final m = e.toString().toLowerCase();
+    if (m.contains('cancel') || m.contains('dismiss')) {
+      return AuthErrorCode.cancelled;
+    }
+    if (m.contains('network') ||
+        m.contains('timeout') ||
+        m.contains('timed out') ||
+        m.contains('unreachable')) {
+      return AuthErrorCode.network;
+    }
+    return AuthErrorCode.configurationError;
+  }
 
   @override
   Future<void> verifyPhoneForLink({

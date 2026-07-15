@@ -1,7 +1,31 @@
 # Career Bridge — Session Handoff
 
 > Living handoff doc so a fresh Claude session can continue immediately.
-> Last updated: **Follow-up Stabilization — job-detail vertical text + Qatar defaults — COMPLETE** (see §7.27, feat
+> Last updated: **Final MVP Stabilization — Qatar everywhere + Google Sign-In diagnostics — COMPLETE** (see §7.28, feat this milestone) — an MVP-finishing **bug-fix / stabilization** pass (no new features). Reconciled five prioritized
+> real-device reports against the code, extended the fixes where they were incomplete, and **verified on the RELEASE
+> APK** (EN + AR). **(1) Google Sign-In** — added real diagnostics: `signInWithGoogle` no longer routes through `_guard`
+> (which only caught `FirebaseAuthException`); it now catches **platform-level** failures too, **logs the raw
+> type/code/message** to logcat for on-device diagnosis, and maps a non-Firebase failure via `_classifyGoogleError`
+> (cancel→cancelled, network→network, else→**configurationError**). Root cause is unchanged and **not code-fixable**:
+> `google-services.json` still has **`oauth_client: []`** (0 entries) → the Google provider isn't enabled / no SHA-1 →
+> a real device can't complete the OAuth handshake (Firebase-console step, see `docs/GOOGLE_SIGNIN_SETUP.md`). **(2)
+> "Vertical text" (For You → recommended job → Job Details)** — already root-caused + fixed in §7.27 (the `_MatchSection`
+> `Expanded`+button `Row`, now stacked); **re-reproduced the exact flow on the RELEASE APK at 360dp + font 1.8 in EN and
+> AR** and confirmed the match prompt wraps normally (no char-per-char). **(3) Qatar default everywhere** — §7.27 did
+> Browse + Coach; this pass extends the **same `CountriesData.defaultCountry` default to Job Matching**
+> (`job_matching_controller`), **Interview** (`interview_controller` → `InterviewContext.country`), and the **job-detail
+> on-demand match** (`job_detail_controller`), so all AI market context is Qatar independent of the persisted profile
+> country. Live: Browse = **13 jobs (Qatar + remote)** EN + AR — the Dubai/Cairo cards that read as "other countries"
+> are **remote** roles (globe icon), intentionally included. **(4) Arabic** — job descriptions already localize
+> (`descriptionFor(lang)`, all 18 seed jobs) — reconfirmed the recommended-job detail shows Arabic on the RELEASE APK;
+> the **PDF "SQL→LQS"** concern is **already correct** — verified by generating the ATS PDF (Arabic doc) and running
+> `pdftotext`: `SQL`/`Python`/`Flutter`/`PostgreSQL`/`Node.js` all keep their letter order (pdf 3.13 defaults
+> `useBidi=true` → `bidi.logicalToVisual` on the per-string RTL runs the §7.26 fix already set). `analyze` clean ·
+> **596 tests** (+1) · release `.apk` (73.1 MB) builds under R8. Both earlier bugs the user still saw were from the
+> **older released APK** predating these fixes. Regression guard added: interview context defaults to Qatar even with a
+> non-Qatar profile country persisted.
+>
+> **Follow-up Stabilization — job-detail vertical text + Qatar defaults — COMPLETE** (see §7.27, feat
 > `6cfcc97`) — a **bug-fix / stabilization** round (no new features) for real-device reports still open after the prior
 > 9-fix milestone. Each was **reproduced live before touching code**. **(2) "Vertical text" in Job Details (For You →
 > Recommended → View Job)** — the prior fix targeted the internship label→value row in `job_detail_view.dart`, but the
@@ -2464,6 +2488,69 @@ At **font scale ≥ ~1.8 on a narrow device**, the Home "Your AI toolkit" featur
 is **pre-existing** (not one of the four reported bugs) and only manifests at extreme accessibility font sizes; a future
 pass could switch the grid to `mainAxisExtent` / a lower aspect ratio or let cards size intrinsically. Left untouched
 here to keep the blast radius on the reported issues.
+
+---
+
+## 7.28 Final MVP Stabilization — Qatar Everywhere + Google Sign-In Diagnostics ✅ COMPLETE (feat this milestone)
+
+> **Bug-fix / stabilization only — no new features.** MVP-finishing pass over five prioritized real-device reports.
+> Reconciled each against the current code (much was already fixed in §7.26/§7.27), extended where incomplete, and
+> **verified on the RELEASE APK EN + AR**. `analyze` clean · **596 tests** (+1) · release `.apk` (73.1 MB) under R8.
+
+**1 · Google Sign-In — diagnostics added; the blocker stays a Firebase-console step.** `signInWithGoogle` was routed
+through `_guard`, which only catches `FirebaseAuthException`; the federated `signInWithProvider` handshake commonly fails
+on Android with a **`PlatformException`** (missing OAuth client / unregistered SHA-1) or a cancelled Custom Tab, which
+`_guard` rethrew raw → opaque UI error, no diagnostics. Now `signInWithGoogle` has its own try/catch that (a) **logs the
+exact `runtimeType` + code + message** to logcat (`[Auth] Google sign-in …`) so a real-device failure is diagnosable via
+`adb logcat`, and (b) maps a non-Firebase failure through **`_classifyGoogleError`** (message contains cancel/dismiss →
+`cancelled`; network/timeout/unreachable → `network`; otherwise → `configurationError`, carrying the raw message).
+Re-verified the config blocker: `google-services.json` `client[0].oauth_client` has **0 entries** — the Google provider
+still isn't enabled and no SHA-1 is registered, so no code change can complete sign-in. The console steps
+(`docs/GOOGLE_SIGNIN_SETUP.md`) remain **user-side**. Not reproduced by signing out on-device (the emulator session is a
+passwordless test account — signing out would strand it).
+
+**2 · "Vertical text" (For You → recommended job → Job Details) — re-verified fixed on the RELEASE APK.** Root cause was
+found + fixed in §7.27 (the seeker `_MatchSection` in `job_detail_screen.dart` paired `Expanded(message)` with an
+unconstrained action button in a `Row`; the action now stacks beneath a full-width message). This pass **re-reproduced
+the exact reported flow** (For You → open a recommended job → Job Details → scroll to the match panel) on the installed
+**release** build at **`wm density 480` (~360dp) + `font_scale 1.8`**, in **EN** ("See how well you match — analyze your
+resume first." wraps across 3 lines, "Analyze resume" below) and **AR** ("اعرف مدى تطابقك — حلّل سيرتك الذاتية أولًا." +
+"تحليل السيرة" below). No character-per-character wrap. No code change needed here.
+
+**3 · Qatar default everywhere — extended to Job Matching + Interview + on-demand match.** §7.27 defaulted **Browse** and
+**Coach** to `CountriesData.defaultCountry` (Qatar), but **Job Matching** (`job_matching_controller._match`),
+**Interview** (`interview_controller.buildContext` → `InterviewContext.country`), and the **job-detail on-demand "See
+match"** (`job_detail_controller.computeMatch`) still read the persisted profile country (`countryControllerProvider`).
+All three now use `CountriesData.defaultCountry.name`, so every AI market context is Qatar regardless of the persisted
+profile country (the country provider still drives phone/profile only). Live on the release APK: **Browse = 13 jobs
+(Qatar + remote) in EN and AR**. Note: the Dubai/UAE and Cairo/Egypt cards a tester may read as "other countries" are
+**remote** roles (globe icon, not a location pin) — the Qatar filter deliberately always includes remote. If a
+Qatar-only (exclude foreign-remote) list is ever wanted, that's a `SeedJobsRepository` filter change, not a default
+change. Guard added: `test/interview_controller_test.dart` — "interview context defaults the market to Qatar even with a
+non-Qatar persisted profile country" (persists Egypt, asserts `context.country == 'Qatar'`).
+
+**4 · Arabic — both parts already correct; reconfirmed.** (a) **Job descriptions in Arabic:** `Job.descriptionFor(lang)`
++ `titleFor`/`locationFor` with English fallback; all 18 seed jobs carry `descriptionAr` (§7.26). Reconfirmed on the
+release APK: the recommended UX-intern detail shows the Arabic description "ادعم فريق تصميم المنتج…". (b) **PDF
+"SQL→LQS":** verified **already fixed**, not just assumed. A throwaway probe built the ATS PDF for an Arabic doc
+(`rtl:true`) containing mixed strings ("…خبرة واسعة في SQL و Python…", skills `["SQL","Python","تطوير الويب"]`, a bullet
+"…backend … Node.js و PostgreSQL") and `pdftotext` extraction showed **`SQL`, `Python`, `Flutter`, `PostgreSQL`,
+`Node.js` all with correct letter order** (Latin words keep L→R; only the RTL word *sequence* flips, which is correct
+bidi). Mechanism: `pdf` resolves to **3.13.0** whose `pw.Text` defaults `useBidi=true` and runs `bidi.logicalToVisual`
+on RTL strings, so the §7.26 per-string `_txt(textDirection)` approach already yields correct mixed-script output. No
+change needed.
+
+### VERIFIED live on emulator (`careerbridge_pixel`, seeker `appreg030157@cb.app`) — RELEASE APK, EN + AR
+Installed `app-release.apk`, drove **For You → recommended job → Job Details** at 360dp + font 1.8 (EN + AR) — match
+prompt wraps normally, action stacked. **Browse = 13 jobs (Qatar + remote)** EN + AR; recommended-job detail shows the
+Arabic description + English skill chips (UI Design/Figma) correctly LTR. Screenshot workflow note: after `wm density
+480`, some `screencap` frames come back full-res and were rejected by the image API at 1080×2400 — **downscale with
+Pillow** (`im.thumbnail((520,1160))`) before reading. Reset with `wm density reset` + `font_scale 1.0`.
+
+### Not directly observable (covered by code + tests)
+Job-Matching / Interview / Coach country context is a soft AI-prompt preference (not a visible filter), so it's covered
+by the const default + the interview unit guard + the §7.27 live Coach check (Doha / QAR / "في قطر"). Google Sign-In
+diagnostics are logcat-only until the console config is done.
 
 ---
 

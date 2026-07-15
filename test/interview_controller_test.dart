@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:careerbridge/core/providers/app_providers.dart';
 import 'package:careerbridge/core/services/ai/ai_exception.dart';
 import 'package:careerbridge/core/services/interview_store/in_memory_interview_history_repository.dart';
@@ -155,5 +157,31 @@ void main() {
     await ctrl.start();
     expect(c.read(interviewControllerProvider).failure,
         InterviewFailure.noQuestions);
+  });
+
+  test('interview context defaults the market to Qatar even with a non-Qatar '
+      'persisted profile country', () async {
+    // Persist a non-Qatar country; the interview market must still be Qatar.
+    SharedPreferences.setMockInitialValues({
+      'pref_selected_country': jsonEncode({
+        'isoCode': 'EG',
+        'name': 'Egypt',
+        'dialCode': '+20',
+        'flag': '🇪🇬',
+      }),
+    });
+    final storage = await LocalStorageService.create();
+    final c = ProviderContainer(overrides: [
+      fakeAuthOverride(),
+      localStorageProvider.overrideWithValue(storage),
+      interviewRepositoryProvider
+          .overrideWithValue(FakeInterviewRepository()),
+      interviewHistoryRepositoryProvider
+          .overrideWithValue(InMemoryInterviewHistoryRepository()),
+    ]);
+    addTearDown(c.dispose);
+
+    c.read(interviewControllerProvider.notifier).prepare();
+    expect(c.read(interviewControllerProvider).context?.country, 'Qatar');
   });
 }
