@@ -2624,37 +2624,128 @@ machine-verifiable: the actual inbox-link click (no real mailbox for `@cb.app`);
 
 ---
 
+## 7.30 CV Templates — Modern / Minimal / Harvard ✅ COMPLETE (feat `af70cc9`)
+
+> The last open MVP *feature*: the three catalogued-but-unimplemented CV templates. Purely additive as designed
+> (a `PdfTemplate` subclass + a registry entry each) — **plus three real bidi/layout bugs found while verifying,
+> which also affected the shipped ATS template.**
+
+### What shipped
+
+**Shared `data/templates/pdf_text.dart` (`PdfText`).** The bidi-safe primitives were private statics inside
+`AtsTemplate`; three more templates needed them, so they moved to one shared class (`hasArabic`, `txt`, `cleanUrl`,
+`period`, `titleLine`). ATS now delegates to it. The move itself was proven output-neutral: the ATS PDF was generated
+before and after and was **byte-identical apart from the random per-run `/ID`** (EN + AR).
+
+**Three `PdfTemplate` subclasses**, same `build(CvData, labels:, fonts:, rtl:)` contract, same models, no new deps:
+
+| Template | Layout |
+|---|---|
+| `ModernTemplate` | Emerald header band + side column (contact/links/skill chips) beside the main flow. Uses **`pw.Partitions`, not `pw.Row`** — Partitions is a *spanning* widget, so a long CV flows to page 2 instead of overflowing (a `Row` cannot split). Partition order reverses under RTL. |
+| `MinimalTemplate` | Monochrome single column, wide margins, no rules/fills, letter-spaced headings. |
+| `HarvardTemplate` | Centred header, full-width ruled headings, **Education first**, dates on the far edge. |
+
+**Registry + picker.** `kCvTemplates` in `pdf_cv_generator.dart` maps all four ids → templates. `CvTemplateMeta.available`
+was **deleted** along with the "Coming soon" badge and `Opacity` dimming in `cv_template_picker.dart` — every catalogued
+template is implemented and selectable. (`comingSoonBadge` l10n stays: Home/Employer Home still use it.) The generator
+keeps its `templateUnavailable` throw as a defensive guard for an unregistered id.
+`CvLabels` gained **`contact`** (→ existing `cvContactSection`; no new l10n keys — all eight `cvTemplate*` keys already
+existed EN+AR). `links` was declared-but-unused before; Modern now uses both.
+
+**Preview freshness.** `PdfPreview` only re-rasters when its `build` callback is a *different object*, which for a
+closure is incidental. `cv_preview_screen` now keys it on `ValueKey(Object.hash(templateId, data, lang))` so a template
+switch — or any edit, or a language change — deterministically regenerates. Export already routes through the same
+`state.templateId`, so it follows.
+
+### 🐞 Three pre-existing bugs found by rendering (all also hit the shipped ATS template)
+
+**These changed ATS's PDF output.** "Keep ATS unchanged" was read as *don't redesign/regress it*, not *preserve a bug* —
+the same milestone required mixed text to render correctly, and the fixes live in the shared helper.
+
+1. **Latin reversed inside Arabic text.** `pdf` gives two directions and neither renders a mixed line: `ltr` leaves
+   Arabic unshaped; `rtl` reverses each lettered word's characters and places words right-to-left (right for Arabic,
+   wrong for Latin). So an Arabic CV printed "Flutter" as **"rettulF"**, "SQL" as "LQS", and the phrase "Northwind Apps"
+   as "Apps Northwind". Fix: `PdfText._preReverseLtrRuns` reverses each LTR run's word order *and* each word's
+   characters, cancelling both passes exactly. Runs with **no Latin letter (a phone, a year) are left alone** — `pdf`
+   resolves numbers correctly itself, and compensating them broke the phone into "479 0005 0000".
+2. **`forceLtr` broke the Arabic city.** The contact-line `forceLtr: true` (from §7.26) kept the email readable by
+   rendering the whole line LTR — which left an Arabic city as "رطق ،ةحودلا". With fix 1 the parameter is unnecessary and
+   was **removed**: direction now always follows the text, and both the email and the city render correctly.
+3. **`cleanUrl`'s zero-width spaces printed as boxes.** The U+200B after each slash was doubly wrong: `pdf` breaks lines
+   on `\s`, which **excludes** U+200B (so it added no break), and neither bundled font has a glyph for it, so each
+   printed as a visible `.notdef` box — "sarah.dev/▯portfolio" on every CV with a URL. Removed; scheme-stripping plus
+   one-link-per-line is what actually prevents overflow.
+
+Two more, found in the new templates before they shipped: **`fontStyle: italic` is unusable** (the theme carries only a
+regular + bold Arabic face, so italic falls back to a Latin oblique that cannot shape Arabic *and* bypasses the RTL text
+path) — Minimal/Harvard use weight+colour instead; and a **Column with no full-width child shrink-wraps**, so
+`crossAxisAlignment` aligned within that narrow box rather than the page (ATS only avoids this incidentally, via its
+full-width rule `Container`). Minimal/Harvard add a zero-height `SizedBox(width: double.infinity)` — kept as a *child*
+rather than a wrapping Container so the Column stays spanning and can still break across pages.
+
+> ### ⚠️ Verify bidi changes by RENDERING, not by extracting text
+> An RTL PDF's text layer is stored in **visual order**, so `pdftotext` reports Latin reversed whether or not it
+> actually is — it misleads in both directions. §7.28 concluded "SQL→LQS is already fixed" from a `pdftotext` probe of
+> **Latin-only** strings; the real bug was Latin embedded *inside* Arabic, and it was still there. Rasterise instead
+> (`pip install pypdfium2`; `PdfDocument(f)[0].render(scale=2).to_pil()`), and note that **reading RTL off a render is
+> itself ambiguous** — embed ASCII digit markers ("1 …2 …3") to make word order objectively checkable.
+
+### Tests (+29 → **631**)
+
+`cv_pdf_generator_test` now loops **every** `cvTemplateCatalog` entry × EN/AR × {normal, empty, multi-page} (the
+multi-page case guards Modern's Partitions spanning), asserts every catalogued id has a registered template and that the
+catalog covers the whole enum, that distinct ids produce distinct documents, and that an unregistered id still throws
+(via an injected empty registry — the old test asserted `modern` throws, which is now wrong). New `pdf_text_test` covers
+`hasArabic` / direction / pre-reversal / no-ZWSP / `period` / `titleLine`.
+
+### VERIFIED live on emulator (`careerbridge_pixel`, debug build), EN + AR
+
+Reached via `flutter run --route=/cv-builder` — the persisted session (`verifytest01@cb.app`) is **gated at the splash by
+the §7.29 email-verification check** (`@cb.app` has no inbox), but the gate is in the splash bootstrap, so a deep link
+enters the builder with the session and profile intact. **EN:** picker shows all four at full opacity, **no "Coming soon"
+badge**; ATS→Modern→Minimal→Harvard each selected (check moves) and each **previewed as its own distinct layout**;
+export opened the share sheet with `Sarah_Ahmed_CV.pdf` (not sent). **AR:** picker RTL (القالب; cards right-to-left; no
+قريبًا); **Modern** preview mirrored — **side column on the right**, Arabic labels (معلومات الاتصال / الروابط), and Latin
+(`Sarah Ahmed`, `verifytest01@cb.app`, `github.com/sarah`) **not reversed**; **Harvard** header correctly centred.
+Arabic *glyph* content could not be typed live (`adb shell input text` is ASCII-only) — it was instead verified by
+rasterising the real generator's output with real Noto fonts for all four templates (Arabic + mixed Arabic/Latin:
+Flutter/Dart/SQL/PostgreSQL/Node.js/Riverpod, email, URLs, "Northwind Apps" — all correct).
+
+**Known cosmetic remainder:** in an Arabic document a phone's leading `+` sits on the wrong side of the digits
+(`974 5000 0000 +`). It is inside an untouched number run — `pdf`'s own neutral-character resolution — and the digits and
+their group order are correct. Not worth compensating; revisit only if a user reports it.
+
+---
+
 ## 8. Next steps
 
 > ### ⭐ CURRENT MVP STATUS — read this first (the rest of §8 below is historical)
 >
-> **Branch `feature/resume-analyzer` · HEAD `356a290` · `analyze` clean · 602 tests · release `.apk` (73.1 MB) builds
+> **Branch `feature/resume-analyzer` · `analyze` clean · 631 tests · release `.apk` (73.2 MB) builds
 > under R8 · working tree clean** (only `.claude/settings.local.json` is dirty — a *local* Claude-Code permission
 > allowlist with machine-specific temp paths; intentionally not committed).
 >
-> Everything through **§7.29 (Email-Only Auth + Email Verification)** is complete and committed. Auth is now
-> **email/password only** (sign up → auto-sent verification → gated verify screen with resend; sign in + splash both
-> block unverified users). **Google Sign-In was fully removed** (§7.29) — it is **no longer a blocker or a task**, and
-> the Firebase console OAuth config done earlier is now moot (harmless; `google-services.json` stays gitignored).
+> Everything through **§7.30 (CV Templates)** is complete and committed. Auth is **email/password only** (sign up →
+> auto-sent verification → gated verify screen with resend; sign in + splash both block unverified users); **Google
+> Sign-In was fully removed** (§7.29) — **no longer a blocker or a task**. **All four CV templates now ship** (§7.30);
+> there is no "Coming soon" placeholder left in the app's CV flow.
 >
-> **Remaining before the MVP ships:**
+> **The MVP feature set is complete.** Remaining before it ships:
 >
-> 1. **CV templates (the main open feature).** Only **ATS** is implemented (`data/templates/ats_template.dart`).
->    `CvTemplateId {ats, modern, minimal, harvard}` — **modern / minimal / harvard are registered `available: false`**
->    in `cvTemplateCatalog` (`domain/cv_template.dart`) and render a "Coming soon" badge, unselectable for export. The
->    design is deliberately additive: **implement a `PdfTemplate` subclass + register the builder in
->    `PdfCvGenerator` (id→template map) + flip `available: true`** — no controller/screen/generator refactor. l10n keys
->    (`cvTemplate{Modern,Minimal,Harvard}` + `…Desc`) already exist. Reuse `AtsTemplate`'s bidi-safe `_txt` (per-string
->    `textDirection`) and `_cleanUrl` so Arabic + embedded Latin stay correct (§7.26/§7.28).
-> 2. **Final MVP review / end-to-end pass on a real Android device.** Not yet done. Must include the **email-verification
->    happy path with a REAL mailbox** (the emulator used `@cb.app`, which has no inbox, so verified→home is the one path
->    never exercised live — it runs `reloadEmailVerified()` + `goAfterAuth`, covered only by the test fake). Also
->    re-check Qatar defaults, Arabic content, and the For-You → job-detail layout on the physical phone.
-> 3. **User-side manual production steps** (unchanged, none are code): real upload keystore (release currently
+> 1. **Final MVP review / end-to-end pass on a real Android device.** Not yet done — **the one substantive open item.**
+>    Must include the **email-verification happy path with a REAL mailbox** (the emulator used `@cb.app`, which has no
+>    inbox, so verified→home is the one path never exercised live — it runs `reloadEmailVerified()` + `goAfterAuth`,
+>    covered only by the test fake). Also re-check the four CV templates (EN+AR, incl. a CV with **real Arabic content**
+>    typed by hand — `adb input text` is ASCII-only, so live Arabic typing never happened), Qatar defaults, Arabic job
+>    content, and the For-You → job-detail layout on the physical phone.
+> 2. **User-side manual production steps** (unchanged, none are code): real upload keystore (release currently
 >    **debug-signed** — no `android/key.properties`), provision the Firebase **Storage bucket**, App Check
 >    enable/enforce, host the legal docs, Play Console submission. See `docs/PRODUCTION_READINESS.md` + §7.25.
-> 4. **Known cosmetic gap (out of scope so far):** the Home "Your AI toolkit" `SliverGrid` overflows at font scale
->    ≥ ~1.8 on narrow devices (§10).
+> 3. **Known cosmetic gaps (out of scope so far):** the Home "Your AI toolkit" `SliverGrid` overflows at font scale
+>    ≥ ~1.8 on narrow devices (§10); in an Arabic CV PDF a phone's leading `+` sits on the wrong side of the digits
+>    (§7.30).
+>
+> **Rebranding to "Wazifly" is explicitly deferred** until the MVP is finished and verified — do not start it early.
 
 **Phase 2 COMPLETE.** **Phase 3 · M1 (Jobs Platform) `6a6a72c`, M2 (Applications Center)
 `b7e4b53`, and M3 (User Profile & Settings) `071902c` COMPLETE. Phase 4 · M1 (CV Builder)
