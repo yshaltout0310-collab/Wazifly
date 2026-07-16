@@ -10,6 +10,7 @@ CvLabels cvLabels(AppLocalizations l10n) => CvLabels(
       education: l10n.cvEducationSection,
       skills: l10n.cvSkillsSection,
       projects: l10n.cvProjectsSection,
+      contact: l10n.cvContactSection,
       links: l10n.cvLinksSection,
       present: l10n.cvPresent,
     );

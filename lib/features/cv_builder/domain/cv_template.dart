@@ -1,17 +1,14 @@
-/// The CV templates the app knows about. Only [ats] is implemented this
-/// milestone; the rest are registered as "coming soon" so adding them later is
-/// purely additive — no controller/screen/generator changes.
+/// The CV templates the app offers. Every id ships an implemented layout —
+/// the PDF generator maps each one to a `PdfTemplate`.
 enum CvTemplateId { ats, modern, minimal, harvard }
 
 /// Display metadata for a template, used to build the picker. Kept vendor-neutral
-/// (l10n keys + an availability flag) so the presentation layer never touches the
-/// PDF library.
+/// (l10n keys only) so the presentation layer never touches the PDF library.
 class CvTemplateMeta {
   const CvTemplateMeta({
     required this.id,
     required this.nameKey,
     required this.descKey,
-    required this.available,
   });
 
   final CvTemplateId id;
@@ -19,39 +16,32 @@ class CvTemplateMeta {
   /// l10n keys resolved by the picker.
   final String nameKey;
   final String descKey;
-
-  /// False → shown with a "Coming soon" badge and not selectable for export.
-  final bool available;
 }
 
-/// The registry that drives the template picker. **Adding a template later =
-/// flip `available` + register the builder in the PDF generator — nothing else.**
+/// The registry that drives the template picker. **Adding a template =
+/// implement a `PdfTemplate`, register it in the generator, add an entry here.**
 const List<CvTemplateMeta> cvTemplateCatalog = [
   CvTemplateMeta(
     id: CvTemplateId.ats,
     nameKey: 'cvTemplateAts',
     descKey: 'cvTemplateAtsDesc',
-    available: true,
   ),
   CvTemplateMeta(
     id: CvTemplateId.modern,
     nameKey: 'cvTemplateModern',
     descKey: 'cvTemplateModernDesc',
-    available: false,
   ),
   CvTemplateMeta(
     id: CvTemplateId.minimal,
     nameKey: 'cvTemplateMinimal',
     descKey: 'cvTemplateMinimalDesc',
-    available: false,
   ),
   CvTemplateMeta(
     id: CvTemplateId.harvard,
     nameKey: 'cvTemplateHarvard',
     descKey: 'cvTemplateHarvardDesc',
-    available: false,
   ),
 ];
 
-/// The default (and only implemented) template.
+/// The default template.
 const CvTemplateId kDefaultCvTemplate = CvTemplateId.ats;

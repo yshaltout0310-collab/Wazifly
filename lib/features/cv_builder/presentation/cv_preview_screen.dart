@@ -41,6 +41,12 @@ class CvPreviewScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: Text(l10n.cvPreviewTitle)),
       body: PdfPreview(
+        // Re-key on what the document is made of: PdfPreview only re-rasters
+        // when its `build` callback is a different object, which for a closure
+        // is incidental rather than guaranteed. A ValueKey over
+        // (template, data, language) makes switching template — or editing the
+        // CV, or changing language — always regenerate the preview.
+        key: ValueKey(Object.hash(state.templateId, state.data, lang)),
         build: (format) => generator.generate(
           state.data,
           templateId: state.templateId,

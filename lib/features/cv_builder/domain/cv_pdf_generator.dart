@@ -13,6 +13,7 @@ class CvLabels {
     required this.education,
     required this.skills,
     required this.projects,
+    required this.contact,
     required this.links,
     required this.present,
   });
@@ -22,7 +23,12 @@ class CvLabels {
   final String education;
   final String skills;
   final String projects;
+
+  /// Side-column headings (used by the templates that group the header details
+  /// under their own headings rather than running them under the name).
+  final String contact;
   final String links;
+
   final String present;
 
   /// Neutral English fallback (used in tests / before l10n is available).
@@ -32,6 +38,7 @@ class CvLabels {
     education: 'Education',
     skills: 'Skills',
     projects: 'Projects',
+    contact: 'Contact',
     links: 'Links',
     present: 'Present',
   );
