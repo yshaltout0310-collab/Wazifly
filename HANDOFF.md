@@ -1,7 +1,7 @@
 # Career Bridge — Session Handoff
 
 > Living handoff doc so a fresh Claude session can continue immediately.
-> Last updated: **Email-Only Auth + Email Verification — COMPLETE** (see §7.29, feat this milestone) — a deliberate MVP
+> Last updated: **Email-Only Auth + Email Verification — COMPLETE** (see §7.29, feat `356a290`) — a deliberate MVP
 > **scope cut**: Google Sign-In is **fully removed** (UI + logic + widget + l10n + enum + test fake) and replaced by a
 > hard **email-verification gate**. Flow now: sign up → Firebase **auto-sends** a verification email → land on a new
 > **Verify-email screen** (clear message, **"I've verified — Continue"** = `reload()` + re-check, **"Resend
@@ -2510,7 +2510,7 @@ here to keep the blast radius on the reported issues.
 
 ---
 
-## 7.28 Final MVP Stabilization — Qatar Everywhere + Google Sign-In Diagnostics ✅ COMPLETE (feat this milestone)
+## 7.28 Final MVP Stabilization — Qatar Everywhere + Google Sign-In Diagnostics ✅ COMPLETE (feat `dbf47cb`)
 
 > **Bug-fix / stabilization only — no new features.** MVP-finishing pass over five prioritized real-device reports.
 > Reconciled each against the current code (much was already fixed in §7.26/§7.27), extended where incomplete, and
@@ -2573,7 +2573,7 @@ diagnostics are logcat-only until the console config is done.
 
 ---
 
-## 7.29 Email-Only Auth + Email Verification ✅ COMPLETE (feat this milestone)
+## 7.29 Email-Only Auth + Email Verification ✅ COMPLETE (feat `356a290`)
 
 > A deliberate **MVP scope cut** (deadline-driven): remove Google Sign-In entirely and gate the app behind email
 > verification. Email/password is the only method. `analyze` clean · **602 tests** (+6) · release `.apk` (73.1 MB) under
@@ -2625,6 +2625,36 @@ machine-verifiable: the actual inbox-link click (no real mailbox for `@cb.app`);
 ---
 
 ## 8. Next steps
+
+> ### ⭐ CURRENT MVP STATUS — read this first (the rest of §8 below is historical)
+>
+> **Branch `feature/resume-analyzer` · HEAD `356a290` · `analyze` clean · 602 tests · release `.apk` (73.1 MB) builds
+> under R8 · working tree clean** (only `.claude/settings.local.json` is dirty — a *local* Claude-Code permission
+> allowlist with machine-specific temp paths; intentionally not committed).
+>
+> Everything through **§7.29 (Email-Only Auth + Email Verification)** is complete and committed. Auth is now
+> **email/password only** (sign up → auto-sent verification → gated verify screen with resend; sign in + splash both
+> block unverified users). **Google Sign-In was fully removed** (§7.29) — it is **no longer a blocker or a task**, and
+> the Firebase console OAuth config done earlier is now moot (harmless; `google-services.json` stays gitignored).
+>
+> **Remaining before the MVP ships:**
+>
+> 1. **CV templates (the main open feature).** Only **ATS** is implemented (`data/templates/ats_template.dart`).
+>    `CvTemplateId {ats, modern, minimal, harvard}` — **modern / minimal / harvard are registered `available: false`**
+>    in `cvTemplateCatalog` (`domain/cv_template.dart`) and render a "Coming soon" badge, unselectable for export. The
+>    design is deliberately additive: **implement a `PdfTemplate` subclass + register the builder in
+>    `PdfCvGenerator` (id→template map) + flip `available: true`** — no controller/screen/generator refactor. l10n keys
+>    (`cvTemplate{Modern,Minimal,Harvard}` + `…Desc`) already exist. Reuse `AtsTemplate`'s bidi-safe `_txt` (per-string
+>    `textDirection`) and `_cleanUrl` so Arabic + embedded Latin stay correct (§7.26/§7.28).
+> 2. **Final MVP review / end-to-end pass on a real Android device.** Not yet done. Must include the **email-verification
+>    happy path with a REAL mailbox** (the emulator used `@cb.app`, which has no inbox, so verified→home is the one path
+>    never exercised live — it runs `reloadEmailVerified()` + `goAfterAuth`, covered only by the test fake). Also
+>    re-check Qatar defaults, Arabic content, and the For-You → job-detail layout on the physical phone.
+> 3. **User-side manual production steps** (unchanged, none are code): real upload keystore (release currently
+>    **debug-signed** — no `android/key.properties`), provision the Firebase **Storage bucket**, App Check
+>    enable/enforce, host the legal docs, Play Console submission. See `docs/PRODUCTION_READINESS.md` + §7.25.
+> 4. **Known cosmetic gap (out of scope so far):** the Home "Your AI toolkit" `SliverGrid` overflows at font scale
+>    ≥ ~1.8 on narrow devices (§10).
 
 **Phase 2 COMPLETE.** **Phase 3 · M1 (Jobs Platform) `6a6a72c`, M2 (Applications Center)
 `b7e4b53`, and M3 (User Profile & Settings) `071902c` COMPLETE. Phase 4 · M1 (CV Builder)
