@@ -2,7 +2,6 @@
 // (defined in auth_repository.dart); we pass inline closures regardless.
 import 'package:firebase_auth/firebase_auth.dart'
     hide PhoneCodeSent, PhoneVerificationFailed;
-import 'package:flutter/foundation.dart';
 
 import '../../../shared/models/app_user.dart';
 import '../domain/auth_exception.dart';
@@ -10,9 +9,8 @@ import '../domain/auth_repository.dart';
 
 /// Firebase-backed [AuthRepository] — the production authentication path.
 ///
-/// Google sign-in uses [FirebaseAuth.signInWithProvider] (OAuth via a Custom
-/// Tab) so no extra `google_sign_in` dependency is needed. All failures are
-/// normalized to [AuthException] with a stable [AuthErrorCode].
+/// Email/password only (sign up, sign in, forgot password, email verification).
+/// All failures are normalized to [AuthException] with a stable [AuthErrorCode].
 class FirebaseAuthRepository implements AuthRepository {
   FirebaseAuthRepository([FirebaseAuth? auth])
       : _auth = auth ?? FirebaseAuth.instance;
@@ -28,12 +26,12 @@ class FirebaseAuthRepository implements AuthRepository {
       phoneNumber: user.phoneNumber,
       displayName: user.displayName,
       photoUrl: user.photoURL,
+      emailVerified: user.emailVerified,
     );
   }
 
   AuthMethod _inferMethod(User user) {
     final providers = user.providerData.map((p) => p.providerId);
-    if (providers.contains('google.com')) return AuthMethod.google;
     if (providers.contains('phone')) return AuthMethod.phone;
     return AuthMethod.email;
   }
@@ -68,6 +66,9 @@ class FirebaseAuthRepository implements AuthRepository {
           email: email.trim(),
           password: password,
         );
+        // Automatically send the verification email on sign-up; the account is
+        // created signed-in but stays gated until the address is verified.
+        await cred.user?.sendEmailVerification();
         return _map(cred.user, method: AuthMethod.email)!;
       });
 
@@ -76,49 +77,17 @@ class FirebaseAuthRepository implements AuthRepository {
       _guard(() => _auth.sendPasswordResetEmail(email: email.trim()));
 
   @override
-  Future<AppUser> signInWithGoogle() async {
-    // Not routed through [_guard]: the federated `signInWithProvider` handshake
-    // can fail with a *non*-FirebaseAuthException (a PlatformException from a
-    // missing OAuth client / unregistered SHA-1, or a cancelled Custom Tab),
-    // which _guard would rethrow raw as an opaque error. Here we log the exact
-    // cause for on-device diagnosis and always surface a typed [AuthException].
-    try {
-      final provider = GoogleAuthProvider()
-        ..addScope('email')
-        ..addScope('profile');
-      final cred = await _auth.signInWithProvider(provider);
-      return _map(cred.user, method: AuthMethod.google)!;
-    } on FirebaseAuthException catch (e) {
-      debugPrint('[Auth] Google sign-in FirebaseAuthException: '
-          'code=${e.code} message=${e.message}');
-      throw AuthException.fromFirebaseCode(e.code, e.message);
-    } catch (e) {
-      // Raw type + message go to logcat (visible via `adb logcat`) so a config
-      // failure is diagnosable on a real device — see docs/GOOGLE_SIGNIN_SETUP.md.
-      debugPrint('[Auth] Google sign-in failed (${e.runtimeType}): $e');
-      throw AuthException(_classifyGoogleError(e), e.toString());
-    }
-  }
+  Future<void> sendEmailVerification() => _guard(() async {
+        await _auth.currentUser?.sendEmailVerification();
+      });
 
-  /// Classifies a non-[FirebaseAuthException] Google sign-in failure from its
-  /// message: a user-dismissed Custom Tab → [AuthErrorCode.cancelled]; a
-  /// connectivity failure → [AuthErrorCode.network]; anything else is treated as
-  /// a provider/OAuth **configuration** problem (the common real-device cause:
-  /// the Google provider isn't enabled / no SHA-1 registered / empty
-  /// `oauth_client` in `google-services.json`).
-  static AuthErrorCode _classifyGoogleError(Object e) {
-    final m = e.toString().toLowerCase();
-    if (m.contains('cancel') || m.contains('dismiss')) {
-      return AuthErrorCode.cancelled;
-    }
-    if (m.contains('network') ||
-        m.contains('timeout') ||
-        m.contains('timed out') ||
-        m.contains('unreachable')) {
-      return AuthErrorCode.network;
-    }
-    return AuthErrorCode.configurationError;
-  }
+  @override
+  Future<bool> reloadEmailVerified() => _guard(() async {
+        final user = _auth.currentUser;
+        if (user == null) return false;
+        await user.reload();
+        return _auth.currentUser?.emailVerified ?? false;
+      });
 
   @override
   Future<void> verifyPhoneForLink({

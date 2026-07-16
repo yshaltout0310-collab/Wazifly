@@ -8,6 +8,8 @@ abstract final class RouteNames {
   static const String onboarding = 'onboarding';
   static const String welcome = 'welcome';
   static const String emailAuth = 'emailAuth';
+  // Email-verification gate (shown after sign-up / for an unverified sign-in).
+  static const String verifyEmail = 'verifyEmail';
   static const String userType = 'userType';
   // Biometric app-lock gate (shown at launch over an existing session).
   static const String appLock = 'appLock';
@@ -54,6 +56,7 @@ abstract final class RouteNames {
   static const String onboardingPath = '/onboarding';
   static const String welcomePath = '/welcome';
   static const String emailAuthPath = '/auth/email';
+  static const String verifyEmailPath = '/auth/verify-email';
   static const String userTypePath = '/user-type';
   static const String appLockPath = '/app-lock';
   static const String homePath = '/home';

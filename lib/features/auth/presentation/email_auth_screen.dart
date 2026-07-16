@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/localization/generated/app_localizations.dart';
+import '../../../core/navigation/route_names.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/responsive.dart';
 import '../../../shared/widgets/app_logo.dart';
@@ -63,11 +65,21 @@ class _EmailAuthScreenState extends ConsumerState<EmailAuthScreen> {
 
     try {
       if (_isSignUp) {
+        // Registration sends a verification email automatically. The account is
+        // created but access is gated: route to the verify-email screen.
         await repo.registerWithEmail(email: email, password: password);
-      } else {
-        await repo.signInWithEmail(email: email, password: password);
+        if (!mounted) return;
+        context.goNamed(RouteNames.verifyEmail);
+        return;
       }
+
+      final user = await repo.signInWithEmail(email: email, password: password);
       if (!mounted) return;
+      // Block sign-in until the email is verified.
+      if (!user.emailVerified) {
+        context.goNamed(RouteNames.verifyEmail);
+        return;
+      }
       // Offer biometric login once (respects a prior "Not Now"); never blocks.
       await maybeOfferBiometricEnrollment(context, ref);
       if (!mounted) return;

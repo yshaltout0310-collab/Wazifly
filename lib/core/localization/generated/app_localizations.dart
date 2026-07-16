@@ -1460,29 +1460,65 @@ abstract class AppLocalizations {
   /// **'Continue with Email'**
   String get continueWithEmail;
 
-  /// No description provided for @continueWithGoogle.
-  ///
-  /// In en, this message translates to:
-  /// **'Continue with Google'**
-  String get continueWithGoogle;
-
   /// No description provided for @continueWithPhone.
   ///
   /// In en, this message translates to:
   /// **'Continue with Phone'**
   String get continueWithPhone;
 
-  /// No description provided for @authOr.
-  ///
-  /// In en, this message translates to:
-  /// **'or'**
-  String get authOr;
-
   /// No description provided for @termsNote.
   ///
   /// In en, this message translates to:
   /// **'By continuing you agree to our Terms & Privacy Policy.'**
   String get termsNote;
+
+  /// No description provided for @verifyEmailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify your email'**
+  String get verifyEmailTitle;
+
+  /// No description provided for @verifyEmailBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'ve sent a verification link to {email}. Open it to confirm your address, then come back and tap Continue.'**
+  String verifyEmailBody(String email);
+
+  /// No description provided for @verifyEmailContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'ve verified — Continue'**
+  String get verifyEmailContinue;
+
+  /// No description provided for @verifyEmailResend.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend verification email'**
+  String get verifyEmailResend;
+
+  /// No description provided for @verifyEmailResendIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend in {seconds}s'**
+  String verifyEmailResendIn(int seconds);
+
+  /// No description provided for @verifyEmailResent.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification email sent.'**
+  String get verifyEmailResent;
+
+  /// No description provided for @verifyEmailNotYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Your email isn\'t verified yet. Check your inbox (and spam), then try again.'**
+  String get verifyEmailNotYet;
+
+  /// No description provided for @verifyEmailUseAnother.
+  ///
+  /// In en, this message translates to:
+  /// **'Use a different account'**
+  String get verifyEmailUseAnother;
 
   /// No description provided for @signIn.
   ///
@@ -1793,7 +1829,7 @@ abstract class AppLocalizations {
   /// No description provided for @errConfiguration.
   ///
   /// In en, this message translates to:
-  /// **'Google sign-in isn\'t fully set up yet. Please use email sign-in, or try again later.'**
+  /// **'This sign-in method isn\'t available right now. Please use email sign-in.'**
   String get errConfiguration;
 
   /// No description provided for @errCancelled.

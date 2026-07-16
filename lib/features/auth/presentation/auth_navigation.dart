@@ -15,8 +15,7 @@ import '../application/auth_providers.dart';
 /// profile exists. Sends them to role selection if they haven't chosen one yet,
 /// otherwise straight home.
 ///
-/// Centralizing this keeps every auth entry point (email, Google, phone)
-/// consistent.
+/// Centralizing this keeps every auth entry point consistent.
 void goAfterAuth(BuildContext context, WidgetRef ref) {
   // Create/refresh the profile document (no-op until Firebase is configured).
   final user = ref.read(authRepositoryProvider).currentUser;

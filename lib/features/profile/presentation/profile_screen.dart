@@ -69,7 +69,6 @@ class _ProfileBody extends ConsumerWidget {
   final AppLocalizations l10n;
 
   String get _methodLabel => switch (user.method) {
-        AuthMethod.google => 'Google',
         AuthMethod.phone => 'Phone',
         AuthMethod.email => 'Email',
       };

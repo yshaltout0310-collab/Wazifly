@@ -21,11 +21,9 @@ enum AuthErrorCode {
   /// The current account already has a phone number linked.
   credentialAlreadyLinked,
 
-  /// A provider (e.g. Google) is not fully configured for this app — most often
-  /// a missing OAuth client / unregistered SHA-1 fingerprint, or a Firebase
-  /// internal error from the federated sign-in handshake. Surfaced with a
-  /// clearer message than [unknown] so the failure isn't opaque. See
-  /// docs/GOOGLE_SIGNIN_SETUP.md.
+  /// A sign-in provider/backend is not fully configured for this app (e.g. a
+  /// Firebase internal/authorization error). Surfaced with a clearer message
+  /// than [unknown] so the failure isn't opaque.
   configurationError,
 
   unknown,
@@ -67,9 +65,9 @@ class AuthException implements Exception {
       'cancelled' ||
       'canceled' =>
         AuthErrorCode.cancelled,
-      // Federated (Google) sign-in against a project with no OAuth client /
-      // unregistered SHA-1 typically surfaces as one of these — map them to a
-      // clear "configuration" message instead of the opaque generic error.
+      // A sign-in method that isn't fully configured on the backend typically
+      // surfaces as one of these — map them to a clear "configuration" message
+      // instead of the opaque generic error.
       'internal-error' ||
       'admin-restricted-operation' ||
       'app-not-authorized' ||

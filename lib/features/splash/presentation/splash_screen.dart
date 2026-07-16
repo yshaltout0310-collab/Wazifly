@@ -48,6 +48,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       return;
     }
 
+    // Email-verification gate: a persisted but unverified session can't enter the
+    // app. Sits before the biometric gate (nothing to unlock until verified).
+    if (!user.emailVerified) {
+      context.goNamed(RouteNames.verifyEmail);
+      return;
+    }
+
     // Biometric app-lock gate: only when a session exists AND the user enabled
     // biometric login AND the device can currently satisfy it. Otherwise the
     // flow is byte-for-byte identical to before (existing users are unaffected).

@@ -41,6 +41,7 @@ class FakeAuthRepository implements AuthRepository {
     method: AuthMethod.email,
     email: 'test@careerbridge.app',
     displayName: 'Test User',
+    emailVerified: true,
   );
 
   @override
@@ -63,11 +64,18 @@ class FakeAuthRepository implements AuthRepository {
   }) async =>
       _fakeUser;
 
+  /// Number of times [sendEmailVerification] was called (for assertions).
+  int sendVerificationCount = 0;
+
   @override
   Future<void> sendPasswordReset(String email) async {}
 
   @override
-  Future<AppUser> signInWithGoogle() async => _fakeUser;
+  Future<void> sendEmailVerification() async => sendVerificationCount++;
+
+  @override
+  Future<bool> reloadEmailVerified() async =>
+      (user ?? _fakeUser).emailVerified;
 
   @override
   Future<void> verifyPhoneForLink({
@@ -121,6 +129,7 @@ extension on AppUser {
         phoneNumber: phoneNumber,
         displayName: displayName,
         photoUrl: photoUrl,
+        emailVerified: emailVerified,
       );
 }
 

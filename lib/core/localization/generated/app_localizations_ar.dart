@@ -727,16 +727,39 @@ class AppLocalizationsAr extends AppLocalizations {
   String get continueWithEmail => 'المتابعة بالبريد الإلكتروني';
 
   @override
-  String get continueWithGoogle => 'المتابعة عبر Google';
-
-  @override
   String get continueWithPhone => 'المتابعة برقم الهاتف';
 
   @override
-  String get authOr => 'أو';
+  String get termsNote => 'بالمتابعة، أنت توافق على الشروط وسياسة الخصوصية.';
 
   @override
-  String get termsNote => 'بالمتابعة، أنت توافق على الشروط وسياسة الخصوصية.';
+  String get verifyEmailTitle => 'تأكيد بريدك الإلكتروني';
+
+  @override
+  String verifyEmailBody(String email) {
+    return 'أرسلنا رابط تأكيد إلى $email. افتح الرابط لتأكيد عنوانك، ثم عُد واضغط على متابعة.';
+  }
+
+  @override
+  String get verifyEmailContinue => 'لقد أكّدت — متابعة';
+
+  @override
+  String get verifyEmailResend => 'إعادة إرسال رسالة التأكيد';
+
+  @override
+  String verifyEmailResendIn(int seconds) {
+    return 'إعادة الإرسال خلال $seconds ثانية';
+  }
+
+  @override
+  String get verifyEmailResent => 'تم إرسال رسالة التأكيد.';
+
+  @override
+  String get verifyEmailNotYet =>
+      'لم يتم تأكيد بريدك بعد. تحقق من صندوق الوارد (والبريد المزعج) ثم حاول مرة أخرى.';
+
+  @override
+  String get verifyEmailUseAnother => 'استخدام حساب آخر';
 
   @override
   String get signIn => 'تسجيل الدخول';
@@ -894,7 +917,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get errConfiguration =>
-      'لم يتم إعداد تسجيل الدخول عبر Google بالكامل بعد. يرجى استخدام البريد الإلكتروني أو المحاولة لاحقًا.';
+      'طريقة تسجيل الدخول هذه غير متاحة حاليًا. يرجى استخدام البريد الإلكتروني.';
 
   @override
   String get errCancelled => 'تم إلغاء تسجيل الدخول.';

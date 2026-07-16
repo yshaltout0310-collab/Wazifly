@@ -733,17 +733,40 @@ class AppLocalizationsEn extends AppLocalizations {
   String get continueWithEmail => 'Continue with Email';
 
   @override
-  String get continueWithGoogle => 'Continue with Google';
-
-  @override
   String get continueWithPhone => 'Continue with Phone';
-
-  @override
-  String get authOr => 'or';
 
   @override
   String get termsNote =>
       'By continuing you agree to our Terms & Privacy Policy.';
+
+  @override
+  String get verifyEmailTitle => 'Verify your email';
+
+  @override
+  String verifyEmailBody(String email) {
+    return 'We\'ve sent a verification link to $email. Open it to confirm your address, then come back and tap Continue.';
+  }
+
+  @override
+  String get verifyEmailContinue => 'I\'ve verified — Continue';
+
+  @override
+  String get verifyEmailResend => 'Resend verification email';
+
+  @override
+  String verifyEmailResendIn(int seconds) {
+    return 'Resend in ${seconds}s';
+  }
+
+  @override
+  String get verifyEmailResent => 'Verification email sent.';
+
+  @override
+  String get verifyEmailNotYet =>
+      'Your email isn\'t verified yet. Check your inbox (and spam), then try again.';
+
+  @override
+  String get verifyEmailUseAnother => 'Use a different account';
 
   @override
   String get signIn => 'Sign In';
@@ -905,7 +928,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errConfiguration =>
-      'Google sign-in isn\'t fully set up yet. Please use email sign-in, or try again later.';
+      'This sign-in method isn\'t available right now. Please use email sign-in.';
 
   @override
   String get errCancelled => 'Sign-in was cancelled.';

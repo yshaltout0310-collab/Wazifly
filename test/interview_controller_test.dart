@@ -182,6 +182,6 @@ void main() {
     addTearDown(c.dispose);
 
     c.read(interviewControllerProvider.notifier).prepare();
-    expect(c.read(interviewControllerProvider).context?.country, 'Qatar');
+    expect(c.read(interviewControllerProvider).context.country, 'Qatar');
   });
 }

@@ -34,8 +34,17 @@ abstract interface class AuthRepository {
 
   Future<void> sendPasswordReset(String email);
 
-  // --- Google ---
-  Future<AppUser> signInWithGoogle();
+  // --- Email verification ---
+  /// Sends (or re-sends) a Firebase verification email to the signed-in user.
+  /// No-op if there is no current user. Throws [AuthException] on failure (e.g.
+  /// `too-many-requests` when re-sent too often).
+  Future<void> sendEmailVerification();
+
+  /// Reloads the current user from Firebase and returns whether their email is
+  /// now verified. Used by the verify-email gate's "I've verified" action, since
+  /// `emailVerified` only refreshes on `reload()` / re-sign-in. Returns false if
+  /// there is no current user.
+  Future<bool> reloadEmailVerified();
 
   // --- Phone / OTP (verification-by-linking; strengthens an existing account) ---
   /// Starts phone verification in order to **link** the number to the currently

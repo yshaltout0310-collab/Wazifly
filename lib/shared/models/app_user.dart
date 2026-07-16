@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 /// How a user authenticated. Useful for UI hints and analytics.
-enum AuthMethod { email, google, phone }
+enum AuthMethod { email, phone }
 
 /// App-level user model, decoupled from Firebase's `User` so the rest of the
 /// app never imports the SDK directly.
@@ -13,6 +13,7 @@ class AppUser extends Equatable {
     this.phoneNumber,
     this.displayName,
     this.photoUrl,
+    this.emailVerified = false,
   });
 
   final String uid;
@@ -21,6 +22,10 @@ class AppUser extends Equatable {
   final String? phoneNumber;
   final String? displayName;
   final String? photoUrl;
+
+  /// Whether the account's email address has been verified. Email/password
+  /// sign-in is gated on this: the app blocks access until it is true.
+  final bool emailVerified;
 
   /// Best label to greet the user with.
   String get label =>
@@ -35,6 +40,7 @@ class AppUser extends Equatable {
         'phoneNumber': phoneNumber,
         'displayName': displayName,
         'photoUrl': photoUrl,
+        'emailVerified': emailVerified,
       };
 
   factory AppUser.fromJson(Map<String, dynamic> json) => AppUser(
@@ -47,8 +53,10 @@ class AppUser extends Equatable {
         phoneNumber: json['phoneNumber'] as String?,
         displayName: json['displayName'] as String?,
         photoUrl: json['photoUrl'] as String?,
+        emailVerified: json['emailVerified'] as bool? ?? false,
       );
 
   @override
-  List<Object?> get props => [uid, method, email, phoneNumber, displayName];
+  List<Object?> get props =>
+      [uid, method, email, phoneNumber, displayName, emailVerified];
 }

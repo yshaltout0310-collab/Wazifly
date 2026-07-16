@@ -8,6 +8,7 @@ import 'package:careerbridge/core/services/secure_store/secure_store_provider.da
 import 'package:careerbridge/core/services/storage/local_storage_service.dart';
 import 'package:careerbridge/core/services/storage/storage_keys.dart';
 import 'package:careerbridge/features/auth/presentation/email_auth_screen.dart';
+import 'package:careerbridge/features/auth/presentation/email_verification_screen.dart';
 import 'package:careerbridge/features/auth/presentation/phone_verification_screen.dart';
 import 'package:careerbridge/features/auth/presentation/welcome_screen.dart';
 import 'package:careerbridge/features/security/presentation/app_lock_screen.dart';
@@ -99,6 +100,7 @@ void main() {
     'Onboarding': () => const OnboardingScreen(),
     'Welcome': () => const WelcomeScreen(),
     'EmailAuth': () => const EmailAuthScreen(),
+    'EmailVerify': () => const EmailVerificationScreen(),
     'PhoneVerify': () => const PhoneVerificationScreen(),
     'AppLock': () => const AppLockScreen(),
     'CvLibrary': () => const CvLibraryScreen(),

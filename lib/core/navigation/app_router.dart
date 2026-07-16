@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../localization/generated/app_localizations.dart';
 import '../../features/auth/presentation/email_auth_screen.dart';
+import '../../features/auth/presentation/email_verification_screen.dart';
 import '../../features/auth/presentation/phone_verification_screen.dart';
 import '../../features/auth/presentation/welcome_screen.dart';
 import '../../features/security/presentation/app_lock_screen.dart';
@@ -51,7 +52,7 @@ import 'route_names.dart';
 /// Declarative navigation graph for the Phase 1 flow:
 ///
 ///   Splash → Language → Country → Onboarding → Welcome
-///         → (Email | Phone → OTP | Google) → User Type → Home
+///         → Email (sign in / sign up) → Verify email → User Type → Home
 ///
 /// Screens advance with `context.goNamed(...)`; the splash chooses the entry
 /// point from persisted state (onboarding, session, user type).
@@ -104,6 +105,11 @@ abstract final class AppRouter {
         path: RouteNames.emailAuthPath,
         name: RouteNames.emailAuth,
         pageBuilder: _fade(const EmailAuthScreen()),
+      ),
+      GoRoute(
+        path: RouteNames.verifyEmailPath,
+        name: RouteNames.verifyEmail,
+        pageBuilder: _fade(const EmailVerificationScreen()),
       ),
       GoRoute(
         path: RouteNames.appLockPath,

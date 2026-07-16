@@ -1,7 +1,26 @@
 # Career Bridge — Session Handoff
 
 > Living handoff doc so a fresh Claude session can continue immediately.
-> Last updated: **Final MVP Stabilization — Qatar everywhere + Google Sign-In diagnostics — COMPLETE** (see §7.28, feat this milestone) — an MVP-finishing **bug-fix / stabilization** pass (no new features). Reconciled five prioritized
+> Last updated: **Email-Only Auth + Email Verification — COMPLETE** (see §7.29, feat this milestone) — a deliberate MVP
+> **scope cut**: Google Sign-In is **fully removed** (UI + logic + widget + l10n + enum + test fake) and replaced by a
+> hard **email-verification gate**. Flow now: sign up → Firebase **auto-sends** a verification email → land on a new
+> **Verify-email screen** (clear message, **"I've verified — Continue"** = `reload()` + re-check, **"Resend
+> verification email"** with a 30s cooldown + confirmation snackbar, **"Use a different account"** = sign out). Sign-in
+> and the **splash** now both **block** an unverified user (`!emailVerified` → verify screen) — a persisted unverified
+> session can never reach home. `AppUser` gained `emailVerified` (mapped from `user.emailVerified`); `AuthMethod` is now
+> `{email, phone}` (google removed); repo gained `sendEmailVerification()` + `reloadEmailVerified()`, `registerWithEmail`
+> now `sendEmailVerification()` on success; `signInWithGoogle`/`_classifyGoogleError`/`GoogleGlyph`/`AuthMethodButton`
+> deleted; `errConfiguration` reworded provider-neutral (enum kept, still mapped). Welcome screen is now a
+> `StatelessWidget` with a single "Continue with Email". New route `verifyEmail` (`/auth/verify-email`). `analyze` clean
+> · **602 tests** (+6: verify-flow behavior + Welcome-no-Google + EmailVerify render sweep EN/AR) · release `.apk`
+> (73.1 MB) under R8. **Live-verified on the RELEASE APK**: the pre-existing unverified session auto-gated to the
+> verify screen; Resend → "Verification email sent." + "Resend in 30s"; "I've verified" while unverified stays on the
+> gate; "Use a different account" → Google-free Welcome; **registered a fresh account → auto-sent email → verify
+> screen**. The one path not machine-verifiable is the actual inbox click (no real mailbox for `@cb.app`) — the
+> verified→home continuation runs `reloadEmailVerified()` then `goAfterAuth` and works once the user taps the real link.
+> (Google Sign-In console config from the prior turn is now moot but harmless; `google-services.json` stays gitignored.)
+>
+> **Final MVP Stabilization — Qatar everywhere + Google Sign-In diagnostics — COMPLETE** (see §7.28, feat dbf47cb) — an MVP-finishing **bug-fix / stabilization** pass (no new features). Reconciled five prioritized
 > real-device reports against the code, extended the fixes where they were incomplete, and **verified on the RELEASE
 > APK** (EN + AR). **(1) Google Sign-In** — added real diagnostics: `signInWithGoogle` no longer routes through `_guard`
 > (which only caught `FirebaseAuthException`); it now catches **platform-level** failures too, **logs the raw
@@ -2551,6 +2570,57 @@ Pillow** (`im.thumbnail((520,1160))`) before reading. Reset with `wm density res
 Job-Matching / Interview / Coach country context is a soft AI-prompt preference (not a visible filter), so it's covered
 by the const default + the interview unit guard + the §7.27 live Coach check (Doha / QAR / "في قطر"). Google Sign-In
 diagnostics are logcat-only until the console config is done.
+
+---
+
+## 7.29 Email-Only Auth + Email Verification ✅ COMPLETE (feat this milestone)
+
+> A deliberate **MVP scope cut** (deadline-driven): remove Google Sign-In entirely and gate the app behind email
+> verification. Email/password is the only method. `analyze` clean · **602 tests** (+6) · release `.apk` (73.1 MB) under
+> R8 · **live-verified on the release APK**.
+
+**Google Sign-In fully removed.** Deleted: `signInWithGoogle` (interface + `FirebaseAuthRepository` impl +
+`_classifyGoogleError` + fake), the Welcome Google button + `_google()` handler + `_OrDivider`, the whole
+`widgets/auth_method_button.dart` (`AuthMethodButton` + `GoogleGlyph`, welcome-only), `AuthMethod.google` (enum now
+`{email, phone}`; `profile_screen` label switch updated), and the `continueWithGoogle` / `authOr` l10n keys (EN + AR,
+regenerated). `errConfiguration` was **kept** (the `configurationError` code is still mapped for generic backend
+misconfig) but **reworded provider-neutral** ("This sign-in method isn't available right now. Please use email
+sign-in."). The Welcome screen is now a `StatelessWidget` (no ref/state) with a single "Continue with Email". No
+`google_sign_in` package existed to remove (the app had used federated `signInWithProvider`), so nothing changed in
+`pubspec.yaml`.
+
+**Email verification gate (new).** `AppUser` gained **`emailVerified`** (mapped from Firebase `user.emailVerified`,
+in `toJson`/`fromJson`/`props`). `AuthRepository` gained **`sendEmailVerification()`** and **`reloadEmailVerified()`**
+(`reload()` then re-read, since `emailVerified` only refreshes on reload/re-sign-in); **`registerWithEmail` now calls
+`sendEmailVerification()`** on success (the "auto-send on sign-up" requirement). New **`EmailVerificationScreen`**
+(`/auth/verify-email`, route name `verifyEmail`): mark-email icon, title, body naming the address, **"I've verified —
+Continue"** (`reloadEmailVerified` → verified? `maybeOfferBiometricEnrollment` + `goAfterAuth` : "not yet" snackbar),
+**"Resend verification email"** (`sendEmailVerification` + confirmation snackbar + **30s cooldown** via a `Timer.periodic`
+that's cancelled in `dispose`), and **"Use a different account"** (`signOut` → Welcome).
+
+**Gating (three points, imperative — the router has no `redirect`).** (1) `email_auth_screen._submit`: sign-up →
+`goNamed(verifyEmail)`; sign-in → if `!user.emailVerified` → `goNamed(verifyEmail)`, else the usual biometric +
+`goAfterAuth`. (2) `splash_screen._bootstrap`: after `user != null`, `if (!user.emailVerified) → verifyEmail` (before
+the biometric gate) — so a persisted unverified session can't enter. The user stays signed-in-but-gated (needed so the
+verify screen can call `sendEmailVerification` / `reload`).
+
+**Tests (+6).** `test/email_verification_test.dart` (4): Welcome offers email only / no "Google"; verify screen shows
+the email + 3 actions; "Continue" while unverified shows the not-yet message; "Resend" calls `sendEmailVerification`
+(fake counter) + shows the sent snackbar. `render_all_locales` gained **EmailVerify** (EN + AR overflow sweep). Fake
+auth: dropped `signInWithGoogle`, added `sendEmailVerification` (counter) + `reloadEmailVerified` (returns the user's
+`emailVerified`), `_fakeUser.emailVerified = true` so existing sign-in tests still reach home. **flutter_animate
+timer gotcha:** tap-based tests on animated screens must `pump(Duration)` (not bare `pump()`) so the one-shot entrance
+timers fire, and must flush the snackbar timer / dispose to avoid "pending timer" — never `pumpAndSettle` (the resend
+cooldown is periodic).
+
+### VERIFIED live on emulator (`careerbridge_pixel`) — RELEASE APK
+The pre-existing unverified session (`appreg030157@cb.app`, created before verification existed) **auto-gated to the
+verify screen** on launch (splash gate ✓). Tapped **Resend** → "Verification email sent." snackbar + button → "Resend in
+30s" ✓. Tapped **"I've verified"** while still unverified → stayed on the gate (no home access) ✓. **"Use a different
+account"** → signed out → **Welcome with only "Continue with Email"** (no Google button / divider) ✓. **Registered a
+fresh `verifytest01@cb.app`** → auto-sent verification email → routed to the verify screen naming that address ✓. Not
+machine-verifiable: the actual inbox-link click (no real mailbox for `@cb.app`); the verified→home path runs
+`reloadEmailVerified()` + `goAfterAuth` and is exercised by the fake in tests.
 
 ---
 
