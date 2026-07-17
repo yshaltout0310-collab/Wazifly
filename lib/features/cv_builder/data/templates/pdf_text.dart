@@ -51,6 +51,32 @@ class PdfText {
       RegExp(r'[A-Za-z0-9+][A-Za-z0-9 .@_+\-/:%#&?=~]*[A-Za-z0-9]|[A-Za-z0-9]');
 
   static final RegExp _latinLetter = RegExp(r'[A-Za-z]');
+  static final RegExp _digitRun = RegExp(r'[0-9]+');
+
+  /// Reverses [word]'s characters while keeping each digit sequence in its
+  /// original order.
+  ///
+  /// `pdf` reverses a lettered word's characters but treats a number as an
+  /// atomic unit and leaves it alone. So a run holding BOTH — an email like
+  /// "yshaltout79@gmail.com" — must not have its digits pre-reversed: `pdf`
+  /// would never reverse them back and they would print transposed
+  /// ("yshaltout97@gmail.com"). Reversing token-wise, with each digit run as one
+  /// token, cancels `pdf` exactly for letters and leaves numbers untouched.
+  static String _reverseWordPreservingNumbers(String word) {
+    final tokens = <String>[];
+    var i = 0;
+    while (i < word.length) {
+      final m = _digitRun.matchAsPrefix(word, i);
+      if (m != null) {
+        tokens.add(m.group(0)!);
+        i = m.end;
+      } else {
+        tokens.add(word[i]);
+        i++;
+      }
+    }
+    return tokens.reversed.join();
+  }
 
   /// Pre-compensates each left-to-right run for what the `pdf` package does to
   /// it under a right-to-left direction, leaving Arabic untouched.
@@ -63,7 +89,9 @@ class PdfText {
   /// leaving it reading normally inside the RTL line.
   ///
   /// Runs with no Latin letter (a phone, a year) are left ALONE: `pdf` resolves
-  /// numbers correctly by itself, so compensating them would break them.
+  /// numbers correctly by itself, so compensating them would break them. Digits
+  /// *inside* a lettered run are likewise preserved — see
+  /// [_reverseWordPreservingNumbers].
   ///
   /// Verified by rendering (not by text extraction — an RTL PDF's text layer is
   /// stored in visual order, so extraction alone is misleading here).
@@ -74,7 +102,7 @@ class PdfText {
         return run
             .split(' ')
             .reversed
-            .map((w) => String.fromCharCodes(w.runes.toList().reversed))
+            .map(_reverseWordPreservingNumbers)
             .join(' ');
       });
 
@@ -85,6 +113,10 @@ class PdfText {
   ///
   /// Pass [align] to override the language-derived paragraph alignment (e.g. a
   /// centred academic header).
+  ///
+  /// Any `letterSpacing` on [style] is dropped for Arabic text: Arabic is
+  /// cursive, so tracking pulls the joined letters apart and shatters the word
+  /// ("الخبرات" printed as "ا ل خ ب ر ا ت"). Latin keeps its tracking.
   static pw.Widget txt(
     String text,
     pw.TextStyle style, {
@@ -94,7 +126,7 @@ class PdfText {
     final rtl = hasArabic(text);
     return pw.Text(
       rtl ? _preReverseLtrRuns(text) : text,
-      style: style,
+      style: rtl ? style.copyWith(letterSpacing: 0) : style,
       textDirection: rtl ? pw.TextDirection.rtl : pw.TextDirection.ltr,
       textAlign: align ?? (rtlDoc ? pw.TextAlign.right : pw.TextAlign.left),
     );

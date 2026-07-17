@@ -50,9 +50,11 @@ class ModernTemplate implements PdfTemplate {
       letterSpacing: 0.4);
   static const _titleStyle =
       pw.TextStyle(fontSize: 11, fontWeight: pw.FontWeight.bold, color: _ink);
+  // NOTE: no italic anywhere in this template. The document theme carries only a
+  // regular + bold Arabic face, so `FontStyle.italic` falls back to a Latin
+  // oblique that cannot shape Arabic and bypasses the RTL text path — an Arabic
+  // location printed as reversed, disconnected letters ("الدوحة" → "ةحودلا").
   static const _metaStyle = pw.TextStyle(fontSize: 9, color: _muted);
-  static const _italicMeta =
-      pw.TextStyle(fontSize: 9, color: _muted, fontStyle: pw.FontStyle.italic);
   static const _bodyStyle =
       pw.TextStyle(fontSize: 10, color: _ink, lineSpacing: 1.6);
   static const _bodyTight =
@@ -275,7 +277,7 @@ class ModernTemplate implements PdfTemplate {
             ],
           ),
           if (e.location.isNotEmpty)
-            PdfText.txt(e.location, _italicMeta, rtlDoc: rtl),
+            PdfText.txt(e.location, _metaStyle, rtlDoc: rtl),
           pw.SizedBox(height: 2),
           for (final b in e.bullets.where((b) => b.trim().isNotEmpty))
             _bullet(b, rtl),

@@ -127,6 +127,36 @@ void main() {
     });
   }
 
+  group('font choice follows content, not locale (regression: Bug #3)', () {
+    const arabicCv = CvData(
+      fullName: 'يوسف شلتوت',
+      headline: 'مهندس برمجيات',
+      email: 'yshaltout79@gmail.com',
+      location: 'الدوحة، قطر',
+      skills: ['Flutter'],
+    );
+
+    test('preferArabic is set when the CV content is Arabic', () {
+      // The base font drives pdf's shaping/bidi pass. Choosing it from the app
+      // language alone garbled an Arabic CV written with the app in English.
+      final fonts = CvFonts.builtIn();
+      expect(fonts.preferArabic, isFalse);
+      expect(fonts.withPreferArabic(true).regular(false),
+          same(fonts.arabic)); // rtl=false (EN app) still gets the Arabic face
+      expect(fonts.withPreferArabic(true).bold(false), same(fonts.arabicBold));
+      // Both faces stay reachable so Latin still renders.
+      expect(fonts.withPreferArabic(true).fallback, contains(fonts.base));
+    });
+
+    test('an Arabic CV generates under an English locale', () async {
+      for (final meta in cvTemplateCatalog) {
+        final bytes = await _generator.generate(arabicCv,
+            templateId: meta.id, languageCode: 'en');
+        expect(bytes, isNotEmpty, reason: meta.id.name);
+      }
+    });
+  });
+
   test('every catalogued template id has a registered PDF template', () {
     for (final meta in cvTemplateCatalog) {
       expect(kCvTemplates[meta.id], isNotNull, reason: meta.id.name);

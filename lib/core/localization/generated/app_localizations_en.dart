@@ -858,7 +858,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeToolkitSubtitle =>
-      'Powerful tools launching in the next phase.';
+      'Powerful tools to help you land your next role.';
 
   @override
   String get comingSoonBadge => 'Soon';

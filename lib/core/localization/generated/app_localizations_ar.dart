@@ -849,7 +849,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get homeToolkitTitle => 'أدواتك بالذكاء الاصطناعي';
 
   @override
-  String get homeToolkitSubtitle => 'أدوات قوية ستُطلق في المرحلة التالية.';
+  String get homeToolkitSubtitle =>
+      'أدوات قوية تساعدك في الحصول على وظيفتك التالية.';
 
   @override
   String get comingSoonBadge => 'قريبًا';

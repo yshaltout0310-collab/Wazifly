@@ -10,6 +10,7 @@ class CvFonts {
     required this.baseBold,
     required this.arabic,
     required this.arabicBold,
+    this.preferArabic = false,
   });
 
   final pw.Font base;
@@ -17,12 +18,30 @@ class CvFonts {
   final pw.Font arabic;
   final pw.Font arabicBold;
 
-  pw.Font regular(bool rtl) => rtl ? arabic : base;
-  pw.Font bold(bool rtl) => rtl ? arabicBold : baseBold;
+  /// Forces [regular]/[bold] to the Arabic face even when the document language
+  /// is not Arabic — set when the CV's *content* contains Arabic.
+  ///
+  /// The document's base font drives `pdf`'s Arabic shaping and bidi pass, and
+  /// picking it from the app language alone meant an Arabic CV written while the
+  /// app was in English got a Latin base font and rendered garbled. The choice
+  /// has to follow the text, not the locale.
+  final bool preferArabic;
+
+  pw.Font regular(bool rtl) => (rtl || preferArabic) ? arabic : base;
+  pw.Font bold(bool rtl) => (rtl || preferArabic) ? arabicBold : baseBold;
 
   /// Ensures glyphs from the *other* script still render (e.g. a Latin email in
-  /// an Arabic CV, or an Arabic name in an English CV).
+  /// an Arabic CV, or an Arabic name in an English CV). Unaffected by
+  /// [preferArabic] — both faces stay reachable either way.
   List<pw.Font> get fallback => [base, arabic];
+
+  CvFonts withPreferArabic(bool value) => CvFonts(
+        base: base,
+        baseBold: baseBold,
+        arabic: arabic,
+        arabicBold: arabicBold,
+        preferArabic: value,
+      );
 
   /// Built-in standard fonts — no network. Latin-only (used as a resilient
   /// fallback and in tests).

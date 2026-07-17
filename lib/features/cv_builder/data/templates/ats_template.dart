@@ -27,9 +27,11 @@ class AtsTemplate implements PdfTemplate {
   static const _nameStyle =
       pw.TextStyle(fontSize: 22, fontWeight: pw.FontWeight.bold, color: _ink);
   static const _headlineStyle = pw.TextStyle(fontSize: 12, color: _accent);
+  // NOTE: no italic anywhere in this template. The document theme carries only a
+  // regular + bold Arabic face, so `FontStyle.italic` falls back to a Latin
+  // oblique that cannot shape Arabic and bypasses the RTL text path — an Arabic
+  // location printed as reversed, disconnected letters ("الدوحة" → "ةحودلا").
   static const _metaStyle = pw.TextStyle(fontSize: 9.5, color: _muted);
-  static const _italicMeta = pw.TextStyle(
-      fontSize: 9.5, color: _muted, fontStyle: pw.FontStyle.italic);
   static const _sectionStyle = pw.TextStyle(
       fontSize: 11,
       fontWeight: pw.FontWeight.bold,
@@ -194,7 +196,8 @@ class AtsTemplate implements PdfTemplate {
               if (period.isNotEmpty) PdfText.txt(period, _metaStyle, rtlDoc: rtl),
             ],
           ),
-          if (e.location.isNotEmpty) PdfText.txt(e.location, _italicMeta, rtlDoc: rtl),
+          if (e.location.isNotEmpty)
+            PdfText.txt(e.location, _metaStyle, rtlDoc: rtl),
           pw.SizedBox(height: 2),
           for (final b in e.bullets.where((b) => b.trim().isNotEmpty))
             _bullet(b, rtl),

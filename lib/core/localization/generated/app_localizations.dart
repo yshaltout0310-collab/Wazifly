@@ -1697,7 +1697,7 @@ abstract class AppLocalizations {
   /// No description provided for @homeToolkitSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Powerful tools launching in the next phase.'**
+  /// **'Powerful tools to help you land your next role.'**
   String get homeToolkitSubtitle;
 
   /// No description provided for @comingSoonBadge.

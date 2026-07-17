@@ -69,6 +69,39 @@ void main() {
       expect(w.text.toPlainText(), 'Flutter · SQL');
     });
 
+    test('digits inside a lettered run keep their order (regression: Bug #4)', () {
+      // pdf reverses a lettered word's characters but treats a number as
+      // atomic. Pre-reversing the digits too printed "yshaltout79@gmail.com" as
+      // "yshaltout97@gmail.com" — a plausible-looking WRONG email on a real CV.
+      const line = 'yshaltout79@gmail.com · الدوحة';
+      final w = PdfText.txt(line, style, rtlDoc: true) as pw.Text;
+      final out = w.text.toPlainText();
+      // Letters reversed (so pdf restores them) but "79" stays "79".
+      expect(out, contains('79'));
+      expect(out, isNot(contains('97')));
+      expect(out, contains('moc.liamg@79tuotlahsy'));
+    });
+
+    test('a multi-digit number inside a word is not transposed', () {
+      const line = 'Python3 و COVID19 و الدوحة';
+      final out =
+          (PdfText.txt(line, style, rtlDoc: true) as pw.Text).text.toPlainText();
+      expect(out, contains('3nohtyP')); // single digit: order irrelevant
+      expect(out, contains('19DIVOC')); // "19" preserved, letters reversed
+      expect(out, isNot(contains('91DIVOC')));
+    });
+
+    test('letterSpacing is dropped for Arabic but kept for Latin (Bug #5)', () {
+      // Arabic is cursive — tracking shatters the joins ("الخبرات" as
+      // "ا ل خ ب ر ا ت").
+      const tracked = pw.TextStyle(fontSize: 10, letterSpacing: 1.8);
+      final ar = PdfText.txt('الخبرات', tracked, rtlDoc: true) as pw.Text;
+      expect((ar.text as pw.TextSpan).style!.letterSpacing, 0);
+
+      final en = PdfText.txt('EXPERIENCE', tracked, rtlDoc: false) as pw.Text;
+      expect((en.text as pw.TextSpan).style!.letterSpacing, 1.8);
+    });
+
     test('align overrides the language-derived alignment', () {
       final w = PdfText.txt('Sarah Ahmed', style,
           rtlDoc: true, align: pw.TextAlign.center);
