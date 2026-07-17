@@ -4,6 +4,7 @@ import '../../../../core/localization/generated/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
 import '../../domain/chat_message.dart';
+import 'markdown_text.dart';
 
 /// A single chat bubble. User messages are emerald and end-aligned; assistant
 /// messages are surface-colored and start-aligned. Handles the streaming
@@ -49,13 +50,25 @@ class ChatBubble extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (message.text.isNotEmpty)
-              Text(
-                message.text,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  height: 1.42,
-                  color: isUser ? AppColors.white : theme.colorScheme.onSurface,
+              // User messages are literal text they typed; assistant replies are
+              // lightweight Markdown from the model, rendered so **bold** and
+              // "-" bullets show formatted instead of raw.
+              if (isUser)
+                Text(
+                  message.text,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    height: 1.42,
+                    color: AppColors.white,
+                  ),
+                )
+              else
+                MarkdownText(
+                  text: message.text,
+                  style: theme.textTheme.bodyMedium!.copyWith(
+                    height: 1.42,
+                    color: theme.colorScheme.onSurface,
+                  ),
                 ),
-              ),
             if (message.isStreaming && message.text.isEmpty)
               _TypingIndicator(color: theme.colorScheme.primary),
             if (message.isFailed) ...[

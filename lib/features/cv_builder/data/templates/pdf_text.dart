@@ -24,6 +24,27 @@ import 'package:pdf/widgets.dart' as pw;
 /// **Verify changes here by RENDERING, not by extracting text.** An RTL PDF's
 /// text layer is stored in visual order, so `pdftotext` reports Latin reversed
 /// whether or not it actually is — it will mislead you in both directions.
+///
+/// **Known residual limitations of the `pdf` package (investigated, NOT
+/// worked around — a workaround would either regress the fixes above or need a
+/// different PDF backend):**
+///
+/// 1. *Latin runs inside an RTL line render with small inter-glyph gaps*
+///    ("Northwind Apps" → "Nort hw ind A pps"). Proven to be the package's RTL
+///    glyph painter, not our input: the visual code units are clean (no joiners)
+///    and the same text is gap-free in LTR with either font. Unicode directional
+///    marks/isolates (LRM / LRE…PDF / LRI…PDI) do NOT help — the package's
+///    `bidi.logicalToVisual` ignores them entirely (it also doesn't fix the
+///    reversal, which is why [_preReverseLtrRuns] exists). The CV stays
+///    human-readable; only the visual spacing is imperfect.
+/// 2. *Arabic does not extract from the text layer* — the package subsets the
+///    TTF and emits presentation-form glyph ids without a ToUnicode CMap, so a
+///    text extractor (and therefore an ATS parser) can't map them back to
+///    Unicode. Latin extracts fine; Arabic comes back empty.
+///
+/// Net effect: an Arabic CV is correct to a human reader, but its PDF is not
+/// reliably machine-parseable. Both are inherent to `pdf` 3.13; removing them
+/// means replacing the PDF backend, out of scope here.
 class PdfText {
   const PdfText._();
 

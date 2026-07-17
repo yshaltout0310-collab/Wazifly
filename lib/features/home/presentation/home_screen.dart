@@ -13,6 +13,21 @@ import '../../auth/application/auth_providers.dart';
 import '../../user_type/application/user_type_controller.dart';
 import '../../user_type/domain/user_type.dart';
 
+/// The AI-toolkit grid's cell aspect ratio, made to grow the cards TALLER as
+/// the accessibility font scale grows.
+///
+/// The grid gives each cell a fixed height derived from this ratio, so with a
+/// constant ratio a large font scale made the labels spill outside the card
+/// (English) or clip (Arabic). Dividing the base ratio by the (clamped) text
+/// scale keeps scale 1.0 identical — no regression to the normal layout — while
+/// handing the label the extra vertical room it needs at 1.5–2.0×. Clamped at
+/// 1.8 so the cards never become absurdly tall.
+double toolkitCardAspectRatio(TextScaler scaler) {
+  const base = 1.42;
+  final scale = scaler.scale(1.0).clamp(1.0, 1.8);
+  return base / scale;
+}
+
 /// Premium post-auth dashboard. Confirms the Phase 1 flow end-to-end and
 /// previews the Phase 2 AI toolkit as "coming soon" tiles.
 class HomeScreen extends ConsumerWidget {
@@ -190,14 +205,12 @@ class HomeScreen extends ConsumerWidget {
                   AppSpacing.xl,
                 ),
                 sliver: SliverGrid(
-                  gridDelegate:
-                      const SliverGridDelegateWithFixedCrossAxisCount(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     mainAxisSpacing: AppSpacing.md,
                     crossAxisSpacing: AppSpacing.md,
-                    // Slightly taller cards so longer labels (e.g. the Arabic
-                    // "AI Job Matching") fit on two lines without overflowing.
-                    childAspectRatio: 1.42,
+                    childAspectRatio: toolkitCardAspectRatio(
+                        MediaQuery.textScalerOf(context)),
                   ),
                   delegate: SliverChildBuilderDelegate(
                     (context, i) {

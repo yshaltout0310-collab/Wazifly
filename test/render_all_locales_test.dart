@@ -62,7 +62,8 @@ Future<LocalStorageService> _storage([Map<String, Object> seed = const {}]) {
   return LocalStorageService.create();
 }
 
-Widget _host(LocalStorageService storage, Widget child, Locale locale) {
+Widget _host(LocalStorageService storage, Widget child, Locale locale,
+    {TextScaler? textScaler}) {
   return ProviderScope(
     overrides: [
       localStorageProvider.overrideWithValue(storage),
@@ -81,7 +82,14 @@ Widget _host(LocalStorageService storage, Widget child, Locale locale) {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: supportedLocales,
-      home: child,
+      home: textScaler == null
+          ? child
+          : Builder(
+              builder: (context) => MediaQuery(
+                data: MediaQuery.of(context).copyWith(textScaler: textScaler),
+                child: child,
+              ),
+            ),
     ),
   );
 }
@@ -163,6 +171,51 @@ void main() {
       });
     }
   }
+
+  // The Home "AI toolkit" grid used to clip / overflow its labels at large
+  // accessibility font sizes because the SliverGrid's card height is fixed by a
+  // constant aspect ratio. The ratio now shrinks with the text scale so cards
+  // grow taller. (This is font-metric dependent, so it can't be reproduced with
+  // the harness's metric-less test font — the real guard is the pure
+  // `toolkitCardAspectRatio` unit below plus the live on-device check; this is a
+  // smoke test that the scaled Home at least builds without throwing.)
+  for (final locale in const [Locale('en'), Locale('ar')]) {
+    final tag = locale.languageCode.toUpperCase();
+    testWidgets('Home builds at textScale 1.8 ($tag)', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(360, 800));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      final storage = await _storage({StorageKeys.userType: 'jobSeeker'});
+      await tester.pumpWidget(_host(storage, const HomeScreen(), locale,
+          textScaler: const TextScaler.linear(1.8)));
+      await tester.pump(const Duration(milliseconds: 700));
+
+      expect(tester.takeException(), isNull);
+    });
+  }
+
+  group('toolkitCardAspectRatio', () {
+    test('is unchanged (1.42) at normal scale — no regression', () {
+      expect(toolkitCardAspectRatio(TextScaler.noScaling), closeTo(1.42, 1e-9));
+      expect(toolkitCardAspectRatio(const TextScaler.linear(1.0)),
+          closeTo(1.42, 1e-9));
+    });
+
+    test('shrinks (taller cards) as the font scale grows', () {
+      final r15 = toolkitCardAspectRatio(const TextScaler.linear(1.5));
+      final r18 = toolkitCardAspectRatio(const TextScaler.linear(1.8));
+      expect(r15, lessThan(1.42));
+      expect(r18, lessThan(r15));
+      // At 1.8 the card is 1.8× taller for the same width — enough room for the
+      // longest wrapped Arabic label.
+      expect(r18, closeTo(1.42 / 1.8, 1e-9));
+    });
+
+    test('clamps beyond 1.8 so cards never become absurdly tall', () {
+      expect(toolkitCardAspectRatio(const TextScaler.linear(3.0)),
+          closeTo(1.42 / 1.8, 1e-9));
+    });
+  });
 
   testWidgets('Email form shows validation errors on empty submit (EN)',
       (tester) async {
