@@ -254,7 +254,7 @@
   "interviewErrQuota": "خدمة الذكاء الاصطناعي مشغولة الآن. حاول بعد قليل.",
   "interviewErrGeneric": "حدث خطأ ما. حاول مرة أخرى.",
 
-  "welcomeTitle": "مرحبًا بك في Wazifly",
+  "welcomeTitle": "مرحبًا بك في وظيفة فلاي",
   "welcomeSubtitle": "شريكك المهني المدعوم بالذكاء الاصطناعي",
   "continueWithEmail": "المتابعة بالبريد الإلكتروني",
   "continueWithPhone": "المتابعة برقم الهاتف",
@@ -290,7 +290,7 @@
   "verify": "تحقق",
   "resendCode": "إعادة إرسال الرمز",
 
-  "userTypeTitle": "كيف ستستخدم Wazifly؟",
+  "userTypeTitle": "كيف ستستخدم وظيفة فلاي؟",
   "userTypeSubtitle": "يمكنك تغيير ذلك في أي وقت من الإعدادات.",
   "jobSeeker": "باحث عن عمل",
   "jobSeekerDesc": "اعثر على وظائف تناسب مهاراتك.",
@@ -774,7 +774,7 @@
   "applicantVia": "عبر {source}",
   "@applicantVia": { "placeholders": { "source": { "type": "String" } } },
 
-  "sourceCareerBridge": "Wazifly",
+  "sourceCareerBridge": "وظيفة فلاي",
   "sourceReferral": "إحالة",
   "sourceExternalImport": "استيراد خارجي",
   "sourceCompanyWebsite": "موقع الشركة",
@@ -929,7 +929,7 @@
   "biometricDisabledSnack": "تم إيقاف تسجيل الدخول بالبصمة.",
   "biometricFailed": "تعذّر التحقق. يرجى المحاولة مرة أخرى.",
   "biometricReasonEnable": "أكِّد هويتك لتفعيل تسجيل الدخول بالبصمة",
-  "biometricReasonUnlock": "افتح Wazifly",
+  "biometricReasonUnlock": "افتح وظيفة فلاي",
 
   "appLockTitle": "مرحبًا بعودتك",
   "appLockSubtitle": "افتح للمتابعة",

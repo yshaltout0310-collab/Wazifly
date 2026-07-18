@@ -718,7 +718,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get interviewErrGeneric => 'حدث خطأ ما. حاول مرة أخرى.';
 
   @override
-  String get welcomeTitle => 'مرحبًا بك في Wazifly';
+  String get welcomeTitle => 'مرحبًا بك في وظيفة فلاي';
 
   @override
   String get welcomeSubtitle => 'شريكك المهني المدعوم بالذكاء الاصطناعي';
@@ -813,7 +813,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get resendCode => 'إعادة إرسال الرمز';
 
   @override
-  String get userTypeTitle => 'كيف ستستخدم Wazifly؟';
+  String get userTypeTitle => 'كيف ستستخدم وظيفة فلاي؟';
 
   @override
   String get userTypeSubtitle => 'يمكنك تغيير ذلك في أي وقت من الإعدادات.';
@@ -2232,7 +2232,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get sourceCareerBridge => 'Wazifly';
+  String get sourceCareerBridge => 'وظيفة فلاي';
 
   @override
   String get sourceReferral => 'إحالة';
@@ -2689,7 +2689,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get biometricReasonEnable => 'أكِّد هويتك لتفعيل تسجيل الدخول بالبصمة';
 
   @override
-  String get biometricReasonUnlock => 'افتح Wazifly';
+  String get biometricReasonUnlock => 'افتح وظيفة فلاي';
 
   @override
   String get appLockTitle => 'مرحبًا بعودتك';
