@@ -1,7 +1,7 @@
 {
   "@@locale": "ar",
 
-  "appName": "كاريير بريدج",
+  "appName": "Wazifly",
   "pageNotFound": "الصفحة غير موجودة",
   "splashTagline": "مدعوم بالذكاء الاصطناعي المتقدم",
 
@@ -254,7 +254,7 @@
   "interviewErrQuota": "خدمة الذكاء الاصطناعي مشغولة الآن. حاول بعد قليل.",
   "interviewErrGeneric": "حدث خطأ ما. حاول مرة أخرى.",
 
-  "welcomeTitle": "مرحبًا بك في كاريير بريدج",
+  "welcomeTitle": "مرحبًا بك في Wazifly",
   "welcomeSubtitle": "شريكك المهني المدعوم بالذكاء الاصطناعي",
   "continueWithEmail": "المتابعة بالبريد الإلكتروني",
   "continueWithPhone": "المتابعة برقم الهاتف",
@@ -290,7 +290,7 @@
   "verify": "تحقق",
   "resendCode": "إعادة إرسال الرمز",
 
-  "userTypeTitle": "كيف ستستخدم كاريير بريدج؟",
+  "userTypeTitle": "كيف ستستخدم Wazifly؟",
   "userTypeSubtitle": "يمكنك تغيير ذلك في أي وقت من الإعدادات.",
   "jobSeeker": "باحث عن عمل",
   "jobSeekerDesc": "اعثر على وظائف تناسب مهاراتك.",
@@ -774,7 +774,7 @@
   "applicantVia": "عبر {source}",
   "@applicantVia": { "placeholders": { "source": { "type": "String" } } },
 
-  "sourceCareerBridge": "CareerBridge",
+  "sourceCareerBridge": "Wazifly",
   "sourceReferral": "إحالة",
   "sourceExternalImport": "استيراد خارجي",
   "sourceCompanyWebsite": "موقع الشركة",
@@ -929,7 +929,7 @@
   "biometricDisabledSnack": "تم إيقاف تسجيل الدخول بالبصمة.",
   "biometricFailed": "تعذّر التحقق. يرجى المحاولة مرة أخرى.",
   "biometricReasonEnable": "أكِّد هويتك لتفعيل تسجيل الدخول بالبصمة",
-  "biometricReasonUnlock": "افتح Career Bridge",
+  "biometricReasonUnlock": "افتح Wazifly",
 
   "appLockTitle": "مرحبًا بعودتك",
   "appLockSubtitle": "افتح للمتابعة",

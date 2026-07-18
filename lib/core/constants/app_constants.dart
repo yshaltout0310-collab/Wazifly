@@ -2,7 +2,7 @@
 abstract final class AppConstants {
   AppConstants._();
 
-  static const String appName = 'Career Bridge';
+  static const String appName = 'Wazifly';
   static const String appVersion = '1.0.0';
 
   /// Maximum content width on large screens (tablets/desktop) so layouts stay

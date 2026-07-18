@@ -1,4 +1,4 @@
-/// The two roles a user can take in Career Bridge.
+/// The two roles a user can take in Wazifly.
 enum UserType {
   jobSeeker,
   employer;

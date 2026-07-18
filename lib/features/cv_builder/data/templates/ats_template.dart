@@ -18,7 +18,8 @@ import 'pdf_text.dart';
 class AtsTemplate implements PdfTemplate {
   const AtsTemplate();
 
-  static const PdfColor _accent = PdfColor.fromInt(0xFF0E9F6E); // emerald brand
+  static const PdfColor _accent =
+      PdfColor.fromInt(0xFF1677FF); // Wazifly Royal Blue
   static const PdfColor _muted = PdfColor.fromInt(0xFF555555);
   static const PdfColor _ink = PdfColor.fromInt(0xFF1A1A1A);
   static const PdfColor _rule = PdfColor.fromInt(0xFFDDDDDD);

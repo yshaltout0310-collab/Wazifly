@@ -21,11 +21,12 @@ import 'pdf_text.dart';
 class ModernTemplate implements PdfTemplate {
   const ModernTemplate();
 
-  static const PdfColor _accent = PdfColor.fromInt(0xFF0E9F6E); // emerald brand
-  static const PdfColor _accentDark = PdfColor.fromInt(0xFF0B7D57);
-  static const PdfColor _tint = PdfColor.fromInt(0xFFEAF7F1);
+  static const PdfColor _accent =
+      PdfColor.fromInt(0xFF1677FF); // Wazifly Royal Blue
+  static const PdfColor _accentDark = PdfColor.fromInt(0xFF0B54C4);
+  static const PdfColor _tint = PdfColor.fromInt(0xFFEAF2FF); // soft royal tint
   static const PdfColor _onAccent = PdfColor.fromInt(0xFFFFFFFF);
-  static const PdfColor _onAccentSoft = PdfColor.fromInt(0xFFD8F0E5);
+  static const PdfColor _onAccentSoft = PdfColor.fromInt(0xFFD6E9FF);
   static const PdfColor _muted = PdfColor.fromInt(0xFF555555);
   static const PdfColor _ink = PdfColor.fromInt(0xFF1A1A1A);
 

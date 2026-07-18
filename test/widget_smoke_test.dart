@@ -32,7 +32,7 @@ void main() {
           connectivityServiceProvider
               .overrideWithValue(const NoopConnectivityService()),
         ],
-        child: const CareerBridgeApp(),
+        child: const WaziflyApp(),
       ),
     );
 

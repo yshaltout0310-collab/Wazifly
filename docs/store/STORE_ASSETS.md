@@ -1,4 +1,4 @@
-# Career Bridge — Store Assets Specifications
+# Wazifly — Store Assets Specifications
 
 > **Specifications and a capture plan only — no graphic assets are generated in
 > this milestone.** Each entry lists the exact Play requirement, the brand
@@ -33,7 +33,7 @@
 | Max size | 1 MB |
 
 - **Layout guidance:** emerald gradient background (`#0B7D57` → `#0E9F6E`), the
-  Career Bridge logo/wordmark, and a short tagline (e.g. *"AI career platform
+  Wazifly logo/wordmark, and a short tagline (e.g. *"AI career platform
   for job seekers & employers"*). Keep text within the central safe area —
   Play may overlay the install button and crop edges on some surfaces.
 - Provide an **Arabic variant** if publishing the Arabic listing (same layout,

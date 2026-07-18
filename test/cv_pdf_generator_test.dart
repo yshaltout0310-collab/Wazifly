@@ -81,7 +81,7 @@ CvData _longCv() => CvData(
       ],
       projects: const [
         CvProject(
-          name: 'Career Bridge',
+          name: 'Wazifly',
           description: 'An AI job platform built with Flutter and Firebase.',
           link: 'https://github.com/sarah/career-bridge/tree/main/docs',
         ),

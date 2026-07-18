@@ -3,7 +3,11 @@ import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_dimensions.dart';
 
-/// Brand mark: a rounded emerald-gradient tile with a "bridge" glyph.
+/// Wazifly brand mark: the "W" logo on a rounded Deep Navy tile.
+///
+/// The W image is generated from `assets/brand/wazifly_logo.svg` (the single
+/// source of truth) into `assets/images/wazifly_mark.png`; replacing the SVG and
+/// re-running the raster script updates every surface, including this widget.
 ///
 /// Used on the splash screen and reusable anywhere the logo is needed.
 class AppLogo extends StatelessWidget {
@@ -17,40 +21,23 @@ class AppLogo extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        gradient: AppColors.ctaGradient,
-        borderRadius: BorderRadius.circular(size * 0.30),
+        color: AppColors.navy,
+        borderRadius: BorderRadius.circular(size * 0.28),
         boxShadow: [
           BoxShadow(
-            color: AppColors.emerald.withValues(alpha: 0.45),
+            color: AppColors.royalBlue.withValues(alpha: 0.35),
             blurRadius: size * 0.35,
             offset: Offset(0, size * 0.14),
           ),
         ],
       ),
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // Subtle top highlight for a glossy, premium finish.
-          Positioned(
-            top: size * 0.12,
-            child: Container(
-              width: size * 0.7,
-              height: size * 0.28,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(size),
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    AppColors.white.withValues(alpha: 0.28),
-                    AppColors.white.withValues(alpha: 0),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Icon(Icons.hub_rounded, size: size * 0.52, color: AppColors.white),
-        ],
+      child: Padding(
+        padding: EdgeInsets.all(size * 0.14),
+        child: Image.asset(
+          'assets/images/wazifly_mark.png',
+          fit: BoxFit.contain,
+          filterQuality: FilterQuality.high,
+        ),
       ),
     );
   }

@@ -17,8 +17,8 @@ import 'shared/widgets/offline_banner.dart';
 /// controllers, so user choices are honored from the very first frame. The
 /// [router] is built once in `main()` (with the analytics screen-view observer
 /// attached) so it stays stable across rebuilds.
-class CareerBridgeApp extends ConsumerWidget {
-  const CareerBridgeApp({super.key, this.router});
+class WaziflyApp extends ConsumerWidget {
+  const WaziflyApp({super.key, this.router});
 
   /// The app router. When null (e.g. tests), a fresh default router is built.
   final GoRouter? router;
@@ -33,7 +33,7 @@ class CareerBridgeApp extends ConsumerWidget {
     final themeLocale = locale ?? const Locale('en');
 
     return MaterialApp.router(
-      title: 'Career Bridge',
+      title: 'Wazifly',
       debugShowCheckedModeBanner: false,
       routerConfig: router ?? AppRouter.create(),
 

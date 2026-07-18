@@ -1,7 +1,7 @@
 {
   "@@locale": "en",
 
-  "appName": "Career Bridge",
+  "appName": "Wazifly",
   "@appName": { "description": "Application name." },
 
   "pageNotFound": "Page not found",
@@ -261,7 +261,7 @@
   "interviewErrQuota": "The AI service is busy right now. Please try again shortly.",
   "interviewErrGeneric": "Something went wrong. Please try again.",
 
-  "welcomeTitle": "Welcome to Career Bridge",
+  "welcomeTitle": "Welcome to Wazifly",
   "welcomeSubtitle": "Your AI-powered career partner",
   "continueWithEmail": "Continue with Email",
   "continueWithPhone": "Continue with Phone",
@@ -297,7 +297,7 @@
   "verify": "Verify",
   "resendCode": "Resend code",
 
-  "userTypeTitle": "How will you use Career Bridge?",
+  "userTypeTitle": "How will you use Wazifly?",
   "userTypeSubtitle": "You can change this anytime in settings.",
   "jobSeeker": "Job Seeker",
   "jobSeekerDesc": "Find jobs matched to your skills.",
@@ -827,7 +827,7 @@
   "applicantVia": "via {source}",
   "@applicantVia": { "placeholders": { "source": { "type": "String" } } },
 
-  "sourceCareerBridge": "CareerBridge",
+  "sourceCareerBridge": "Wazifly",
   "sourceReferral": "Referral",
   "sourceExternalImport": "External import",
   "sourceCompanyWebsite": "Company website",
@@ -982,7 +982,7 @@
   "biometricDisabledSnack": "Biometric login disabled.",
   "biometricFailed": "Couldn't verify. Please try again.",
   "biometricReasonEnable": "Confirm it's you to enable biometric login",
-  "biometricReasonUnlock": "Unlock Career Bridge",
+  "biometricReasonUnlock": "Unlock Wazifly",
 
   "appLockTitle": "Welcome back",
   "appLockSubtitle": "Unlock to continue",

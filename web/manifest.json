@@ -1,11 +1,11 @@
 {
-    "name": "careerbridge",
-    "short_name": "careerbridge",
+    "name": "Wazifly",
+    "short_name": "Wazifly",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0E9F6E",
-    "theme_color": "#0E9F6E",
-    "description": "A new Flutter project.",
+    "background_color": "#0B1D3A",
+    "theme_color": "#1677FF",
+    "description": "Wazifly — an AI-powered global job platform.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

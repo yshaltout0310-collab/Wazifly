@@ -1,4 +1,4 @@
-# Career Bridge — Production QA Checklist
+# Wazifly — Production QA Checklist
 
 > Run before every release, on a **release build** where possible. Cover **both
 > languages (English LTR + Arabic RTL)** and **both themes (light + dark)** — the
@@ -24,7 +24,7 @@ Android-12 splash path.
 - ☐ Native splash shows the brand color (`#0B7D57`) → logo, **no white flash**
   before the Flutter splash; correct on API < 31 and API ≥ 31.
 - ☐ In-app animated splash (emerald + logo) transitions cleanly to the first screen.
-- ☐ App label reads "Career Bridge" in the launcher and recents.
+- ☐ App label reads "Wazifly" in the launcher and recents.
 - ☐ Dark-mode splash uses the dark background (`#101413`).
 
 ## 3. Localization & fonts (EN + AR)

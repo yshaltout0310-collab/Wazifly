@@ -9,7 +9,7 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
-  String get appName => 'كاريير بريدج';
+  String get appName => 'Wazifly';
 
   @override
   String get pageNotFound => 'الصفحة غير موجودة';
@@ -718,7 +718,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get interviewErrGeneric => 'حدث خطأ ما. حاول مرة أخرى.';
 
   @override
-  String get welcomeTitle => 'مرحبًا بك في كاريير بريدج';
+  String get welcomeTitle => 'مرحبًا بك في Wazifly';
 
   @override
   String get welcomeSubtitle => 'شريكك المهني المدعوم بالذكاء الاصطناعي';
@@ -813,7 +813,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get resendCode => 'إعادة إرسال الرمز';
 
   @override
-  String get userTypeTitle => 'كيف ستستخدم كاريير بريدج؟';
+  String get userTypeTitle => 'كيف ستستخدم Wazifly؟';
 
   @override
   String get userTypeSubtitle => 'يمكنك تغيير ذلك في أي وقت من الإعدادات.';
@@ -2232,7 +2232,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get sourceCareerBridge => 'CareerBridge';
+  String get sourceCareerBridge => 'Wazifly';
 
   @override
   String get sourceReferral => 'إحالة';
@@ -2689,7 +2689,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get biometricReasonEnable => 'أكِّد هويتك لتفعيل تسجيل الدخول بالبصمة';
 
   @override
-  String get biometricReasonUnlock => 'افتح Career Bridge';
+  String get biometricReasonUnlock => 'افتح Wazifly';
 
   @override
   String get appLockTitle => 'مرحبًا بعودتك';

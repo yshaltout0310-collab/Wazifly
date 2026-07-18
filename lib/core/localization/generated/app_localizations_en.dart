@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appName => 'Career Bridge';
+  String get appName => 'Wazifly';
 
   @override
   String get pageNotFound => 'Page not found';
@@ -724,7 +724,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get interviewErrGeneric => 'Something went wrong. Please try again.';
 
   @override
-  String get welcomeTitle => 'Welcome to Career Bridge';
+  String get welcomeTitle => 'Welcome to Wazifly';
 
   @override
   String get welcomeSubtitle => 'Your AI-powered career partner';
@@ -821,7 +821,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get resendCode => 'Resend code';
 
   @override
-  String get userTypeTitle => 'How will you use Career Bridge?';
+  String get userTypeTitle => 'How will you use Wazifly?';
 
   @override
   String get userTypeSubtitle => 'You can change this anytime in settings.';
@@ -2247,7 +2247,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get sourceCareerBridge => 'CareerBridge';
+  String get sourceCareerBridge => 'Wazifly';
 
   @override
   String get sourceReferral => 'Referral';
@@ -2702,7 +2702,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Confirm it\'s you to enable biometric login';
 
   @override
-  String get biometricReasonUnlock => 'Unlock Career Bridge';
+  String get biometricReasonUnlock => 'Unlock Wazifly';
 
   @override
   String get appLockTitle => 'Welcome back';

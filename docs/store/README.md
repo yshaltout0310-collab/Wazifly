@@ -1,6 +1,6 @@
-# Career Bridge — Google Play Submission Kit
+# Wazifly — Google Play Submission Kit
 
-> **Purpose:** everything needed to submit Career Bridge to Google Play, in one
+> **Purpose:** everything needed to submit Wazifly to Google Play, in one
 > place. This folder holds the store listing, asset specs, Data Safety mapping,
 > Play Console answers, and the master release checklist. Legal documents that
 > must be **publicly hosted** live in [`../legal/`](../legal).
@@ -68,7 +68,7 @@ a `⟨FILL-IN: …⟩` marker. Nothing ships blank. Track completion here:
 
 | Item | Value |
 | --- | --- |
-| App name | Career Bridge |
+| App name | Wazifly |
 | Package / `applicationId` | `com.careerbridge.careerbridge` |
 | Play category | Business |
 | Target audience | 18 and over |

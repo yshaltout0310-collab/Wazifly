@@ -37,7 +37,7 @@ class BuildInfo {
   /// `1.0.0+1` — the full pubspec-style version string.
   String get fullVersion => '$version+$buildNumber';
 
-  /// `Career Bridge 1.0.0 (1) · release` — a human-facing label for a future
+  /// `Wazifly 1.0.0 (1) · release` — a human-facing label for a future
   /// About screen / bug report.
   String get displayLabel =>
       '$appName $version ($buildNumber) · ${buildType.name}';
@@ -52,7 +52,7 @@ class BuildInfo {
         ? BuildType.release
         : (kProfileMode ? BuildType.profile : BuildType.debug);
     return const BuildInfo(
-      appName: 'Career Bridge',
+      appName: 'Wazifly',
       version: version,
       buildNumber: buildNumber,
       buildType: type,

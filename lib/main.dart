@@ -58,7 +58,7 @@ Future<void> main() async {
   runApp(
     UncontrolledProviderScope(
       container: container,
-      child: CareerBridgeApp(router: router),
+      child: WaziflyApp(router: router),
     ),
   );
 

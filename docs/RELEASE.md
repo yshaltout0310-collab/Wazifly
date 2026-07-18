@@ -1,11 +1,11 @@
-# Career Bridge — Release Runbook
+# Wazifly — Release Runbook
 
 > **Goal:** someone unfamiliar with the project can build and publish the app
 > using **only this document**. It covers prerequisites, one-time setup, signing,
 > branding, building, the manual production console steps, Play Store upload,
 > validation, and rollback.
 
-Career Bridge is a Flutter (Android-first) app. This runbook targets the
+Wazifly is a Flutter (Android-first) app. This runbook targets the
 **Android** release; the iOS pipeline is prepared (icons/splash configs target
 iOS) but not covered here.
 
@@ -15,7 +15,7 @@ iOS) but not covered here.
 
 | Item | Value |
 | --- | --- |
-| App name | Career Bridge |
+| App name | Wazifly |
 | Android `applicationId` / package | `com.careerbridge.careerbridge` |
 | Firebase project | `careerbridge-97-f58c9` (project number `894890748117`) |
 | Flutter | 3.44.4 stable · Dart `>=3.6.0 <4.0.0` · `flutter >=3.27.0` |
@@ -38,7 +38,7 @@ iOS) but not covered here.
 ## 2. One-time project setup
 
 ```bash
-git clone <repo> && cd CareerBridge
+git clone <repo> && cd Wazifly
 flutter pub get
 ```
 

@@ -1,7 +1,7 @@
-# Career Bridge — Production Readiness Report
+# Wazifly — Production Readiness Report
 
 > **Purpose:** the single **evidence-backed Go/No-Go assessment** for shipping
-> Career Bridge to Google Play. It records what has been **verified** in the
+> Wazifly to Google Play. It records what has been **verified** in the
 > codebase and build, and what remains a **manual pre-launch step** that cannot be
 > automated from the repository (console configuration, hosting, credentials).
 >
@@ -209,5 +209,5 @@ engineering task above is complete. Work these before the production submission
 - ☐ *(Recommended)* full **TalkBack** pass + native-speaker review of the Arabic
   listing.
 
-> When every box above is ticked, Career Bridge is ready for its first Google Play
+> When every box above is ticked, Wazifly is ready for its first Google Play
 > release. Nothing in the codebase blocks it today.

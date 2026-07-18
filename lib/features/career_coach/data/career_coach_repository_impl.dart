@@ -42,7 +42,7 @@ class CareerCoachRepositoryImpl implements CareerCoachRepository {
     final language = languageCode == 'ar' ? 'Arabic' : 'English';
     final buffer = StringBuffer()
       ..writeln(
-          'You are Career Bridge\'s AI Career Coach: an encouraging, practical '
+          'You are Wazifly\'s AI Career Coach: an encouraging, practical '
           'career mentor. You help with career guidance, learning roadmaps, '
           'skill development, interview preparation, and resume/job advice.')
       ..writeln('Guidelines:')

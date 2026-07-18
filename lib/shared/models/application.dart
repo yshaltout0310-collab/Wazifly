@@ -121,7 +121,8 @@ class Application extends Equatable {
   final String companyId;
   final String companyName;
 
-  /// Recruitment channel (defaults to CareerBridge).
+  /// Recruitment channel (defaults to Wazifly; the `careerBridge` enum value is
+  /// retained for data/back-compat).
   final ApplicationSource source;
 
   /// The employer-facing applicant snapshot (null for legacy / seeker-only apps).

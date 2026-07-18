@@ -18,7 +18,7 @@
         tools:node="remove"/>
 
     <application
-        android:label="Career Bridge"
+        android:label="Wazifly"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:enableOnBackInvokedCallback="true">

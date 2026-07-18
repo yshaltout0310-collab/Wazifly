@@ -1,4 +1,4 @@
-# Career Bridge — Google Play Data Safety
+# Wazifly — Google Play Data Safety
 
 > The **Data Safety** section (Play Console → App content → Data safety) answered
 > field-by-field from the app's **actual** data flows — Firebase Auth, Firestore,
@@ -118,7 +118,7 @@ names each processor and links to Google's privacy documentation.
   for advertising or marketing.
 - **No in-app purchases / subscriptions** in v1.0. If premium features are added
   later, this form and the Privacy Policy must be revisited **before** shipping
-  them — and Career Bridge will **remain ad-free** regardless
+  them — and Wazifly will **remain ad-free** regardless
   (see [`STORE_LISTING.md`](STORE_LISTING.md) §4).
 
 ---

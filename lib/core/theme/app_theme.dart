@@ -5,11 +5,12 @@ import 'app_colors.dart';
 import 'app_dimensions.dart';
 import 'app_typography.dart';
 
-/// Material 3 theme factory for Career Bridge.
+/// Material 3 theme factory for Wazifly.
 ///
-/// Produces locale-aware light and dark [ThemeData] built around the emerald
-/// brand color. Rounded cards, pill buttons, and soft surfaces give the app a
-/// modern, premium feel that stays consistent across the whole product.
+/// Produces locale-aware light and dark [ThemeData] built around the Wazifly
+/// Royal Blue brand color (navy anchor, sky-blue accent). Rounded cards, pill
+/// buttons, and soft surfaces give the app a modern, premium feel that stays
+/// consistent across the whole product.
 abstract final class AppTheme {
   AppTheme._();
 
@@ -23,12 +24,13 @@ abstract final class AppTheme {
     final bool isDark = brightness == Brightness.dark;
 
     final ColorScheme scheme = ColorScheme.fromSeed(
-      seedColor: AppColors.emerald,
+      seedColor: AppColors.royalBlue,
       brightness: brightness,
     ).copyWith(
-      primary: AppColors.emerald,
+      primary: AppColors.royalBlue,
       onPrimary: AppColors.white,
-      secondary: AppColors.emeraldDark,
+      secondary: AppColors.royalBlueDark,
+      tertiary: AppColors.skyBlue,
       error: AppColors.error,
       surface: isDark ? AppColors.darkSurface : AppColors.lightSurface,
       onSurface:

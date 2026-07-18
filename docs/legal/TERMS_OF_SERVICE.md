@@ -1,4 +1,4 @@
-# Career Bridge — Terms of Service
+# Wazifly — Terms of Service
 
 **Effective date:** `⟨FILL-IN: effective date, e.g. 2026-07-10⟩`
 **Last updated:** `⟨FILL-IN: date⟩`
@@ -8,7 +8,7 @@
 > the Privacy Policy) before submitting the app to Google Play. Replace every
 > `⟨FILL-IN⟩` before publishing.
 
-These Terms of Service ("Terms") govern your use of the **Career Bridge** mobile
+These Terms of Service ("Terms") govern your use of the **Wazifly** mobile
 application (the "App"), provided by `⟨FILL-IN: developer / legal entity name⟩`
 ("we", "us", "our"). By using the App, you agree to these Terms. If you do not
 agree, do not use the App.
@@ -29,7 +29,7 @@ represent that you meet this requirement and can form a binding contract.
 
 ## 3. The service
 
-Career Bridge is an AI-powered career platform for **Job Seekers** and
+Wazifly is an AI-powered career platform for **Job Seekers** and
 **Employers**. Features include résumé analysis, job matching, career coaching,
 CV building, interview preparation, personalized recommendations, job browsing
 and applications, and — for employers — company profiles, job management,
@@ -77,7 +77,7 @@ results.
 
 ## 8. Intellectual property
 
-The App, including its design, branding ("Career Bridge"), and software, is owned
+The App, including its design, branding ("Wazifly"), and software, is owned
 by us or our licensors and is protected by intellectual-property laws. Bundled
 fonts (Inter, Cairo) are used under the SIL Open Font License 1.1. You may not
 copy, modify, or distribute the App except as permitted by law or these Terms.
@@ -93,7 +93,7 @@ their terms. We are not responsible for third-party services outside our control
 The App is currently **free to use and ad-free.** If we introduce optional
 premium features or subscriptions in the future, applicable terms and pricing
 will be presented before you incur any charge, and these Terms and our Play
-disclosures will be updated accordingly. Career Bridge will remain an **ad-free**
+disclosures will be updated accordingly. Wazifly will remain an **ad-free**
 platform.
 
 ## 11. Disclaimers

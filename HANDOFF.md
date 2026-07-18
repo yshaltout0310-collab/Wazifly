@@ -2717,13 +2717,66 @@ their group order are correct. Not worth compensating; revisit only if a user re
 
 ---
 
+## 7.31 Rebrand: Career Bridge → **Wazifly** ✅ COMPLETE (branch `feature/wazifly-rebrand`)
+
+> Phase 1 of the rebrand: **branding, design system, assets, naming, and user-facing identity only** — zero business
+> logic / backend change. The Wazifly brand board is the source of truth. Approved decisions baked in:
+> **display-name-only** (package IDs / Firebase untouched), **Inter kept** (no Poppins), **SVG-authored logo**,
+> **HANDOFF history preserved**.
+
+**Colors (`app_colors.dart`).** New Wazifly palette — Deep Navy `#0B1D3A` (anchor), Royal Blue `#1677FF`
+(interactive/CTA primary), Sky Blue `#00C2FF` (accent), Teal `#00B59C` (support/success), Mist Gray `#E6EBF1`. Applied
+**minimal-churn**: canonical names added, and the legacy `emerald*`/`mint`/`deepSea` accessors kept as **aliases** onto
+the new palette so the ~130 call sites are untouched. Neutrals retinted cool/navy; CTA gradient sky→royal→deep-royal;
+`success = teal`. `app_theme.dart` seeds from `royalBlue` (+ `tertiary = skyBlue`). 3 hardcoded CV-PDF template hex →
+Royal Blue. **white-on-Royal-Blue button contrast ≈ 3.4:1 — acceptable for large/bold button text (WCAG UI 3:1) and
+brand-faithful; verified legible on device.**
+
+**Logo (SVG single source of truth).** Authored **`assets/brand/wazifly_logo.svg`** — the "W" whose right arm rises into a
+royal→sky "takeoff" swoosh (white on navy), matching the board. **`tool/generate_brand_assets.py`** regenerates every
+raster **from that SVG** (svglib → ReportLab → PDF → pypdfium2 → Pillow composite; no native cairo). Outputs:
+`assets/images/wazifly_mark.png` (in-app), `assets/icon/{splash_logo,ic_foreground,ic_background,app_icon}.png`. Replacing
+the SVG with the official vector = rerun the script + `flutter_launcher_icons` + `flutter_native_splash`. In-app `AppLogo`
+now renders the mark on a navy tile; the splash `_GlowLogo` swapped `Icons.hub_rounded` → the mark (the old glyph is fully
+gone). Launcher icons + native splash regenerated (splash bg `#0B1D3A`).
+
+**Naming / strings.** `AppConstants.appName`, `build_info`, `MaterialApp.title`, class `CareerBridgeApp`→**`WaziflyApp`**,
+`pubspec` description, the Career-Coach **system prompt** ("Wazifly's AI Career Coach"), and l10n **EN + AR** (`appName`,
+`welcomeTitle`, `userTypeTitle`, `sourceCareerBridge` **value**, `biometricReasonUnlock`). Decision: the **Latin wordmark
+"Wazifly" is kept even in Arabic** (brand wordmarks aren't translated; consistent with how "ATS" stays Latin). Native
+display names → Wazifly (Android `android:label`, iOS `CFBundleDisplayName`/`Name`, web `<title>`/manifest).
+
+**Intentionally NOT changed** (technical identifiers / data — changing them is backend, out of scope): Android
+`applicationId` + iOS bundle id **`com.careerbridge.careerbridge`**; Dart package **`careerbridge`** (all
+`package:careerbridge/…` imports); Firebase project `careerbridge-97-f58c9` + `google-services.json` +
+`firebase_options.dart`; the **persisted `ApplicationSource.careerBridge` enum value** (only its *label* is now "Wazifly");
+the `sourceCareerBridge` l10n **key name** (its value is "Wazifly"). Docs: README + `docs/**` rebranded (technical IDs
+preserved); this HANDOFF keeps its historical "Career Bridge" entries by design.
+
+**Tests +3 (653).** New `test/branding_test.dart` guards `AppConstants.appName == 'Wazifly'` and that no key EN/AR l10n
+string still carries the old brand; `build_info_test` + `cv_pdf_generator` fixture updated. analyze clean; full suite
+green; release APK (73.9 MB) under R8. **Live-verified on the device (Samsung A16):** OS launcher shows **"Wazifly"** + the
+new navy-W icon; native splash navy+W; in-app splash shows the W mark + "Wazifly"; Home/Settings/toolkit/Coach/CV Builder
+all render the Royal-Blue system in **light + dark**; **Arabic RTL** fully mirrored with the new theme (Cairo); Teal
+correctly used for the "Trains beginners" support chip. Employer surfaces are covered by construction (the theme is 100%
+global and no employer string is hardcoded — the l10n guard + no-literal scan cover them; functionally verified in the
+prior QA session). Welcome/Login use the shared `AppLogo` (same mark as the splash, confirmed rendering) — not re-opened
+live to avoid a logout + password round-trip.
+
+**Remaining (Phase 2, deferred):** the official vector logo (drop-in replace the SVG), a proper Arabic transliteration if
+ever desired, and — if the brand ever needs its own package/bundle identity — a package/`applicationId` rename, which is a
+separate Firebase-re-registration effort.
+
+---
+
 ## 8. Next steps
 
 > ### ⭐ CURRENT MVP STATUS — read this first (the rest of §8 below is historical)
 >
-> **Branch `feature/resume-analyzer` · `analyze` clean · 631 tests · release `.apk` (73.2 MB) builds
-> under R8 · working tree clean** (only `.claude/settings.local.json` is dirty — a *local* Claude-Code permission
-> allowlist with machine-specific temp paths; intentionally not committed).
+> **The app is now branded **Wazifly** (§7.31). Branch `feature/wazifly-rebrand` · `analyze` clean · 653 tests · release
+> `.apk` (73.9 MB) builds under R8 · device-validated EN+AR, light+dark.** Prior MVP feature/QA work landed on
+> `feature/resume-analyzer` (through §7.30, `9d15dc5`). Technical identifiers stay `careerbridge` /
+> `com.careerbridge.careerbridge` by design (display-name-only rebrand — see §7.31).
 >
 > Everything through **§7.30 (CV Templates)** is complete and committed. Auth is **email/password only** (sign up →
 > auto-sent verification → gated verify screen with resend; sign in + splash both block unverified users); **Google

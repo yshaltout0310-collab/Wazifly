@@ -1,4 +1,4 @@
-# Career Bridge — Play Console Declarations
+# Wazifly — Play Console Declarations
 
 > Prepared answers for the Play Console → **App content** and setup sections:
 > content rating, target audience, permissions, ads/monetization, app access
@@ -69,7 +69,7 @@ The app requests only three Android permissions (see
   code anywhere in the app.
 - **Monetization (v1.0):** the app is **completely free** — **no** Google Play
   Billing, **no** subscriptions, **no** in-app purchases.
-- **Commitment:** Career Bridge is an **ad-free platform**. Any future optional
+- **Commitment:** Wazifly is an **ad-free platform**. Any future optional
   premium features or subscriptions will **never introduce advertisements** into
   the app.
 - **Before any paid feature ships:** re-review and update all Play declarations
@@ -134,7 +134,7 @@ Google requires (especially for newer/personal developer accounts) a period of
 
 > **AD_ID note (resolved in Phase 7 · Milestone 5):** verification of the merged
 > **release** manifest confirmed that `firebase_analytics` pulls in
-> `com.google.android.gms.permission.AD_ID` by default. Because Career Bridge uses
+> `com.google.android.gms.permission.AD_ID` by default. Because Wazifly uses
 > **no advertising ID**, the source manifest now explicitly strips it:
 > ```xml
 > <uses-permission android:name="com.google.android.gms.permission.AD_ID"

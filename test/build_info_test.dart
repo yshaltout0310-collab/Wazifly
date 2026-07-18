@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   test('BuildInfo.resolve returns app metadata with pubspec defaults', () {
     final b = BuildInfo.resolve();
-    expect(b.appName, 'Career Bridge');
+    expect(b.appName, 'Wazifly');
     // Defaults mirror pubspec (release builds override via --dart-define).
     expect(b.version, '1.0.0');
     expect(b.buildNumber, '1');
@@ -15,12 +15,12 @@ void main() {
 
   test('displayLabel is human-readable and carries the build type', () {
     const b = BuildInfo(
-      appName: 'Career Bridge',
+      appName: 'Wazifly',
       version: '2.3.0',
       buildNumber: '42',
       buildType: BuildType.release,
     );
     expect(b.fullVersion, '2.3.0+42');
-    expect(b.displayLabel, 'Career Bridge 2.3.0 (42) · release');
+    expect(b.displayLabel, 'Wazifly 2.3.0 (42) · release');
   });
 }

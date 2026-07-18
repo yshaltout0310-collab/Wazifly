@@ -15,8 +15,9 @@ import '../../../features/security/application/biometric_settings_controller.dar
 import '../../../features/user_type/application/user_type_controller.dart';
 import '../../../features/user_type/domain/user_type.dart';
 
-/// Premium branded splash. A deep-emerald gradient (seamless with the native
-/// splash) with a glowing, pulsing logo and a choreographed wordmark reveal.
+/// Premium branded splash. A Wazifly navy-to-royal-blue gradient (seamless with
+/// the native splash) with a glowing, pulsing logo and a choreographed wordmark
+/// reveal.
 /// Routes onward once persisted state is read.
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -148,7 +149,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   }
 }
 
-/// White hub mark with a soft halo glow and a pulsing ring.
+/// The Wazifly W mark with a soft halo glow and a pulsing ring.
 class _GlowLogo extends StatelessWidget {
   const _GlowLogo();
 
@@ -191,8 +192,13 @@ class _GlowLogo extends StatelessWidget {
                 )
                 .scaleXY(begin: 0.7, end: 1.6, duration: 2200.ms)
                 .fadeOut(duration: 2200.ms, curve: Curves.easeOut),
-          // The mark.
-          const Icon(Icons.hub_rounded, size: 86, color: AppColors.white)
+          // The Wazifly W mark (generated from assets/brand/wazifly_logo.svg).
+          Image.asset(
+            'assets/images/wazifly_mark.png',
+            width: 96,
+            height: 96,
+            filterQuality: FilterQuality.high,
+          )
               .animate()
               .scale(
                 duration: 700.ms,
@@ -204,7 +210,7 @@ class _GlowLogo extends StatelessWidget {
               .then()
               .shimmer(
                 duration: 1500.ms,
-                color: AppColors.mint.withValues(alpha: 0.8),
+                color: AppColors.skyBlue.withValues(alpha: 0.8),
               ),
         ],
       ),

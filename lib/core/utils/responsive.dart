@@ -4,7 +4,7 @@ import '../constants/app_constants.dart';
 
 /// Lightweight responsive helpers.
 ///
-/// Career Bridge targets phones and tablets, so layouts read these to adapt
+/// Wazifly targets phones and tablets, so layouts read these to adapt
 /// padding and width instead of hard-coding sizes.
 extension ResponsiveContext on BuildContext {
   Size get _size => MediaQuery.sizeOf(this);

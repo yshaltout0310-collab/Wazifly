@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// Application name.
   ///
   /// In en, this message translates to:
-  /// **'Career Bridge'**
+  /// **'Wazifly'**
   String get appName;
 
   /// No description provided for @pageNotFound.
@@ -1445,7 +1445,7 @@ abstract class AppLocalizations {
   /// No description provided for @welcomeTitle.
   ///
   /// In en, this message translates to:
-  /// **'Welcome to Career Bridge'**
+  /// **'Welcome to Wazifly'**
   String get welcomeTitle;
 
   /// No description provided for @welcomeSubtitle.
@@ -1625,7 +1625,7 @@ abstract class AppLocalizations {
   /// No description provided for @userTypeTitle.
   ///
   /// In en, this message translates to:
-  /// **'How will you use Career Bridge?'**
+  /// **'How will you use Wazifly?'**
   String get userTypeTitle;
 
   /// No description provided for @userTypeSubtitle.
@@ -4247,7 +4247,7 @@ abstract class AppLocalizations {
   /// No description provided for @sourceCareerBridge.
   ///
   /// In en, this message translates to:
-  /// **'CareerBridge'**
+  /// **'Wazifly'**
   String get sourceCareerBridge;
 
   /// No description provided for @sourceReferral.
@@ -5015,7 +5015,7 @@ abstract class AppLocalizations {
   /// No description provided for @biometricReasonUnlock.
   ///
   /// In en, this message translates to:
-  /// **'Unlock Career Bridge'**
+  /// **'Unlock Wazifly'**
   String get biometricReasonUnlock;
 
   /// No description provided for @appLockTitle.

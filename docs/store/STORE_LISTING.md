@@ -1,11 +1,11 @@
-# Career Bridge — Google Play Store Listing
+# Wazifly — Google Play Store Listing
 
 > Ready-to-paste listing text for the Play Console → **Main store listing**.
 > Primary language: **English (United States)**. A natural **Arabic** draft
 > follows for the Play "Add translation → Arabic" flow. Character limits are
 > Play's; each field notes its count budget.
 >
-> Positioning (v1.0): **Career Bridge is an AI-powered career platform that
+> Positioning (v1.0): **Wazifly is an AI-powered career platform that
 > serves Job Seekers and Employers equally** — one product, two sides of the
 > hiring market. The copy below intentionally gives both audiences balanced
 > weight.
@@ -16,9 +16,9 @@
 
 ### App name — max 30 chars
 ```
-Career Bridge
+Wazifly
 ```
-*(13 chars. Matches the launcher label `android:label="Career Bridge"`.)*
+*(13 chars. Matches the launcher label `android:label="Wazifly"`.)*
 
 ### Short description — max 80 chars
 ```
@@ -28,9 +28,9 @@ AI career platform for job seekers & employers — search, hire, grow smarter.
 
 ### Full description — max 4000 chars
 ```
-Career Bridge is an AI-powered career platform that connects Job Seekers and
+Wazifly is an AI-powered career platform that connects Job Seekers and
 Employers on one intelligent, bilingual app. Whether you're looking for your
-next role or your next great hire, Career Bridge puts smart, personalized tools
+next role or your next great hire, Wazifly puts smart, personalized tools
 in your hands — in English and Arabic, with full right-to-left support.
 
 ── FOR JOB SEEKERS ──
@@ -76,14 +76,14 @@ Hire smarter with a full recruiting workspace:
   our Privacy Policy.
 
 ── A NOTE ON AI ──
-Career Bridge uses AI to generate recommendations, analysis, and coaching to
+Wazifly uses AI to generate recommendations, analysis, and coaching to
 assist your decisions. These are supportive suggestions to help you move
 forward — they are not professional employment, career, or legal advice. Always
 use your own judgment for important decisions.
 
-Career Bridge is free to use and ad-free.
+Wazifly is free to use and ad-free.
 
-Download Career Bridge and build your future — one smart step at a time.
+Download Wazifly and build your future — one smart step at a time.
 ```
 *(≈2,150 chars — well under the 4,000 limit; room to expand per Play keyword
 tuning.)*
@@ -110,13 +110,13 @@ tuning.)*
 ## 2. Arabic listing (adapted, not machine-translated)
 
 > Natural Arabic marketing copy that preserves the same message and balances Job
-> Seekers and Employers. The **app title stays "Career Bridge"** (the brand) in
+> Seekers and Employers. The **app title stays "Wazifly"** (the brand) in
 > the Arabic listing, which is standard practice; the descriptions are localized.
 > Have a native speaker do a final review before publishing (tracker item #10).
 
 ### App name — يظل بالاسم التجاري
 ```
-Career Bridge
+Wazifly
 ```
 
 ### Short description — الوصف المختصر (حد أقصى 80 حرفًا)
@@ -126,9 +126,9 @@ Career Bridge
 
 ### Full description — الوصف الكامل
 ```
-Career Bridge منصّة مهنية مدعومة بالذكاء الاصطناعي تجمع الباحثين عن عمل وأصحاب
+Wazifly منصّة مهنية مدعومة بالذكاء الاصطناعي تجمع الباحثين عن عمل وأصحاب
 العمل في تطبيق واحد ذكي وثنائي اللغة. سواء كنت تبحث عن وظيفتك القادمة أو عن
-موظّفك المميّز القادم، يضع Career Bridge بين يديك أدوات ذكية ومخصّصة — بالعربية
+موظّفك المميّز القادم، يضع Wazifly بين يديك أدوات ذكية ومخصّصة — بالعربية
 والإنجليزية، مع دعم كامل للكتابة من اليمين إلى اليسار.
 
 ── للباحثين عن عمل ──
@@ -171,13 +171,13 @@ Career Bridge منصّة مهنية مدعومة بالذكاء الاصطناع
   الخصوصية.
 
 ── ملاحظة حول الذكاء الاصطناعي ──
-يستخدم Career Bridge الذكاء الاصطناعي لتقديم توصيات وتحليلات وإرشاد لمساعدتك في
+يستخدم Wazifly الذكاء الاصطناعي لتقديم توصيات وتحليلات وإرشاد لمساعدتك في
 قراراتك. هذه اقتراحات داعمة تساعدك على المضيّ قدمًا، وليست استشارة مهنية أو قانونية
 متخصّصة. اعتمد دائمًا على تقديرك الشخصي في القرارات المهمّة.
 
-استخدام Career Bridge مجّاني وخالٍ من الإعلانات.
+استخدام Wazifly مجّاني وخالٍ من الإعلانات.
 
-حمّل Career Bridge وابنِ مستقبلك — خطوة ذكية تلو الأخرى.
+حمّل Wazifly وابنِ مستقبلك — خطوة ذكية تلو الأخرى.
 ```
 
 ### Contact — same as English
@@ -197,8 +197,8 @@ are not professional employment, career, or legal advice.**
 
 ## 4. Monetization statement (for the listing & Console)
 
-Career Bridge v1.0 is **completely free and ad-free** — no advertisements, no
-Google Play Billing, no subscriptions, and no in-app purchases. **Career Bridge
+Wazifly v1.0 is **completely free and ad-free** — no advertisements, no
+Google Play Billing, no subscriptions, and no in-app purchases. **Wazifly
 is committed to remaining an ad-free platform**: any future optional premium
 features or subscriptions will **never** introduce advertisements into the app.
 Before any paid feature ships, all Play declarations, legal documents, and

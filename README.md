@@ -1,4 +1,4 @@
-# Career Bridge — Phase 1 (Foundation)
+# Wazifly — Phase 1 (Foundation)
 
 An AI-powered global job platform. **Phase 1** delivers the production-ready
 foundation only: design system, localization (LTR + RTL), the welcome flow, and

@@ -1,24 +1,24 @@
-# Career Bridge — Privacy Policy
+# Wazifly — Privacy Policy
 
 **Effective date:** `⟨FILL-IN: effective date, e.g. 2026-07-10⟩`
 **Last updated:** `⟨FILL-IN: date⟩`
 
 > **Note:** This document is a thorough, good-faith template grounded in how the
-> Career Bridge app actually handles data. It is **not legal advice.** Have it
+> Wazifly app actually handles data. It is **not legal advice.** Have it
 > reviewed by qualified legal counsel and host it at a public URL before
 > submitting the app to Google Play (Play requires a reachable privacy-policy
 > URL). Replace every `⟨FILL-IN⟩` before publishing.
 
 This Privacy Policy explains how `⟨FILL-IN: developer / legal entity name⟩`
 ("we", "us", "our") collects, uses, and protects your information when you use
-the **Career Bridge** mobile application (the "App"). By using the App, you agree
+the **Wazifly** mobile application (the "App"). By using the App, you agree
 to this Policy.
 
 ---
 
 ## 1. Who this applies to
 
-Career Bridge is an AI-powered career platform for **Job Seekers** and
+Wazifly is an AI-powered career platform for **Job Seekers** and
 **Employers**. This Policy applies to both, and covers all features of the App.
 The App is intended for users **18 years of age and older**; it is not directed
 at children.
@@ -89,7 +89,7 @@ Google's Privacy Policy: https://policies.google.com/privacy.
 
 ## 5. Artificial Intelligence features & transparency
 
-Career Bridge uses AI (Google's Gemini model, accessed via Firebase AI Logic) to
+Wazifly uses AI (Google's Gemini model, accessed via Firebase AI Logic) to
 **generate recommendations, analysis, and coaching to assist you**. To do this,
 content you provide — such as your **résumé text, profile details, and related
 career information** — is transmitted to the AI service to produce a result (for
@@ -147,8 +147,8 @@ law.
 
 ## 12. Advertising
 
-Career Bridge contains **no advertisements** and uses **no advertising
-identifiers**. Career Bridge is committed to remaining an **ad-free platform**;
+Wazifly contains **no advertisements** and uses **no advertising
+identifiers**. Wazifly is committed to remaining an **ad-free platform**;
 any future optional premium features or subscriptions will **not** introduce
 advertising. Should our data practices change (for example, if premium features
 are added), we will update this Policy and the App's Play disclosures **before**

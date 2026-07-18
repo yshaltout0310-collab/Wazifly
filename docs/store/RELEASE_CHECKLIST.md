@@ -1,6 +1,6 @@
-# Career Bridge — Master Release Checklist (Google Play)
+# Wazifly — Master Release Checklist (Google Play)
 
-> The single, ordered, tickable checklist for taking Career Bridge from the
+> The single, ordered, tickable checklist for taking Wazifly from the
 > current committed state to a **published** Google Play app. It threads together
 > every manual step across the codebase, Firebase Console, legal hosting, and Play
 > Console. Deep mechanics are **linked, not duplicated**:

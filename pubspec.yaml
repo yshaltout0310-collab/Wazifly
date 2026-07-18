@@ -1,5 +1,5 @@
 name: careerbridge
-description: "Career Bridge — an AI-powered global job platform."
+description: "Wazifly — an AI-powered global job platform."
 publish_to: "none"
 
 # Application version. Format: <semantic-version>+<build-number>
@@ -192,20 +192,20 @@ flutter_launcher_icons:
   web:
     generate: true
     image_path: "assets/icon/app_icon.png"
-    background_color: "#0E9F6E"
-    theme_color: "#0E9F6E"
+    background_color: "#0B1D3A"
+    theme_color: "#1677FF"
 
 # -----------------------------------------------------------------------------
 # Branded native splash (run: dart run flutter_native_splash:create)
 # -----------------------------------------------------------------------------
 flutter_native_splash:
-  color: "#0B7D57"
-  color_dark: "#101413"
+  color: "#0B1D3A"
+  color_dark: "#0A1526"
   image: "assets/icon/splash_logo.png"
   image_dark: "assets/icon/splash_logo.png"
   android_12:
-    color: "#0B7D57"
-    color_dark: "#101413"
+    color: "#0B1D3A"
+    color_dark: "#0A1526"
     image: "assets/icon/splash_logo.png"
     image_dark: "assets/icon/splash_logo.png"
   android: true
