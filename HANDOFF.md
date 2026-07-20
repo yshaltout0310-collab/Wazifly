@@ -2769,14 +2769,89 @@ separate Firebase-re-registration effort.
 
 ---
 
+## 7.32 Arabic brand localization + Release **v1.0.0** ✅ (commit `54b4b60`, tag `v1.0.0`)
+
+**Arabic brand localization.** Inside **Arabic sentence/label text only**, the brand is now the localized **"وظيفة فلاي"**
+instead of the Latin "Wazifly": `welcomeTitle`, `userTypeTitle`, `sourceCareerBridge` (value), `biometricReasonUnlock`.
+The **visual wordmark / display name / logo stay the Latin "Wazifly"** — `appName` (the splash wordmark, only use of
+`l10n.appName`) is unchanged, as are the Android `android:label`, iOS `CFBundle*`, and web `<title>`. English text
+unchanged; no technical identifiers touched. `branding_test.dart` asserts the per-locale brand form (EN "Wazifly", AR
+"وظيفة فلاي", no Latin wordmark left inline in Arabic sentences) while keeping `appName == 'Wazifly'`. Live-verified: the
+Arabic Welcome screen shows **"مرحبًا بك في وظيفة فلاي"** with the W logo mark intact, no overflow.
+
+**Release tag.** `git tag -a v1.0.0` on `54b4b60`. **Official submission APK** = a clean
+(`flutter clean` → `pub get` → `assembleRelease`) build from the tagged commit:
+`build/app/outputs/flutter-apk/app-release.apk` · **73.9 MB (77,476,477 bytes)** · versionName `1.0.0`, versionCode `1`
+(pubspec `version: 1.0.0+1`). analyze clean; 653 tests. The tag is **local — not pushed** to any remote yet.
+
+> Employer live-flow check was **not** done for this last i18n commit (it needs a sign-in + role switch; the session was
+> logged out to show the Arabic Welcome screen). It is text-only and covered by the `render_all_locales` AR tests + the
+> fact that none of the four changed strings render on an employer screen with an empty dataset (`sourceCareerBridge` only
+> shows on a real applicant). Re-confirm live if desired before store submission.
+
+---
+
+## 7.33 ⚠️ KNOWN BUG (OPEN) — Resume Analyzer misclassification / harsh scoring
+
+**Symptom (reported, not yet reproduced in a debugger this session).** The AI Resume Analyzer, on at least some
+**Computer-Science** CVs: (a) **misclassifies the field as Business Administration**; (b) **recommends accounting/ERP
+skills** (SAP, ERP, …) that are irrelevant to the candidate; (c) **flags valid dates as invalid**; (d) returns an
+**unrealistically low `atsScore`**. This is the top open functional bug for the next session.
+
+**Exactly how the analyzer works (so you can debug fast).** All in `lib/features/resume_analyzer/` +
+`lib/core/services/ai/`:
+
+1. **PDF → text:** `data/syncfusion_pdf_text_extractor.dart` → `syncfusion_flutter_pdf`'s
+   `PdfTextExtractor(document).extractText()` (pure-Dart, on-device). **No layout/column handling.**
+2. **Repository** `data/resume_analyzer_repository_impl.dart`: rejects `<40` chars (`ResumeErrorCode.noText`), clips to
+   **20 000 chars**, then calls `AiService.generateJson(prompt, systemInstruction)`, then
+   `ResumeAnalysis.fromJson` (defensive parse; empty → `AiException.invalidResponse`).
+3. **AI provider:** `lib/core/services/ai/firebase_ai_service.dart` — **Firebase AI Logic**, `FirebaseAI.googleAI()`
+   (Gemini Developer API backend), model **`gemini-2.5-flash`**, `responseMimeType: application/json`. **No API key in the
+   client** — auth is via the Firebase app. (Swap to Vertex = `FirebaseAI.vertexAI()`; swap model = `modelName` /
+   `FirebaseAiService.defaultModel`.) Same service powers Career Coach + CV enhance + Job Matching.
+4. **Model** `domain/resume_analysis.dart`: `{ atsScore(0–100, clamped), summary, strengths[], weaknesses[],
+   missingSkills[], grammarIssues[{issue,suggestion}], improvementSuggestions[] }`.
+
+**The prompt is almost certainly a big part of the cause** (`resume_analyzer_repository_impl.dart` `_buildPrompt` +
+`_systemInstruction`): it **never asks the model to identify the candidate's field / target role**, **does not constrain
+`missingSkills` to the candidate's actual domain**, has **no scoring rubric** (so `atsScore` is uncalibrated → harsh),
+and **never mentions dates** — so "valid dates flagged invalid" is the model volunteering hallucinated date criticism
+(surfacing under `weaknesses`/`grammarIssues`). Fix candidates, cheapest first: (i) **improve the prompt** — make it infer
+and state the field first, tie `missingSkills` to that field, add an explicit 0–100 rubric, and add "dates are often
+`MMM YYYY` / `YYYY`; do NOT flag a plausibly-formatted date as invalid"; (ii) **verify the extracted text** before blaming
+the model — **two-column CS résumés are a strong suspect**: syncfusion `extractText()` can interleave columns and scramble
+reading order, so the model sees garbled text peppered with sidebar keywords and misreads the field. Log/inspect the raw
+extracted string for a failing CV FIRST. (iii) Consider **`gemini-2.5-pro`** for the analysis call if prompt fixes are
+insufficient (flash is fast but weaker at nuanced classification).
+
+**Related, already-documented limitation (may compound this):** Arabic/mixed PDFs generated by the app's own CV builder
+have a degraded text layer (Arabic doesn't extract; Latin runs get gaps) — see §7.30 / `PdfText`. That is the *app's PDF
+output*; the analyzer's problem is *input extraction* of arbitrary user PDFs via syncfusion, a different code path, but the
+"machine-readability of CV PDFs" theme is shared.
+
+**No test reproduces this yet.** Add one: feed a known CS résumé's extracted text (or a fixture PDF) through the pipeline
+with a faked `AiService` for the parse path, and — for the real classification — a manual/live check. `test/` has
+`resume_analyzer_repository_test.dart` + `resume_analysis_test.dart` for the seams.
+
+---
+
 ## 8. Next steps
 
 > ### ⭐ CURRENT MVP STATUS — read this first (the rest of §8 below is historical)
 >
-> **The app is now branded **Wazifly** (§7.31). Branch `feature/wazifly-rebrand` · `analyze` clean · 653 tests · release
-> `.apk` (73.9 MB) builds under R8 · device-validated EN+AR, light+dark.** Prior MVP feature/QA work landed on
-> `feature/resume-analyzer` (through §7.30, `9d15dc5`). Technical identifiers stay `careerbridge` /
-> `com.careerbridge.careerbridge` by design (display-name-only rebrand — see §7.31).
+> **Branch `feature/wazifly-rebrand` · submission commit `54b4b60` = tag `v1.0.0` (local, not pushed; a HANDOFF docs commit
+> may sit on top) · `analyze` clean · 653 tests · official submission APK
+> `build/app/outputs/flutter-apk/app-release.apk` (73.9 MB / 77,476,477 bytes, versionName 1.0.0 / code 1).** The app is fully rebranded **Wazifly** (§7.31) with the brand localized to **"وظيفة فلاي"** inside Arabic
+> sentences while the wordmark/logo stay Latin "Wazifly" (§7.32); device-validated EN+AR, light+dark. Prior MVP
+> feature/QA work landed on `feature/resume-analyzer` (through §7.30, `9d15dc5`); this branch continues from it. Technical
+> identifiers stay `careerbridge` / `com.careerbridge.careerbridge` by design (display-name-only rebrand — see §7.31).
+> Working tree clean except the local `.claude/settings.local.json` (never committed).
+>
+> **⚠️ Top OPEN bug for the next session: Resume Analyzer misclassifies CS CVs as Business Administration, recommends
+> accounting/ERP skills, flags valid dates as invalid, and scores too low — full implementation map + fix hypotheses in
+> §7.33.** AI = **Firebase AI Logic, Gemini `gemini-2.5-flash`, JSON mode** (no client API key), shared by Resume
+> Analyzer / Career Coach / CV enhance / Job Matching (`lib/core/services/ai/firebase_ai_service.dart`).
 >
 > Everything through **§7.30 (CV Templates)** is complete and committed. Auth is **email/password only** (sign up →
 > auto-sent verification → gated verify screen with resend; sign in + splash both block unverified users); **Google
