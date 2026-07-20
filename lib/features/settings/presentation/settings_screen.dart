@@ -13,7 +13,6 @@ import '../../../core/utils/responsive.dart';
 import '../../../shared/models/app_user.dart';
 import '../../auth/application/auth_providers.dart';
 import '../../onboarding/application/onboarding_controller.dart';
-import '../../onboarding/presentation/onboarding_screen.dart';
 import '../../security/application/biometric_settings_controller.dart';
 import '../../user_type/application/user_type_controller.dart';
 import '../../user_type/domain/user_type.dart';
@@ -21,7 +20,7 @@ import '../application/notifications_controller.dart';
 import 'widgets/option_sheet.dart';
 import 'widgets/settings_tile.dart';
 
-/// Central preferences hub: profile, language, theme, notifications, replay
+/// Central preferences hub: profile, language, theme, notifications, restart
 /// onboarding, and logout.
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -278,16 +277,6 @@ class SettingsScreen extends ConsumerWidget {
                               .read(notificationsControllerProvider.notifier)
                               .setCoachTips(value: v)
                           : null,
-                    ),
-                  ),
-                  SettingsTile(
-                    icon: Icons.replay_rounded,
-                    title: l10n.settingsReplayOnboarding,
-                    subtitle: l10n.settingsReplayOnboardingSubtitle,
-                    trailing: const Icon(Icons.chevron_right_rounded),
-                    onTap: () => context.pushNamed(
-                      RouteNames.onboarding,
-                      queryParameters: {OnboardingScreen.replayParam: 'true'},
                     ),
                   ),
                   SettingsTile(

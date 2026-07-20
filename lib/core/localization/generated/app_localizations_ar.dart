@@ -139,12 +139,6 @@ class AppLocalizationsAr extends AppLocalizations {
       'تنبيهات الوظائف والتحديثات المخصصة';
 
   @override
-  String get settingsReplayOnboarding => 'عرض المقدمة مرة أخرى';
-
-  @override
-  String get settingsReplayOnboardingSubtitle => 'أعد زيارة جولة الترحيب';
-
-  @override
   String get settingsRestartOnboarding => 'إعادة تشغيل الإعداد الأولي';
 
   @override

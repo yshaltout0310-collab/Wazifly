@@ -2826,10 +2826,13 @@ emulator-5554 against Gemini via Firebase AI Logic.
 
 ---
 
-## 7.35 ✅ Settings → "Restart onboarding"
+## 7.35 ✅ Settings → "Restart onboarding" (replaces "View intro again")
 
-New Settings item (Preferences section, `Icons.restart_alt_rounded`, below the existing lighter "View intro again" replay
-tile). Tap → confirmation dialog → on confirm it calls **`OnboardingController.reset()`** (new; sets state false + persists
+New Settings item (Preferences section, `Icons.restart_alt_rounded`). The older lighter **"View intro again"** tile was
+**removed**, and with it the now-dead replay plumbing it was the sole caller of: `OnboardingScreen.replay`/`replayParam` +
+the `_finish()` replay branch, the router's onboarding query-param handling (now `_fade(const OnboardingScreen())`), and the
+`settingsReplayOnboarding(+Subtitle)` l10n keys (EN + AR). Tap → confirmation dialog → on confirm it calls
+**`OnboardingController.reset()`** (new; sets state false + persists
 `onboardingCompleted=false`) and `context.goNamed(RouteNames.splash)`. The splash then re-runs its normal first-launch
 routing: **language → country → onboarding → welcome**. **Only the onboarding flag is cleared** — account/session, profile,
 jobs, CVs, language, country, and every other pref are untouched (verified by test). Handler:

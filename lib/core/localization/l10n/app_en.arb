@@ -57,8 +57,6 @@
   "settingsLanguage": "Language",
   "settingsNotifications": "Notifications",
   "settingsNotificationsSubtitle": "Job alerts and personalized updates",
-  "settingsReplayOnboarding": "View intro again",
-  "settingsReplayOnboardingSubtitle": "Revisit the welcome tour",
   "settingsRestartOnboarding": "Restart onboarding",
   "settingsRestartOnboardingSubtitle": "Start over from language selection",
   "restartOnboardingConfirmTitle": "Restart onboarding?",

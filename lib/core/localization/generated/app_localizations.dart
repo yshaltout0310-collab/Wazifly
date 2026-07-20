@@ -338,18 +338,6 @@ abstract class AppLocalizations {
   /// **'Job alerts and personalized updates'**
   String get settingsNotificationsSubtitle;
 
-  /// No description provided for @settingsReplayOnboarding.
-  ///
-  /// In en, this message translates to:
-  /// **'View intro again'**
-  String get settingsReplayOnboarding;
-
-  /// No description provided for @settingsReplayOnboardingSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Revisit the welcome tour'**
-  String get settingsReplayOnboardingSubtitle;
-
   /// No description provided for @settingsRestartOnboarding.
   ///
   /// In en, this message translates to:

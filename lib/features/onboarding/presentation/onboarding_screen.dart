@@ -16,15 +16,7 @@ import 'widgets/onboarding_page_view.dart';
 /// Completing (or skipping) records the onboarding flag and routes to the
 /// welcome / authentication flow.
 class OnboardingScreen extends ConsumerStatefulWidget {
-  const OnboardingScreen({this.replay = false, super.key});
-
-  /// Query-param key used to launch onboarding as a re-watchable tour from
-  /// Settings (pops back instead of advancing the welcome flow).
-  static const String replayParam = 'replay';
-
-  /// When true, finishing returns to the previous screen (Settings) rather
-  /// than completing onboarding and routing to Welcome.
-  final bool replay;
+  const OnboardingScreen({super.key});
 
   @override
   ConsumerState<OnboardingScreen> createState() => _OnboardingScreenState();
@@ -65,11 +57,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       ];
 
   Future<void> _finish() async {
-    // Replay mode (from Settings): just return where we came from.
-    if (widget.replay) {
-      if (mounted) context.pop();
-      return;
-    }
     await ref.read(onboardingControllerProvider.notifier).complete();
     if (!mounted) return;
     // pushReplacement (not go) so the back stack — language → country → welcome

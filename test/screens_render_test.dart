@@ -86,7 +86,7 @@ void main() {
     expect(find.text(l10n.settingsLanguage), findsOneWidget);
     expect(find.text(l10n.settingsNotifications), findsOneWidget);
     expect(find.text(l10n.logout), findsWidgets);
-    expect(find.text(l10n.settingsReplayOnboarding), findsOneWidget);
+    expect(find.text(l10n.settingsRestartOnboarding), findsOneWidget);
   });
 
   testWidgets('Settings renders correctly in Arabic (RTL)', (tester) async {

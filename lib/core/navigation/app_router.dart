@@ -86,15 +86,7 @@ abstract final class AppRouter {
       GoRoute(
         path: RouteNames.onboardingPath,
         name: RouteNames.onboarding,
-        pageBuilder: (context, state) {
-          final replay = state.uri
-                  .queryParameters[OnboardingScreen.replayParam] ==
-              'true';
-          return _fadePage(
-            OnboardingScreen(replay: replay),
-            state,
-          );
-        },
+        pageBuilder: _fade(const OnboardingScreen()),
       ),
       GoRoute(
         path: RouteNames.welcomePath,

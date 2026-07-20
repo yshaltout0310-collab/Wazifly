@@ -138,12 +138,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Job alerts and personalized updates';
 
   @override
-  String get settingsReplayOnboarding => 'View intro again';
-
-  @override
-  String get settingsReplayOnboardingSubtitle => 'Revisit the welcome tour';
-
-  @override
   String get settingsRestartOnboarding => 'Restart onboarding';
 
   @override
