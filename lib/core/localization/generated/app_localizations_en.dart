@@ -144,6 +144,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsReplayOnboardingSubtitle => 'Revisit the welcome tour';
 
   @override
+  String get settingsRestartOnboarding => 'Restart onboarding';
+
+  @override
+  String get settingsRestartOnboardingSubtitle =>
+      'Start over from language selection';
+
+  @override
+  String get restartOnboardingConfirmTitle => 'Restart onboarding?';
+
+  @override
+  String get restartOnboardingConfirmBody =>
+      'You\'ll go through language, country, and the intro again. Your account, profile, CVs, and other data won\'t change.';
+
+  @override
+  String get restart => 'Restart';
+
+  @override
   String get settingsVersion => 'Version';
 
   @override

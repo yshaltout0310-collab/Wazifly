@@ -49,4 +49,37 @@ void main() {
     );
     expect(c.read(onboardingControllerProvider), isTrue);
   });
+
+  test('reset() clears the flag so the first-launch flow runs again', () async {
+    // A completed user (e.g. from Settings → Restart onboarding).
+    final storage = await _storage({StorageKeys.onboardingCompleted: true});
+    final c = _container(storage);
+    expect(c.read(onboardingControllerProvider), isTrue);
+
+    await c.read(onboardingControllerProvider.notifier).reset();
+
+    // In-memory state flips false (splash will route to language)...
+    expect(c.read(onboardingControllerProvider), isFalse);
+    // ...and it persists across a restart.
+    expect(storage.getBool(StorageKeys.onboardingCompleted), isFalse);
+  });
+
+  test('reset() touches ONLY the onboarding flag, not language/country/other',
+      () async {
+    final storage = await _storage({
+      StorageKeys.onboardingCompleted: true,
+      StorageKeys.languageCode: 'ar',
+      StorageKeys.selectedCountry: 'QA',
+      'pref_some_other_data': 'keep-me',
+    });
+    final c = _container(storage);
+
+    await c.read(onboardingControllerProvider.notifier).reset();
+
+    // Onboarding flag cleared, everything else preserved.
+    expect(storage.getBool(StorageKeys.onboardingCompleted), isFalse);
+    expect(storage.getString(StorageKeys.languageCode), 'ar');
+    expect(storage.getString(StorageKeys.selectedCountry), 'QA');
+    expect(storage.getString('pref_some_other_data'), 'keep-me');
+  });
 }

@@ -12,6 +12,7 @@ import '../../../core/theme/theme_controller.dart';
 import '../../../core/utils/responsive.dart';
 import '../../../shared/models/app_user.dart';
 import '../../auth/application/auth_providers.dart';
+import '../../onboarding/application/onboarding_controller.dart';
 import '../../onboarding/presentation/onboarding_screen.dart';
 import '../../security/application/biometric_settings_controller.dart';
 import '../../user_type/application/user_type_controller.dart';
@@ -108,6 +109,40 @@ class SettingsScreen extends ConsumerWidget {
     await ref.read(biometricSettingsControllerProvider.notifier).reset();
     if (!context.mounted) return;
     context.goNamed(RouteNames.welcome);
+  }
+
+  /// Resets ONLY the onboarding-completion flag and returns to the splash, which
+  /// re-runs the first-launch flow (language → country → onboarding → welcome).
+  /// The user's account, profile, jobs, CVs, and other data are untouched.
+  Future<void> _confirmRestartOnboarding(
+      BuildContext context, WidgetRef ref) async {
+    final l10n = AppLocalizations.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+        ),
+        title: Text(l10n.restartOnboardingConfirmTitle),
+        content: Text(l10n.restartOnboardingConfirmBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: Text(l10n.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: Text(l10n.restart),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    // Clear only the onboarding flag; the splash reads it and, finding it unset,
+    // routes to language selection to begin the first-launch flow again.
+    await ref.read(onboardingControllerProvider.notifier).reset();
+    if (!context.mounted) return;
+    context.goNamed(RouteNames.splash);
   }
 
   @override
@@ -254,6 +289,13 @@ class SettingsScreen extends ConsumerWidget {
                       RouteNames.onboarding,
                       queryParameters: {OnboardingScreen.replayParam: 'true'},
                     ),
+                  ),
+                  SettingsTile(
+                    icon: Icons.restart_alt_rounded,
+                    title: l10n.settingsRestartOnboarding,
+                    subtitle: l10n.settingsRestartOnboardingSubtitle,
+                    trailing: const Icon(Icons.chevron_right_rounded),
+                    onTap: () => _confirmRestartOnboarding(context, ref),
                   ),
                 ],
               ),

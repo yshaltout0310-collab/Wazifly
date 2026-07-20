@@ -145,6 +145,23 @@ class AppLocalizationsAr extends AppLocalizations {
   String get settingsReplayOnboardingSubtitle => 'أعد زيارة جولة الترحيب';
 
   @override
+  String get settingsRestartOnboarding => 'إعادة تشغيل الإعداد الأولي';
+
+  @override
+  String get settingsRestartOnboardingSubtitle =>
+      'ابدأ من جديد من اختيار اللغة';
+
+  @override
+  String get restartOnboardingConfirmTitle => 'إعادة تشغيل الإعداد الأولي؟';
+
+  @override
+  String get restartOnboardingConfirmBody =>
+      'ستمر عبر اختيار اللغة والدولة والمقدمة مرة أخرى. لن يتغيّر حسابك أو ملفك الشخصي أو سيرك الذاتية أو بياناتك الأخرى.';
+
+  @override
+  String get restart => 'إعادة التشغيل';
+
+  @override
   String get settingsVersion => 'الإصدار';
 
   @override

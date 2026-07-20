@@ -350,6 +350,36 @@ abstract class AppLocalizations {
   /// **'Revisit the welcome tour'**
   String get settingsReplayOnboardingSubtitle;
 
+  /// No description provided for @settingsRestartOnboarding.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart onboarding'**
+  String get settingsRestartOnboarding;
+
+  /// No description provided for @settingsRestartOnboardingSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Start over from language selection'**
+  String get settingsRestartOnboardingSubtitle;
+
+  /// No description provided for @restartOnboardingConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart onboarding?'**
+  String get restartOnboardingConfirmTitle;
+
+  /// No description provided for @restartOnboardingConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ll go through language, country, and the intro again. Your account, profile, CVs, and other data won\'t change.'**
+  String get restartOnboardingConfirmBody;
+
+  /// No description provided for @restart.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart'**
+  String get restart;
+
   /// No description provided for @settingsVersion.
   ///
   /// In en, this message translates to:

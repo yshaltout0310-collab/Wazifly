@@ -23,6 +23,17 @@ class OnboardingController extends StateNotifier<bool> {
         .read(localStorageProvider)
         .setBool(StorageKeys.onboardingCompleted, value: true);
   }
+
+  /// Clears the onboarding-completion flag so the first-launch flow (language →
+  /// country → onboarding → welcome) runs again. Only touches this flag — the
+  /// user's account, profile, jobs, CVs, and every other preference are left
+  /// untouched. Drives the "Restart onboarding" action in Settings.
+  Future<void> reset() async {
+    state = false;
+    await _ref
+        .read(localStorageProvider)
+        .setBool(StorageKeys.onboardingCompleted, value: false);
+  }
 }
 
 final onboardingControllerProvider =
