@@ -968,6 +968,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get resumeAtsScore => 'درجة التوافق ATS';
 
   @override
+  String get resumeDetectedField => 'المجال المكتشف';
+
+  @override
   String get resumeScoreExcellent => 'ممتاز';
 
   @override

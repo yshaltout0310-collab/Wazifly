@@ -30,6 +30,30 @@ void main() {
       expect(a.isEmpty, isFalse);
     });
 
+    test('parses the detected careerField (camelCase and snake_case)', () {
+      expect(
+        ResumeAnalysis.fromJson({
+          'careerField': 'Computer Science — Cybersecurity',
+          'summary': 'x',
+        }).careerField,
+        'Computer Science — Cybersecurity',
+      );
+      expect(
+        ResumeAnalysis.fromJson({'career_field': 'Nursing'}).careerField,
+        'Nursing',
+      );
+    });
+
+    test('careerField defaults to empty and does not by itself make it non-empty',
+        () {
+      // Backward compatible: an old payload without the key still parses.
+      final a = ResumeAnalysis.fromJson({'summary': 'x'});
+      expect(a.careerField, '');
+      // A response carrying ONLY a field label is still treated as empty.
+      final onlyField = ResumeAnalysis.fromJson({'careerField': 'Marketing'});
+      expect(onlyField.isEmpty, isTrue);
+    });
+
     test('accepts snake_case keys and grammar text/correction aliases', () {
       final a = ResumeAnalysis.fromJson({
         'ats_score': 55,

@@ -83,6 +83,43 @@ void main() {
     expect(ai.lastSystem, isNotNull);
   });
 
+  test('prompt instructs field-first evaluation, a rubric, and date rules',
+      () async {
+    final ai = _FakeAi(json: _fullJson);
+    final repo = ResumeAnalyzerRepositoryImpl(
+        ai: ai, extractor: _FakeExtractor(_longResume));
+
+    await repo.analyze(pdfBytes: bytes, languageCode: 'en');
+    final prompt = ai.lastPrompt!;
+    final system = ai.lastSystem!;
+
+    // Detects the field before evaluating.
+    expect(prompt, contains('IDENTIFY THE FIELD'));
+    expect(prompt, contains('careerField'));
+    // Constrains recommendations to that field / bans unrelated domains.
+    expect(prompt, contains('EVALUATE WITHIN THAT FIELD ONLY'));
+    expect(prompt.toLowerCase(), contains('unrelated domain'));
+    expect(system.toLowerCase(), contains('never recommend skills'));
+    // Explicit 0-100 rubric.
+    expect(prompt, contains('SCORING RUBRIC'));
+    expect(prompt, contains('0-100'));
+    // Logical date validation instead of hallucinated errors.
+    expect(prompt, contains('DATE VALIDATION'));
+    expect(prompt.toLowerCase(), contains('do not invent date'));
+  });
+
+  test('careerField from the model flows into the analysis', () async {
+    final ai = _FakeAi(json: {
+      ..._fullJson,
+      'careerField': 'Computer Science — Cybersecurity',
+    });
+    final repo = ResumeAnalyzerRepositoryImpl(
+        ai: ai, extractor: _FakeExtractor(_longResume));
+
+    final result = await repo.analyze(pdfBytes: bytes, languageCode: 'en');
+    expect(result.careerField, 'Computer Science — Cybersecurity');
+  });
+
   test('asks the model to respond in Arabic for the ar locale', () async {
     final ai = _FakeAi(json: _fullJson);
     final repo = ResumeAnalyzerRepositoryImpl(

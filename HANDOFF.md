@@ -2791,7 +2791,47 @@ Arabic Welcome screen shows **"مرحبًا بك في وظيفة فلاي"** wit
 
 ---
 
-## 7.33 ⚠️ KNOWN BUG (OPEN) — Resume Analyzer misclassification / harsh scoring
+## 7.33 ✅ FIXED — Resume Analyzer misclassification / harsh scoring
+
+**Resolution (this session).** Root-caused with the reporter's real CS CV and fixed at two layers:
+
+1. **Extraction (`data/syncfusion_pdf_text_extractor.dart`).** The default `extractText()` shattered the PDF into
+   *one-token-per-line soup* and split words/numbers (`2025`→`202`/`5`, `The`→`T`/`he`, `high-pressure`→`high`/`-`/`pressure`).
+   The CS signal survived but the document *structure* the model weights was destroyed, and split date tokens (`202` + `5`)
+   are exactly what produced the hallucinated "invalid date" flags. Fix: switch to **`extractText(layoutText: true)`** (the
+   library's own layout engine → clean, correctly-spaced, human-readable lines with intact dates), with a plain-mode
+   fallback if layout collapses, plus a light blank-line `_normalize`. Verified before/after on the real CV.
+2. **Prompt (`data/resume_analyzer_repository_impl.dart` `_buildPrompt` + `_systemInstruction`).** The old prompt never
+   asked the model to identify the field, had no rubric, left `missingSkills` unconstrained, and never mentioned dates — so
+   on a CV heavy in *leadership/volunteer/social* wording (Volunteer Coordinator, Ministry of Social Development, "customer
+   channels", Sociology Research, Structural Functionalism) an unanchored fast model drifted to a generic "business
+   professional" reading and volunteered stock SAP/ERP/accounting "missing skills". New prompt: **STEP 1 detect
+   `careerField` first** (weighting title/major/skills/projects over generic soft-skill wording), **STEP 2 evaluate only
+   within that field** and never recommend unrelated-domain skills, an **explicit 0–100 weighted rubric with bands**, and
+   **date-validation rules grounded on today's date** (treat well-formed/ordered dates as valid; only flag genuinely
+   impossible ones). `careerField` is added to the JSON + `ResumeAnalysis` (optional, backward-compatible) and surfaced as a
+   chip on the results screen (`resumeDetectedField` l10n, EN+AR).
+
+Also added a **career-stage calibration** clause to the rubric (judge a student/entry-level CV against strong peers at
+*their* level; don't penalize them for lacking senior-scale quantified impact) — the first live run scored the CS CV 68
+(harsh) because the rubric applied senior expectations to a student; after calibration it lands 74–83.
+
+**Compatibility & tests.** JSON keys unchanged except the additive `careerField` (old payloads still parse; `isEmpty`
+unaffected). 657 tests (+4: careerField parsing, prompt-contract, careerField flow-through), analyze clean.
+
+**LIVE-VERIFIED on emulator-5554 (Gemini via Firebase AI Logic on-device).** Ran the real pipeline (real extractor + new
+prompt + real `FirebaseAiService`) against the reporter's CS CV via a temporary `integration_test` (since removed —
+the Android key is Firebase-scoped, `API_KEY_SERVICE_BLOCKED` on the raw Generative Language API, so the model is only
+reachable in-app + App Check). Across runs: **field = "Cybersecurity & Networking (Student)"** (never Business),
+**missingSkills all on-domain** (Linux, Wireshark, Nmap, SIEM, scripting, pentesting — zero accounting/SAP/ERP),
+**no hallucinated date errors** (grammar flags were real: university-name inconsistency, `LANGUAGES_` underscore),
+**atsScore 74–83** (was 68 pre-calibration). App Check activated fine (enforcement off). Note: init via
+`FirebaseService.initialize()` (FCM/Firestore) stalled the harness — initialize `Firebase` core directly for a fast
+analyzer-only live check. **Bug fully fixed & confirmed end-to-end.**
+
+---
+
+## 7.33-orig ⚠️ ORIGINAL BUG REPORT (kept for context) — Resume Analyzer misclassification / harsh scoring
 
 **Symptom (reported, not yet reproduced in a debugger this session).** The AI Resume Analyzer, on at least some
 **Computer-Science** CVs: (a) **misclassifies the field as Business Administration**; (b) **recommends accounting/ERP

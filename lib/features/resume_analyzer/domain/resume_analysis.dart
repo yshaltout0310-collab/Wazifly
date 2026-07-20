@@ -33,7 +33,14 @@ class ResumeAnalysis extends Equatable {
     required this.missingSkills,
     required this.grammarIssues,
     required this.improvementSuggestions,
+    this.careerField = '',
   });
+
+  /// The candidate's detected career field / target role (e.g. "Computer
+  /// Science — Cybersecurity"). Empty when the model didn't provide one; the
+  /// analyzer asks the model to identify this first so the rest of the
+  /// feedback stays anchored to the candidate's actual domain.
+  final String careerField;
 
   /// ATS compatibility score, always clamped to 0–100.
   final int atsScore;
@@ -49,6 +56,8 @@ class ResumeAnalysis extends Equatable {
 
   factory ResumeAnalysis.fromJson(Map<String, dynamic> json) {
     return ResumeAnalysis(
+      careerField:
+          (json['careerField'] ?? json['career_field'] ?? '').toString().trim(),
       atsScore: _parseScore(json['atsScore'] ?? json['ats_score']),
       summary: (json['summary'] ?? '').toString().trim(),
       strengths: _parseStringList(json['strengths']),
@@ -96,6 +105,7 @@ class ResumeAnalysis extends Equatable {
 
   @override
   List<Object?> get props => [
+        careerField,
         atsScore,
         summary,
         strengths,

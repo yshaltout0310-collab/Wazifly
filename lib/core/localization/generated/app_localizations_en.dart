@@ -977,6 +977,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get resumeAtsScore => 'ATS Score';
 
   @override
+  String get resumeDetectedField => 'Detected field';
+
+  @override
   String get resumeScoreExcellent => 'Excellent';
 
   @override

@@ -345,6 +345,7 @@
   "resumeAnalyzing": "جارٍ تحليل سيرتك الذاتية…",
   "resumeAnalyzingHint": "يستغرق ذلك عادةً بضع ثوانٍ.",
   "resumeAtsScore": "درجة التوافق ATS",
+  "resumeDetectedField": "المجال المكتشف",
   "resumeScoreExcellent": "ممتاز",
   "resumeScoreGood": "جيد",
   "resumeScoreFair": "مقبول",

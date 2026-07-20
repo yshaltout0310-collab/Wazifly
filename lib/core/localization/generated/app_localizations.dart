@@ -1922,6 +1922,12 @@ abstract class AppLocalizations {
   /// **'ATS Score'**
   String get resumeAtsScore;
 
+  /// No description provided for @resumeDetectedField.
+  ///
+  /// In en, this message translates to:
+  /// **'Detected field'**
+  String get resumeDetectedField;
+
   /// No description provided for @resumeScoreExcellent.
   ///
   /// In en, this message translates to:

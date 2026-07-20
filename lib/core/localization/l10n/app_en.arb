@@ -352,6 +352,7 @@
   "resumeAnalyzing": "Analyzing your resume…",
   "resumeAnalyzingHint": "This usually takes a few seconds.",
   "resumeAtsScore": "ATS Score",
+  "resumeDetectedField": "Detected field",
   "resumeScoreExcellent": "Excellent",
   "resumeScoreGood": "Good",
   "resumeScoreFair": "Fair",

@@ -203,6 +203,38 @@ class _ResultsView extends StatelessWidget {
         ).animate().fadeIn().scaleXY(begin: 0.96, end: 1, curve: AppCurves.spring),
         const SizedBox(height: AppSpacing.lg),
 
+        if (analysis.careerField.isNotEmpty) ...[
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+              decoration: BoxDecoration(
+                color: AppColors.teal.withValues(alpha: 0.10),
+                borderRadius: BorderRadius.circular(AppRadius.pill),
+                border: Border.all(color: AppColors.teal.withValues(alpha: 0.30)),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.badge_outlined,
+                      size: 16, color: AppColors.emeraldDark),
+                  const SizedBox(width: 6),
+                  Flexible(
+                    child: Text(
+                      '${l10n.resumeDetectedField}: ${analysis.careerField}',
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        color: AppColors.emeraldDark,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ).animate(delay: 60.ms).fadeIn().moveY(begin: 8, end: 0),
+          const SizedBox(height: AppSpacing.md),
+        ],
+
         if (analysis.summary.isNotEmpty) ...[
           Container(
             width: double.infinity,
