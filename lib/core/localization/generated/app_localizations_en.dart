@@ -1017,7 +1017,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get resumeErrNoText =>
-      'We couldn\'t read any text from this PDF. If it\'s a scanned image, please upload a text-based PDF.';
+      'We couldn\'t read any text from this PDF, even with OCR. Please try a clearer scan or a text-based file.';
 
   @override
   String get resumeErrExtraction =>

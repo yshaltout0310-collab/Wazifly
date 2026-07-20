@@ -6,6 +6,7 @@ import 'package:careerbridge/core/services/ai/ai_service.dart';
 import 'package:careerbridge/features/resume_analyzer/data/resume_analyzer_repository_impl.dart';
 import 'package:careerbridge/features/resume_analyzer/domain/pdf_text_extractor.dart';
 import 'package:careerbridge/features/resume_analyzer/domain/resume_analyzer_exception.dart';
+import 'package:careerbridge/features/resume_analyzer/domain/resume_ocr.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// Returns a fixed text regardless of the bytes.
@@ -14,6 +15,20 @@ class _FakeExtractor implements PdfTextExtractor {
   final String text;
   @override
   Future<String> extract(Uint8List bytes) async => text;
+}
+
+/// Fake OCR: returns a fixed transcription (or throws) and records whether it ran.
+class _FakeOcr implements ResumeOcr {
+  _FakeOcr({this.text = '', this.error});
+  final String text;
+  final Object? error;
+  bool called = false;
+  @override
+  Future<String> extractText(Uint8List bytes) async {
+    called = true;
+    if (error != null) throw error!;
+    return text;
+  }
 }
 
 /// Records the prompt and returns a canned JSON map (or throws).
@@ -129,7 +144,8 @@ void main() {
     expect(ai.lastPrompt, contains('Arabic'));
   });
 
-  test('throws noText when the PDF has no usable text', () async {
+  test('throws noText when the PDF has no usable text and no OCR is available',
+      () async {
     final repo = ResumeAnalyzerRepositoryImpl(
         ai: _FakeAi(json: _fullJson), extractor: _FakeExtractor('   '));
 
@@ -137,6 +153,59 @@ void main() {
       () => repo.analyze(pdfBytes: bytes, languageCode: 'en'),
       throwsA(isA<ResumeAnalyzerException>()
           .having((e) => e.code, 'code', ResumeErrorCode.noText)),
+    );
+  });
+
+  test('falls back to OCR when the PDF has no text layer (scanned CV)',
+      () async {
+    final ai = _FakeAi(json: _fullJson);
+    final ocr = _FakeOcr(text: _longResume); // OCR recovers the text
+    final repo = ResumeAnalyzerRepositoryImpl(
+        ai: ai, extractor: _FakeExtractor(''), ocr: ocr);
+
+    final result = await repo.analyze(pdfBytes: bytes, languageCode: 'en');
+
+    expect(ocr.called, isTrue, reason: 'OCR should run when no text extracted');
+    expect(result.atsScore, 88); // analysis continued on the OCR result
+    expect(ai.lastPrompt, contains('Flutter')); // OCR text reached the model
+  });
+
+  test('does NOT run OCR when the text layer is already usable', () async {
+    final ocr = _FakeOcr(text: 'should not be used');
+    final repo = ResumeAnalyzerRepositoryImpl(
+        ai: _FakeAi(json: _fullJson),
+        extractor: _FakeExtractor(_longResume),
+        ocr: ocr);
+
+    await repo.analyze(pdfBytes: bytes, languageCode: 'en');
+    expect(ocr.called, isFalse);
+  });
+
+  test('throws noText when both extraction and OCR come up empty', () async {
+    final ocr = _FakeOcr(text: '   '); // OCR also fails to read anything
+    final repo = ResumeAnalyzerRepositoryImpl(
+        ai: _FakeAi(json: _fullJson), extractor: _FakeExtractor(''), ocr: ocr);
+
+    await expectLater(
+      () => repo.analyze(pdfBytes: bytes, languageCode: 'en'),
+      throwsA(isA<ResumeAnalyzerException>()
+          .having((e) => e.code, 'code', ResumeErrorCode.noText)),
+    );
+    expect(ocr.called, isTrue);
+  });
+
+  test('propagates an OCR AI error (e.g. network) instead of masking it',
+      () async {
+    final repo = ResumeAnalyzerRepositoryImpl(
+      ai: _FakeAi(json: _fullJson),
+      extractor: _FakeExtractor(''),
+      ocr: _FakeOcr(error: const AiException(AiErrorCode.network)),
+    );
+
+    expect(
+      () => repo.analyze(pdfBytes: bytes, languageCode: 'en'),
+      throwsA(isA<AiException>()
+          .having((e) => e.code, 'code', AiErrorCode.network)),
     );
   });
 

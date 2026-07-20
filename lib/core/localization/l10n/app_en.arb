@@ -365,7 +365,7 @@
   "resumeSectionSuggestions": "Improvement Suggestions",
   "resumeGrammarFix": "Suggestion",
   "resumeRetry": "Try again",
-  "resumeErrNoText": "We couldn't read any text from this PDF. If it's a scanned image, please upload a text-based PDF.",
+  "resumeErrNoText": "We couldn't read any text from this PDF, even with OCR. Please try a clearer scan or a text-based file.",
   "resumeErrExtraction": "We couldn't open this PDF. Please try another file.",
   "resumeErrTooLarge": "This file is too large. Please choose a smaller PDF.",
   "resumeErrNotConfigured": "AI isn't enabled yet. Enable Firebase AI Logic to use the analyzer.",

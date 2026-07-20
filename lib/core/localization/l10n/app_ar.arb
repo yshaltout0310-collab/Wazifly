@@ -358,7 +358,7 @@
   "resumeSectionSuggestions": "اقتراحات التحسين",
   "resumeGrammarFix": "الاقتراح",
   "resumeRetry": "حاول مرة أخرى",
-  "resumeErrNoText": "تعذّر قراءة أي نص من ملف PDF هذا. إذا كان صورة ممسوحة ضوئيًا، فيرجى رفع ملف PDF نصي.",
+  "resumeErrNoText": "تعذّر قراءة أي نص من ملف PDF هذا، حتى باستخدام التعرّف الضوئي على النصوص (OCR). يرجى تجربة نسخة ممسوحة أوضح أو ملف نصي.",
   "resumeErrExtraction": "تعذّر فتح ملف PDF هذا. يرجى تجربة ملف آخر.",
   "resumeErrTooLarge": "هذا الملف كبير جدًا. يرجى اختيار ملف PDF أصغر.",
   "resumeErrNotConfigured": "الذكاء الاصطناعي غير مُفعّل بعد. فعّل Firebase AI Logic لاستخدام المحلّل.",

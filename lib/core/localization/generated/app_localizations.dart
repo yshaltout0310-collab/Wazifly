@@ -2003,7 +2003,7 @@ abstract class AppLocalizations {
   /// No description provided for @resumeErrNoText.
   ///
   /// In en, this message translates to:
-  /// **'We couldn\'t read any text from this PDF. If it\'s a scanned image, please upload a text-based PDF.'**
+  /// **'We couldn\'t read any text from this PDF, even with OCR. Please try a clearer scan or a text-based file.'**
   String get resumeErrNoText;
 
   /// No description provided for @resumeErrExtraction.

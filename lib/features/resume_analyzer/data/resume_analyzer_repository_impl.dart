@@ -9,21 +9,30 @@ import '../domain/pdf_text_extractor.dart';
 import '../domain/resume_analysis.dart';
 import '../domain/resume_analyzer_exception.dart';
 import '../domain/resume_analyzer_repository.dart';
+import '../domain/resume_ocr.dart';
+import 'gemini_pdf_ocr.dart';
 import 'syncfusion_pdf_text_extractor.dart';
 
 /// Orchestrates the resume-analysis pipeline: extract text from the PDF, ask
 /// the [AiService] for a structured JSON assessment, and map it to a
-/// [ResumeAnalysis]. Depends only on the [AiService] and [PdfTextExtractor]
-/// abstractions, so the AI provider and PDF library are both swappable.
+/// [ResumeAnalysis]. Depends only on the [AiService], [PdfTextExtractor], and
+/// [ResumeOcr] abstractions, so the AI provider, PDF library, and OCR backend
+/// are all swappable.
 class ResumeAnalyzerRepositoryImpl implements ResumeAnalyzerRepository {
   ResumeAnalyzerRepositoryImpl({
     required AiService ai,
     PdfTextExtractor? extractor,
+    ResumeOcr? ocr,
   })  : _ai = ai,
-        _extractor = extractor ?? const SyncfusionPdfTextExtractor();
+        _extractor = extractor ?? const SyncfusionPdfTextExtractor(),
+        _ocr = ocr;
 
   final AiService _ai;
   final PdfTextExtractor _extractor;
+
+  /// Optional OCR fallback for scanned/image-only PDFs. When null, an
+  /// image-only PDF surfaces the usual "no text" error (legacy behavior).
+  final ResumeOcr? _ocr;
 
   /// Below this, the PDF almost certainly has no selectable text (scanned).
   static const int _minChars = 40;
@@ -47,9 +56,17 @@ class ResumeAnalyzerRepositoryImpl implements ResumeAnalyzerRepository {
     required String languageCode,
     String? fileName,
   }) async {
-    final text = (await _extractor.extract(pdfBytes)).trim();
+    var text = (await _extractor.extract(pdfBytes)).trim();
     if (text.length < _minChars) {
-      throw const ResumeAnalyzerException(ResumeErrorCode.noText);
+      // No usable text layer — the PDF is almost certainly a scan (Adobe Scan,
+      // CamScanner, Microsoft Lens, a photographed page). Fall back to OCR and
+      // continue the analysis with whatever text it recovers. If OCR is
+      // unavailable or also comes up empty, surface the usual "no text" error.
+      final ocrText = (await _ocr?.extractText(pdfBytes))?.trim() ?? '';
+      if (ocrText.length < _minChars) {
+        throw const ResumeAnalyzerException(ResumeErrorCode.noText);
+      }
+      text = ocrText;
     }
 
     final clipped = text.length > _maxChars ? text.substring(0, _maxChars) : text;
@@ -150,7 +167,11 @@ $resumeText
   }
 }
 
-/// The app-wide resume analyzer repository (uses the bound [aiServiceProvider]).
+/// The app-wide resume analyzer repository (uses the bound [aiServiceProvider]
+/// and a Gemini-vision OCR fallback for scanned PDFs).
 final resumeAnalyzerRepositoryProvider = Provider<ResumeAnalyzerRepository>(
-  (ref) => ResumeAnalyzerRepositoryImpl(ai: ref.watch(aiServiceProvider)),
+  (ref) => ResumeAnalyzerRepositoryImpl(
+    ai: ref.watch(aiServiceProvider),
+    ocr: GeminiPdfOcr(),
+  ),
 );

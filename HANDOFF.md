@@ -2791,6 +2791,41 @@ Arabic Welcome screen shows **"مرحبًا بك في وظيفة فلاي"** wit
 
 ---
 
+## 7.34 ✅ Resume Analyzer OCR fallback (scanned PDFs) + language-onboarding verification
+
+**Issue 1 — scanned PDFs now supported (FIXED, feature added).** Previously a scanned/image-only CV (Adobe Scan,
+CamScanner, Microsoft Lens, a photographed page) had no text layer, so `SyncfusionPdfTextExtractor` returned nothing and
+the analyzer showed "We couldn't read any text…". New behavior: text extraction is tried first; if it yields `< _minChars`,
+the repository falls back to **OCR**, and the analysis continues on the OCR'd text. If OCR is unavailable or also comes up
+empty, the usual `noText` error shows (message updated — it no longer tells users to "upload a text-based PDF").
+- **Seam:** `domain/resume_ocr.dart` (`ResumeOcr` interface) + `data/gemini_pdf_ocr.dart` (`GeminiPdfOcr`). Kept
+  **feature-local** on purpose — extending the shared `AiService` would have broken its 7 test fakes + Noop.
+- **Impl:** `printing` (already a dep) rasterizes pages to PNG on-device (PDFium), then a **single multimodal Gemini
+  request** (`firebase_ai` `Content.multi([TextPart, InlineDataPart…])`, model `gemini-2.5-flash`) transcribes them
+  verbatim. No new native OCR plugin/model — reuses the Firebase AI backend the analyzer already requires (lower risk given
+  the AGP/KGP native-plugin deferrals). Caps: 8 pages, 200 DPI. AI errors are mapped to the shared `AiException` taxonomy so
+  network/quota/not-configured surface precisely; rasterization failure → empty → `noText`.
+- **Wiring:** `resumeAnalyzerRepositoryProvider` now passes `ocr: GeminiPdfOcr()`. Repo constructor takes an optional
+  `ResumeOcr? ocr` (null ⇒ legacy behavior; used by unit tests).
+- **LIVE-VERIFIED on emulator** against a generated **image-only** PDF (0 extractable chars): OCR recovered the text and the
+  analysis returned field="Software / Computer Science…", **atsScore 99**, on-domain missing skills (~28 s, two Gemini
+  calls). 5 new unit tests (fallback runs, doesn't run when text present, both-empty→noText, propagates OCR AiException).
+
+**Issue 2 — "language selection screen disappeared" → NO code bug; behavior already correct (verified).** The reported
+regression could not be reproduced: the splash already routes `if (!onboardingDone) goNamed(RouteNames.language)`,
+`languages_data.dart` is unchanged since Phase 1 (EN + AR supported, 8 more "coming soon"), and Settings has a working
+language picker. **On-device pump of the real app with fresh storage lands on `LanguageSelectionScreen` with English +
+Arabic present.** The user's symptom is almost certainly persisted `onboardingCompleted=true` carried over when the new APK
+was installed **over** a prior install (SharedPreferences survive an update), so language wasn't re-shown — which is by
+design. To see it again: clear app data / fresh install, or Settings → Language. Added a non-flaky guard test
+(`test/onboarding_controller_test.dart`) locking the invariant (fresh ⇒ onboarding false ⇒ language; `complete()` persists
+true ⇒ not shown again). **No production behavior change was made for issue 2** (none was warranted).
+
+**Validation:** `analyze` clean, **664 tests** (+7). l10n `resumeErrNoText` reworded (EN + AR). Both verified live on
+emulator-5554 against Gemini via Firebase AI Logic.
+
+---
+
 ## 7.33 ✅ FIXED — Resume Analyzer misclassification / harsh scoring
 
 **Resolution (this session).** Root-caused with the reporter's real CS CV and fixed at two layers:

@@ -1008,7 +1008,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get resumeErrNoText =>
-      'تعذّر قراءة أي نص من ملف PDF هذا. إذا كان صورة ممسوحة ضوئيًا، فيرجى رفع ملف PDF نصي.';
+      'تعذّر قراءة أي نص من ملف PDF هذا، حتى باستخدام التعرّف الضوئي على النصوص (OCR). يرجى تجربة نسخة ممسوحة أوضح أو ملف نصي.';
 
   @override
   String get resumeErrExtraction =>
