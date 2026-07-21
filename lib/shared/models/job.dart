@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 import 'internship_details.dart';
+import 'salary_range.dart';
 
 /// A job posting — the core jobs-platform model, shared across features
 /// (browse/detail in `jobs`, ranking in `job_matching`).
@@ -20,6 +21,7 @@ class Job extends Equatable {
     required this.description,
     required this.requiredSkills,
     required this.remote,
+    this.salary,
     this.titleAr,
     this.descriptionAr,
     this.locationAr,
@@ -40,6 +42,11 @@ class Job extends Equatable {
   final String description;
   final List<String> requiredSkills;
   final bool remote;
+
+  /// Optional compensation range shown on the job detail. Projected from
+  /// `JobPosting.salary` and supplied by seed data; null when the posting
+  /// doesn't disclose pay.
+  final SalaryRange? salary;
 
   /// Optional Arabic renderings of the free-text fields (seed/employer content).
   /// When the app runs in Arabic these are shown; when absent the English value
@@ -87,6 +94,9 @@ class Job extends Equatable {
         requiredSkills: _parseStringList(
             json['requiredSkills'] ?? json['required_skills'] ?? json['skills']),
         remote: _parseBool(json['remote']),
+        salary: json['salary'] is Map
+            ? SalaryRange.fromJson(Map<String, dynamic>.from(json['salary'] as Map))
+            : null,
         titleAr: _parseOptString(json['titleAr'] ?? json['title_ar']),
         descriptionAr:
             _parseOptString(json['descriptionAr'] ?? json['description_ar']),
@@ -129,6 +139,7 @@ class Job extends Equatable {
         description,
         requiredSkills,
         remote,
+        salary,
         titleAr,
         descriptionAr,
         locationAr,

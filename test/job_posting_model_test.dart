@@ -35,6 +35,30 @@ void main() {
       expect(job.remote, isTrue);
       expect(job.requiredSkills, ['Flutter', 'Dart']);
     });
+
+    test('carries the salary through to the seeker Job', () {
+      final job = _sample().toJob();
+      expect(job.salary, isNotNull);
+      expect(job.salary!.min, 100);
+      expect(job.salary!.max, 200);
+      expect(job.salary!.period, SalaryPeriod.monthly);
+    });
+
+    test('a posting with no salary projects a null Job.salary', () {
+      final noSalary = JobPosting(
+        id: 'x',
+        companyId: 'c',
+        ownerUid: 'c',
+        companyName: 'Acme',
+        title: 'T',
+        description: 'd',
+        requiredSkills: const [],
+        location: 'Doha',
+        createdAt: DateTime(2026, 7, 1),
+        updatedAt: DateTime(2026, 7, 1),
+      ).toJob();
+      expect(noSalary.salary, isNull);
+    });
   });
 
   group('lifecycle', () {

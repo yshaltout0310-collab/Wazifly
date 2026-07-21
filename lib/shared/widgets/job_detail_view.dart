@@ -10,6 +10,7 @@ import '../models/internship_details.dart';
 import '../models/internship_details_l10n.dart';
 import '../models/job.dart';
 import '../models/job_l10n.dart';
+import '../models/salary_range_l10n.dart';
 
 /// The public job body — title, company, meta chips, description, and required
 /// skills — rendered from a shared [Job].
@@ -79,16 +80,15 @@ class JobDetailView extends StatelessWidget {
           spacing: AppSpacing.xs,
           runSpacing: AppSpacing.xs,
           children: [
+            // Work mode (job type) — always shown: Remote or On-site.
+            _MetaChip(
+                icon: job.remote
+                    ? Icons.public_rounded
+                    : Icons.apartment_rounded,
+                label: job.remote ? l10n.jobsRemote : l10n.jobsOnsite),
             if (job.location.isNotEmpty)
               _MetaChip(
-                  icon: job.remote
-                      ? Icons.public_rounded
-                      : Icons.place_outlined,
-                  label: job.remote
-                      ? '${job.locationFor(lang)} · ${l10n.jobsRemote}'
-                      : job.locationFor(lang))
-            else if (job.remote)
-              _MetaChip(icon: Icons.public_rounded, label: l10n.jobsRemote),
+                  icon: Icons.place_outlined, label: job.locationFor(lang)),
             if (job.employmentType.isNotEmpty)
               _MetaChip(
                   icon: Icons.work_outline_rounded,
@@ -99,6 +99,10 @@ class JobDetailView extends StatelessWidget {
                   label: localizedSeniority(l10n, job.seniority)),
           ],
         ),
+        if (job.salary != null && !job.salary!.isEmpty) ...[
+          const SizedBox(height: AppSpacing.md),
+          _SalaryCard(text: job.salary!.display(l10n, localeName: lang)),
+        ],
         if (job.internship != null && !job.internship!.isEmpty) ...[
           const SizedBox(height: AppSpacing.lg),
           _InternshipSection(details: job.internship!),
@@ -157,6 +161,61 @@ class _SectionTitle extends StatelessWidget {
             .titleMedium
             ?.copyWith(fontWeight: FontWeight.w800),
       );
+}
+
+/// The compensation card — a prominent, emerald-tinted banner showing the pay
+/// range. Uses an `Expanded` value column so a long amount always gets the full
+/// width and can never be squeezed into a character-by-character sliver.
+class _SalaryCard extends StatelessWidget {
+  const _SalaryCard({required this.text});
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AppColors.emerald.withValues(alpha: 0.10),
+            AppColors.emerald.withValues(alpha: 0.03),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        border: Border.all(color: AppColors.emerald.withValues(alpha: 0.25)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Icon(Icons.payments_outlined,
+              color: AppColors.emeraldDark, size: 22),
+          const SizedBox(width: AppSpacing.sm),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(l10n.jobsSalary,
+                    style: theme.textTheme.labelMedium?.copyWith(
+                        color:
+                            theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                        fontWeight: FontWeight.w700)),
+                const SizedBox(height: 2),
+                Text(text,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                        color: AppColors.emeraldDark,
+                        fontWeight: FontWeight.w800)),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 /// A pill highlight badge (internship / trains-beginners), tinted by [color].

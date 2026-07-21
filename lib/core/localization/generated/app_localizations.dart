@@ -2480,6 +2480,30 @@ abstract class AppLocalizations {
   /// **'Remote'**
   String get jobsRemote;
 
+  /// No description provided for @jobsOnsite.
+  ///
+  /// In en, this message translates to:
+  /// **'On-site'**
+  String get jobsOnsite;
+
+  /// No description provided for @jobsSalary.
+  ///
+  /// In en, this message translates to:
+  /// **'Salary'**
+  String get jobsSalary;
+
+  /// No description provided for @salaryFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'From'**
+  String get salaryFrom;
+
+  /// No description provided for @salaryUpTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to'**
+  String get salaryUpTo;
+
   /// No description provided for @jobsDescription.
   ///
   /// In en, this message translates to:

@@ -3,50 +3,13 @@ import 'package:equatable/equatable.dart';
 import '../../features/employer/domain/employment_type.dart';
 import '../../features/employer/domain/job_experience.dart';
 import '../../features/employer/domain/job_status.dart';
-import '../../features/employer/domain/salary_period.dart';
 import 'internship_details.dart';
 import 'job.dart';
+import 'salary_range.dart';
 
-/// An optional salary range on a posting.
-class SalaryRange extends Equatable {
-  const SalaryRange({
-    this.min,
-    this.max,
-    this.currency = 'USD',
-    this.period = SalaryPeriod.yearly,
-  });
-
-  final int? min;
-  final int? max;
-  final String currency;
-  final SalaryPeriod period;
-
-  bool get isEmpty => min == null && max == null;
-
-  /// Valid when non-negative and min ≤ max (either bound may be omitted).
-  bool get isValid {
-    if ((min ?? 0) < 0 || (max ?? 0) < 0) return false;
-    if (min != null && max != null && min! > max!) return false;
-    return true;
-  }
-
-  Map<String, dynamic> toJson() => {
-        'min': min,
-        'max': max,
-        'currency': currency,
-        'period': period.name,
-      };
-
-  factory SalaryRange.fromJson(Map<String, dynamic> json) => SalaryRange(
-        min: _intOrNull(json['min']),
-        max: _intOrNull(json['max']),
-        currency: _str(json['currency']) ?? 'USD',
-        period: SalaryPeriod.fromName(json['period']),
-      );
-
-  @override
-  List<Object?> get props => [min, max, currency, period];
-}
+// SalaryRange now lives in its own file so the seeker [Job] can carry it too;
+// re-exported here so existing `import 'job_posting.dart'` users are unaffected.
+export 'salary_range.dart' show SalaryRange;
 
 /// Analytics foundation for a posting. Counters default to zero; the nullable
 /// timestamps ([firstPublishedAt]/[lastViewedAt]/[lastApplicationAt]) are
@@ -277,6 +240,7 @@ class JobPosting extends Equatable {
         description: description,
         requiredSkills: requiredSkills,
         remote: remote,
+        salary: salary,
         internship:
             isInternship && internship != null && !internship!.isEmpty
                 ? internship

@@ -2826,6 +2826,29 @@ emulator-5554 against Gemini via Firebase AI Logic.
 
 ---
 
+## 7.36 ✅ Job Details — salary card + explicit work mode
+
+**Reported:** the Job Details page didn't show salary. **Root cause:** the seeker `Job` model never carried a salary — it
+was only on the employer `JobPosting`, and `JobPosting.toJob()` dropped it (seed jobs had no salary key either). So salary
+had never rendered in the shared `JobDetailView`. Fix (additive, design-consistent):
+- **Model:** extracted `SalaryRange` to its own file `shared/models/salary_range.dart` (job_posting.dart **re-exports** it, so
+  existing `import 'job_posting.dart'` users — incl. tests — are unaffected; avoids a Job↔JobPosting circular import). Added
+  `Job.salary` (`SalaryRange?`, parsed in `Job.fromJson`), and `JobPosting.toJob()` now carries `salary`.
+- **Display:** new `shared/models/salary_range_l10n.dart` `.display(l10n, localeName:)` → e.g. "QAR 15,000 – 20,000 · per
+  month", "From USD 90,000 · per year" (self-contained period labels, no employer-layer dep).
+- **UI (`JobDetailView`):** added a prominent emerald-tinted **salary card** (payments icon + label + range, `Expanded`
+  value to avoid the vertical-text trap) after the meta chips; made **work mode an explicit chip** (Remote / On-site) and
+  simplified the location chip (dropped the "· Remote" suffix). The page now shows **Salary, Job Type (work mode),
+  Experience Level, Description, Required Skills**. Shared by the employer preview too, so both stay in sync.
+- **Seed data:** all 18 `assets/data/seed_jobs.json` jobs got realistic salaries (local currency + monthly for on-site
+  regional roles, USD + yearly for remote, smaller intern stipends).
+- l10n added `jobsSalary`, `jobsOnsite`, `salaryFrom`, `salaryUpTo` (EN + AR). **Note:** the job schema models work mode as a
+  `remote` bool (Remote vs On-site) — there is no "Hybrid" state for regular jobs (only internships have a 3-way work mode);
+  adding Hybrid would be an end-to-end model+editor+seed change, not done here.
+- `analyze` clean, **677 tests** (+ salary parse/projection/display + JobDetailView salary/work-mode render tests).
+
+---
+
 ## 7.35 ✅ Settings → "Restart onboarding" (replaces "View intro again")
 
 New Settings item (Preferences section, `Icons.restart_alt_rounded`). The older lighter **"View intro again"** tile was

@@ -1292,6 +1292,18 @@ class AppLocalizationsAr extends AppLocalizations {
   String get jobsRemote => 'عن بُعد';
 
   @override
+  String get jobsOnsite => 'من المقر';
+
+  @override
+  String get jobsSalary => 'الراتب';
+
+  @override
+  String get salaryFrom => 'من';
+
+  @override
+  String get salaryUpTo => 'حتى';
+
+  @override
   String get jobsDescription => 'الوصف';
 
   @override

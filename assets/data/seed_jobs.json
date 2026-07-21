@@ -9,7 +9,19 @@
     "employmentType": "Full-time",
     "seniority": "Mid",
     "remote": false,
-    "requiredSkills": ["Flutter", "Dart", "Firebase", "REST APIs", "Git"],
+    "salary": {
+      "min": 14000,
+      "max": 20000,
+      "currency": "QAR",
+      "period": "monthly"
+    },
+    "requiredSkills": [
+      "Flutter",
+      "Dart",
+      "Firebase",
+      "REST APIs",
+      "Git"
+    ],
     "description": "Build and ship cross-platform mobile apps in Flutter. Integrate Firebase (Auth, Firestore, Storage) and RESTful backends, and collaborate with designers on polished, responsive UI.",
     "descriptionAr": "ابنِ وأطلق تطبيقات جوّال متعددة المنصّات باستخدام Flutter. ادمج خدمات Firebase (المصادقة وFirestore والتخزين) والواجهات الخلفية RESTful، وتعاوَن مع المصمّمين لبناء واجهات أنيقة وسريعة الاستجابة."
   },
@@ -23,7 +35,20 @@
     "employmentType": "Full-time",
     "seniority": "Senior",
     "remote": true,
-    "requiredSkills": ["Flutter", "Dart", "State Management", "CI/CD", "Testing", "Mentorship"],
+    "salary": {
+      "min": 140000,
+      "max": 180000,
+      "currency": "USD",
+      "period": "yearly"
+    },
+    "requiredSkills": [
+      "Flutter",
+      "Dart",
+      "State Management",
+      "CI/CD",
+      "Testing",
+      "Mentorship"
+    ],
     "description": "Lead the architecture of a large Flutter codebase, drive testing and CI/CD practices, and mentor junior engineers. Experience with Riverpod or Bloc and native platform channels is a plus.",
     "descriptionAr": "قُد تصميم بنية قاعدة شيفرة Flutter كبيرة، وأرسِ ممارسات الاختبار والتكامل المستمر، ووجّه المهندسين المبتدئين. الخبرة في Riverpod أو Bloc وقنوات المنصّة الأصلية ميزة إضافية."
   },
@@ -37,7 +62,19 @@
     "employmentType": "Full-time",
     "seniority": "Mid",
     "remote": false,
-    "requiredSkills": ["Kotlin", "Android SDK", "Jetpack Compose", "Coroutines", "REST APIs"],
+    "salary": {
+      "min": 14000,
+      "max": 20000,
+      "currency": "SAR",
+      "period": "monthly"
+    },
+    "requiredSkills": [
+      "Kotlin",
+      "Android SDK",
+      "Jetpack Compose",
+      "Coroutines",
+      "REST APIs"
+    ],
     "description": "Develop native Android applications with Kotlin and Jetpack Compose. Own features end-to-end from design to release on Google Play.",
     "descriptionAr": "طوّر تطبيقات أندرويد أصلية باستخدام Kotlin وJetpack Compose. امتلك الميزات من التصميم حتى الإطلاق على Google Play."
   },
@@ -51,7 +88,19 @@
     "employmentType": "Full-time",
     "seniority": "Mid",
     "remote": true,
-    "requiredSkills": ["Node.js", "TypeScript", "PostgreSQL", "REST APIs", "Docker"],
+    "salary": {
+      "min": 95000,
+      "max": 120000,
+      "currency": "USD",
+      "period": "yearly"
+    },
+    "requiredSkills": [
+      "Node.js",
+      "TypeScript",
+      "PostgreSQL",
+      "REST APIs",
+      "Docker"
+    ],
     "description": "Design and build scalable backend services in Node.js and TypeScript. Model data in PostgreSQL, expose clean REST APIs, and deploy with Docker.",
     "descriptionAr": "صمّم وابنِ خدمات خلفية قابلة للتوسّع باستخدام Node.js وTypeScript. نمذِج البيانات في PostgreSQL، واعرض واجهات REST نظيفة، وانشر باستخدام Docker."
   },
@@ -65,7 +114,19 @@
     "employmentType": "Full-time",
     "seniority": "Mid",
     "remote": true,
-    "requiredSkills": ["React", "TypeScript", "Node.js", "GraphQL", "AWS"],
+    "salary": {
+      "min": 95000,
+      "max": 120000,
+      "currency": "USD",
+      "period": "yearly"
+    },
+    "requiredSkills": [
+      "React",
+      "TypeScript",
+      "Node.js",
+      "GraphQL",
+      "AWS"
+    ],
     "description": "Work across the stack building web features with React and Node. Comfortable with GraphQL and deploying to AWS.",
     "descriptionAr": "اعمل عبر كامل حزمة التطوير لبناء ميزات الويب باستخدام React وNode. إلمام مريح بـ GraphQL والنشر على AWS."
   },
@@ -79,7 +140,19 @@
     "employmentType": "Contract",
     "seniority": "Mid",
     "remote": true,
-    "requiredSkills": ["Firebase", "Cloud Functions", "Firestore", "GCP", "Security Rules"],
+    "salary": {
+      "min": 95000,
+      "max": 120000,
+      "currency": "USD",
+      "period": "yearly"
+    },
+    "requiredSkills": [
+      "Firebase",
+      "Cloud Functions",
+      "Firestore",
+      "GCP",
+      "Security Rules"
+    ],
     "description": "Design serverless backends on Firebase and Google Cloud. Write Cloud Functions, secure Firestore with rules, and optimize for cost and scale.",
     "descriptionAr": "صمّم واجهات خلفية بلا خوادم على Firebase وGoogle Cloud. اكتب دوال Cloud Functions، وأمّن Firestore بالقواعد، وحسّن التكلفة والأداء."
   },
@@ -93,7 +166,18 @@
     "employmentType": "Full-time",
     "seniority": "Junior",
     "remote": false,
-    "requiredSkills": ["Flutter", "Dart", "Git", "REST APIs"],
+    "salary": {
+      "min": 650,
+      "max": 950,
+      "currency": "JOD",
+      "period": "monthly"
+    },
+    "requiredSkills": [
+      "Flutter",
+      "Dart",
+      "Git",
+      "REST APIs"
+    ],
     "description": "Join a growing mobile team to build Flutter apps. Great for early-career engineers eager to learn clean architecture and testing.",
     "descriptionAr": "انضمّ إلى فريق جوّال متنامٍ لبناء تطبيقات Flutter. مثالي للمهندسين في بداية مسيرتهم المتحمّسين لتعلّم البنية النظيفة والاختبار."
   },
@@ -107,7 +191,19 @@
     "employmentType": "Full-time",
     "seniority": "Mid",
     "remote": false,
-    "requiredSkills": ["Test Automation", "Appium", "CI/CD", "Selenium", "Dart"],
+    "salary": {
+      "min": 14000,
+      "max": 20000,
+      "currency": "QAR",
+      "period": "monthly"
+    },
+    "requiredSkills": [
+      "Test Automation",
+      "Appium",
+      "CI/CD",
+      "Selenium",
+      "Dart"
+    ],
     "description": "Build automated test suites for mobile and web. Integrate tests into CI/CD and champion quality across the engineering org.",
     "descriptionAr": "ابنِ مجموعات اختبار آلية للجوّال والويب. ادمج الاختبارات في التكامل المستمر وارفع مستوى الجودة عبر فرق الهندسة."
   },
@@ -121,7 +217,20 @@
     "employmentType": "Full-time",
     "seniority": "Senior",
     "remote": true,
-    "requiredSkills": ["Kubernetes", "Docker", "Terraform", "CI/CD", "AWS", "Monitoring"],
+    "salary": {
+      "min": 140000,
+      "max": 180000,
+      "currency": "USD",
+      "period": "yearly"
+    },
+    "requiredSkills": [
+      "Kubernetes",
+      "Docker",
+      "Terraform",
+      "CI/CD",
+      "AWS",
+      "Monitoring"
+    ],
     "description": "Own infrastructure as code, container orchestration, and CI/CD pipelines. Keep production reliable, observable, and secure.",
     "descriptionAr": "امتلك البنية التحتية ككود، وتنسيق الحاويات، ومسارات التكامل والنشر المستمر. حافظ على إنتاج موثوق وقابل للمراقبة وآمن."
   },
@@ -135,7 +244,19 @@
     "employmentType": "Full-time",
     "seniority": "Mid",
     "remote": true,
-    "requiredSkills": ["Python", "SQL", "Airflow", "Spark", "GCP"],
+    "salary": {
+      "min": 95000,
+      "max": 120000,
+      "currency": "USD",
+      "period": "yearly"
+    },
+    "requiredSkills": [
+      "Python",
+      "SQL",
+      "Airflow",
+      "Spark",
+      "GCP"
+    ],
     "description": "Build reliable data pipelines and warehouses. Model data for analytics and machine learning teams.",
     "descriptionAr": "ابنِ مسارات بيانات ومستودعات موثوقة. نمذِج البيانات لفرق التحليلات والتعلّم الآلي."
   },
@@ -149,7 +270,19 @@
     "employmentType": "Full-time",
     "seniority": "Senior",
     "remote": true,
-    "requiredSkills": ["Python", "TensorFlow", "PyTorch", "MLOps", "SQL"],
+    "salary": {
+      "min": 140000,
+      "max": 180000,
+      "currency": "USD",
+      "period": "yearly"
+    },
+    "requiredSkills": [
+      "Python",
+      "TensorFlow",
+      "PyTorch",
+      "MLOps",
+      "SQL"
+    ],
     "description": "Design, train, and deploy ML models to production. Own the full lifecycle from experimentation to serving and monitoring.",
     "descriptionAr": "صمّم ودرّب وانشر نماذج تعلّم آلي في الإنتاج. امتلك دورة الحياة الكاملة من التجريب إلى التقديم والمراقبة."
   },
@@ -163,7 +296,19 @@
     "employmentType": "Full-time",
     "seniority": "Mid",
     "remote": true,
-    "requiredSkills": ["Figma", "UI Design", "UX Research", "Prototyping", "Design Systems"],
+    "salary": {
+      "min": 95000,
+      "max": 120000,
+      "currency": "USD",
+      "period": "yearly"
+    },
+    "requiredSkills": [
+      "Figma",
+      "UI Design",
+      "UX Research",
+      "Prototyping",
+      "Design Systems"
+    ],
     "description": "Craft intuitive product experiences from research to high-fidelity design. Maintain and evolve the design system alongside engineering.",
     "descriptionAr": "صُغ تجارب منتج بديهية من البحث حتى التصميم عالي الدقّة. حافظ على نظام التصميم وطوّره جنبًا إلى جنب مع الهندسة."
   },
@@ -177,7 +322,19 @@
     "employmentType": "Full-time",
     "seniority": "Mid",
     "remote": false,
-    "requiredSkills": ["Swift", "SwiftUI", "UIKit", "Combine", "REST APIs"],
+    "salary": {
+      "min": 14000,
+      "max": 20000,
+      "currency": "AED",
+      "period": "monthly"
+    },
+    "requiredSkills": [
+      "Swift",
+      "SwiftUI",
+      "UIKit",
+      "Combine",
+      "REST APIs"
+    ],
     "description": "Build native iOS apps with Swift and SwiftUI. Ship features to the App Store and collaborate closely with backend and design.",
     "descriptionAr": "ابنِ تطبيقات iOS أصلية باستخدام Swift وSwiftUI. أطلق الميزات على App Store وتعاوَن عن قرب مع فريقي الواجهة الخلفية والتصميم."
   },
@@ -191,7 +348,19 @@
     "employmentType": "Full-time",
     "seniority": "Lead",
     "remote": false,
-    "requiredSkills": ["Leadership", "Mobile", "Agile", "Mentorship", "System Design"],
+    "salary": {
+      "min": 32000,
+      "max": 42000,
+      "currency": "QAR",
+      "period": "monthly"
+    },
+    "requiredSkills": [
+      "Leadership",
+      "Mobile",
+      "Agile",
+      "Mentorship",
+      "System Design"
+    ],
     "description": "Lead a mobile engineering team: hiring, mentoring, delivery, and technical direction. Strong mobile background (Flutter or native) required.",
     "descriptionAr": "قُد فريق هندسة تطبيقات الجوّال: التوظيف والإرشاد والتسليم والتوجيه التقني. مطلوب خلفية قويّة في الجوّال (Flutter أو أصلي)."
   },
@@ -205,7 +374,17 @@
     "employmentType": "Internship",
     "seniority": "Entry",
     "remote": false,
-    "requiredSkills": ["Flutter", "Dart", "Git"],
+    "salary": {
+      "min": 3000,
+      "max": 5000,
+      "currency": "QAR",
+      "period": "monthly"
+    },
+    "requiredSkills": [
+      "Flutter",
+      "Dart",
+      "Git"
+    ],
     "description": "Join our mobile team as a Flutter intern. Learn production Flutter, ship real features under mentorship, and grow your fundamentals. No prior industry experience required — we train beginners.",
     "descriptionAr": "انضمّ إلى فريق الجوّال لدينا كمتدرّب Flutter. تعلّم Flutter في بيئة إنتاجية، وأطلق ميزات حقيقية تحت الإرشاد، وطوّر أساسياتك. لا تُشترط خبرة سابقة في المجال — نحن ندرّب المبتدئين.",
     "trainsBeginners": true,
@@ -232,7 +411,17 @@
     "employmentType": "Internship",
     "seniority": "Entry",
     "remote": true,
-    "requiredSkills": ["SQL", "Python", "Excel"],
+    "salary": {
+      "min": 2500,
+      "max": 3500,
+      "currency": "USD",
+      "period": "monthly"
+    },
+    "requiredSkills": [
+      "SQL",
+      "Python",
+      "Excel"
+    ],
     "description": "A remote data internship: build dashboards, run analyses, and support the analytics team. Great for students exploring data careers.",
     "descriptionAr": "تدريب عن بُعد في البيانات: ابنِ لوحات معلومات، ونفّذ تحليلات، وادعم فريق التحليلات. مثالي للطلاب الراغبين في استكشاف مسارات البيانات.",
     "trainsBeginners": true,
@@ -257,7 +446,17 @@
     "employmentType": "Internship",
     "seniority": "Entry",
     "remote": false,
-    "requiredSkills": ["Figma", "UI Design", "Prototyping"],
+    "salary": {
+      "min": 3500,
+      "max": 5000,
+      "currency": "AED",
+      "period": "monthly"
+    },
+    "requiredSkills": [
+      "Figma",
+      "UI Design",
+      "Prototyping"
+    ],
     "description": "Support the product design team on real features: wireframes, prototypes, and usability testing. Open to fresh graduates.",
     "descriptionAr": "ادعم فريق تصميم المنتج في ميزات حقيقية: المخطّطات الأوّلية والنماذج واختبارات قابلية الاستخدام. متاح للخرّيجين الجدد.",
     "internship": {
@@ -283,7 +482,17 @@
     "employmentType": "Internship",
     "seniority": "Entry",
     "remote": false,
-    "requiredSkills": ["Social Media", "Content", "Analytics"],
+    "salary": {
+      "min": 3000,
+      "max": 4500,
+      "currency": "SAR",
+      "period": "monthly"
+    },
+    "requiredSkills": [
+      "Social Media",
+      "Content",
+      "Analytics"
+    ],
     "description": "Learn digital marketing hands-on: campaigns, content, and analytics. A flexible-schedule internship suited to students and career switchers.",
     "descriptionAr": "تعلّم التسويق الرقمي عمليًّا: الحملات والمحتوى والتحليلات. تدريب بجدول مرن يناسب الطلاب والمنتقلين مهنيًّا.",
     "trainsBeginners": true,

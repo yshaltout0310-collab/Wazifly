@@ -1303,6 +1303,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get jobsRemote => 'Remote';
 
   @override
+  String get jobsOnsite => 'On-site';
+
+  @override
+  String get jobsSalary => 'Salary';
+
+  @override
+  String get salaryFrom => 'From';
+
+  @override
+  String get salaryUpTo => 'Up to';
+
+  @override
   String get jobsDescription => 'Description';
 
   @override
