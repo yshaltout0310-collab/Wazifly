@@ -83,7 +83,7 @@ class _EmailAuthScreenState extends ConsumerState<EmailAuthScreen> {
       // Offer biometric login once (respects a prior "Not Now"); never blocks.
       await maybeOfferBiometricEnrollment(context, ref);
       if (!mounted) return;
-      goAfterAuth(context, ref);
+      await goAfterAuth(context, ref);
     } catch (e) {
       if (!mounted) return;
       setState(() => _loading = false);

@@ -69,7 +69,7 @@ class _EmailVerificationScreenState
       // Verified → continue into the app (offer biometric once, then route home).
       await maybeOfferBiometricEnrollment(context, ref);
       if (!mounted) return;
-      goAfterAuth(context, ref);
+      await goAfterAuth(context, ref);
     } catch (e) {
       if (!mounted) return;
       setState(() => _checking = false);

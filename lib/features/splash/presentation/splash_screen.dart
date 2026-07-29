@@ -10,10 +10,9 @@ import '../../../core/navigation/route_names.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../features/auth/application/auth_providers.dart';
+import '../../../features/auth/presentation/auth_navigation.dart';
 import '../../../features/onboarding/application/onboarding_controller.dart';
 import '../../../features/security/application/biometric_settings_controller.dart';
-import '../../../features/user_type/application/user_type_controller.dart';
-import '../../../features/user_type/domain/user_type.dart';
 
 /// Premium branded splash. A Wazifly navy-to-royal-blue gradient (seamless with
 /// the native splash) with a glowing, pulsing logo and a choreographed wordmark
@@ -68,12 +67,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       return;
     }
 
-    final type = ref.read(userTypeControllerProvider);
-    context.goNamed(switch (type) {
-      null => RouteNames.userType,
-      UserType.employer => RouteNames.employerHome,
-      UserType.jobSeeker => RouteNames.home,
-    });
+    // Route to the role's home. Prefers this user's reconciled cache (fast,
+    // offline-safe) and falls back to the authoritative Firestore role, so a
+    // session with no stored role lands on role selection rather than a default.
+    await goToRoleHome(context, ref);
   }
 
   @override

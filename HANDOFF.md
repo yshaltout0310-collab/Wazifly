@@ -1,7 +1,9 @@
 # Career Bridge — Session Handoff
 
 > Living handoff doc so a fresh Claude session can continue immediately.
-> Last updated: **Email-Only Auth + Email Verification — COMPLETE** (see §7.29, feat `356a290`) — a deliberate MVP
+> Last updated: **Role Selection regression FIXED** (see §7.37) — new users no longer skip the role picker; routing is now
+> Firestore-authoritative per-user (was reading a device-global cache). `analyze` clean, **679 tests**.
+> Prior update: **Email-Only Auth + Email Verification — COMPLETE** (see §7.29, feat `356a290`) — a deliberate MVP
 > **scope cut**: Google Sign-In is **fully removed** (UI + logic + widget + l10n + enum + test fake) and replaced by a
 > hard **email-verification gate**. Flow now: sign up → Firebase **auto-sends** a verification email → land on a new
 > **Verify-email screen** (clear message, **"I've verified — Continue"** = `reload()` + re-check, **"Resend
@@ -2846,6 +2848,54 @@ had never rendered in the shared `JobDetailView`. Fix (additive, design-consiste
   `remote` bool (Remote vs On-site) — there is no "Hybrid" state for regular jobs (only internships have a 3-way work mode);
   adding Hybrid would be an end-to-end model+editor+seed change, not done here.
 - `analyze` clean, **677 tests** (+ salary parse/projection/display + JobDetailView salary/work-mode render tests).
+
+---
+
+## 7.37 ✅ FIXED — Role Selection skipped for new users (device-global role leak)
+
+**Reported.** After signing up or signing in, a **new** user no longer saw the **Role Selection** screen — the app opened
+the **Job Seeker** flow immediately and the **Employer** option never appeared.
+
+**Root cause.** The post-auth routing decision read the role from the **device-global `SharedPreferences` cache**, never
+from the **per-user Firestore profile**. `UserTypeController` seeds its state once from a single global key
+(`StorageKeys.userType`), and `goAfterAuth` (plus the splash and `goToRoleHome`) trusted that cached value directly:
+`final type = ref.read(userTypeControllerProvider); if (type == null) goNamed(userType) …`. Because the key is
+**device-scoped, not user-scoped**, once *any* user on the device chose a role the key stayed set, so the **next** user
+inherited it and was routed straight past Role Selection. Firestore already stored the role per-user
+(`FirestoreUserProfileRepository.setUserType` → `users/{uid}.userType`, read back via `UserProfile.userType`), but
+**nothing in the routing path consulted it** — the "check whether the user has a role in Firestore" step was never
+performed. It surfaced now because multi-account testing on one device poisons the global key (sign-up and the
+verify-email "Use another" sign-out don't clear it; only Settings → Logout calls `clear()`).
+
+**Investigation findings.** Traced every routing entry point: `email_auth_screen._submit` → `goAfterAuth`,
+`email_verification_screen._checkVerified` → `goAfterAuth`, `splash_screen._bootstrap` (inline role switch), and
+`app_lock_screen._unlock` → `goToRoleHome`. All four resolved the role from the local `userTypeControllerProvider` only.
+The Firestore seam (`fetchProfile` / `setUserType` / `UserProfile.userType`) and the in-memory fake already existed and
+were correct — the gap was purely that routing never read them.
+
+**Fix (architecture preserved — no new deps, no schema change).**
+- **`auth_navigation.dart`** — new private `_resolveUserType(ref, {trustCache})` makes **Firestore the source of truth**:
+  reads `users/{uid}.userType` via the existing `fetchProfile` seam and reconciles the local cache. `goAfterAuth`
+  (fresh sign-in / account switch) calls it with **`trustCache: false`** → ignores the device-local cache, reads
+  Firestore, and routes to **Role Selection whenever Firestore has no role** — a new user can never inherit a previous
+  user's cached role. `goToRoleHome` (splash / biometric unlock of an existing session) uses **`trustCache: true`** → a
+  non-null cache (reconciled for *this* user at last sign-in) is used directly for a fast, offline-safe path, falling back
+  to Firestore when empty. Both helpers are now `async` and guard with `context.mounted`.
+- **`user_type_controller.dart`** — new `sync(UserType?)` reconciles the device-local cache with the authoritative value
+  (persists or clears it), so the splash fast-path and Settings display stay correct after an account switch.
+- **`splash_screen.dart`** — the inline role switch was replaced by `await goToRoleHome(context, ref)` (same
+  Firestore-aware resolution; unused `user_type` imports dropped, `auth_navigation` imported).
+- **Call sites** — `email_auth_screen`, `email_verification_screen` (`await goAfterAuth`), `app_lock_screen`
+  (`await goToRoleHome`). The selection flow (`UserTypeSelectionScreen._confirm`) was already correct (saves to Firestore
+  via `setUserType` + seeds the employer company doc) and is unchanged.
+
+Net behavior now matches the spec: authenticate → check Firestore for a role → none ⇒ Role Selection (Job Seeker **or**
+Employer) → choice saved to Firestore → future logins route directly from the saved role.
+
+**Verification.** `flutter analyze` clean; **679 tests** (+2). New `test/role_selection_routing_test.dart` drives the real
+`goAfterAuth` through a minimal `GoRouter`: (1) the exact regression — new user + a stale `jobSeeker` device cache + no
+Firestore role ⇒ lands on Role Selection and the stale cache is reconciled to null; (2) a returning user whose saved
+Firestore role routes straight to the seeker home and rehydrates the local cache. Full suite green.
 
 ---
 

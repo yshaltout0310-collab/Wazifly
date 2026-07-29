@@ -51,7 +51,7 @@ class _AppLockScreenState extends ConsumerState<AppLockScreen> {
     if (!mounted) return;
 
     if (result == BiometricAuthResult.success) {
-      goToRoleHome(context, ref);
+      await goToRoleHome(context, ref);
       return;
     }
     setState(() {
