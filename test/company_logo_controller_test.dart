@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:careerbridge/core/services/cloud_storage/image_optimizer.dart';
 import 'package:careerbridge/core/services/cloud_storage/storage_service.dart';
 import 'package:careerbridge/core/services/company/company_logo_storage.dart';
 import 'package:careerbridge/core/services/company/company_repository.dart';
@@ -101,6 +103,42 @@ void main() {
     await c.read(companyLogoControllerProvider.notifier).uploadBytes(bytes);
     expect(storage.progress, [0.5, 1.0]);
     expect(c.read(companyLogoControllerProvider).status, LogoStatus.idle);
+  });
+
+  test('DataUriCompanyLogoStorage embeds a base64 data: URI (no bucket needed)',
+      () async {
+    // NoopImageOptimizer avoids dart:ui in a plain unit test.
+    final storage = DataUriCompanyLogoStorage(const NoopImageOptimizer());
+    final url = await storage.uploadCompanyLogo(
+      companyId: 'c1',
+      bytes: bytes,
+      contentType: 'image/png',
+    );
+    expect(url, isNotNull);
+    expect(url, startsWith('data:image/png;base64,'));
+    // Round-trips back to the original bytes.
+    final b64 = url!.substring(url.indexOf(',') + 1);
+    expect(base64Decode(b64), bytes);
+  });
+
+  test('data-URI logo persists to the company doc through the controller',
+      () async {
+    final repo = InMemoryCompanyRepository();
+    final c = ProviderContainer(overrides: [
+      authRepositoryProvider.overrideWithValue(FakeAuthRepository(user: _user)),
+      companyLogoStorageProvider.overrideWithValue(
+          DataUriCompanyLogoStorage(const NoopImageOptimizer())),
+      companyRepositoryProvider.overrideWithValue(repo),
+    ]);
+    addTearDown(c.dispose);
+
+    await c
+        .read(companyLogoControllerProvider.notifier)
+        .uploadBytes(bytes, fileName: 'logo.png');
+
+    expect(c.read(companyLogoControllerProvider).status, LogoStatus.idle);
+    final stored = (await repo.fetchCompany('c1'))?.logoUrl;
+    expect(stored, startsWith('data:image/png;base64,'));
   });
 
   test('removeLogo deletes from storage and clears the URL', () async {

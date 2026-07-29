@@ -14,7 +14,9 @@ import '../../features/employer/presentation/edit_company_screen.dart';
 import '../../features/employer/presentation/employer_analytics_screen.dart';
 import '../../features/employer/presentation/employer_applicant_detail_screen.dart';
 import '../../features/employer/presentation/employer_applicants_screen.dart';
+import '../../features/employer/presentation/employer_candidates_screen.dart';
 import '../../features/employer/presentation/employer_home_screen.dart';
+import '../../features/employer/presentation/employer_interview_screen.dart';
 import '../../features/employer/presentation/employer_job_detail_screen.dart';
 import '../../features/employer/presentation/employer_jobs_screen.dart';
 import '../../features/employer/presentation/job_editor_screen.dart';
@@ -325,6 +327,16 @@ abstract final class AppRouter {
             path: 'analytics',
             name: RouteNames.employerAnalytics,
             pageBuilder: _fade(const EmployerAnalyticsScreen()),
+          ),
+          GoRoute(
+            path: 'interview',
+            name: RouteNames.employerInterview,
+            pageBuilder: _fade(const EmployerInterviewScreen()),
+          ),
+          GoRoute(
+            path: 'candidates',
+            name: RouteNames.employerCandidates,
+            pageBuilder: _fade(const EmployerCandidatesScreen()),
           ),
         ],
       ),

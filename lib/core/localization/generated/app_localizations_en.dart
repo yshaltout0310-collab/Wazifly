@@ -3289,4 +3289,157 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get employerInterviewTitle => 'Interview Kit';
+
+  @override
+  String get employerInterviewSubtitle =>
+      'Generate role-specific questions, model answers, and what to look for.';
+
+  @override
+  String get employerInterviewRoleLabel => 'Role or job title';
+
+  @override
+  String get employerInterviewRoleHint => 'e.g. Senior Flutter Engineer';
+
+  @override
+  String get employerInterviewFocusLabel => 'Focus area (optional)';
+
+  @override
+  String get employerInterviewFocusHint =>
+      'e.g. system design, team leadership';
+
+  @override
+  String get employerInterviewGenerate => 'Generate kit';
+
+  @override
+  String get employerInterviewRegenerate => 'Regenerate';
+
+  @override
+  String get employerInterviewLoading => 'Preparing your interview kit…';
+
+  @override
+  String get employerInterviewScoreLabel => 'Interview readiness';
+
+  @override
+  String get employerInterviewQuestionsTitle => 'Questions & model answers';
+
+  @override
+  String get employerInterviewSuggestedAnswer => 'Suggested answer';
+
+  @override
+  String get employerInterviewStrengthsTitle => 'What to look for';
+
+  @override
+  String get employerInterviewImprovementsTitle => 'Areas to probe';
+
+  @override
+  String get employerInterviewEmptyTitle => 'Build an interview kit';
+
+  @override
+  String get employerInterviewEmptyBody =>
+      'Enter a role above to generate tailored questions with model answers and scoring.';
+
+  @override
+  String get employerInterviewRoleRequired => 'Enter a role to continue.';
+
+  @override
+  String get employerInterviewErrNotConfigured =>
+      'AI isn\'t enabled yet. Enable Firebase AI Logic to use this tool.';
+
+  @override
+  String get employerInterviewErrNetwork =>
+      'Network error. Check your connection and try again.';
+
+  @override
+  String get employerInterviewErrQuota =>
+      'The AI service is busy right now. Please try again shortly.';
+
+  @override
+  String get employerInterviewErrEmpty =>
+      'Couldn\'t build a kit for that role. Try adding more detail.';
+
+  @override
+  String get employerInterviewErrGeneric =>
+      'Something went wrong. Please try again.';
+
+  @override
+  String get employerCandidatesTitle => 'Candidate Matches';
+
+  @override
+  String get employerCandidatesRoleLabel => 'Role to match for';
+
+  @override
+  String get employerCandidatesRoleHint => 'e.g. Senior Flutter Engineer';
+
+  @override
+  String get employerCandidatesGenerate => 'Find top candidates';
+
+  @override
+  String get employerCandidatesRegenerate => 'Re-rank';
+
+  @override
+  String get employerCandidatesLoading => 'Ranking your candidates…';
+
+  @override
+  String get employerCandidatesResultsTitle => 'Top candidates';
+
+  @override
+  String get employerCandidatesMatchingSkills => 'Matching skills';
+
+  @override
+  String get employerCandidatesExperience => 'Experience';
+
+  @override
+  String get employerCandidatesRecommendation => 'AI recommendation';
+
+  @override
+  String get employerCandidatesEmptyTitle => 'No applicants yet';
+
+  @override
+  String get employerCandidatesEmptyBody =>
+      'Candidate matches appear once people apply to your jobs.';
+
+  @override
+  String get employerCandidatesStartTitle => 'Match your candidates';
+
+  @override
+  String get employerCandidatesStartBody =>
+      'Enter a role above to rank your applicants by fit.';
+
+  @override
+  String get employerCandidatesRoleRequired => 'Enter a role to continue.';
+
+  @override
+  String employerCandidatesPoolCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count applicants in your pool',
+      one: '1 applicant in your pool',
+      zero: 'No applicants in your pool',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get employerCandidatesErrNotConfigured =>
+      'AI isn\'t enabled yet. Enable Firebase AI Logic to use this tool.';
+
+  @override
+  String get employerCandidatesErrNetwork =>
+      'Network error. Check your connection and try again.';
+
+  @override
+  String get employerCandidatesErrQuota =>
+      'The AI service is busy right now. Please try again shortly.';
+
+  @override
+  String get employerCandidatesErrEmpty =>
+      'Couldn\'t rank candidates right now. Please try again.';
+
+  @override
+  String get employerCandidatesErrGeneric =>
+      'Something went wrong. Please try again.';
 }

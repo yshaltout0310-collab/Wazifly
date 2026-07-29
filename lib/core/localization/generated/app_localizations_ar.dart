@@ -3281,4 +3281,159 @@ class AppLocalizationsAr extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get employerInterviewTitle => 'حقيبة المقابلة';
+
+  @override
+  String get employerInterviewSubtitle =>
+      'أنشئ أسئلة مخصّصة للوظيفة مع إجابات نموذجية وما ينبغي البحث عنه.';
+
+  @override
+  String get employerInterviewRoleLabel => 'الوظيفة أو المسمى الوظيفي';
+
+  @override
+  String get employerInterviewRoleHint => 'مثال: مهندس Flutter أول';
+
+  @override
+  String get employerInterviewFocusLabel => 'مجال التركيز (اختياري)';
+
+  @override
+  String get employerInterviewFocusHint => 'مثال: تصميم الأنظمة، قيادة الفريق';
+
+  @override
+  String get employerInterviewGenerate => 'إنشاء الحقيبة';
+
+  @override
+  String get employerInterviewRegenerate => 'إعادة الإنشاء';
+
+  @override
+  String get employerInterviewLoading => 'جارٍ تجهيز حقيبة المقابلة…';
+
+  @override
+  String get employerInterviewScoreLabel => 'جاهزية المقابلة';
+
+  @override
+  String get employerInterviewQuestionsTitle => 'الأسئلة والإجابات النموذجية';
+
+  @override
+  String get employerInterviewSuggestedAnswer => 'إجابة مقترحة';
+
+  @override
+  String get employerInterviewStrengthsTitle => 'ما ينبغي البحث عنه';
+
+  @override
+  String get employerInterviewImprovementsTitle => 'نقاط للتعمّق فيها';
+
+  @override
+  String get employerInterviewEmptyTitle => 'أنشئ حقيبة مقابلة';
+
+  @override
+  String get employerInterviewEmptyBody =>
+      'أدخل وظيفة بالأعلى لإنشاء أسئلة مخصّصة مع إجابات نموذجية وتقييم.';
+
+  @override
+  String get employerInterviewRoleRequired => 'أدخل وظيفة للمتابعة.';
+
+  @override
+  String get employerInterviewErrNotConfigured =>
+      'لم يتم تفعيل الذكاء الاصطناعي بعد. فعّل Firebase AI Logic لاستخدام هذه الأداة.';
+
+  @override
+  String get employerInterviewErrNetwork =>
+      'خطأ في الشبكة. تحقق من اتصالك وحاول مجددًا.';
+
+  @override
+  String get employerInterviewErrQuota =>
+      'خدمة الذكاء الاصطناعي مشغولة حاليًا. حاول مجددًا بعد قليل.';
+
+  @override
+  String get employerInterviewErrEmpty =>
+      'تعذّر إنشاء حقيبة لهذه الوظيفة. جرّب إضافة مزيد من التفاصيل.';
+
+  @override
+  String get employerInterviewErrGeneric =>
+      'حدث خطأ ما. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get employerCandidatesTitle => 'مطابقة المرشّحين';
+
+  @override
+  String get employerCandidatesRoleLabel => 'الوظيفة المراد المطابقة لها';
+
+  @override
+  String get employerCandidatesRoleHint => 'مثال: مهندس Flutter أول';
+
+  @override
+  String get employerCandidatesGenerate => 'اعثر على أفضل المرشّحين';
+
+  @override
+  String get employerCandidatesRegenerate => 'إعادة الترتيب';
+
+  @override
+  String get employerCandidatesLoading => 'جارٍ ترتيب المرشّحين…';
+
+  @override
+  String get employerCandidatesResultsTitle => 'أفضل المرشّحين';
+
+  @override
+  String get employerCandidatesMatchingSkills => 'المهارات المطابِقة';
+
+  @override
+  String get employerCandidatesExperience => 'الخبرة';
+
+  @override
+  String get employerCandidatesRecommendation => 'توصية الذكاء الاصطناعي';
+
+  @override
+  String get employerCandidatesEmptyTitle => 'لا يوجد متقدّمون بعد';
+
+  @override
+  String get employerCandidatesEmptyBody =>
+      'تظهر مطابقات المرشّحين بمجرد تقدّم أشخاص لوظائفك.';
+
+  @override
+  String get employerCandidatesStartTitle => 'طابِق مرشّحيك';
+
+  @override
+  String get employerCandidatesStartBody =>
+      'أدخل وظيفة بالأعلى لترتيب المتقدّمين حسب مدى الملاءمة.';
+
+  @override
+  String get employerCandidatesRoleRequired => 'أدخل وظيفة للمتابعة.';
+
+  @override
+  String employerCandidatesPoolCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count متقدّم في قائمتك',
+      many: '$count متقدّمًا في قائمتك',
+      few: '$count متقدّمين في قائمتك',
+      two: 'متقدّمان في قائمتك',
+      one: 'متقدّم واحد في قائمتك',
+      zero: 'لا متقدّمون في قائمتك',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get employerCandidatesErrNotConfigured =>
+      'لم يتم تفعيل الذكاء الاصطناعي بعد. فعّل Firebase AI Logic لاستخدام هذه الأداة.';
+
+  @override
+  String get employerCandidatesErrNetwork =>
+      'خطأ في الشبكة. تحقق من اتصالك وحاول مجددًا.';
+
+  @override
+  String get employerCandidatesErrQuota =>
+      'خدمة الذكاء الاصطناعي مشغولة حاليًا. حاول مجددًا بعد قليل.';
+
+  @override
+  String get employerCandidatesErrEmpty =>
+      'تعذّر ترتيب المرشّحين الآن. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get employerCandidatesErrGeneric =>
+      'حدث خطأ ما. يرجى المحاولة مرة أخرى.';
 }

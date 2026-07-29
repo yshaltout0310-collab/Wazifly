@@ -1,9 +1,12 @@
 # Career Bridge — Session Handoff
 
 > Living handoff doc so a fresh Claude session can continue immediately.
-> Last updated: **Role Selection regression FIXED** (see §7.37) — new users no longer skip the role picker; routing is now
-> Firestore-authoritative per-user (was reading a device-global cache). `analyze` clean, **679 tests**.
-> Prior update: **Email-Only Auth + Email Verification — COMPLETE** (see §7.29, feat `356a290`) — a deliberate MVP
+> Last updated: **Employer polish (see §7.38)** — Company completion fix (needs `firestore.rules` redeploy) + Logo upload
+> now works with **no Storage bucket** (Firestore data-URI) + **Interview** and **Candidates** AI tools shipped (were
+> "Coming Soon"). `analyze` clean, **691 tests**.
+> Prior update: **Role Selection regression FIXED** (see §7.37) — new users no longer skip the role picker; routing is now
+> Firestore-authoritative per-user (was reading a device-global cache).
+> Earlier: **Email-Only Auth + Email Verification — COMPLETE** (see §7.29, feat `356a290`) — a deliberate MVP
 > **scope cut**: Google Sign-In is **fully removed** (UI + logic + widget + l10n + enum + test fake) and replaced by a
 > hard **email-verification gate**. Flow now: sign up → Firebase **auto-sends** a verification email → land on a new
 > **Verify-email screen** (clear message, **"I've verified — Continue"** = `reload()` + re-check, **"Resend
@@ -2896,6 +2899,59 @@ Employer) → choice saved to Firestore → future logins route directly from th
 `goAfterAuth` through a minimal `GoRouter`: (1) the exact regression — new user + a stale `jobSeeker` device cache + no
 Firestore role ⇒ lands on Role Selection and the stale cache is reconciled to null; (2) a returning user whose saved
 Firestore role routes straight to the seeker home and rehydrates the local cache. Full suite green.
+
+---
+
+## 7.38 ✅ Employer polish — Company completion + Logo upload FIXED, Interview & Candidates AI tools shipped
+
+Four employer-side items before final submission. `analyze` clean, **691 tests** (+12). All reuse the existing
+architecture (Riverpod seams, the shared `AiService`, `StatusView`, l10n EN+AR, `go_router`) — no new dependencies, no
+existing behavior changed.
+
+**P1 — Company Profile completion stuck at 13% (FIXED).** Root cause was **not** the app: completion is derived live
+from `Company.missingFields` and both the dashboard (`companyCompletionProvider`) and profile screen watch the live
+`companyProvider` stream, so the reactive/derive chain was already correct (proven by a new provider-chain test). 13% =
+exactly 1/8 fields (only the `contactEmail` auth-email fallback) → the saved company was **reading back empty**. The
+`companies` **Firestore rule** was the outlier: it used a *combined* `allow write` with `unchanged('ownerUid')`, whereas
+every other collection splits create/update. On a **create**, `resource` is null, so `unchanged('ownerUid')` errors and
+the write is **denied** — so `ensureCompany` never created the doc and every Save was a denied create (offline
+optimistic write rolls back → completion reverts to 13%). Fix: split the `companies` rule into `allow create` (pins
+`ownerUid == companyId`) + `allow update` (keeps `unchanged('ownerUid')`), mirroring jobs/applications/resumes. **Requires
+`firebase deploy --only firestore:rules` to take effect on device.** Also hardened the app so a silent failure can't
+masquerade as success: `FirestoreCompanyRepository.saveCompany` now lets genuine write errors propagate (keeps the
+`!_ready` graceful no-op) → the editor shows a real error instead of a false "Saved".
+
+**P2 — Company logo upload always failed (FIXED).** Root cause: uploads went to **Firebase Storage**, whose bucket is
+unprovisioned (and `storage.rules` undeployed) — `putData` failed, `upload()` returned null → "upload failed" every time.
+Both are external, paid/manual steps. Fix (self-contained, works on the free tier): a new **`DataUriCompanyLogoStorage`**
+(the default `companyLogoStorageProvider` binding) downscales the image (`ImageOptimizer`, 256 px cap) and stores it as a
+base64 `data:` URI **directly on the Firestore company doc** via the existing `setLogoUrl` seam — no bucket needed. A ~700
+KB guard keeps it under Firestore's 1 MB doc limit. `AppImage.provider` now renders `data:` URIs via `MemoryImage` (still
+`ResizeImage`-wrapped) alongside `http(s)` `NetworkImage`. The Cloud-Storage-backed `FirebaseCompanyLogoStorage` is kept
+for when a bucket is later provisioned (rebind one provider). Controller/UI/removeLogo flow unchanged.
+
+**P3 — Interview AI tool (was "Coming Soon" → functional MVP).** New employer tool at `/employer/interview`
+(`features/employer/{domain/interview_kit.dart, data/interview_kit_repository_impl.dart,
+application/interview_kit_controller.dart, presentation/employer_interview_screen.dart}`). Enter a role (+ optional focus)
+→ one `AiService.generateJson` call returns an **interview kit**: role-specific questions each with a **model/suggested
+answer** + focus chip, an overall **readiness score** (0–100 brand-gradient badge), **what to look for** (strengths) and
+**areas to probe** (improvements). `StatusView` for loading/empty/error; failures mapped from `AiException`.
+
+**P4 — Candidates AI tool (was "Coming Soon" → functional MVP).** New employer tool at `/employer/candidates`
+(`features/employer/{domain/candidate_match.dart, data/candidate_match_repository_impl.dart,
+application/candidate_match_controller.dart, presentation/employer_candidates_screen.dart}`). A new
+`employerCandidatePoolProvider` flattens/dedupes the employer's applicant pool (`ApplicantSnapshot`s on applications) into
+primitive `CandidateProfile`s; enter a target role → the AI **ranks** them and returns **top candidates** with a **match
+score** (reuses `MatchScoreBadge`), **matching skills**, an **experience summary**, and an **AI recommendation**. Grounded
+strictly in the real pool (never invents people). Honest empty state when no one has applied yet.
+
+**Wiring & tests.** The two employer-home tool cards lost their `route: null` "Soon" badge and now navigate to the new
+routes (`RouteNames.employerInterview` / `employerCandidates`); routes registered under `employerHome`. l10n EN + AR added
+for both tools (incl. an Arabic plural for the pool count) and regenerated. New tests: company completion recalculates
+through the provider chain after save; `DataUriCompanyLogoStorage` embeds/round-trips a data URI + persists via the
+controller; interview-kit + candidate-match repositories parse/stamp/empty-throw; controllers map AI failures; the
+candidate-pool provider dedupes. `analyze` clean, full suite **691** green. **Deploy note: P1 needs the updated
+`firestore.rules` deployed; P2/P3/P4 need no console changes.**
 
 ---
 

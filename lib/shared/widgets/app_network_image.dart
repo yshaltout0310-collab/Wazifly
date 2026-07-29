@@ -19,6 +19,11 @@ abstract final class AppImage {
   /// A decode-downsizing [ImageProvider] for [url], sized to [logicalSize]
   /// (the larger display dimension in logical pixels) × the device pixel ratio.
   /// Aspect ratio is preserved (only the cache width is pinned); never upscales.
+  ///
+  /// Handles both remote `http(s)` URLs ([NetworkImage]) and embedded
+  /// `data:<mime>;base64,…` URIs ([MemoryImage]) — the latter lets logos/photos
+  /// live directly on a Firestore document with no Cloud Storage bucket. Both are
+  /// wrapped in [ResizeImage] for the same decode-downsizing.
   static ImageProvider<Object> provider(
     String url, {
     required BuildContext context,
@@ -27,9 +32,17 @@ abstract final class AppImage {
     final dpr = MediaQuery.maybeDevicePixelRatioOf(context) ?? 1.0;
     final cacheWidth = (logicalSize * dpr).round().clamp(1, 4096);
     return ResizeImage(
-      NetworkImage(url),
+      _baseProvider(url),
       width: cacheWidth,
       allowUpscaling: false,
     );
+  }
+
+  static ImageProvider<Object> _baseProvider(String url) {
+    if (url.startsWith('data:')) {
+      final data = Uri.parse(url).data;
+      if (data != null) return MemoryImage(data.contentAsBytes());
+    }
+    return NetworkImage(url);
   }
 }

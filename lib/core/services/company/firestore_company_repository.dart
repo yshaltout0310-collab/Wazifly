@@ -51,15 +51,14 @@ class FirestoreCompanyRepository implements CompanyRepository {
 
   @override
   Future<void> saveCompany(Company company) async {
+    // Firebase not configured is a graceful no-op; a genuine write failure
+    // (e.g. a security-rule denial) must propagate so the editor reports the
+    // error instead of a false "Saved" (which previously left completion stale).
     if (!_ready) return;
-    try {
-      final data = company.toJson()
-        ..remove('companyId')
-        ..['updatedAt'] = FieldValue.serverTimestamp();
-      await _companies.doc(company.companyId).set(data, SetOptions(merge: true));
-    } catch (e) {
-      debugPrint('[CompanyRepository] saveCompany failed: $e');
-    }
+    final data = company.toJson()
+      ..remove('companyId')
+      ..['updatedAt'] = FieldValue.serverTimestamp();
+    await _companies.doc(company.companyId).set(data, SetOptions(merge: true));
   }
 
   @override

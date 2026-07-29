@@ -57,14 +57,22 @@ service cloud.firestore {
 
     // Company documents at companies/{companyId} (companyId == owner uid in
     // Milestone 1). Readable by any signed-in user (future job listings surface
-    // the company), writable only by the owning employer. ownerUid can't be
-    // repointed on update; name/description are capped.
+    // the company), writable only by the owning employer. Split create/update
+    // like the other collections: create pins ownership; update keeps ownerUid
+    // immutable. (A combined `allow write` with unchanged('ownerUid') denied the
+    // very first write, because on create `resource` is null and the immutability
+    // check errors — so ensureCompany + the first Save never persisted, leaving
+    // the profile stuck at its baseline completion.) name/description are capped.
     match /companies/{companyId} {
       allow read: if signedIn();
-      allow write: if signedIn() && request.auth.uid == companyId
-                      && unchanged('ownerUid')
-                      && capped('name', 200)
-                      && capped('description', 4000);
+      allow create: if signedIn() && request.auth.uid == companyId
+                       && request.resource.data.ownerUid == companyId
+                       && capped('name', 200)
+                       && capped('description', 4000);
+      allow update: if signedIn() && request.auth.uid == companyId
+                       && unchanged('ownerUid')
+                       && capped('name', 200)
+                       && capped('description', 4000);
     }
 
     // Job postings at jobs/{jobId} (Phase 5 · Milestone 2). A published job is

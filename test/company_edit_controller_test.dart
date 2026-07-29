@@ -2,7 +2,9 @@ import 'package:careerbridge/core/services/company/company_repository.dart';
 import 'package:careerbridge/core/services/company/in_memory_company_repository.dart';
 import 'package:careerbridge/features/auth/application/auth_providers.dart';
 import 'package:careerbridge/features/employer/application/company_edit_controller.dart';
+import 'package:careerbridge/features/employer/application/company_providers.dart';
 import 'package:careerbridge/features/employer/domain/company_failure.dart';
+import 'package:careerbridge/features/employer/domain/company_size.dart';
 import 'package:careerbridge/features/employer/domain/industry.dart';
 import 'package:careerbridge/shared/models/app_user.dart';
 import 'package:careerbridge/shared/models/company.dart';
@@ -53,6 +55,38 @@ void main() {
               .copyWith(name: 'Acme', companySlug: 'custom-slug'),
         );
     expect((await repo.fetchCompany('c1'))?.companySlug, 'custom-slug');
+  });
+
+  test('completion recalculates and the dashboard refreshes after a save',
+      () async {
+    final repo = InMemoryCompanyRepository();
+    final c = _container(repo: repo);
+
+    // Keep the reactive company/auth streams subscribed for the whole test.
+    final sub = c.listen(companyCompletionProvider, (_, __) {},
+        fireImmediately: true);
+    addTearDown(sub.close);
+    await pumpEventQueue();
+
+    // Baseline: an empty company with only the auth-email contact fallback →
+    // 1 of 8 tracked fields → 13% (the exact value the bug got stuck at).
+    expect(c.read(companyCompletionProvider), 13);
+
+    await c.read(companyEditControllerProvider.notifier).save(
+          const Company(companyId: '', ownerUid: '').copyWith(
+            name: 'Acme Corp',
+            industry: Industry.technology,
+            size: CompanySize.size11_50,
+            website: 'https://acme.co',
+            headquarters: 'Doha',
+            description: 'We build things.',
+            contactEmail: 'hr@acme.co',
+          ),
+        );
+    await pumpEventQueue();
+
+    // 7 of 8 filled (only the logo is missing) → the dashboard refreshes to 88%.
+    expect(c.read(companyCompletionProvider), 88);
   });
 
   test('signed-out users cannot save', () async {

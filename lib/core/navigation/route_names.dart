@@ -49,6 +49,8 @@ abstract final class RouteNames {
   static const String employerApplicants = 'employerApplicants';
   static const String employerApplicantDetail = 'employerApplicantDetail';
   static const String employerAnalytics = 'employerAnalytics';
+  static const String employerInterview = 'employerInterview';
+  static const String employerCandidates = 'employerCandidates';
 
   static const String splashPath = '/';
   static const String languagePath = '/language';
@@ -97,4 +99,6 @@ abstract final class RouteNames {
   static const String employerApplicantsPath = '/employer/applicants';
   static const String employerApplicantDetailPath = '/employer/applicants/:appId';
   static const String employerAnalyticsPath = '/employer/analytics';
+  static const String employerInterviewPath = '/employer/interview';
+  static const String employerCandidatesPath = '/employer/candidates';
 }

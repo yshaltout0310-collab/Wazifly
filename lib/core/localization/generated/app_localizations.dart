@@ -6085,6 +6085,264 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, =0{None} =1{1 item} other{{count} items}}'**
   String learningItemsCount(int count);
+
+  /// No description provided for @employerInterviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Interview Kit'**
+  String get employerInterviewTitle;
+
+  /// No description provided for @employerInterviewSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate role-specific questions, model answers, and what to look for.'**
+  String get employerInterviewSubtitle;
+
+  /// No description provided for @employerInterviewRoleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Role or job title'**
+  String get employerInterviewRoleLabel;
+
+  /// No description provided for @employerInterviewRoleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Senior Flutter Engineer'**
+  String get employerInterviewRoleHint;
+
+  /// No description provided for @employerInterviewFocusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Focus area (optional)'**
+  String get employerInterviewFocusLabel;
+
+  /// No description provided for @employerInterviewFocusHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. system design, team leadership'**
+  String get employerInterviewFocusHint;
+
+  /// No description provided for @employerInterviewGenerate.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate kit'**
+  String get employerInterviewGenerate;
+
+  /// No description provided for @employerInterviewRegenerate.
+  ///
+  /// In en, this message translates to:
+  /// **'Regenerate'**
+  String get employerInterviewRegenerate;
+
+  /// No description provided for @employerInterviewLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing your interview kit…'**
+  String get employerInterviewLoading;
+
+  /// No description provided for @employerInterviewScoreLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Interview readiness'**
+  String get employerInterviewScoreLabel;
+
+  /// No description provided for @employerInterviewQuestionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Questions & model answers'**
+  String get employerInterviewQuestionsTitle;
+
+  /// No description provided for @employerInterviewSuggestedAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggested answer'**
+  String get employerInterviewSuggestedAnswer;
+
+  /// No description provided for @employerInterviewStrengthsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What to look for'**
+  String get employerInterviewStrengthsTitle;
+
+  /// No description provided for @employerInterviewImprovementsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Areas to probe'**
+  String get employerInterviewImprovementsTitle;
+
+  /// No description provided for @employerInterviewEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Build an interview kit'**
+  String get employerInterviewEmptyTitle;
+
+  /// No description provided for @employerInterviewEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a role above to generate tailored questions with model answers and scoring.'**
+  String get employerInterviewEmptyBody;
+
+  /// No description provided for @employerInterviewRoleRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a role to continue.'**
+  String get employerInterviewRoleRequired;
+
+  /// No description provided for @employerInterviewErrNotConfigured.
+  ///
+  /// In en, this message translates to:
+  /// **'AI isn\'t enabled yet. Enable Firebase AI Logic to use this tool.'**
+  String get employerInterviewErrNotConfigured;
+
+  /// No description provided for @employerInterviewErrNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'Network error. Check your connection and try again.'**
+  String get employerInterviewErrNetwork;
+
+  /// No description provided for @employerInterviewErrQuota.
+  ///
+  /// In en, this message translates to:
+  /// **'The AI service is busy right now. Please try again shortly.'**
+  String get employerInterviewErrQuota;
+
+  /// No description provided for @employerInterviewErrEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t build a kit for that role. Try adding more detail.'**
+  String get employerInterviewErrEmpty;
+
+  /// No description provided for @employerInterviewErrGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong. Please try again.'**
+  String get employerInterviewErrGeneric;
+
+  /// No description provided for @employerCandidatesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Candidate Matches'**
+  String get employerCandidatesTitle;
+
+  /// No description provided for @employerCandidatesRoleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Role to match for'**
+  String get employerCandidatesRoleLabel;
+
+  /// No description provided for @employerCandidatesRoleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Senior Flutter Engineer'**
+  String get employerCandidatesRoleHint;
+
+  /// No description provided for @employerCandidatesGenerate.
+  ///
+  /// In en, this message translates to:
+  /// **'Find top candidates'**
+  String get employerCandidatesGenerate;
+
+  /// No description provided for @employerCandidatesRegenerate.
+  ///
+  /// In en, this message translates to:
+  /// **'Re-rank'**
+  String get employerCandidatesRegenerate;
+
+  /// No description provided for @employerCandidatesLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Ranking your candidates…'**
+  String get employerCandidatesLoading;
+
+  /// No description provided for @employerCandidatesResultsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Top candidates'**
+  String get employerCandidatesResultsTitle;
+
+  /// No description provided for @employerCandidatesMatchingSkills.
+  ///
+  /// In en, this message translates to:
+  /// **'Matching skills'**
+  String get employerCandidatesMatchingSkills;
+
+  /// No description provided for @employerCandidatesExperience.
+  ///
+  /// In en, this message translates to:
+  /// **'Experience'**
+  String get employerCandidatesExperience;
+
+  /// No description provided for @employerCandidatesRecommendation.
+  ///
+  /// In en, this message translates to:
+  /// **'AI recommendation'**
+  String get employerCandidatesRecommendation;
+
+  /// No description provided for @employerCandidatesEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No applicants yet'**
+  String get employerCandidatesEmptyTitle;
+
+  /// No description provided for @employerCandidatesEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Candidate matches appear once people apply to your jobs.'**
+  String get employerCandidatesEmptyBody;
+
+  /// No description provided for @employerCandidatesStartTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Match your candidates'**
+  String get employerCandidatesStartTitle;
+
+  /// No description provided for @employerCandidatesStartBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a role above to rank your applicants by fit.'**
+  String get employerCandidatesStartBody;
+
+  /// No description provided for @employerCandidatesRoleRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a role to continue.'**
+  String get employerCandidatesRoleRequired;
+
+  /// No description provided for @employerCandidatesPoolCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No applicants in your pool} =1{1 applicant in your pool} other{{count} applicants in your pool}}'**
+  String employerCandidatesPoolCount(int count);
+
+  /// No description provided for @employerCandidatesErrNotConfigured.
+  ///
+  /// In en, this message translates to:
+  /// **'AI isn\'t enabled yet. Enable Firebase AI Logic to use this tool.'**
+  String get employerCandidatesErrNotConfigured;
+
+  /// No description provided for @employerCandidatesErrNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'Network error. Check your connection and try again.'**
+  String get employerCandidatesErrNetwork;
+
+  /// No description provided for @employerCandidatesErrQuota.
+  ///
+  /// In en, this message translates to:
+  /// **'The AI service is busy right now. Please try again shortly.'**
+  String get employerCandidatesErrQuota;
+
+  /// No description provided for @employerCandidatesErrEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t rank candidates right now. Please try again.'**
+  String get employerCandidatesErrEmpty;
+
+  /// No description provided for @employerCandidatesErrGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong. Please try again.'**
+  String get employerCandidatesErrGeneric;
 }
 
 class _AppLocalizationsDelegate

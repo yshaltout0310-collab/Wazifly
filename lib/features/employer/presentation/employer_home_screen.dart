@@ -46,9 +46,13 @@ class EmployerHomeScreen extends ConsumerWidget {
       (
         icon: Icons.event_available_outlined,
         label: l10n.employerInterviews,
-        route: null
+        route: RouteNames.employerInterview
       ),
-      (icon: Icons.groups_outlined, label: l10n.employerCandidates, route: null),
+      (
+        icon: Icons.groups_outlined,
+        label: l10n.employerCandidates,
+        route: RouteNames.employerCandidates
+      ),
     ];
 
     return Scaffold(
