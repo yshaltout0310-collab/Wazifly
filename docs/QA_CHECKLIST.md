@@ -18,14 +18,15 @@ Android-12 splash path.
 - ☐ No debug-only artifacts (debug banner off — `debugShowCheckedModeBanner: false`).
 
 ## 2. Branding
-- ☐ Launcher icon shows the emerald mark (all densities); adaptive icon
+- ☐ Launcher icon shows the Wazifly mark (all densities); adaptive icon
   foreground is centered within the safe mask (round + squircle launchers).
 - ☐ Themed/monochrome icon acceptable on Android 13+ themed-icons.
-- ☐ Native splash shows the brand color (`#0B7D57`) → logo, **no white flash**
+- ☐ Native splash shows the brand color (`#0B1D3A` navy) → logo, **no white flash**
   before the Flutter splash; correct on API < 31 and API ≥ 31.
-- ☐ In-app animated splash (emerald + logo) transitions cleanly to the first screen.
+- ☐ In-app animated splash (navy + royal-blue glow + logo) transitions cleanly to
+  the first screen.
 - ☐ App label reads "Wazifly" in the launcher and recents.
-- ☐ Dark-mode splash uses the dark background (`#101413`).
+- ☐ Dark-mode splash uses the dark background (`#0A1526`).
 
 ## 3. Localization & fonts (EN + AR)
 - ☐ Switch language in Settings → whole app re-renders in the chosen language.
@@ -67,9 +68,9 @@ Android-12 splash path.
   are either labeled or marked decorative; the offline banner is announced.
 - ☐ **Text scaling** — set system font size to Largest (≈ 1.3–2.0×): screens remain
   usable, no critical clipping/overlap on Home, Settings, a form, and a dashboard.
-- ☐ **Contrast** — primary text on emerald surfaces and on cards meets ~WCAG AA
-  (4.5:1 body / 3:1 large). Verify the offline banner (white on `#101413`), primary
-  buttons (white on emerald), and secondary/hint text.
+- ☐ **Contrast** — primary text on royal-blue surfaces and on cards meets ~WCAG AA
+  (4.5:1 body / 3:1 large). Verify the offline banner (white on `#0A1526`), primary
+  buttons (white on royal blue `#1677FF`), and secondary/hint text.
 - ☐ **Focus & dismissal** — dialogs/sheets are reachable and dismissible; keyboard
   (soft) does not trap focus.
 - ☐ **Orientation/locale changes** don't lose state (config changes handled).

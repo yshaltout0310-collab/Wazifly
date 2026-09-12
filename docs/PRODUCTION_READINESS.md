@@ -23,7 +23,7 @@ Completed engineering work vs. the manual actions still owed before publishing:
 
 | Area | Status | Notes |
 | --- | --- | --- |
-| **Release build (R8/AAB)** | ✅ Ready | `flutter analyze` clean · **574 tests** pass · release `.apk` (73.0 MB) + `.aab` (71.3 MB) build under R8. |
+| **Release build (R8/AAB)** | ✅ Ready | `flutter analyze` clean · **696 tests** pass · release `.apk` (73.0 MB) + `.aab` (71.3 MB) build under R8. `flutter build web --release` is also green (see `TECHNICAL_AUDIT.md` §4.1). |
 | **Google Play (paperwork)** | ✅ Ready | Store listing (EN + AR), Data Safety, Play Console declarations, screenshot specs all prepared and reconciled to the shipped app. |
 | **Firebase (code/rules)** | ✅ Ready | Auth/Firestore/Analytics/Crashlytics/Performance/App Check/AI Logic all wired; `firestore.rules` deployed & re-audited (8 collections). |
 | **Security** | ✅ Ready | Secrets gitignored & untracked; no hardcoded secrets; advertising ID (`AD_ID`) stripped from the artifact; only normal permissions. |
@@ -46,7 +46,7 @@ All commands run on the committed tree at Phase 7 · Milestone 5.
 | Check | Command | Result |
 | --- | --- | --- |
 | Static analysis | `flutter analyze` | **No issues found!** |
-| Tests | `flutter test` | **574 passed** (571 prior + 3 new manifest guards) |
+| Tests | `flutter test` | **696 passed** (574 at Phase 7 · M5 sign-off; re-run 2026-09-12 during the technical audit) |
 | Release APK | `flutter build apk --release` | ✅ built, 73.0 MB, R8 on (only the known benign `firebase_analytics` KGP *warning*) |
 | Release AAB | `flutter build appbundle --release` | ✅ built, 71.3 MB |
 | AD_ID stripped | grep the merged release manifest | ✅ `com.google.android.gms.permission.AD_ID` **absent** (was present before the fix) |
@@ -135,7 +135,7 @@ All commands run on the committed tree at Phase 7 · Milestone 5.
 
 ## 8. QA
 
-- `flutter analyze` clean; **574 tests** (the `render_all_locales` EN+AR sweep is
+- `flutter analyze` clean; **696 tests** (the `render_all_locales` EN+AR sweep is
   the regression backbone). ✅
 - Release-build smoke (EN + AR launch, offline banner, notification prompt,
   biometric availability) verified on `emulator-5554` this milestone (see HANDOFF

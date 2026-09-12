@@ -1,0 +1,41 @@
+# Replit configuration for Wazifly (Flutter web target).
+#
+# Run button  → builds the bundle if needed, then serves it on $PORT.
+# Deploy      → static deployment: `build` produces build/web, `publicDir`
+#               publishes it. Nothing is executed at request time, so a static
+#               deployment is both the cheapest and the right shape for a
+#               client-side Flutter app that talks to Firebase directly.
+#
+# Full runbook, including the Firebase console step the deployed domain needs:
+# docs/REPLIT_DEPLOYMENT.md
+
+run = "bash tool/replit/serve_web.sh"
+entrypoint = "lib/main.dart"
+
+hidden = [".dart_tool", "build", ".flutter-plugins-dependencies"]
+
+[nix]
+channel = "stable-24_05"
+
+[env]
+# Flutter is installed into the Repl's persistent home by
+# tool/replit/install_flutter.sh rather than taken from nixpkgs, which lags the
+# stable channel and would not satisfy this project's SDK constraint.
+FLUTTER_HOME = "/home/runner/flutter"
+PATH = "/home/runner/flutter/bin:/home/runner/.pub-cache/bin:${PATH}"
+PUB_CACHE = "/home/runner/.pub-cache"
+
+[deployment]
+deploymentTarget = "static"
+publicDir = "build/web"
+build = ["bash", "tool/replit/build_web.sh"]
+
+[[ports]]
+localPort = 8080
+externalPort = 80
+
+[languages.dart]
+pattern = "**/*.dart"
+
+[languages.dart.languageServer]
+start = "dart language-server --protocol=lsp"

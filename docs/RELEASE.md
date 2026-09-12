@@ -99,8 +99,10 @@ them.**
 ## 4. Branding (regenerate only when a source image changes)
 
 Sources: `assets/icon/app_icon.png`, `ic_background.png`, `ic_foreground.png`,
-`splash_logo.png` (all 1024²). Brand colors: emerald `#0E9F6E` (icon bg),
-`#0B7D57` (splash), dark `#101413` — must match `lib/core/theme/app_colors.dart`.
+`splash_logo.png` (all 1024²). Brand colors: navy `#0B1D3A` (icon bg + splash),
+royal blue `#1677FF` (accent), dark `#0A1526` — must match
+`lib/core/theme/app_colors.dart` and the `flutter_native_splash` /
+`flutter_launcher_icons` blocks in `pubspec.yaml`.
 
 ```bash
 dart run flutter_launcher_icons      # launcher + adaptive icons (all densities)
@@ -257,7 +259,7 @@ up yet; this is the documented foundation.
 | # | Step | Command | Pass criteria |
 | --- | --- | --- | --- |
 | 1 | Static analysis | `flutter analyze` | `No issues found!` |
-| 2 | Tests | `flutter test` | all pass (**574** baseline; see HANDOFF for the current count) |
+| 2 | Tests | `flutter test` | all pass (**696** as of 2026-09-12; see HANDOFF for the current count) |
 | 3 | Asset verification | `grep -roE "assets/[A-Za-z0-9_./-]+" lib/` vs `pubspec.yaml` | every declared asset used or reserved (§10) |
 | 4 | Fonts present | (covered by `test/font_bundling_test.dart` in step 2) | Inter+Cairo load from the bundle |
 | 5 | Manifest/permissions | (covered by `test/android_manifest_test.dart` in step 2) | only INTERNET/POST_NOTIFICATIONS/USE_BIOMETRIC; `AD_ID` removed |

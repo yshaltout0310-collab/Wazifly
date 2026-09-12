@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 
+import '../../core/utils/stable_hash.dart';
+
 /// The five learning-interest categories a job seeker can maintain.
 ///
 /// A single enum (rather than five separate list fields) keeps the aggregate
@@ -59,7 +61,7 @@ class LearningInterest extends Equatable {
 
   /// Deterministic id for a (category, label) pair — the de-dup key.
   static String idFor(LearningCategory category, String label) =>
-      _fnv1a('${category.name}::${label.trim().toLowerCase()}');
+      stableHash('${category.name}::${label.trim().toLowerCase()}');
 
   LearningInterest copyWith({String? label, String? note, bool clearNote = false}) {
     final newLabel = (label ?? this.label).trim();
@@ -202,18 +204,6 @@ class LearningProfile extends Equatable {
 
   @override
   List<Object?> get props => [uid, interests, updatedAt];
-}
-
-/// Deterministic 64-bit FNV-1a hash as hex (stable across sessions/isolates).
-String _fnv1a(String input) {
-  var hash = 0xcbf29ce484222325;
-  const prime = 0x100000001b3;
-  const mask = 0xFFFFFFFFFFFFFFFF;
-  for (final unit in input.codeUnits) {
-    hash = (hash ^ unit) & mask;
-    hash = (hash * prime) & mask;
-  }
-  return hash.toRadixString(16).padLeft(16, '0');
 }
 
 DateTime _parseDate(Object? raw) {

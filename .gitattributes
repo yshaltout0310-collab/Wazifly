@@ -1,0 +1,9 @@
+# Shell scripts must keep LF endings in the repository and on checkout.
+# `tool/replit/*.sh` run on Linux inside a Repl, where a CRLF line ending makes
+# the shebang and every command fail with a `\r: command not found`. Windows
+# checkouts default to CRLF (core.autocrlf=true), so this pins them explicitly.
+*.sh text eol=lf
+
+# Nix and Replit config are read by Linux tooling for the same reason.
+*.nix text eol=lf
+.replit text eol=lf

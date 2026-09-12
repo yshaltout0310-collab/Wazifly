@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 
 import '../../../features/cv_builder/domain/cv_data.dart';
 import '../../../features/resume_analyzer/domain/resume_analysis.dart';
+import '../../utils/stable_hash.dart';
 
 /// Lifecycle status of a stored CV.
 enum CvStatus { active, archived }
@@ -183,20 +184,12 @@ class CvDocument extends Equatable {
 
   /// A stable, deterministic fingerprint of the CV **content** (not metadata),
   /// used for import deduplication across sessions. FNV-1a over canonical JSON.
-  String get contentHash => _fnv1a(jsonEncode(content.toJson()));
+  String get contentHash => stableHash(jsonEncode(content.toJson()));
 
   /// Deterministic fingerprint of raw source bytes (e.g. an imported PDF), used
   /// to detect re-importing an identical file.
-  static String hashBytes(List<int> bytes) {
-    var hash = 0xcbf29ce484222325;
-    const prime = 0x100000001b3;
-    const mask = 0xFFFFFFFFFFFFFFFF;
-    for (final b in bytes) {
-      hash = (hash ^ (b & 0xFF)) & mask;
-      hash = (hash * prime) & mask;
-    }
-    return hash.toRadixString(16).padLeft(16, '0');
-  }
+  static String hashBytes(List<int> bytes) =>
+      stableHashOfUnits(bytes.map((b) => b & 0xFF).toList(growable: false));
 
   /// Creates a fresh CV.
   factory CvDocument.create({
@@ -456,19 +449,6 @@ List<String> _cleanTags(List<String> tags) {
 int _clampScore(Object? raw) {
   final n = raw is num ? raw.toInt() : int.tryParse(raw?.toString() ?? '') ?? 0;
   return n < 0 ? 0 : (n > 100 ? 100 : n);
-}
-
-/// Deterministic 64-bit FNV-1a hash as hex (stable across sessions/isolates,
-/// unlike `String.hashCode`).
-String _fnv1a(String input) {
-  var hash = 0xcbf29ce484222325;
-  const prime = 0x100000001b3;
-  const mask = 0xFFFFFFFFFFFFFFFF;
-  for (final unit in input.codeUnits) {
-    hash = (hash ^ unit) & mask;
-    hash = (hash * prime) & mask;
-  }
-  return hash.toRadixString(16).padLeft(16, '0');
 }
 
 /// Tolerates ISO-8601 strings, epoch millis, and Firestore `Timestamp`

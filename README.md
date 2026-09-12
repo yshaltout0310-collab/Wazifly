@@ -6,6 +6,25 @@ Wazifly helps candidates discover opportunities, improve their resumes, prepare 
 
 ---
 
+# 📌 Project Status
+
+The app is feature-complete and release-engineered: R8 release builds, deployed
+Firestore rules, bundled fonts, and store/legal paperwork prepared. Two things
+are deliberately not what they may appear, and are worth knowing before
+evaluating:
+
+- **The job catalogue job seekers browse is a bundled dataset** of 18 bilingual
+  openings (`assets/data/seed_jobs.json`), not live Firestore data. Jobs an
+  employer publishes go to Firestore and appear on that employer's dashboard.
+- **Submitted applications are session-scoped** (in memory), so they do not
+  survive a restart and do not reach an employer's applicant list.
+
+Both sit behind the same repository interfaces the real implementations would,
+so connecting them is a provider rebind rather than a rewrite. Full analysis:
+[docs/TECHNICAL_AUDIT.md](docs/TECHNICAL_AUDIT.md).
+
+---
+
 # ✨ Features
 
 ## For Job Seekers
@@ -206,15 +225,31 @@ Run tests using:
 flutter test
 ```
 
+Current state of the quality gates:
+
+| Check | Result |
+| --- | --- |
+| `flutter analyze` | No issues found |
+| `flutter test` | 696 tests pass (127 test files) |
+| Line coverage | 67.0% |
+| Localization parity | 1041 / 1041 keys, English ↔ Arabic |
+| `flutter build web --release` | Succeeds |
+
 ---
 
 # 📄 Documentation
 
-Additional documentation can be found in:
-
-- docs/
-- HANDOFF.md
-- SOURCE_CODE_GUIDE.md
+| Document | Purpose |
+| --- | --- |
+| [SOURCE_CODE_GUIDE.md](SOURCE_CODE_GUIDE.md) | Full source walkthrough for reviewers — architecture, every subsystem, build & run |
+| [docs/TECHNICAL_AUDIT.md](docs/TECHNICAL_AUDIT.md) | Evidence-backed audit: findings, severities, security review, recommendations |
+| [docs/JUDGE_BRIEF.md](docs/JUDGE_BRIEF.md) | Demo script, architecture talking points and Q&A prep for a technical evaluation |
+| [docs/REPLIT_DEPLOYMENT.md](docs/REPLIT_DEPLOYMENT.md) | Deploying the web build on Replit, including the Firebase console steps |
+| [docs/RELEASE.md](docs/RELEASE.md) | Reproducible Android release runbook (keystore → Play upload) |
+| [docs/PRODUCTION_READINESS.md](docs/PRODUCTION_READINESS.md) | Go/No-Go sign-off for Google Play |
+| [docs/QA_CHECKLIST.md](docs/QA_CHECKLIST.md) | Pre-release manual QA sweep (EN + AR, light + dark) |
+| [docs/store/](docs/store/) · [docs/legal/](docs/legal/) | Play listing, data safety, console declarations · privacy policy + terms templates |
+| [HANDOFF.md](HANDOFF.md) | Running engineering log of every phase and milestone |
 
 ---
 
@@ -232,6 +267,21 @@ Android App Bundle:
 flutter build appbundle
 ```
 
+Web:
+
+```bash
+flutter build web --release
+```
+
+The web target builds from a clean clone — `firebase_options.dart` carries the
+web Firebase config. Biometrics, Crashlytics, push notifications and App Check
+have no web implementation and disable themselves silently; everything else,
+including all AI features, works. Note that `android/app/google-services.json`
+is gitignored, so supply your own before building the **Android** target.
+
+Deploying the web build to Replit (`.replit`, `replit.nix` and `tool/replit/`
+are checked in): see [docs/REPLIT_DEPLOYMENT.md](docs/REPLIT_DEPLOYMENT.md).
+
 ---
 
 # 👨‍💻 Developed For
@@ -245,4 +295,3 @@ Built using Flutter, Firebase, Riverpod, and AI technologies.
 # 📜 License
 
 This project is intended for educational, research, and hackathon purposes.
-- Job discovery, matching, resume analysis, career coach, interview prep.

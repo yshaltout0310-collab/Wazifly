@@ -25,7 +25,11 @@ class LocalAuthBiometricService implements BiometricService {
       // when no biometric is enrolled; treat that as "not enrolled" for the UI
       // (option shown, disabled, with an explanation) rather than unavailable.
       return BiometricCapability.notEnrolled;
-    } on PlatformException {
+    } catch (_) {
+      // Any failure means "can't offer biometrics here" — a PlatformException
+      // from the OS, or a MissingPluginException on a platform where local_auth
+      // registers nothing. This call sits in the splash's launch gate, so it
+      // must never throw: an escaping error would leave the app on the splash.
       return BiometricCapability.unavailable;
     }
   }
@@ -53,6 +57,9 @@ class LocalAuthBiometricService implements BiometricService {
         // keeps the lock screen up with a "sign in another way" fallback.
         _ => BiometricAuthResult.failed,
       };
+    } catch (_) {
+      // No plugin on this platform (or any other non-platform failure).
+      return BiometricAuthResult.unavailable;
     }
   }
 }

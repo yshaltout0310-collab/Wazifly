@@ -1,7 +1,11 @@
 # Career Bridge — Session Handoff
 
 > Living handoff doc so a fresh Claude session can continue immediately.
-> Last updated: **Employer polish (see §7.38)** — Company completion fix (needs `firestore.rules` redeploy) + Logo upload
+> Last updated: **Technical audit + web/Replit enablement (see §7.39)** — `flutter build web` now compiles and
+> boots (two web-only defects fixed), Replit static deployment scaffolded, and four new/rewritten docs:
+> `docs/TECHNICAL_AUDIT.md`, `docs/JUDGE_BRIEF.md`, `docs/REPLIT_DEPLOYMENT.md`, and a rewritten `README.md`.
+> `analyze` clean, **696 tests**, 67.0% line coverage.
+> Prior update: **Employer polish (see §7.38)** — Company completion fix (needs `firestore.rules` redeploy) + Logo upload
 > now works with **no Storage bucket** (Firestore data-URI) + **Interview** and **Candidates** AI tools shipped (were
 > "Coming Soon"). `analyze` clean, **691 tests**.
 > Prior update: **Role Selection regression FIXED** (see §7.37) — new users no longer skip the role picker; routing is now
@@ -2952,6 +2956,80 @@ through the provider chain after save; `DataUriCompanyLogoStorage` embeds/round-
 controller; interview-kit + candidate-match repositories parse/stamp/empty-throw; controllers map AI failures; the
 candidate-pool provider dedupes. `analyze` clean, full suite **691** green. **Deploy note: P1 needs the updated
 `firestore.rules` deployed; P2/P3/P4 need no console changes.**
+
+---
+
+## 7.39 ✅ Technical audit + web target + Replit deployment prep
+
+**Scope:** a full source audit of `feature/wazifly-rebrand`, the documentation set a technical
+reviewer/judge would read, and everything needed to deploy the app as a **Flutter web** build on
+Replit. Code changes were confined to what the web target required, plus its regression guard —
+**no Android/iOS behaviour changed**.
+
+**Audit baseline (all re-run on the tree):** `flutter analyze` clean · **696 tests** · **67.0%** line
+coverage (12,193/18,212, excluding generated l10n) · 352 Dart files / ~58.5k lines · **0**
+TODO/FIXME/HACK · l10n parity **1041/1041** EN↔AR · no hardcoded secrets outside the (public)
+`firebase_options.dart`.
+
+**Two web-only defects found and FIXED:**
+
+1. **`flutter build web` did not compile.** Six 64-bit int literals (`0xcbf29ce484222325`,
+   `0xFFFFFFFFFFFFFFFF`) in duplicated private FNV-1a hashes in `cv_document.dart` and
+   `learning_profile.dart` — JavaScript can't represent them. Invisible to `analyze`/`test`, which
+   run on the VM. Replaced with ONE shared **`lib/core/utils/stable_hash.dart`**: two independently
+   seeded **32-bit** FNV-1a lanes (second lane consumes the input reversed), keeping the 16-hex-char
+   width and ~64-bit collision resistance. **Digests changed** → a `contentHash` stored by an older
+   build won't match, so a pre-existing imported CV may miss its duplicate prompt on re-import
+   (no data loss). New **`test/stable_hash_test.dart`** asserts the digest contract **and scans
+   `lib/` for any reintroduced web-unsafe literal**, so this can't silently come back.
+2. **Biometric launch gate could strand a signed-in web user on the splash.** `local_auth` declares
+   no web implementation (verified in its own pubspec: android/ios/macos/windows only), so
+   `capability()` would raise `MissingPluginException` — which is **not** a `PlatformException`, the
+   only type it caught. `splash_screen._bootstrap()` awaits that call, so the error would escape and
+   the splash would never navigate. Fixed by (a) `biometricServiceProvider` binding
+   `NoopBiometricService` when `kIsWeb` (mirrors `connectivityServiceProvider`) and (b) `capability()`
+   / `authenticate()` catching **any** exception. *Note: the missing plugin + narrow catch are verified
+   by source; the hang itself is reasoned, not reproduced — a first-time web visitor never reaches
+   that branch, which is why the browser run booted fine.*
+
+**Web target verified live:** release bundle built, served, and opened in a browser — boots to
+Language, walks Language → Country → Onboarding → Welcome, branding + EN/AR intact,
+`[FirebaseService] Initialized: careerbridge-97-f58c9`. Crashlytics / FCM / App Check all fail
+**softly** on web exactly as designed (logged, non-blocking). Bundle ~46 MB, `main.dart.js` 6.1 MB.
+App uses Flutter's default **hash-based URL strategy**, so a plain static host needs no SPA rewrite.
+
+**Replit scaffolding (new):** `.replit` (run + **static** deployment, `publicDir = build/web`),
+`replit.nix` (system pkgs only — deliberately **no `pkgs.flutter`**, the pinned nix channels are
+older than this project's `flutter >= 3.27` constraint), and `tool/replit/{install_flutter,build_web,serve_web}.sh`
+(pins **Flutter 3.44.4** into `~/flutter`, idempotent; build passes `--no-web-resources-cdn` so
+CanvasKit is bundled rather than fetched from gstatic).
+
+**Top OPEN findings (documented, not fixed — they are product decisions, not defects):**
+- **§4.3 Seeker jobs are a bundled asset** (`assets/data/seed_jobs.json`, 18 jobs via
+  `SeedJobsRepository`), NOT Firestore — so an employer-published job is invisible to every seeker.
+- **§4.4 Seeker applications are in-memory** (`InMemoryApplicationsRepository`), so they die on
+  restart and never reach the employer's Firestore-backed applicants list → Applicants + Analytics
+  are empty in practice. The interface, model, rules and employer reader all already exist.
+- **§4.5 `applications` create rule is permissive** — doesn't bind `ownerUid` to the referenced job's
+  real owner, doesn't pin `status`, doesn't cap the client-supplied `applicantSnapshot`. **Latent**
+  (nothing writes there yet) — **must be fixed in the same change as §4.4.**
+- §4.9 38 orphaned l10n keys (×2 locales) — several are fossils of the removed Google/phone sign-in.
+
+**Docs:** new `docs/TECHNICAL_AUDIT.md` (findings + severities + security review + recommendations),
+`docs/JUDGE_BRIEF.md` (pitch, 10-minute code tour, demo script, limitations to self-raise, Q&A),
+`docs/REPLIT_DEPLOYMENT.md` (runbook + the Firebase console steps the deployed domain needs).
+**`README.md`:** the local copy was stale ("Phase 1 / no auth / mock sign-in / Google + phone OTP" +
+a `flutter create` instruction), but the **owner had already rewritten it on GitHub** (`f420b79`) — the
+local branch just hadn't fetched it. **Owner's version kept**; four sections merged in (project status
+disclosure, quality-gate table, web build + Replit pointer, docs index). Audit §4.6 downgraded to Low /
+Resolved with a method note: **fetch and diff the remote before calling a doc stale.** `SOURCE_CODE_GUIDE.md`
+corrected (§19 wrongly claimed `google-services.json` ships — it's gitignored, so a **clone can't
+build Android**; web builds fine) plus a new **§21 Web target**. Stale brand/test numbers fixed in
+`PRODUCTION_READINESS.md`, `QA_CHECKLIST.md`, `RELEASE.md` (they still said emerald `#0B7D57` / 574 tests).
+
+**Lesson:** mobile-only gates can't see web-only breakage — `analyze` and `test` run on the Dart VM,
+where 64-bit ints are legal and every plugin resolves. If web is a target, `flutter build web` belongs
+in the gate list.
 
 ---
 
