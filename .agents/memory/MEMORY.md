@@ -1,0 +1,1 @@
+- [Flutter web startup](web-startup.md) — keep optional Firebase and GPU-dependent work off the first frame in Replit preview.

@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -159,9 +160,8 @@ class _GlowLogo extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           // Halo glow.
-          ImageFiltered(
-            imageFilter: ImageFilter.blur(sigmaX: 22, sigmaY: 22),
-            child: Container(
+          _maybeBlur(
+            Container(
               width: 150,
               height: 150,
               decoration: BoxDecoration(
@@ -231,9 +231,8 @@ class _SplashBlob extends StatelessWidget {
     return Align(
       alignment: alignment,
       child: RepaintBoundary(
-        child: ImageFiltered(
-          imageFilter: ImageFilter.blur(sigmaX: 44, sigmaY: 44),
-          child: Container(
+        child: _maybeBlur(
+          Container(
             width: size,
             height: size,
             decoration: BoxDecoration(
@@ -250,6 +249,14 @@ class _SplashBlob extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget _maybeBlur(Widget child) {
+  if (kIsWeb) return child;
+  return ImageFiltered(
+    imageFilter: ImageFilter.blur(sigmaX: 44, sigmaY: 44),
+    child: child,
+  );
 }
 
 /// Three white dots pulsing in sequence.
