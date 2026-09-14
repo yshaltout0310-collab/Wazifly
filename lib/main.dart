@@ -50,8 +50,6 @@ Future<void> main() async {
     overrides: [localStorageProvider.overrideWithValue(storage)],
   );
 
-  await _bootstrapTelemetry(container);
-
   final router = AppRouter.create(
     observers: [AnalyticsRouteObserver(container.read(analyticsServiceProvider))],
   );
@@ -62,6 +60,11 @@ Future<void> main() async {
       child: WaziflyApp(router: router),
     ),
   );
+
+  // Telemetry is best-effort and must never delay the first frame. Running it
+  // after runApp keeps the web shell responsive even when a Firebase plugin is
+  // unavailable or slow to resolve on the target platform.
+  unawaited(_bootstrapTelemetry(container));
 
   // Attest the app instance (App Check) — deliberately AFTER runApp and NOT
   // awaited, so attestation never delays the first frame (the mandated

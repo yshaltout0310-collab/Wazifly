@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
@@ -36,8 +38,10 @@ class FirebaseService {
       // first). Must run before the first Firestore access. Best-effort.
       _configureFirestore();
 
-      // Prepare Cloud Messaging (permissions + token). Best-effort.
-      await FirebaseNotificationService.instance.initialize();
+      // Prepare Cloud Messaging (permissions + token). Best-effort and never
+      // block the first frame, especially on web where browser permission or
+      // token setup can take an indeterminate amount of time.
+      unawaited(FirebaseNotificationService.instance.initialize());
     } catch (e) {
       debugPrint('[FirebaseService] Init failed: $e');
     }
