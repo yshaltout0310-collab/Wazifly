@@ -11,6 +11,7 @@ import '../../../core/utils/responsive.dart';
 import '../../../shared/models/job.dart';
 import '../../../shared/widgets/primary_button.dart';
 import '../../../shared/widgets/search_field.dart';
+import '../../../shared/widgets/status_view.dart';
 import '../application/applications_controller.dart';
 import 'widgets/application_filter_sheet.dart';
 import 'widgets/application_tile.dart';
@@ -86,7 +87,22 @@ class _ApplicationsView extends ConsumerWidget {
     final apps = ref.watch(filteredApplicationsProvider);
     final filter = ref.watch(applicationsFilterProvider);
     final controller = ref.read(applicationsFilterProvider.notifier);
-    final total = ref.watch(applicationsProvider).valueOrNull?.length ?? 0;
+    final async = ref.watch(applicationsProvider);
+    final total = async.valueOrNull?.length ?? 0;
+
+    // The history now streams from Firestore, so the first frame legitimately
+    // has no data yet. Distinguish "still loading" from "nothing applied to" —
+    // otherwise a returning seeker is told they have no applications while
+    // theirs are still in flight.
+    if (async.isLoading && !async.hasValue) {
+      return const StatusView.loading();
+    }
+    if (async.hasError && total == 0) {
+      return StatusView.error(
+        message: l10n.jobsLoadError,
+        onRetry: () => ref.invalidate(applicationsProvider),
+      );
+    }
 
     // No applications at all (not just filtered out) → onboarding empty state.
     if (total == 0) {

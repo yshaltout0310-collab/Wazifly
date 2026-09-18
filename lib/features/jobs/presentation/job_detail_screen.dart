@@ -14,6 +14,7 @@ import '../../../core/services/jobs/saved_jobs_store.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/responsive.dart';
+import '../../../shared/models/application.dart';
 import '../../../shared/models/job.dart';
 import '../../../shared/widgets/cv_picker_sheet.dart';
 import '../../../shared/widgets/job_detail_view.dart';
@@ -350,11 +351,26 @@ class _ActionBar extends ConsumerWidget {
       chosen = activeCvs.first;
     }
 
-    final app = await ref.read(applicationsRepositoryProvider).apply(
-          job: job,
-          cvId: chosen?.id ?? '',
-          cvName: chosen?.name ?? '',
-        );
+    // Applying now writes to Firestore, so it can genuinely fail (offline, a
+    // rules rejection). Surface it instead of letting the error escape as an
+    // unhandled async exception with no feedback to the seeker.
+    final Application app;
+    try {
+      app = await ref.read(applicationsRepositoryProvider).apply(
+            job: job,
+            cvId: chosen?.id ?? '',
+            cvName: chosen?.name ?? '',
+          );
+    } catch (_) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(
+          behavior: SnackBarBehavior.floating,
+          content: Text(l10n.errNetwork),
+        ));
+      return;
+    }
 
     // Remember + stamp the CV's last-used info (auto-update on application).
     if (chosen != null) {

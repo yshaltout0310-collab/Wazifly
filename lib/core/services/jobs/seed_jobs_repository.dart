@@ -1,10 +1,15 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart' show AssetBundle, rootBundle;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../shared/models/job.dart';
+import 'job_query_filter.dart';
 import 'jobs_repository.dart';
+
+// The app-wide `jobsRepositoryProvider` binding now lives in
+// `jobs_providers.dart` (it composes Firestore + this catalogue). It is
+// re-exported here so every existing import of this file keeps resolving it.
+export 'jobs_providers.dart';
 
 /// [JobsRepository] backed by a bundled JSON asset.
 ///
@@ -51,57 +56,6 @@ class SeedJobsRepository implements JobsRepository {
   }
 
   @override
-  Future<List<Job>> searchJobs(JobQuery query) async {
-    final text = query.text.trim().toLowerCase();
-    final loc = query.location?.trim().toLowerCase();
-
-    var jobs = (await _all()).where((j) {
-      if (query.remoteOnly && !j.remote) return false;
-      if (query.employmentTypes.isNotEmpty &&
-          !query.employmentTypes.contains(j.employmentType)) {
-        return false;
-      }
-      if (query.seniorities.isNotEmpty &&
-          !query.seniorities.contains(j.seniority)) {
-        return false;
-      }
-      // Country/location filter keeps jobs in that place PLUS remote jobs
-      // (remote roles are open regardless of the seeker's country).
-      if (loc != null &&
-          loc.isNotEmpty &&
-          !j.remote &&
-          !j.location.toLowerCase().contains(loc)) {
-        return false;
-      }
-      if (text.isNotEmpty && !_matchesText(j, text)) return false;
-      return true;
-    }).toList(growable: false);
-
-    // Pagination (optional).
-    if (query.offset > 0) {
-      jobs = jobs.length > query.offset
-          ? jobs.sublist(query.offset)
-          : const [];
-    }
-    final limit = query.limit;
-    if (limit != null && jobs.length > limit) {
-      jobs = jobs.sublist(0, limit);
-    }
-    return jobs;
-  }
-
-  bool _matchesText(Job j, String text) {
-    if (j.title.toLowerCase().contains(text)) return true;
-    if (j.company.toLowerCase().contains(text)) return true;
-    if (j.location.toLowerCase().contains(text)) return true;
-    for (final s in j.requiredSkills) {
-      if (s.toLowerCase().contains(text)) return true;
-    }
-    return false;
-  }
+  Future<List<Job>> searchJobs(JobQuery query) async =>
+      applyJobQuery(await _all(), query);
 }
-
-/// The app-wide jobs source. Bundled seed data today; swap the binding to plug
-/// in a real jobs API later (both the Jobs platform and Job Matching use this).
-final jobsRepositoryProvider =
-    Provider<JobsRepository>((ref) => SeedJobsRepository());

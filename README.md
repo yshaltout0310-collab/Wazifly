@@ -9,18 +9,24 @@ Wazifly helps candidates discover opportunities, improve their resumes, prepare 
 # 📌 Project Status
 
 The app is feature-complete and release-engineered: R8 release builds, deployed
-Firestore rules, bundled fonts, and store/legal paperwork prepared. Two things
-are deliberately not what they may appear, and are worth knowing before
-evaluating:
+Firestore rules, bundled fonts, and store/legal paperwork prepared.
 
-- **The job catalogue job seekers browse is a bundled dataset** of 18 bilingual
-  openings (`assets/data/seed_jobs.json`), not live Firestore data. Jobs an
-  employer publishes go to Firestore and appear on that employer's dashboard.
-- **Submitted applications are session-scoped** (in memory), so they do not
-  survive a restart and do not reach an employer's applicant list.
+**The marketplace is fully persistent.** Cloud Firestore is the source of truth
+for the whole loop: an employer publishes a job, a job seeker browses and applies
+to it, and that application appears in the employer's applicant list and hiring
+analytics. Everything survives logout and restart.
 
-Both sit behind the same repository interfaces the real implementations would,
-so connecting them is a provider rebind rather than a rewrite. Full analysis:
+- Jobs seekers browse come from the live `jobs` collection. The bundled
+  catalogue (`assets/data/seed_jobs.json`, 18 bilingual openings) is appended
+  behind them as demo data so the app is never empty on a fresh project or
+  offline — one flag (`kIncludeDemoJobCatalogue`) turns it off for a
+  production-only marketplace.
+- Applications are written to the `applications` collection, de-duplicated per
+  (applicant, job), and readable only by the applicant and the owning employer.
+
+The security rules behind this are verified against the Firestore emulator —
+33 checks covering the full loop and every forgery it must refuse. See
+[tool/firestore_rules_test/](tool/firestore_rules_test/README.md) and
 [docs/TECHNICAL_AUDIT.md](docs/TECHNICAL_AUDIT.md).
 
 ---

@@ -27,6 +27,8 @@ class Job extends Equatable {
     this.locationAr,
     this.internship,
     this.trainsBeginners = false,
+    this.ownerUid = '',
+    this.companyId = '',
   });
 
   final String id;
@@ -74,6 +76,23 @@ class Job extends Equatable {
   /// badge; a forward hook for future beginner-weighted recommendations).
   final bool trainsBeginners;
 
+  /// The publishing employer's uid, projected from `JobPosting.ownerUid`.
+  ///
+  /// Empty for the bundled demo catalogue, which has no employer behind it. The
+  /// seeker never displays this — it exists so an [Application] created from a
+  /// job can be addressed to the employer that owns it (`applications.ownerUid`),
+  /// which is what makes the posting visible in that employer's applicant list.
+  final String ownerUid;
+
+  /// The publishing company's id, projected from `JobPosting.companyId`.
+  /// Empty for the bundled demo catalogue. See [ownerUid].
+  final String companyId;
+
+  /// Whether this job came from a real employer posting (as opposed to the
+  /// bundled demo catalogue). Only such a job can route an application to an
+  /// employer dashboard.
+  bool get hasEmployer => ownerUid.trim().isNotEmpty;
+
   /// Whether this job is an internship (by embedded details or the canonical
   /// employmentType string).
   bool get isInternship =>
@@ -107,6 +126,9 @@ class Job extends Equatable {
             : null,
         trainsBeginners: _parseBool(
             json['trainsBeginners'] ?? json['trains_beginners']),
+        ownerUid: (json['ownerUid'] ?? json['owner_uid'] ?? '').toString().trim(),
+        companyId:
+            (json['companyId'] ?? json['company_id'] ?? '').toString().trim(),
       );
 
   static String? _parseOptString(Object? raw) {
@@ -145,5 +167,7 @@ class Job extends Equatable {
         locationAr,
         internship,
         trainsBeginners,
+        ownerUid,
+        companyId,
       ];
 }

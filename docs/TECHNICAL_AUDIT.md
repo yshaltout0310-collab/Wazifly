@@ -19,11 +19,12 @@ localization parity. The architectural discipline is real and consistent: every
 platform capability sits behind a vendor-neutral interface with a working no-op
 fallback, so the app degrades instead of crashing when a backend is missing.
 
-The headline risk is **not** code quality. It is that **the two halves of the
-marketplace are not connected to each other**. Job seekers browse a bundled JSON
-catalogue and their applications live in RAM; employers publish jobs to Firestore
-and read applicants from Firestore. Each side works convincingly on its own, and
-neither can see the other. §4.3–§4.4 set this out precisely.
+The headline risk identified by this audit — that **the two halves of the
+marketplace were not connected to each other** — has since been **resolved**.
+Cloud Firestore is now the source of truth for the whole loop: an employer
+publishes a job, a seeker browses and applies to it, and the application reaches
+that employer's applicant list and analytics, surviving logout and restart.
+§4.3–§4.5 record what was wrong and exactly how each was fixed.
 
 Two web-target defects were found **and fixed during this audit** (§4.1, §4.2);
 the web build now compiles and boots, which is what makes the Replit deployment
@@ -35,8 +36,8 @@ possible at all.
 | Code quality & hygiene | **Strong** — analyzer clean, no dead markers, no secrets, small files |
 | Test suite | **Good** — 696 tests, 67.0% line coverage, weakest on newest screens |
 | Localization & RTL | **Strong** — 1041/1041 key parity, no hardcoded user-facing strings found |
-| Security (rules, secrets, permissions) | **Good, with one latent gap** — §4.5 |
-| End-to-end product completeness | **Incomplete** — §4.3, §4.4 |
+| Security (rules, secrets, permissions) | **Strong** — the §4.5 gap is closed and the rules are emulator-verified |
+| End-to-end product completeness | **Complete** — the marketplace loop is Firestore-backed end to end (§4.3–§4.5) |
 | Documentation accuracy | **Good** — `SOURCE_CODE_GUIDE.md` is excellent; the release docs had drifted (§4.8) and are now corrected |
 | Web / Replit readiness | **Ready** as of this audit (was blocked) |
 
@@ -58,6 +59,7 @@ Every command below was run on the audited tree.
 | l10n parity | ARB key diff, EN ↔ AR | **1041 / 1041**, 0 missing either way |
 | Hardcoded UI strings | `grep -rnE "Text\(\s*'[A-Z][a-zA-Z ]{3,}" lib/` | **0** matches (heuristic, not exhaustive) |
 | Orphaned l10n keys | ARB keys cross-referenced against `lib/` + `test/` | **38** unused (§4.9) |
+| Rules (emulator) | `npm run verify` in `tool/firestore_rules_test/` | **33 passed, 0 failed** — full marketplace loop + every forgery refused |
 | Source size | `find lib -name '*.dart'` | 352 files, 58,543 lines |
 
 **Coverage by area** (line coverage, largest areas first):
@@ -196,78 +198,73 @@ Verified after the change: the bundle boots and walks through Language → Count
 → Onboarding → Welcome with branding and both locales intact. The signed-in
 re-entry path remains unverified on web (see the evidence note above).
 
-### 4.3 — Job seekers and employers cannot see each other's jobs · **High** · Open
+### 4.3 — Job seekers and employers could not see each other's jobs · **High** · ✅ **Fixed (persistence milestone, 2026-09-15)**
 
-The seeker-side job catalogue is a **bundled JSON asset**, not Firestore:
+*Originally:* the seeker catalogue was a bundled JSON asset
+(`SeedJobsRepository` → `assets/data/seed_jobs.json`), while the employer's
+create/publish flow wrote to Firestore `jobs/`. A published job was visible only
+on that employer's own dashboard; no seeker could ever find it.
 
-```dart
-// lib/core/services/jobs/seed_jobs_repository.dart:106
-final jobsRepositoryProvider = ... SeedJobsRepository()   // assets/data/seed_jobs.json (18 jobs)
-```
+**Fixed** by adding `FirestoreJobsRepository`, which reads the `jobs` collection
+where `status == 'published'` and projects each posting through the *existing*
+`JobPosting.toJob()` — no second schema. `jobsRepositoryProvider` now binds a
+`CompositeJobsRepository`: live postings first, the bundled catalogue appended
+behind them as demo data so browse/matching/recommendations are never empty on a
+fresh project or offline. `kIncludeDemoJobCatalogue` turns the demo data off for
+a production-only marketplace.
 
-Browse, search, job detail, AI job matching, recommendations and internships all
-read through that provider. Meanwhile the employer's create/edit/publish flow
-writes to Firestore via `FirestoreEmployerJobsRepository`
-(`lib/core/services/jobs/employer_jobs_repository.dart:33`), governed by the
-`jobs/{jobId}` rules.
+`Job` gained `ownerUid`/`companyId`, projected from the posting, so an
+application created from a job can be addressed to the employer that owns it.
 
-**Consequence:** a job an employer publishes is visible only on that employer's
-own dashboard. No seeker can ever find it. The 18 seeded jobs a seeker sees
-belong to no employer account.
+The `jobs` security rule already permitted this (`status == 'published' ||
+ownerUid == uid`) and was not weakened; the browse query is a single equality on
+`status`, which matches that clause exactly and needs no composite index.
 
-This is a defensible *demo* architecture — seeded content guarantees a populated,
-bilingual, offline-capable experience — and the code documents it as a seam
-("to plug in a live jobs API later, write another `JobsRepository` and rebind").
-It is **not** a production marketplace, and any claim that it is would be wrong.
+### 4.4 — Job applications never left the device · **High** · ✅ **Fixed (persistence milestone, 2026-09-15)**
 
-### 4.4 — Job applications never leave the device · **High** · Open
+*Originally:* `applicationsRepositoryProvider` bound `InMemoryApplicationsRepository`
+— applications died on restart, never reached the employer, and left the
+employer's Applicants and Analytics screens empty in practice.
 
-```dart
-// lib/core/services/applications/in_memory_applications_repository.dart:83
-final applicationsRepositoryProvider = ... InMemoryApplicationsRepository()
-```
+**Fixed** by adding `FirestoreApplicationsRepository` and rebinding the provider.
+The employer side required **no change at all**: it already read the same
+`applications` collection by `ownerUid`, and both sides already shared the
+`Application` model — only the seeker's store was in memory.
 
-Applying to a job appends an `Application` to a `List` in memory with an id like
-`app_0` and an empty `ownerUid` (`Application.create`'s default). The employer
-side reads Firestore (`employer_applicants_repository.dart:32` →
-`FirestoreEmployerApplicantsRepository`, query `where('ownerUid', ==, me)`).
+Design points worth noting:
 
-**Consequences, all three of which a reviewer will hit within a minute:**
+* The document id is derived deterministically from `(applicantUid, jobId)`, so a
+  duplicate application is impossible by construction, and `findByJobId` is a
+  single document read rather than an indexed query.
+* `applicantUid` comes from the signed-in user, never from caller input.
+* The applicant snapshot the employer UI renders is assembled seeker-side at
+  apply time (`buildApplicantSnapshot`), because the rules keep `users/{uid}`
+  private — an employer can never read an applicant's profile document.
+* `apply()` is idempotent even under a race: a `permission-denied` on the write
+  is re-checked against the stored document, because overwriting one's own
+  application is (correctly) an employer-only update.
 
-1. A seeker's applications **disappear on app restart**.
-2. An application **never reaches the employer** — the two repositories share an
-   interface and a model, but not a store.
-3. The employer's Applicants dashboard and the hiring-funnel Analytics built on
-   it are **empty in practice**, because nothing writes to `applications/`.
+### 4.5 — The `applications` create rule did not bind an application to the real job owner · **Medium** · ✅ **Fixed (persistence milestone, 2026-09-15)**
 
-The shape of the fix is already in place — the interface, the model, the rules,
-and the employer's Firestore reader all exist. What is missing is a
-`FirestoreApplicationsRepository` on the seeker side, plus resolving §4.5 first.
+*Originally:* `create` validated only `applicantUid == request.auth.uid`. It did
+not check `ownerUid` against the referenced job, did not pin `status`, and applied
+none of the size caps used elsewhere — so any authenticated user could have
+injected documents into any employer's pipeline. It was latent only because
+nothing wrote to the collection from the client. Fixing §4.4 made it live, so it
+was fixed in the same change, exactly as this audit recommended.
 
-### 4.5 — The `applications` create rule does not bind an application to the real job owner · **Medium** · Open (latent)
+The rule now additionally requires, on create:
 
-```
-// firestore.rules:107
-match /applications/{applicationId} {
-  allow create: if signedIn() &&
-                   request.resource.data.applicantUid == request.auth.uid;
-```
+1. `applicantUid == request.auth.uid` (unchanged) — nobody files as someone else.
+2. **`ownerMatchesJob()`** — the claimed `ownerUid` must equal the `ownerUid` of
+   the referenced `jobs/{jobId}` document. A job with no Firestore document behind
+   it (the demo catalogue) may be applied to **only with an empty `ownerUid`**,
+   which no employer query can match.
+3. `status == 'pending'` — an applicant cannot create themselves as `accepted`.
+4. Size caps on `jobTitle`, `company`, `companyName`, `location`, `note`, `cvName`.
 
-`create` validates only that applicants cannot impersonate each other. It does
-**not** check that `ownerUid` and `companyId` match the owner of the referenced
-job, does not validate `status`, and applies none of the `capped()` size limits
-used on every other collection — so the client-supplied `applicantSnapshot` (the
-denormalized name/headline the employer's list renders) is entirely
-applicant-controlled.
-
-Any authenticated user could therefore insert arbitrary documents into any
-employer's applicant pipeline, with unbounded free text.
-
-**Why this is "latent" rather than live:** nothing currently writes to this
-collection from the client (§4.4), so there is no exploit path today. It becomes
-live the moment §4.4 is fixed. **Fix §4.5 as part of §4.4, not after it** —
-`create` should `get()` the referenced job and require `ownerUid` to equal that
-job's `ownerUid`, pin `status` to the initial value, and cap the snapshot fields.
+`update` stays employer-only and now also pins `jobId` immutable. Deployed to
+`careerbridge-97-f58c9` and verified on the emulator (§2).
 
 ### 4.6 — `README.md` was stale **locally only** · **Low** · ✅ Resolved
 

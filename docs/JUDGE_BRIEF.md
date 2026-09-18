@@ -36,12 +36,13 @@
 | | |
 | --- | --- |
 | Source | **352** Dart files, **~58,500** lines under `lib/` |
-| Tests | **696** passing, **127** test files, **67.0%** line coverage |
+| Tests | **740** passing, **131** test files |
 | Static analysis | `flutter analyze` — **no issues**, with `dead_code` promoted to an error |
 | Localization | **1041** keys, **100%** English ↔ Arabic parity, RTL throughout |
 | Debt markers | **0** `TODO` / `FIXME` / `HACK` in `lib/` |
 | Android permissions | **3** — `INTERNET`, `POST_NOTIFICATIONS`, `USE_BIOMETRIC`; advertising ID explicitly stripped |
 | Firestore collections | **8**, all under default-deny rules with identity-field immutability and size caps |
+| Rules verification | **33/33** emulator checks — the full marketplace loop plus every forgery it must refuse |
 | Targets | Android (R8 release + AAB), iOS, **web** |
 
 ---
@@ -59,7 +60,8 @@ Open these, in this order. Each one makes a point; do not narrate the whole tree
 | 5 | `lib/features/resume_analyzer/data/gemini_pdf_ocr.dart` | "Scanned CV with no text layer? We rasterize on-device and send one multimodal request to the model we already depend on. No extra OCR plugin, no model download." |
 | 6 | `firestore.rules` | "Not just ownership — identity fields are immutable on update and free text is size-capped. The comments record *why* each rule is shaped that way, including a rule that once wedged a live listener." |
 | 7 | `storage.rules` (the `users/**` comment) | "Storage grants on *any* matching rule, so a catch-all would silently bypass the content-type and size caps above it. That's why there isn't one." |
-| 8 | `lib/core/utils/stable_hash.dart` + `test/stable_hash_test.dart` | "Web compiles to JavaScript, which can't represent 64-bit integers — and neither `analyze` nor `test` catches that, because both run on the VM. So the guard is a test that scans the source." |
+| 8 | `tool/firestore_rules_test/verify.mjs` | "Rules shape is pinned by a Dart test, but the guarantees are *executed* against the emulator — employer publishes, seeker applies, employer receives, and every forgery is refused. 33 checks." |
+| 9 | `lib/core/utils/stable_hash.dart` + `test/stable_hash_test.dart` | "Web compiles to JavaScript, which can't represent 64-bit integers — and neither `analyze` nor `test` catches that, because both run on the VM. So the guard is a test that scans the source." |
 
 ---
 
@@ -92,24 +94,21 @@ show a previously completed result. Do not retry twice in front of a judge.
 State these before a judge finds them. Each is paired with the answer that makes
 it a considered decision rather than an oversight.
 
-**1. The seeker's job catalogue is a bundled dataset, not live data.**
+**1. The demo catalogue sits behind the live one — say so before they ask.**
 
-> "The 18 jobs a seeker browses come from a bundled JSON file, not Firestore. That
-> was a deliberate demo choice — it guarantees a populated, bilingual, offline-capable
-> experience with no seeding step. It sits behind the same `JobsRepository`
-> interface the real backend would implement, so it's a provider rebind, not a
-> rewrite. Today it means a job an employer publishes is visible on that
-> employer's dashboard only."
+> "Firestore is the source of truth: everything an employer publishes is what a
+> seeker browses. We also append a bundled 18-job bilingual catalogue behind the
+> live postings, so the app is never empty on a fresh project or offline. It's one
+> flag to turn off for a production-only marketplace. I'd rather tell you which
+> jobs are demo data than have you find out."
 
-**2. Submitted applications are session-scoped.**
+**2. A seeker cannot change their own application status — that's deliberate.**
 
-> "The seeker's applications repository is in-memory, so they don't survive a
-> restart and don't reach the employer's applicant list. The employer side already
-> reads Firestore; the interface, the model and the security rules all exist. What's
-> missing is the Firestore implementation on the seeker side — and I'd tighten the
-> `applications` create rule in the same change, because it currently doesn't bind
-> an application to the real job owner. That's the top item on the roadmap and I
-> can tell you exactly what it touches."
+> "The status chips on the seeker's application detail were demo scaffolding from
+> before persistence. Status is employer-controlled now: the rules allow an update
+> only from the job's owner, so a seeker tapping those chips is denied and the
+> stream keeps showing the real status. An applicant's one mutation is withdrawal.
+> The UI still needs to catch up with the rule."
 
 **3. Release builds are debug-signed.**
 

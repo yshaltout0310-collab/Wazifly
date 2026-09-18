@@ -1,10 +1,15 @@
 import 'dart:async';
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../../shared/models/application.dart';
 import '../../../shared/models/job.dart';
 import 'applications_repository.dart';
+
+// The app-wide bindings (`applicationsRepositoryProvider`, `applicationsProvider`,
+// `appliedJobIdsProvider`) now live in `applications_providers.dart`, where they
+// bind the Firestore-backed implementation. They are re-exported here so every
+// existing import of this file keeps resolving them unchanged. This class
+// remains the in-memory implementation used by tests and as a swap target.
+export 'applications_providers.dart';
 
 /// Session-scoped [ApplicationsRepository]: keeps applications in memory and
 /// pushes the full list on every change through a broadcast stream (mirroring
@@ -78,20 +83,3 @@ class InMemoryApplicationsRepository implements ApplicationsRepository {
   int _indexOfId(String id) => _items.indexWhere((a) => a.id == id);
   int _indexOfJob(String jobId) => _items.indexWhere((a) => a.jobId == jobId);
 }
-
-/// The app-wide applications repository (swap this binding for Firestore later).
-final applicationsRepositoryProvider = Provider<ApplicationsRepository>(
-  (ref) => InMemoryApplicationsRepository(),
-);
-
-/// Reactive view of all applications (maps to a Firestore snapshot stream).
-final applicationsProvider = StreamProvider<List<Application>>(
-  (ref) => ref.watch(applicationsRepositoryProvider).watchApplications(),
-);
-
-/// Job ids the user has applied to — derived so "applied" has a single source
-/// of truth (the applications), consumed by the Jobs platform's badges.
-final appliedJobIdsProvider = Provider<Set<String>>((ref) {
-  final apps = ref.watch(applicationsProvider).valueOrNull ?? const [];
-  return {for (final a in apps) a.jobId};
-});

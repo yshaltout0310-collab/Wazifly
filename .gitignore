@@ -87,3 +87,8 @@ app.*.map.json
 **/ios/Runner/GoogleService-Info.plist
 .env
 .env.*
+
+# Firestore rules verification harness (Node deps; see tool/firestore_rules_test/README.md)
+tool/firestore_rules_test/node_modules/
+tool/firestore_rules_test/package-lock.json
+tool/firestore_rules_test/firestore.rules

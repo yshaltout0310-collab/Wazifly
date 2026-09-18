@@ -98,23 +98,66 @@ service cloud.firestore {
                        resource.data.ownerUid == request.auth.uid;
     }
 
-    // Job applications at applications/{applicationId} (Phase 5 · Milestone 3).
+    // Job applications at applications/{applicationId}.
     // Dual-keyed: the seeker (applicantUid) creates + withdraws their own; the
     // job owner (ownerUid) reads + updates status (moves through the pipeline).
-    // The owner update path is the sensitive one — it must NOT be able to
-    // repoint applicantUid / ownerUid / companyId (identity of the applicant and
-    // the owning company), so those are pinned immutable on update.
+    //
+    // The create path is the one a malicious client would attack, because the
+    // client supplies ownerUid — the field that decides whose applicant list the
+    // document lands in. Three things are therefore asserted on create:
+    //
+    //  1. applicantUid == the caller. Nobody can file an application as someone
+    //     else.
+    //  2. ownerUid is CORROBORATED AGAINST THE REFERENCED JOB, not trusted. A
+    //     real posting must exist at jobs/{jobId} and its ownerUid must match,
+    //     so an application cannot be injected into an arbitrary employer's
+    //     pipeline. The demo catalogue (`assets/data/seed_jobs.json`) has no
+    //     Firestore document behind it, so applying to a demo job is permitted
+    //     only with an EMPTY ownerUid — which no employer query can ever match.
+    //  3. status starts at 'pending'. An applicant cannot self-advance the
+    //     pipeline (e.g. create themselves as 'accepted').
+    //
+    // Free-text and the denormalized applicant snapshot are size-capped, like
+    // every other collection, so a tampered client can't bloat the document the
+    // employer's list renders.
+    //
+    // Updates remain OWNER-ONLY: status is employer-controlled. An applicant
+    // withdraws by deleting, never by editing. Identity fields stay immutable.
     match /applications/{applicationId} {
+      function jobPath(jobId) {
+        return /databases/$(database)/documents/jobs/$(jobId);
+      }
+
+      // The claimed ownerUid is the referenced job's real owner, or the job is
+      // not a Firestore posting at all and no employer is claimed.
+      function ownerMatchesJob() {
+        let claimed = request.resource.data.ownerUid;
+        let jobId = request.resource.data.jobId;
+        return (exists(jobPath(jobId))
+                  && get(jobPath(jobId)).data.ownerUid == claimed)
+            || (!exists(jobPath(jobId)) && claimed == '');
+      }
+
       allow read: if signedIn() &&
                      (resource.data.applicantUid == request.auth.uid ||
                       resource.data.ownerUid == request.auth.uid);
       allow create: if signedIn() &&
-                       request.resource.data.applicantUid == request.auth.uid;
+                       request.resource.data.applicantUid == request.auth.uid &&
+                       request.resource.data.status == 'pending' &&
+                       ownerMatchesJob() &&
+                       capped('jobTitle', 200) &&
+                       capped('company', 200) &&
+                       capped('companyName', 200) &&
+                       capped('location', 200) &&
+                       capped('note', 5000) &&
+                       capped('cvName', 200);
       allow update: if signedIn() &&
                        resource.data.ownerUid == request.auth.uid &&
                        unchanged('applicantUid') &&
                        unchanged('ownerUid') &&
-                       unchanged('companyId');
+                       unchanged('companyId') &&
+                       unchanged('jobId') &&
+                       capped('note', 5000);
       allow delete: if signedIn() &&
                        resource.data.applicantUid == request.auth.uid;
     }

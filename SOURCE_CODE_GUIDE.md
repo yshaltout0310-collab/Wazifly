@@ -254,12 +254,14 @@ Recruiter Insights.
 Country defaults to **Qatar** for browsing/matching (via
 `CountriesData.defaultCountry`), independent of the persisted profile country.
 
-> **Data source:** the seeker-facing catalogue is a **bundled dataset** of 18
-> bilingual openings (`assets/data/seed_jobs.json`, read through
-> `SeedJobsRepository`), *not* live Firestore data — and submitted applications are
-> **session-scoped in memory**. Both sit behind the same repository interfaces as a
-> real backend would, so connecting them is a provider rebind. See
-> [`docs/TECHNICAL_AUDIT.md`](docs/TECHNICAL_AUDIT.md) §4.3–§4.4.
+> **Data source:** the seeker-facing catalogue is **live Firestore data**.
+> `jobsRepositoryProvider` binds a `CompositeJobsRepository` that serves published
+> postings from the `jobs` collection (`FirestoreJobsRepository`, projected through
+> `JobPosting.toJob()`) and appends the bundled demo catalogue
+> (`assets/data/seed_jobs.json`) behind them so the experience is never empty.
+> Applications are written to Firestore by `FirestoreApplicationsRepository`,
+> keyed deterministically per (applicant, job). See
+> [`docs/TECHNICAL_AUDIT.md`](docs/TECHNICAL_AUDIT.md) §4.3–§4.5.
 
 ---
 
@@ -275,9 +277,10 @@ Country defaults to **Qatar** for browsing/matching (via
 Employer permission-denied events feed the security audit log.
 
 Jobs and applicants on this side are **Firestore-backed** (`jobs/`,
-`applications/`, `applicationNotes/`). Because the seeker side does not yet write
-to `applications/`, the Applicants and Analytics screens have no production data
-to show — see [`docs/TECHNICAL_AUDIT.md`](docs/TECHNICAL_AUDIT.md) §4.4.
+`applications/`, `applicationNotes/`). The seeker side writes real applications to
+the same `applications` collection, so the Applicants and Analytics screens are
+driven by live submissions — the employer repositories needed no change for this,
+because both sides always shared one collection and one `Application` model.
 
 ---
 

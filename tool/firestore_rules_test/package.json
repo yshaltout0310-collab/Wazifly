@@ -1,0 +1,15 @@
+{
+  "name": "wazifly-firestore-rules-verification",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "description": "Emulator-based end-to-end verification of firestore.rules and the marketplace data flow.",
+  "scripts": {
+    "pretest": "node -e \"require('fs').copyFileSync('../../firestore.rules','firestore.rules')\"",
+    "verify": "npm run pretest && firebase emulators:exec --only firestore --project wazifly-rules-verification \"node verify.mjs\""
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "^5.0.0",
+    "firebase": "^12.0.0"
+  }
+}

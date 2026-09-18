@@ -246,6 +246,10 @@ class JobPosting extends Equatable {
                 ? internship
                 : null,
         trainsBeginners: trainsBeginners,
+        // Carry ownership through the projection so an application created from
+        // this job can be addressed to the employer that owns it.
+        ownerUid: ownerUid,
+        companyId: companyId,
       );
 
   /// Transitions to [next], appending a history entry and stamping the audit /
