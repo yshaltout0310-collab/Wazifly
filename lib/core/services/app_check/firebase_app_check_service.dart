@@ -1,5 +1,5 @@
 import 'package:firebase_app_check/firebase_app_check.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb, debugPrint;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../firebase/firebase_service.dart';
@@ -17,8 +17,43 @@ class FirebaseAppCheckService implements AppCheckService {
 
   final FirebaseAppCheck _appCheck;
 
+  /// reCAPTCHA **Enterprise** site key used to attest the web build, injected
+  /// at build time:
+  ///
+  /// ```bash
+  /// flutter build web --release --dart-define=RECAPTCHA_SITE_KEY=<site-key>
+  /// ```
+  ///
+  /// **Enterprise, not v3.** Firebase AI Logic accepts only reCAPTCHA
+  /// Enterprise as the web attestation provider — reCAPTCHA v3 is still a valid
+  /// App Check provider in general (and is not deprecated), but it is not an
+  /// accepted provider for AI Logic, so a v3 key would leave every AI feature
+  /// denied on the web build. The key must therefore be a **score-based
+  /// reCAPTCHA Enterprise** site key.
+  ///
+  /// Web has no device attestation to fall back on, so without a provider the
+  /// web client is unattested — fatal now that App Check enforcement is
+  /// required for Firebase AI Logic. A reCAPTCHA site key is public by design
+  /// (it is served inside the page) but is environment-specific, so it is
+  /// injected rather than committed. When absent, behaviour is unchanged: no
+  /// web provider, and activation degrades without blocking startup.
+  static const String webRecaptchaSiteKey =
+      String.fromEnvironment('RECAPTCHA_SITE_KEY');
+
+  /// Whether a web attestation provider can be supplied on this build.
+  static bool get hasWebProvider => kIsWeb && webRecaptchaSiteKey.isNotEmpty;
+
   @override
   Future<bool> activate() async {
+    // Emitted BEFORE activation: on web with no site key the plugin call itself
+    // throws, so a warning placed after it would never run — exactly in the
+    // case it is meant to explain.
+    if (kIsWeb && !hasWebProvider) {
+      debugPrint('[AppCheck] web build has no RECAPTCHA_SITE_KEY - this client '
+          'is UNATTESTED and will be denied by any backend with App Check '
+          'enforced (including Firebase AI Logic). Rebuild with '
+          '--dart-define=RECAPTCHA_SITE_KEY=<site-key>.');
+    }
     try {
       // Debug builds attest with the debug provider (register the printed debug
       // token in the Firebase Console → App Check). Release builds use Play
@@ -29,6 +64,11 @@ class FirebaseAppCheckService implements AppCheckService {
             kDebugMode ? AndroidProvider.debug : AndroidProvider.playIntegrity,
         appleProvider:
             kDebugMode ? AppleProvider.debug : AppleProvider.deviceCheck,
+        // Null on mobile (the platform providers above apply) and on a web
+        // build with no site key, which keeps the previous behaviour.
+        webProvider: hasWebProvider
+            ? ReCaptchaEnterpriseProvider(webRecaptchaSiteKey)
+            : null,
       );
       return true;
     } catch (e) {

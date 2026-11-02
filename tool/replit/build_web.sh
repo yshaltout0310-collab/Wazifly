@@ -22,12 +22,23 @@ log "Building release web bundle"
 # network that blocks or throttles gstatic (and on a reviewer's locked-down
 # laptop). Drop the flag if bundle size matters more than that.
 #
+# RECAPTCHA_SITE_KEY attests the web client to Firebase App Check. It must be
+# a score-based reCAPTCHA ENTERPRISE site key - AI Logic does not accept v3.
+# App Check enforcement is required for AI Logic, so an unattested web client
+# is refused - set this as a Replit secret.
+#
 # --no-wasm-dry-run suppresses the advisory wasm-incompatibility report for
 # flutter_secure_storage_web; this build targets JavaScript, not WebAssembly.
 flutter build web \
   --release \
   --no-web-resources-cdn \
   --no-wasm-dry-run \
-  --dart-define=APP_VERSION="${APP_VERSION:-1.0.0}"
+  --dart-define=APP_VERSION="${APP_VERSION:-1.0.0}" \
+  --dart-define=RECAPTCHA_SITE_KEY="${RECAPTCHA_SITE_KEY:-}"
+
+if [ -z "${RECAPTCHA_SITE_KEY:-}" ]; then
+  log "WARNING: RECAPTCHA_SITE_KEY is not set - this build is UNATTESTED;"
+  log "         AI features are denied while App Check is enforced."
+fi
 
 log "Bundle ready: $(du -sh build/web | cut -f1) in build/web"

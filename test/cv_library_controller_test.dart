@@ -54,7 +54,11 @@ void main() {
     ]);
     addTearDown(c.dispose);
     c.listen(cvDocumentsProvider, (_, __) {}); // keep the stream alive
-    await Future<void>.delayed(const Duration(milliseconds: 20));
+    // Await the stream's FIRST emission rather than sleeping a fixed 20ms.
+    // The old delay was a race: under CPU contention (a concurrent build or a
+    // parallel test file) the repository had not emitted yet, so every
+    // assertion below saw an empty list and the test failed intermittently.
+    await c.read(cvDocumentsProvider.future);
     return c;
   }
 

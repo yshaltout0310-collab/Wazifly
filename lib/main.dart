@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -124,6 +125,26 @@ Future<void> _bootstrapAppCheck(ProviderContainer container) async {
           SecurityEventType.appCheckFailure,
           detail: 'activation_failed',
         );
+    return;
+  }
+
+  // Debug builds only: request one token so the platform SDK emits the App
+  // Check **debug secret** to the device log.
+  //
+  // `activate()` only installs the debug provider — token minting is lazy, so
+  // on a debug build that has not yet hit an attested backend the secret is
+  // never printed and there is nothing to paste into the Firebase Console.
+  // Since that registration is a prerequisite for the debug provider being
+  // accepted at all, force it here rather than leaving developers to hunt for
+  // a log line that never appears.
+  //
+  // The secret is printed by the native SDK (Android tag
+  // `DebugAppCheckProvider`) and is deliberately NEVER logged from Dart, never
+  // written to a file, and never committed — it is a credential.
+  // Release builds skip this entirely: they attest with Play Integrity /
+  // Device Check and mint tokens on demand.
+  if (kDebugMode) {
+    await appCheck.getToken();
   }
 }
 

@@ -58,6 +58,16 @@ class ResumeAnalyzerController extends StateNotifier<ResumeAnalyzerState> {
 
   final Ref _ref;
 
+  /// Largest CV accepted for analysis.
+  ///
+  /// `ResumeErrorCode.tooLarge` and its localized message already
+  /// existed but nothing ever raised it, so an oversized PDF was read
+  /// fully into memory and then rasterized page by page. That is worst
+  /// on the web build, where a large file can stall or kill the tab.
+  /// 10 MB matches the cap `storage.rules` enforces on resume uploads,
+  /// so the client refuses exactly what the backend would.
+  static const int maxFileBytes = 10 * 1024 * 1024;
+
   /// Opens the file picker and, if a PDF is chosen, analyzes it.
   ///
   /// A cancelled pick leaves the current state untouched.
@@ -94,6 +104,12 @@ class ResumeAnalyzerController extends StateNotifier<ResumeAnalyzerState> {
           status: ResumeStatus.error, failure: ResumeFailure.extractionFailed);
       return;
     }
+    if (bytes.lengthInBytes > maxFileBytes) {
+      state = const ResumeAnalyzerState(
+          status: ResumeStatus.error, failure: ResumeFailure.tooLarge);
+      return;
+    }
+
     await _analyze(bytes, file.name);
   }
 
