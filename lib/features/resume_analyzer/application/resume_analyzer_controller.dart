@@ -19,6 +19,7 @@ enum ResumeFailure {
   extractionFailed,
   tooLarge,
   notConfigured,
+  attestation,
   network,
   quota,
   invalidResponse,
@@ -114,16 +115,17 @@ class ResumeAnalyzerController extends StateNotifier<ResumeAnalyzerState> {
   }
 
   Future<void> _analyze(Uint8List bytes, String fileName) async {
-    state = ResumeAnalyzerState(
-        status: ResumeStatus.analyzing, fileName: fileName);
+    state =
+        ResumeAnalyzerState(status: ResumeStatus.analyzing, fileName: fileName);
     try {
       final languageCode =
           _ref.read(localeControllerProvider)?.languageCode ?? 'en';
-      final analysis = await _ref.read(resumeAnalyzerRepositoryProvider).analyze(
-            pdfBytes: bytes,
-            languageCode: languageCode,
-            fileName: fileName,
-          );
+      final analysis =
+          await _ref.read(resumeAnalyzerRepositoryProvider).analyze(
+                pdfBytes: bytes,
+                languageCode: languageCode,
+                fileName: fileName,
+              );
       // Cache the result so other features (e.g. Job Matching) can reuse it
       // without a re-upload. Persistence strategy lives behind the store.
       await _ref.read(lastResumeAnalysisProvider.notifier).set(analysis);
@@ -147,6 +149,7 @@ class ResumeAnalyzerController extends StateNotifier<ResumeAnalyzerState> {
   void reset() => state = const ResumeAnalyzerState();
 
   ResumeFailure _mapFailure(Object e) {
+    if (e is AiAttestationException) return ResumeFailure.attestation;
     if (e is ResumeAnalyzerException) {
       return switch (e.code) {
         ResumeErrorCode.noText => ResumeFailure.noText,

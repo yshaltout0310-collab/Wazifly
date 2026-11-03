@@ -1037,6 +1037,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get resumeErrNetwork => 'خطأ في الشبكة. تحقق من اتصالك وحاول مجددًا.';
 
   @override
+  String get resumeErrAttestation =>
+      'تعذّر التحقق الأمني من التطبيق. حدّث الصفحة وحاول مجددًا. إذا استمرت المشكلة، تواصل مع الدعم.';
+
+  @override
   String get resumeErrQuota =>
       'خدمة الذكاء الاصطناعي مشغولة حاليًا. يرجى المحاولة بعد قليل.';
 

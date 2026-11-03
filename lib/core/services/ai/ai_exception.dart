@@ -32,3 +32,11 @@ class AiException implements Exception {
   @override
   String toString() => 'AiException(${code.name}): $rawMessage';
 }
+
+/// The AI backend is protected, but this client could not attest itself.
+/// Remains a configuration failure for existing AI consumers while allowing
+/// Resume Analyzer to distinguish security verification from connectivity.
+class AiAttestationException extends AiException {
+  const AiAttestationException([String? message])
+      : super(AiErrorCode.notConfigured, message);
+}

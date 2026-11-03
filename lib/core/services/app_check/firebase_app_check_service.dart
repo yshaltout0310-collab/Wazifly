@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart'
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../firebase/firebase_service.dart';
+import '../service_diagnostics.dart';
 import 'app_check_service.dart';
 import 'noop_app_check_service.dart';
 
@@ -17,6 +18,8 @@ class FirebaseAppCheckService implements AppCheckService {
       : _appCheck = appCheck ?? FirebaseAppCheck.instance;
 
   final FirebaseAppCheck _appCheck;
+  Future<bool>? _activation;
+  bool _activated = false;
 
   /// reCAPTCHA **Enterprise** site key used to attest the web build, injected
   /// at build time:
@@ -45,7 +48,13 @@ class FirebaseAppCheckService implements AppCheckService {
   static bool get hasWebProvider => kIsWeb && webRecaptchaSiteKey.isNotEmpty;
 
   @override
-  Future<bool> activate() async {
+  Future<bool> activate() {
+    if (_activated) return Future.value(true);
+    // Bootstrap and an early protected request share one in-flight activation.
+    return _activation ??= _activate().whenComplete(() => _activation = null);
+  }
+
+  Future<bool> _activate() async {
     // Emitted BEFORE activation: on web with no site key the plugin call itself
     // throws, so a warning placed after it would never run — exactly in the
     // case it is meant to explain.
@@ -54,6 +63,7 @@ class FirebaseAppCheckService implements AppCheckService {
           'is UNATTESTED and will be denied by any backend with App Check '
           'enforced (including Firebase AI Logic). Rebuild with '
           '--dart-define=RECAPTCHA_SITE_KEY=<site-key>.');
+      return false;
     }
     try {
       // Debug builds attest with the debug provider (register the printed debug
@@ -70,19 +80,29 @@ class FirebaseAppCheckService implements AppCheckService {
         appleProvider: providers.appleProvider,
         webProvider: providers.webProvider,
       );
+      _activated = true;
       return true;
-    } catch (e) {
-      debugPrint('[AppCheck] activate failed: $e');
+    } catch (error, stack) {
+      logServiceFailure(
+          service: 'AppCheck',
+          operation: 'activate',
+          error: error,
+          stack: stack);
       return false;
     }
   }
 
   @override
   Future<String?> getToken({bool forceRefresh = false}) async {
+    if (!await activate()) return null;
     try {
       return await _appCheck.getToken(forceRefresh);
-    } catch (e) {
-      debugPrint('[AppCheck] getToken failed: $e');
+    } catch (error, stack) {
+      logServiceFailure(
+          service: 'AppCheck',
+          operation: 'getToken',
+          error: error,
+          stack: stack);
       return null;
     }
   }

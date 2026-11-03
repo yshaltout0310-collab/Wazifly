@@ -2048,6 +2048,12 @@ abstract class AppLocalizations {
   /// **'Network error. Check your connection and try again.'**
   String get resumeErrNetwork;
 
+  /// No description provided for @resumeErrAttestation.
+  ///
+  /// In en, this message translates to:
+  /// **'The app\'s security verification failed. Refresh and try again. If this continues, contact support.'**
+  String get resumeErrAttestation;
+
   /// No description provided for @resumeErrQuota.
   ///
   /// In en, this message translates to:

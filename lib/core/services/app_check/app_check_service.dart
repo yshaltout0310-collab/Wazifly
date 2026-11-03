@@ -5,10 +5,10 @@
 ///
 /// Only `FirebaseAppCheckService` imports the plugin; swap the backend by
 /// rebinding `appCheckServiceProvider`. Every method is **best-effort and
-/// non-throwing** — attestation must never block startup or a user action (the
-/// M1 telemetry principle, applied to security). If activation fails the app
-/// keeps running unattested; the failure is recorded via the crash reporter +
-/// security audit log by the bootstrap.
+/// non-throwing** — attestation must never block the first frame. Protected AI
+/// actions separately await activation and a token and fail closed if either
+/// is unavailable. If activation fails the shell keeps running; the failure is
+/// recorded via the crash reporter + security audit log by the bootstrap.
 abstract interface class AppCheckService {
   /// Activates App Check. On debug builds this uses the **debug provider**
   /// (a token you register in the Firebase Console); on release it uses the

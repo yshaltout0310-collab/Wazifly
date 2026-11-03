@@ -181,7 +181,8 @@ class _AnalyzingView extends StatelessWidget {
 // Results
 // ---------------------------------------------------------------------------
 class _ResultsView extends StatelessWidget {
-  const _ResultsView({required this.analysis, required this.onAnother, super.key});
+  const _ResultsView(
+      {required this.analysis, required this.onAnother, super.key});
 
   final ResumeAnalysis analysis;
   final VoidCallback onAnother;
@@ -200,9 +201,11 @@ class _ResultsView extends StatelessWidget {
           color: band.color,
           label: band.label,
           caption: l10n.resumeAtsScore,
-        ).animate().fadeIn().scaleXY(begin: 0.96, end: 1, curve: AppCurves.spring),
+        )
+            .animate()
+            .fadeIn()
+            .scaleXY(begin: 0.96, end: 1, curve: AppCurves.spring),
         const SizedBox(height: AppSpacing.lg),
-
         if (analysis.careerField.isNotEmpty) ...[
           Align(
             alignment: AlignmentDirectional.centerStart,
@@ -211,7 +214,8 @@ class _ResultsView extends StatelessWidget {
               decoration: BoxDecoration(
                 color: AppColors.teal.withValues(alpha: 0.10),
                 borderRadius: BorderRadius.circular(AppRadius.pill),
-                border: Border.all(color: AppColors.teal.withValues(alpha: 0.30)),
+                border:
+                    Border.all(color: AppColors.teal.withValues(alpha: 0.30)),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -234,7 +238,6 @@ class _ResultsView extends StatelessWidget {
           ).animate(delay: 60.ms).fadeIn().moveY(begin: 8, end: 0),
           const SizedBox(height: AppSpacing.md),
         ],
-
         if (analysis.summary.isNotEmpty) ...[
           Container(
             width: double.infinity,
@@ -249,8 +252,8 @@ class _ResultsView extends StatelessWidget {
                 ],
               ),
               borderRadius: BorderRadius.circular(AppRadius.lg),
-              border: Border.all(
-                  color: AppColors.emerald.withValues(alpha: 0.25)),
+              border:
+                  Border.all(color: AppColors.emerald.withValues(alpha: 0.25)),
             ),
             child: Text(
               analysis.summary,
@@ -259,7 +262,6 @@ class _ResultsView extends StatelessWidget {
           ).animate(delay: 80.ms).fadeIn().moveY(begin: 10, end: 0),
           const SizedBox(height: AppSpacing.md),
         ],
-
         if (analysis.strengths.isNotEmpty)
           AnalysisSection(
             title: l10n.resumeSectionStrengths,
@@ -272,7 +274,6 @@ class _ResultsView extends StatelessWidget {
               icon: Icons.check_rounded,
             ),
           ),
-
         if (analysis.weaknesses.isNotEmpty)
           AnalysisSection(
             title: l10n.resumeSectionWeaknesses,
@@ -285,7 +286,6 @@ class _ResultsView extends StatelessWidget {
               icon: Icons.remove_rounded,
             ),
           ),
-
         if (analysis.missingSkills.isNotEmpty)
           AnalysisSection(
             title: l10n.resumeSectionMissingSkills,
@@ -294,7 +294,6 @@ class _ResultsView extends StatelessWidget {
             count: analysis.missingSkills.length,
             child: _SkillChips(skills: analysis.missingSkills),
           ),
-
         if (analysis.grammarIssues.isNotEmpty)
           AnalysisSection(
             title: l10n.resumeSectionGrammar,
@@ -307,7 +306,6 @@ class _ResultsView extends StatelessWidget {
               suggestionLabel: l10n.resumeGrammarFix,
             ),
           ),
-
         if (analysis.improvementSuggestions.isNotEmpty)
           AnalysisSection(
             title: l10n.resumeSectionSuggestions,
@@ -320,7 +318,6 @@ class _ResultsView extends StatelessWidget {
               icon: Icons.arrow_forward_rounded,
             ),
           ),
-
         const SizedBox(height: AppSpacing.sm),
         OutlinedButton.icon(
           onPressed: onAnother,
@@ -349,8 +346,7 @@ class _SkillChips extends StatelessWidget {
       children: [
         for (final skill in skills)
           Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
             decoration: BoxDecoration(
               color: AppColors.teal.withValues(alpha: 0.10),
               borderRadius: BorderRadius.circular(AppRadius.pill),
@@ -425,6 +421,7 @@ String _failureMessage(AppLocalizations l10n, ResumeFailure? failure) {
     ResumeFailure.tooLarge => l10n.resumeErrTooLarge,
     ResumeFailure.notConfigured => l10n.resumeErrNotConfigured,
     ResumeFailure.network => l10n.resumeErrNetwork,
+    ResumeFailure.attestation => l10n.resumeErrAttestation,
     ResumeFailure.quota => l10n.resumeErrQuota,
     ResumeFailure.invalidResponse => l10n.resumeErrInvalid,
     ResumeFailure.blocked => l10n.resumeErrBlocked,

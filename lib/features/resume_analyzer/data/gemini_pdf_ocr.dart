@@ -2,7 +2,10 @@ import 'package:firebase_ai/firebase_ai.dart';
 import 'package:flutter/foundation.dart';
 import 'package:printing/printing.dart';
 
-import '../../../core/services/ai/ai_exception.dart';
+import '../../../core/services/ai/ai_request_guard.dart';
+import '../../../core/services/ai/firebase_ai_service.dart';
+import '../../../core/services/app_check/app_check_service.dart';
+import '../../../core/services/service_diagnostics.dart';
 import '../domain/resume_ocr.dart';
 
 /// [ResumeOcr] that reads a scanned/image-only PDF by rendering its pages to
@@ -15,7 +18,10 @@ import '../domain/resume_ocr.dart';
 /// Robust for CVs produced by Adobe Scan, CamScanner, Microsoft Lens, or a
 /// phone photo saved as PDF.
 class GeminiPdfOcr implements ResumeOcr {
-  GeminiPdfOcr({this.modelName = _defaultModel});
+  GeminiPdfOcr({
+    required AppCheckService appCheck,
+    this.modelName = _defaultModel,
+  }) : _attestation = AiRequestGuard(appCheck);
 
   /// Same fast, capable default the analysis call uses.
   static const String _defaultModel = 'gemini-2.5-flash';
@@ -27,6 +33,7 @@ class GeminiPdfOcr implements ResumeOcr {
   static const double _dpi = 200;
 
   final String modelName;
+  final AiRequestGuard _attestation;
 
   static const String _ocrPrompt =
       'These images are the pages of a scanned resume/CV, in order. Transcribe '
@@ -41,6 +48,7 @@ class GeminiPdfOcr implements ResumeOcr {
     if (images.isEmpty) return '';
 
     try {
+      await _attestation.ensureAttested();
       final model = FirebaseAI.googleAI().generativeModel(model: modelName);
       final parts = <Part>[
         TextPart(_ocrPrompt),
@@ -48,8 +56,9 @@ class GeminiPdfOcr implements ResumeOcr {
       ];
       final response = await model.generateContent([Content.multi(parts)]);
       return response.text?.trim() ?? '';
-    } catch (e) {
-      throw _mapError(e);
+    } catch (error, stack) {
+      throw mapFirebaseAiError(error, stack,
+          operation: 'resumeOcr.generateContent', model: modelName);
     }
   }
 
@@ -64,39 +73,13 @@ class GeminiPdfOcr implements ResumeOcr {
         if (pngs.length >= _maxPages) break;
       }
       return pngs;
-    } catch (e) {
-      debugPrint('[GeminiPdfOcr] rasterization failed: $e');
+    } catch (error, stack) {
+      logServiceFailure(
+          service: 'GeminiPdfOcr',
+          operation: 'rasterize',
+          error: error,
+          stack: stack);
       return const [];
     }
-  }
-
-  /// Maps a Firebase AI error to the shared [AiException] taxonomy so the UI can
-  /// show a precise message (network, quota, not-configured) instead of a
-  /// generic failure. Mirrors the classification in `FirebaseAiService`.
-  AiException _mapError(Object error) {
-    if (error is AiException) return error;
-    final msg = error.toString().toLowerCase();
-    if (error is InvalidApiKey ||
-        msg.contains('not been enabled') ||
-        msg.contains('not enabled') ||
-        msg.contains('permission') ||
-        msg.contains('403') ||
-        msg.contains('api key')) {
-      return AiException(AiErrorCode.notConfigured, error.toString());
-    }
-    if (msg.contains('quota') ||
-        msg.contains('rate') ||
-        msg.contains('resource_exhausted') ||
-        msg.contains('429')) {
-      return AiException(AiErrorCode.quota, error.toString());
-    }
-    if (error is ServerException ||
-        msg.contains('unavailable') ||
-        msg.contains('network') ||
-        msg.contains('timeout') ||
-        msg.contains('socket')) {
-      return AiException(AiErrorCode.network, error.toString());
-    }
-    return AiException(AiErrorCode.unknown, error.toString());
   }
 }

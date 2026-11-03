@@ -51,7 +51,9 @@ Future<void> main() async {
   );
 
   final router = AppRouter.create(
-    observers: [AnalyticsRouteObserver(container.read(analyticsServiceProvider))],
+    observers: [
+      AnalyticsRouteObserver(container.read(analyticsServiceProvider))
+    ],
   );
 
   runApp(
@@ -68,9 +70,9 @@ Future<void> main() async {
 
   // Attest the app instance (App Check) — deliberately AFTER runApp and NOT
   // awaited, so attestation never delays the first frame (the mandated
-  // "App Check must never block startup"). Token fetch is lazy; the first
-  // backend read tolerates the brief unattested window (and, with enforcement
-  // off, a placeholder token). A failure records + continues, app stays usable.
+  // "App Check must never block startup"). Protected AI operations await this
+  // same activation and a token before sending their requests; startup itself
+  // remains independent of attestation availability.
   unawaited(_bootstrapAppCheck(container));
 }
 
@@ -118,8 +120,8 @@ Future<void> _bootstrapTelemetry(ProviderContainer container) async {
 /// requests from tampered clients / scrapers. Best-effort: if activation fails
 /// or App Check is unavailable, the app keeps running **unattested** and the
 /// failure is recorded via Crashlytics + the security audit log — the app must
-/// remain usable (App Check is monitored, not enforced, until the Console
-/// enforcement switch is flipped — see HANDOFF §5).
+/// remain usable. Protected AI requests still require attestation and are never
+/// sent as an unauthenticated fallback.
 Future<void> _bootstrapAppCheck(ProviderContainer container) async {
   final appCheck = container.read(appCheckServiceProvider);
   final ok = await appCheck.activate();
@@ -171,7 +173,8 @@ void _bindTelemetryUserContext(ProviderContainer container) {
     }
   }
 
-  container.listen(authStateProvider, (_, __) => apply(), fireImmediately: true);
+  container.listen(authStateProvider, (_, __) => apply(),
+      fireImmediately: true);
   container.listen(userTypeControllerProvider, (_, __) => apply(),
       fireImmediately: true);
 }

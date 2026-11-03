@@ -1047,6 +1047,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Network error. Check your connection and try again.';
 
   @override
+  String get resumeErrAttestation =>
+      'The app\'s security verification failed. Refresh and try again. If this continues, contact support.';
+
+  @override
   String get resumeErrQuota =>
       'The AI service is busy right now. Please try again shortly.';
 

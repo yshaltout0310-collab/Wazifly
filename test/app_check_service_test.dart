@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:firebase_app_check/firebase_app_check.dart';
@@ -7,6 +8,25 @@ import 'package:careerbridge/core/services/app_check/noop_app_check_service.dart
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  test(
+      'bootstrap and protected requests share activation before fetching token',
+      () async {
+    final plugin = _AppCheckPlugin();
+    final service = FirebaseAppCheckService(plugin);
+    final first = service.activate();
+    final second = service.activate();
+    final token = service.getToken();
+    expect(identical(first, second), isTrue);
+    expect(plugin.activationCalls, 1);
+    expect(plugin.tokenCalls, 0);
+    plugin.activation.complete();
+    expect(await first, isTrue);
+    expect(await token, 'test-attestation');
+    expect(await service.activate(), isTrue);
+    expect(plugin.activationCalls, 1);
+    expect(plugin.tokenCalls, 1);
+  });
+
   test('NoopAppCheckService activates as a no-op and yields no token',
       () async {
     const AppCheckService service = NoopAppCheckService();
@@ -90,4 +110,26 @@ fi
     expect(output, contains('RECAPTCHA_SITE_KEY is required'));
     expect(output, isNot(contains('Unexpected Flutter command')));
   });
+}
+
+class _AppCheckPlugin extends Fake implements FirebaseAppCheck {
+  final activation = Completer<void>();
+  int activationCalls = 0;
+  int tokenCalls = 0;
+
+  @override
+  Future<void> activate({
+    Object? webProvider,
+    AndroidProvider androidProvider = AndroidProvider.playIntegrity,
+    AppleProvider appleProvider = AppleProvider.deviceCheck,
+  }) {
+    activationCalls++;
+    return activation.future;
+  }
+
+  @override
+  Future<String?> getToken([bool? forceRefresh]) async {
+    tokenCalls++;
+    return 'test-attestation';
+  }
 }

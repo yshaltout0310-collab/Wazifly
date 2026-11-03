@@ -21,17 +21,18 @@ const _sample = ResumeAnalysis(
   improvementSuggestions: ['Quantify your achievements'],
 );
 
-Widget _host(Locale locale) {
+Widget _host(Locale locale, {ResumeAnalyzerState? state}) {
   return ProviderScope(
     overrides: [
       resumeAnalyzerControllerProvider.overrideWith(
         (ref) => ResumeAnalyzerController.seeded(
           ref,
-          const ResumeAnalyzerState(
-            status: ResumeStatus.success,
-            analysis: _sample,
-            fileName: 'resume.pdf',
-          ),
+          state ??
+              const ResumeAnalyzerState(
+                status: ResumeStatus.success,
+                analysis: _sample,
+                fileName: 'resume.pdf',
+              ),
         ),
       ),
     ],
@@ -61,10 +62,11 @@ void main() {
       await tester.pumpWidget(_host(locale));
       await tester.pump(const Duration(milliseconds: 800));
 
-      expect(tester.takeException(), isNull, reason: 'threw during render ($tag)');
+      expect(tester.takeException(), isNull,
+          reason: 'threw during render ($tag)');
 
-      final dir = Directionality.of(
-          tester.element(find.byType(ResumeAnalyzerScreen)));
+      final dir =
+          Directionality.of(tester.element(find.byType(ResumeAnalyzerScreen)));
       expect(dir,
           locale.languageCode == 'ar' ? TextDirection.rtl : TextDirection.ltr);
 
@@ -72,6 +74,18 @@ void main() {
       expect(find.text(l10n.resumeSectionStrengths), findsOneWidget);
       expect(find.text(l10n.resumeSectionMissingSkills), findsOneWidget);
       expect(find.text('76'), findsOneWidget); // ATS score rendered
+    });
+
+    testWidgets('attestation failure is not shown as a network error in $tag',
+        (tester) async {
+      await tester.pumpWidget(_host(locale,
+          state: const ResumeAnalyzerState(
+              status: ResumeStatus.error, failure: ResumeFailure.attestation)));
+      await tester.pump(const Duration(milliseconds: 800));
+      final l10n = await AppLocalizations.delegate.load(locale);
+      expect(find.text(l10n.resumeErrAttestation), findsOneWidget);
+      expect(find.text(l10n.resumeErrNetwork), findsNothing);
+      expect(tester.takeException(), isNull);
     });
   }
 }

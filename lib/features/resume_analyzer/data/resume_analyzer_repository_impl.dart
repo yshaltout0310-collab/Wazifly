@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/services/ai/ai_exception.dart';
 import '../../../core/services/ai/ai_providers.dart';
 import '../../../core/services/ai/ai_service.dart';
+import '../../../core/services/app_check/firebase_app_check_service.dart';
+import '../../../core/services/service_diagnostics.dart';
 import '../domain/pdf_text_extractor.dart';
 import '../domain/resume_analysis.dart';
 import '../domain/resume_analyzer_exception.dart';
@@ -56,30 +58,44 @@ class ResumeAnalyzerRepositoryImpl implements ResumeAnalyzerRepository {
     required String languageCode,
     String? fileName,
   }) async {
-    var text = (await _extractor.extract(pdfBytes)).trim();
-    if (text.length < _minChars) {
-      // No usable text layer — the PDF is almost certainly a scan (Adobe Scan,
-      // CamScanner, Microsoft Lens, a photographed page). Fall back to OCR and
-      // continue the analysis with whatever text it recovers. If OCR is
-      // unavailable or also comes up empty, surface the usual "no text" error.
-      final ocrText = (await _ocr?.extractText(pdfBytes))?.trim() ?? '';
-      if (ocrText.length < _minChars) {
-        throw const ResumeAnalyzerException(ResumeErrorCode.noText);
+    var stage = 'pdf_extraction';
+    try {
+      var text = (await _extractor.extract(pdfBytes)).trim();
+      if (text.length < _minChars) {
+        stage = 'scanned_pdf_ocr';
+        // No usable text layer — the PDF is almost certainly a scan (Adobe Scan,
+        // CamScanner, Microsoft Lens, a photographed page). Fall back to OCR and
+        // continue the analysis with whatever text it recovers. If OCR is
+        // unavailable or also comes up empty, surface the usual "no text" error.
+        final ocrText = (await _ocr?.extractText(pdfBytes))?.trim() ?? '';
+        if (ocrText.length < _minChars) {
+          throw const ResumeAnalyzerException(ResumeErrorCode.noText);
+        }
+        text = ocrText;
       }
-      text = ocrText;
-    }
 
-    final clipped = text.length > _maxChars ? text.substring(0, _maxChars) : text;
-    final json = await _ai.generateJson(
-      _buildPrompt(clipped, languageCode),
-      systemInstruction: _systemInstruction,
-    );
+      final clipped =
+          text.length > _maxChars ? text.substring(0, _maxChars) : text;
+      stage = 'ai_analysis';
+      final json = await _ai.generateJson(
+        _buildPrompt(clipped, languageCode),
+        systemInstruction: _systemInstruction,
+      );
 
-    final analysis = ResumeAnalysis.fromJson(json);
-    if (analysis.isEmpty) {
-      throw const AiException(AiErrorCode.invalidResponse);
+      stage = 'parse_analysis';
+      final analysis = ResumeAnalysis.fromJson(json);
+      if (analysis.isEmpty) {
+        throw const AiException(AiErrorCode.invalidResponse);
+      }
+      return analysis;
+    } catch (error, stack) {
+      logServiceFailure(
+          service: 'ResumeAnalyzer',
+          operation: stage,
+          error: error,
+          stack: stack);
+      rethrow;
     }
-    return analysis;
   }
 
   String _buildPrompt(String resumeText, String languageCode) {
@@ -172,6 +188,6 @@ $resumeText
 final resumeAnalyzerRepositoryProvider = Provider<ResumeAnalyzerRepository>(
   (ref) => ResumeAnalyzerRepositoryImpl(
     ai: ref.watch(aiServiceProvider),
-    ocr: GeminiPdfOcr(),
+    ocr: GeminiPdfOcr(appCheck: ref.watch(appCheckServiceProvider)),
   ),
 );

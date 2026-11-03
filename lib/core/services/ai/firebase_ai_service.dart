@@ -1,10 +1,13 @@
 import 'dart:convert';
 
 import 'package:firebase_ai/firebase_ai.dart';
-import 'package:flutter/foundation.dart';
+import 'package:firebase_core/firebase_core.dart';
 
+import '../app_check/app_check_service.dart';
+import '../service_diagnostics.dart';
 import 'ai_exception.dart';
 import 'ai_message.dart';
+import 'ai_request_guard.dart';
 import 'ai_service.dart';
 
 /// [AiService] backed by **Firebase AI Logic** using the Gemini Developer API
@@ -15,12 +18,16 @@ import 'ai_service.dart';
 /// (`FirebaseAI.vertexAI()`); swapping providers entirely means writing a new
 /// [AiService] and rebinding `aiServiceProvider`.
 class FirebaseAiService implements AiService {
-  FirebaseAiService({this.modelName = defaultModel});
+  FirebaseAiService({
+    required AppCheckService appCheck,
+    this.modelName = defaultModel,
+  }) : _attestation = AiRequestGuard(appCheck);
 
   /// Fast, low-cost, capable default. Overridable per instance.
   static const String defaultModel = 'gemini-2.5-flash';
 
   final String modelName;
+  final AiRequestGuard _attestation;
 
   GenerativeModel _model({bool jsonMode = false, String? systemInstruction}) {
     return FirebaseAI.googleAI().generativeModel(
@@ -35,7 +42,7 @@ class FirebaseAiService implements AiService {
 
   @override
   Future<String> generateText(String prompt, {String? systemInstruction}) {
-    return _guard(() async {
+    return _guard('generateText', () async {
       final response = await _model(systemInstruction: systemInstruction)
           .generateContent([Content.text(prompt)]);
       final text = response.text?.trim();
@@ -51,7 +58,7 @@ class FirebaseAiService implements AiService {
     String prompt, {
     String? systemInstruction,
   }) {
-    return _guard(() async {
+    return _guard('generateJson', () async {
       final response =
           await _model(jsonMode: true, systemInstruction: systemInstruction)
               .generateContent([Content.text(prompt)]);
@@ -71,15 +78,17 @@ class FirebaseAiService implements AiService {
 
   @override
   Stream<String> streamText(String prompt, {String? systemInstruction}) async* {
-    final stream = _model(systemInstruction: systemInstruction)
-        .generateContentStream([Content.text(prompt)]);
     try {
+      await _attestation.ensureAttested();
+      final stream = _model(systemInstruction: systemInstruction)
+          .generateContentStream([Content.text(prompt)]);
       await for (final chunk in stream) {
         final text = chunk.text;
         if (text != null && text.isNotEmpty) yield text;
       }
-    } catch (e) {
-      throw _map(e);
+    } catch (error, stack) {
+      throw mapFirebaseAiError(error, stack,
+          operation: 'streamText', model: modelName);
     }
   }
 
@@ -95,65 +104,28 @@ class FirebaseAiService implements AiService {
             ? Content.model([TextPart(m.text)])
             : Content.text(m.text),
     ];
-    final stream = _model(systemInstruction: systemInstruction)
-        .generateContentStream(contents);
     try {
+      await _attestation.ensureAttested();
+      final stream = _model(systemInstruction: systemInstruction)
+          .generateContentStream(contents);
       await for (final chunk in stream) {
         final text = chunk.text;
         if (text != null && text.isNotEmpty) yield text;
       }
-    } catch (e) {
-      throw _map(e);
+    } catch (error, stack) {
+      throw mapFirebaseAiError(error, stack,
+          operation: 'streamChat', model: modelName);
     }
   }
 
   /// Runs [action], normalizing any error into an [AiException].
-  Future<T> _guard<T>(Future<T> Function() action) async {
+  Future<T> _guard<T>(String operation, Future<T> Function() action) async {
     try {
-      return await action();
-    } catch (e) {
-      throw _map(e);
+      return await _attestation.run(action);
+    } catch (error, stack) {
+      throw mapFirebaseAiError(error, stack,
+          operation: operation, model: modelName);
     }
-  }
-
-  AiException _map(Object error) {
-    if (error is AiException) return error;
-    debugPrint('[FirebaseAiService] error (${error.runtimeType}): $error');
-
-    if (error is InvalidApiKey) {
-      return AiException(AiErrorCode.notConfigured, error.toString());
-    }
-    // ServiceApiNotEnabled / QuotaExceeded are subtypes of FirebaseAIException
-    // but not exported by the SDK, so refine by message.
-    if (error is FirebaseAIException || error is ServerException) {
-      final msg = error.toString().toLowerCase();
-      if (msg.contains('not been enabled') ||
-          msg.contains('not enabled') ||
-          msg.contains('has not been used') ||
-          msg.contains('service_disabled') ||
-          msg.contains('firebasevertexai') ||
-          msg.contains('firebase ai') ||
-          msg.contains('permission') ||
-          msg.contains('403') ||
-          msg.contains('api key')) {
-        return AiException(AiErrorCode.notConfigured, error.toString());
-      }
-      if (msg.contains('quota') ||
-          msg.contains('rate') ||
-          msg.contains('resource_exhausted') ||
-          msg.contains('429')) {
-        return AiException(AiErrorCode.quota, error.toString());
-      }
-      if (error is ServerException ||
-          msg.contains('unavailable') ||
-          msg.contains('network') ||
-          msg.contains('timeout') ||
-          msg.contains('socket')) {
-        return AiException(AiErrorCode.network, error.toString());
-      }
-      return AiException(AiErrorCode.unknown, error.toString());
-    }
-    return AiException(AiErrorCode.unknown, error.toString());
   }
 
   /// Some models wrap JSON in ```json fences despite `application/json`; strip
@@ -166,4 +138,52 @@ class FirebaseAiService implements AiService {
     }
     return t.trim();
   }
+}
+
+/// Shared by text analysis and multimodal OCR. A provider ServerException can
+/// mean invalid attestation or input, not just a connection failure.
+AiException mapFirebaseAiError(
+  Object error,
+  StackTrace stack, {
+  required String operation,
+  required String model,
+}) {
+  logServiceFailure(
+      service: 'FirebaseAiService',
+      operation: '$operation model=$model',
+      error: error,
+      stack: stack);
+  if (error is AiException) return error;
+  final message = redactServiceDiagnostic(error);
+  final lower = message.toLowerCase();
+  if ((error is FirebaseException && error.plugin == 'app-check') ||
+      lower.contains('app check') ||
+      lower.contains('appcheck') ||
+      lower.contains('recaptcha')) {
+    return AiAttestationException(message);
+  }
+  if (error is InvalidApiKey ||
+      lower.contains('not been enabled') ||
+      lower.contains('not enabled') ||
+      lower.contains('has not been used') ||
+      lower.contains('service_disabled') ||
+      lower.contains('permission') ||
+      lower.contains('403') ||
+      lower.contains('api key')) {
+    return AiException(AiErrorCode.notConfigured, message);
+  }
+  if (lower.contains('quota') ||
+      RegExp(r'\brate[ -]?limit').hasMatch(lower) ||
+      lower.contains('resource_exhausted') ||
+      lower.contains('429')) {
+    return AiException(AiErrorCode.quota, message);
+  }
+  if (lower.contains('unavailable') ||
+      lower.contains('network') ||
+      lower.contains('timeout') ||
+      lower.contains('socket') ||
+      RegExp(r'server error \[5\d\d\]').hasMatch(lower)) {
+    return AiException(AiErrorCode.network, message);
+  }
+  return AiException(AiErrorCode.unknown, message);
 }

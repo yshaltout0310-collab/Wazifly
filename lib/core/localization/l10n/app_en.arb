@@ -373,6 +373,7 @@
   "resumeErrTooLarge": "This file is too large. Please choose a smaller PDF.",
   "resumeErrNotConfigured": "AI isn't enabled yet. Enable Firebase AI Logic to use the analyzer.",
   "resumeErrNetwork": "Network error. Check your connection and try again.",
+  "resumeErrAttestation": "The app's security verification failed. Refresh and try again. If this continues, contact support.",
   "resumeErrQuota": "The AI service is busy right now. Please try again shortly.",
   "resumeErrInvalid": "The AI returned an unexpected result. Please try again.",
   "resumeErrBlocked": "This content couldn't be analyzed.",

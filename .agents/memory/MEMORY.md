@@ -1,1 +1,2 @@
 - [Flutter web startup](web-startup.md) — keep optional Firebase and GPU-dependent work off the first frame in Replit preview.
+- [Web attestation diagnostics](web-attestation-diagnostics.md) — inspect the reCAPTCHA iframe and browser requests; loader success alone does not validate a key or domain.
