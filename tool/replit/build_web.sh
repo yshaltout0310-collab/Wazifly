@@ -7,10 +7,16 @@ set -euo pipefail
 
 cd "$(dirname "$0")/../.."
 
+log() { printf '\033[36m[build-web]\033[0m %s\n' "$*"; }
+
+if [[ -z "${RECAPTCHA_SITE_KEY:-}" ]]; then
+  log "ERROR: RECAPTCHA_SITE_KEY is required for release web builds."
+  log "       Set the reCAPTCHA Enterprise site key as a Replit secret and retry."
+  exit 1
+fi
+
 source tool/replit/install_flutter.sh
 export PATH="${FLUTTER_HOME:-$HOME/flutter}/bin:$PATH"
-
-log() { printf '\033[36m[build-web]\033[0m %s\n' "$*"; }
 
 log "Fetching packages"
 flutter pub get
@@ -24,8 +30,8 @@ log "Building release web bundle"
 #
 # RECAPTCHA_SITE_KEY attests the web client to Firebase App Check. It must be
 # a score-based reCAPTCHA ENTERPRISE site key - AI Logic does not accept v3.
-# App Check enforcement is required for AI Logic, so an unattested web client
-# is refused - set this as a Replit secret.
+# App Check enforcement is required for AI Logic, so a missing key blocks this
+# release build rather than producing an unattested deployable bundle.
 #
 # --no-wasm-dry-run suppresses the advisory wasm-incompatibility report for
 # flutter_secure_storage_web; this build targets JavaScript, not WebAssembly.
@@ -34,11 +40,6 @@ flutter build web \
   --no-web-resources-cdn \
   --no-wasm-dry-run \
   --dart-define=APP_VERSION="${APP_VERSION:-1.0.0}" \
-  --dart-define=RECAPTCHA_SITE_KEY="${RECAPTCHA_SITE_KEY:-}"
-
-if [ -z "${RECAPTCHA_SITE_KEY:-}" ]; then
-  log "WARNING: RECAPTCHA_SITE_KEY is not set - this build is UNATTESTED;"
-  log "         AI features are denied while App Check is enforced."
-fi
+  --dart-define=RECAPTCHA_SITE_KEY="${RECAPTCHA_SITE_KEY}"
 
 log "Bundle ready: $(du -sh build/web | cut -f1) in build/web"

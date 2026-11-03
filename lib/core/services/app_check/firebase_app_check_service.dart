@@ -1,5 +1,6 @@
 import 'package:firebase_app_check/firebase_app_check.dart';
-import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb, debugPrint;
+import 'package:flutter/foundation.dart'
+    show debugPrint, kDebugMode, kIsWeb, visibleForTesting;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../firebase/firebase_service.dart';
@@ -59,16 +60,15 @@ class FirebaseAppCheckService implements AppCheckService {
       // token in the Firebase Console → App Check). Release builds use Play
       // Integrity on Android / Device Check on iOS. Token auto-refresh is left
       // on so a short-lived token is transparently renewed.
+      final providers = selectAppCheckProviders(
+        isWeb: kIsWeb,
+        isDebug: kDebugMode,
+        webRecaptchaSiteKey: webRecaptchaSiteKey,
+      );
       await _appCheck.activate(
-        androidProvider:
-            kDebugMode ? AndroidProvider.debug : AndroidProvider.playIntegrity,
-        appleProvider:
-            kDebugMode ? AppleProvider.debug : AppleProvider.deviceCheck,
-        // Null on mobile (the platform providers above apply) and on a web
-        // build with no site key, which keeps the previous behaviour.
-        webProvider: hasWebProvider
-            ? ReCaptchaEnterpriseProvider(webRecaptchaSiteKey)
-            : null,
+        androidProvider: providers.androidProvider,
+        appleProvider: providers.appleProvider,
+        webProvider: providers.webProvider,
       );
       return true;
     } catch (e) {
@@ -87,6 +87,29 @@ class FirebaseAppCheckService implements AppCheckService {
     }
   }
 }
+
+/// Selects the App Check providers for the current platform and build mode.
+///
+/// Kept separate from plugin activation so provider choices can be covered by
+/// unit tests without initializing Firebase or a platform channel.
+@visibleForTesting
+({
+  AndroidProvider androidProvider,
+  AppleProvider appleProvider,
+  ReCaptchaEnterpriseProvider? webProvider,
+}) selectAppCheckProviders({
+  required bool isWeb,
+  required bool isDebug,
+  required String webRecaptchaSiteKey,
+}) =>
+    (
+      androidProvider:
+          isDebug ? AndroidProvider.debug : AndroidProvider.playIntegrity,
+      appleProvider: isDebug ? AppleProvider.debug : AppleProvider.deviceCheck,
+      webProvider: isWeb && webRecaptchaSiteKey.isNotEmpty
+          ? ReCaptchaEnterpriseProvider(webRecaptchaSiteKey)
+          : null,
+    );
 
 /// The app-wide App Check service: Firebase when the app is initialized, else an
 /// inert no-op (tests / unconfigured runs never touch the plugin) — the same
