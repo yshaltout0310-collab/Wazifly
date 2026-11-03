@@ -9,10 +9,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'app.dart';
 import 'core/navigation/app_router.dart';
 import 'core/providers/app_providers.dart';
+import 'core/services/ai/ai_providers.dart';
 import 'core/services/analytics/analytics_consent.dart';
 import 'core/services/analytics/analytics_events.dart';
 import 'core/services/analytics/analytics_route_observer.dart';
 import 'core/services/analytics/firebase_analytics_service.dart';
+import 'core/services/app_check/app_check_service.dart';
 import 'core/services/app_check/firebase_app_check_service.dart';
 import 'core/services/build_info/build_info.dart';
 import 'core/services/crashlytics/firebase_crash_reporter.dart';
@@ -144,8 +146,65 @@ Future<void> _bootstrapAppCheck(ProviderContainer container) async {
   // Release builds skip this entirely: they attest with Play Integrity /
   // Device Check and mint tokens on demand.
   if (kDebugMode) {
-    await appCheck.getToken();
+    await _logAppCheckTokenHealth(appCheck);
+    if (_aiSelfTestEnabled) await _runAiSelfTest(container);
   }
+}
+
+/// Opt-in end-to-end probe of the Firebase AI Logic path, enabled with
+/// `--dart-define=AI_SELFTEST=true` on a debug build. Off by default so normal
+/// debug runs spend no quota.
+///
+/// It exercises the real request path (the same `aiServiceProvider` every AI
+/// feature uses) rather than mocking it, because the failure modes that matter
+/// here — a missing App Check header, an unregistered debug secret, AI Logic
+/// disabled project-wide — are all invisible until an actual request reaches
+/// the backend. Being independent of sign-in, it isolates the AI/attestation
+/// path from auth and navigation when triaging on a physical device.
+const bool _aiSelfTestEnabled = bool.fromEnvironment('AI_SELFTEST');
+
+Future<void> _runAiSelfTest(ProviderContainer container) async {
+  debugPrint('[AiSelfTest] sending a live Firebase AI Logic request...');
+  try {
+    final reply = await container
+        .read(aiServiceProvider)
+        .generateText('Reply with the single word OK.');
+    debugPrint('[AiSelfTest] SUCCESS - model replied '
+        '(${reply.length} chars): ${reply.trim()}');
+  } catch (e) {
+    debugPrint('[AiSelfTest] FAILED: $e');
+  }
+}
+
+/// Debug-only attestation probe.
+///
+/// Forces a fresh App Check token and reports **only whether one could be
+/// obtained** — never the token, never a prefix of it, since an App Check token
+/// is a bearer credential. This exists because the symptom of an unregistered
+/// debug secret, a disabled App Check API, or a wrong provider is identical at
+/// the call site (`Firebase App Check token is invalid.` from the backend) and
+/// otherwise indistinguishable from a transport error.
+///
+/// `forceRefresh: true` deliberately bypasses the platform SDK's token cache,
+/// so a stale token minted before a Console change cannot mask the real state:
+/// a failure here is a live attestation failure, not a cached one.
+Future<void> _logAppCheckTokenHealth(AppCheckService appCheck) async {
+  final token = await appCheck.getToken(forceRefresh: true);
+  if (token == null || token.isEmpty) {
+    debugPrint('[AppCheck] DIAGNOSTIC: no token (attestation FAILED). On a '
+        'debug build, register the debug secret printed above by the native '
+        'DebugAppCheckProvider in Firebase Console > App Check > Apps > this '
+        'Android app > Manage debug tokens. Every AI Logic request will be '
+        'rejected until then.');
+    return;
+  }
+  // The SDK hands out a short placeholder token instead of failing when
+  // attestation is unavailable and enforcement is off; it is a JWT whose
+  // payload is an error object, and it is always far shorter than a real token.
+  final looksPlaceholder = token.length < 100;
+  debugPrint('[AppCheck] DIAGNOSTIC: token acquired '
+      '(length ${token.length}${looksPlaceholder ? ', LOOKS LIKE A '
+          'PLACEHOLDER - attestation did not really succeed' : ''}).');
 }
 
 /// Associates crash reports + analytics with the signed-in user (id + account

@@ -6,8 +6,9 @@ import '../firebase/firebase_service.dart';
 import 'app_check_service.dart';
 import 'noop_app_check_service.dart';
 
-/// Firebase App Check implementation of [AppCheckService] — the **only** file
-/// that imports `firebase_app_check`. All calls are wrapped so a failure can
+/// Firebase App Check implementation of [AppCheckService] — the only *service*
+/// that imports `firebase_app_check` (`firebase_ai_client.dart` is the one other
+/// importer; see [AppCheckService]). All calls are wrapped so a failure can
 /// never block startup: [activate] returns false instead of throwing, and the
 /// bootstrap records that failure and continues (the app stays usable, just
 /// unattested).

@@ -3,8 +3,11 @@
 /// app instance, so the backend (Firestore / Storage / AI Logic) can reject
 /// traffic from scrapers and tampered clients.
 ///
-/// Only `FirebaseAppCheckService` imports the plugin; swap the backend by
-/// rebinding `appCheckServiceProvider`. Every method is **best-effort and
+/// `FirebaseAppCheckService` is the only *service* that imports the plugin;
+/// swap the backend by rebinding `appCheckServiceProvider`. The one other
+/// importer is `firebase_ai_client.dart`, because `firebase_ai` requires the
+/// plugin's own `FirebaseAppCheck` object to attest its requests and cannot be
+/// handed a token through this seam. Every method is **best-effort and
 /// non-throwing** — attestation must never block startup or a user action (the
 /// M1 telemetry principle, applied to security). If activation fails the app
 /// keeps running unattested; the failure is recorded via the crash reporter +

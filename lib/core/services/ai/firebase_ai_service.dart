@@ -6,9 +6,11 @@ import 'package:flutter/foundation.dart';
 import 'ai_exception.dart';
 import 'ai_message.dart';
 import 'ai_service.dart';
+import 'firebase_ai_client.dart';
 
 /// [AiService] backed by **Firebase AI Logic** using the Gemini Developer API
-/// backend (`FirebaseAI.googleAI()`).
+/// backend, reached through [attestedGoogleAi] so every request carries an
+/// App Check token (enforcement is mandatory for AI Logic).
 ///
 /// No API key is shipped in the client — requests are authenticated through the
 /// Firebase app. Swapping to the Vertex AI backend later is a one-line change
@@ -23,7 +25,7 @@ class FirebaseAiService implements AiService {
   final String modelName;
 
   GenerativeModel _model({bool jsonMode = false, String? systemInstruction}) {
-    return FirebaseAI.googleAI().generativeModel(
+    return attestedGoogleAi().generativeModel(
       model: modelName,
       systemInstruction:
           systemInstruction == null ? null : Content.system(systemInstruction),
@@ -127,6 +129,14 @@ class FirebaseAiService implements AiService {
     // but not exported by the SDK, so refine by message.
     if (error is FirebaseAIException || error is ServerException) {
       final msg = error.toString().toLowerCase();
+      // App Check rejection. Must be tested BEFORE the ServerException ->
+      // network branch below, which would otherwise swallow it and report a
+      // connectivity problem for what is an attestation/configuration fault.
+      if (msg.contains('app check') ||
+          msg.contains('unauthenticated') ||
+          msg.contains('401')) {
+        return AiException(AiErrorCode.notConfigured, error.toString());
+      }
       if (msg.contains('not been enabled') ||
           msg.contains('not enabled') ||
           msg.contains('has not been used') ||

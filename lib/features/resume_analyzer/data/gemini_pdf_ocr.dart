@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:printing/printing.dart';
 
 import '../../../core/services/ai/ai_exception.dart';
+import '../../../core/services/ai/firebase_ai_client.dart';
 import '../domain/resume_ocr.dart';
 
 /// [ResumeOcr] that reads a scanned/image-only PDF by rendering its pages to
@@ -41,7 +42,7 @@ class GeminiPdfOcr implements ResumeOcr {
     if (images.isEmpty) return '';
 
     try {
-      final model = FirebaseAI.googleAI().generativeModel(model: modelName);
+      final model = attestedGoogleAi().generativeModel(model: modelName);
       final parts = <Part>[
         TextPart(_ocrPrompt),
         for (final png in images) InlineDataPart('image/png', png),
