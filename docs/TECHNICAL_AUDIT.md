@@ -337,15 +337,15 @@ affects **only** `flutter build web --wasm`; the JavaScript build used for the
 Replit deployment is unaffected. `build_web.sh` passes `--no-wasm-dry-run` to
 keep the advisory out of build output.
 
-### 4.11 — App Check has no web attestation provider · **Low** (becomes High if enforcement is enabled)
+### 4.11 — Web App Check requires build-time and Firebase Console configuration
 
-On web, `AppCheckService.activate()` fails (observed:
-`[AppCheck] activate failed: TypeError…`) because no reCAPTCHA provider is
-registered for the web app. Today this is harmless — enforcement is off and the
-failure is caught. If App Check enforcement is ever switched on, **the web
-deployment loses Firestore, Storage and AI access entirely.** Enabling
-enforcement and registering a web provider must be treated as one change. Carried
-into `docs/REPLIT_DEPLOYMENT.md` §5.3.
+The current client supports reCAPTCHA Enterprise on web when
+`RECAPTCHA_SITE_KEY` is injected at build time; Android debug and release builds
+use the debug provider and Play Integrity, respectively. The Replit build script
+passes the configured key into the release bundle. Verify that the same
+Enterprise key is registered for the Firebase web app and allows the preview
+and published domains in Firebase Console. The project's enforcement state is
+also console-managed and was not independently verified during this build.
 
 ### 4.12 — Carried-forward known issues (previously recorded, re-confirmed as still open)
 

@@ -23,6 +23,12 @@ already included in the project; sign-in and OAuth flows require the Replit
 preview or deployment host to be added to Firebase Authentication's authorized
 domains.
 
-On web, Crashlytics, biometrics, push notifications, and App Check are
-best-effort platform features. Their unavailable web implementations do not
-block the first frame or prevent the main app from loading.
+On web, App Check uses reCAPTCHA Enterprise when `RECAPTCHA_SITE_KEY` is
+available to the build. The checked-in build script passes this value as a
+Dart define. Crashlytics, biometrics, and push notifications remain
+best-effort features with platform limitations; they do not block the first
+frame or prevent the main app from loading.
+
+Android debug builds use the App Check debug provider; Android release builds
+use Play Integrity. Do not disable App Check enforcement to work around a
+provider configuration issue.

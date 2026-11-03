@@ -280,10 +280,12 @@ flutter build web --release
 ```
 
 The web target builds from a clean clone — `firebase_options.dart` carries the
-web Firebase config. Biometrics, Crashlytics, push notifications and App Check
-have no web implementation and disable themselves silently; everything else,
-including all AI features, works. Note that `android/app/google-services.json`
-is gitignored, so supply your own before building the **Android** target.
+web Firebase config. The Replit release build also injects
+`RECAPTCHA_SITE_KEY` for Firebase App Check's reCAPTCHA Enterprise web provider.
+Biometrics, Crashlytics, and push notifications have platform limitations on
+web; they do not block the app from loading. Note that
+`android/app/google-services.json` is gitignored, so supply your own before
+building the **Android** target.
 
 Deploying the web build to Replit (`.replit`, `replit.nix` and `tool/replit/`
 are checked in): see [docs/REPLIT_DEPLOYMENT.md](docs/REPLIT_DEPLOYMENT.md).

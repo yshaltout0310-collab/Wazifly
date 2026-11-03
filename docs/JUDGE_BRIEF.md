@@ -118,10 +118,13 @@ it a considered decision rather than an oversight.
 **4. Cloud Storage rules are written but not deployed** — the default bucket isn't
 provisioned yet. Firestore rules *are* deployed.
 
-**5. App Check runs unenforced.** It activates on device and degrades gracefully;
-enforcement hasn't been switched on. On the web there's no attestation provider
-registered at all — so enabling enforcement and registering a web reCAPTCHA
-provider have to happen as one change or the web build loses backend access.
+**5. App Check is platform-specific.** Android debug builds use the debug
+provider; Android release builds use Play Integrity. Web release builds use
+reCAPTCHA Enterprise when the Replit `RECAPTCHA_SITE_KEY` is injected at build
+time. Before publishing, verify the matching Enterprise provider and permitted
+domains in Firebase Console. The Firebase project's enforcement state is a
+console setting and must be checked there; do not disable enforcement to work
+around a provider configuration issue.
 
 **6. Accessibility has not had a full screen-reader sweep.** Semantics, tooltips
 and live regions are in place; a complete TalkBack pass has not been done. The

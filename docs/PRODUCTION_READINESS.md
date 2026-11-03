@@ -31,7 +31,7 @@ Completed engineering work vs. the manual actions still owed before publishing:
 | **Monitoring** | ✅ Ready (code) | Analytics (consent-gated), Crashlytics, Performance SDKs live on device. *Optional:* Crashlytics/Perf Gradle plugins (release mapping upload) — see §8. |
 | **Legal documents** | ⚠️ Manual hosting required | Privacy Policy + Terms are complete templates; must be **filled in, counsel-reviewed, and hosted at public URLs** before submission. |
 | **Release signing** | ⚠️ Upload keystore required | Signing config is wired (debug fallback verified); the **real upload keystore + `android/key.properties`** must be created by the release owner. |
-| **App Check** | ⚠️ Final console step | Activates on device (monitoring-only, graceful placeholder). Enable API → register Play Integrity → **enforce** after traffic validates. |
+| **App Check** | ⚠️ Verify Firebase Console configuration | Android release uses Play Integrity; Web release uses reCAPTCHA Enterprise when `RECAPTCHA_SITE_KEY` is injected. Register the matching providers and domains; verify enforcement without disabling it. |
 | **Cloud Storage** | ⚠️ Final console step | Default bucket not provisioned; hardened `storage.rules` authored but undeployed. Provision the bucket, then `firebase deploy --only storage`. |
 
 **Legend:** ✅ Ready = done & verified in-repo · ⚠️ = a manual, non-automatable

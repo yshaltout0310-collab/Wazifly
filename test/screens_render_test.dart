@@ -122,6 +122,10 @@ void main() {
     // Both popular languages visible initially.
     expect(find.text('العربية'), findsOneWidget);
     expect(find.text('Arabic'), findsOneWidget);
+    expect(
+      tester.widget<Text>(find.text('العربية')).style?.fontFamily,
+      'Cairo',
+    );
 
     // Typing into the search field updates the filtered list.
     await tester.enterText(find.byType(TextField), 'arab');

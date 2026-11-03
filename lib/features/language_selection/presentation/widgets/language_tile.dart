@@ -22,9 +22,7 @@ class LanguageTile extends StatelessWidget {
     final scheme = theme.colorScheme;
 
     return Material(
-      color: selected
-          ? scheme.primary.withValues(alpha: 0.10)
-          : scheme.surface,
+      color: selected ? scheme.primary.withValues(alpha: 0.10) : scheme.surface,
       borderRadius: BorderRadius.circular(AppRadius.md),
       child: InkWell(
         borderRadius: BorderRadius.circular(AppRadius.md),
@@ -63,8 +61,10 @@ class LanguageTile extends StatelessWidget {
                   children: [
                     Text(
                       language.nativeName,
-                      style: theme.textTheme.titleMedium
-                          ?.copyWith(fontWeight: FontWeight.w600),
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontFamily: language.code == 'ar' ? 'Cairo' : null,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     Text(
                       language.englishName,

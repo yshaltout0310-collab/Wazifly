@@ -79,13 +79,16 @@ These are **console-side** and cannot be done from the repository.
 2. **API key referrer restrictions** — if the web API key has HTTP-referrer
    restrictions in Google Cloud Console → *APIs & Services → Credentials*, add
    the Replit host there too. With no restrictions set, nothing is needed.
-3. **App Check (important).** Enforcement is currently **off**, and the web
-   build logs a harmless `[AppCheck] activate failed` because no web attestation
-   provider is registered. If App Check enforcement is ever switched on,
-   **this web deployment will be denied Firestore/Storage/AI access** until a
-   **reCAPTCHA v3 (or Enterprise) provider** is registered for the web app and
-   activated in the client. Treat "enforce App Check" and "keep the web build
-   working" as one change, not two.
+3. **App Check (required for AI Logic).** The Android release client uses Play
+   Integrity. The web client uses reCAPTCHA Enterprise when the release build
+   receives `RECAPTCHA_SITE_KEY` from Replit Secrets; `tool/replit/build_web.sh`
+   passes it into Flutter at build time. Use a score-based reCAPTCHA Enterprise
+   site key, not a v3 key. In Firebase Console → *App Check*, register the
+   Firebase web app with that Enterprise key and allow the Replit preview and
+   published domains in the Enterprise key's domain settings. Keep the matching
+   `RECAPTCHA_SITE_KEY` available to the Replit deployment build. Do not turn off
+   enforcement to work around a missing or mismatched key; resolve the provider
+   configuration first.
 
 ---
 
@@ -100,7 +103,7 @@ reviewer should know what they are looking at.
 | **Biometric app-lock** | Silently absent | `local_auth` has no web implementation, so `biometricServiceProvider` binds the no-op service on web and the feature never appears. |
 | **Crashlytics** | Not reported | `firebase_crashlytics` has no web plugin. Calls are caught and logged; telemetry is best-effort by design. |
 | **Push notifications** | Denied / off | FCM on web needs a service worker plus a VAPID key, neither of which is configured. Initialization fails softly. |
-| **App Check** | Unattested | No web provider registered — see §5.3. |
+| **App Check** | reCAPTCHA Enterprise when `RECAPTCHA_SITE_KEY` is included at build time; otherwise unattested | Web attestation is configured by the build script; see §5.3. |
 | **Offline banner** | Never shows | The connectivity probe is `dart:io`-based, so web binds the always-online no-op. |
 | PDF export / résumé upload | ✅ Work | `pdf`, `printing` and `file_selector` all have web implementations. |
 
