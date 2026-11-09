@@ -78,6 +78,7 @@ String jobsActionFailureMessage(AppLocalizations l10n, JobsActionFailure f) =>
     switch (f) {
       JobsActionFailure.permission => l10n.jobErrPermission,
       JobsActionFailure.network => l10n.jobErrNetwork,
+      JobsActionFailure.staleStatus => l10n.jobErrStaleStatus,
       JobsActionFailure.unknown => l10n.jobActionFailed,
     };
 

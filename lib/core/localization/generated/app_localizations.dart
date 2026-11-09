@@ -3932,6 +3932,12 @@ abstract class AppLocalizations {
   /// **'You appear to be offline. Please try again.'**
   String get jobErrNetwork;
 
+  /// No description provided for @jobErrStaleStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'This job\'s status has changed. Refresh and try again.'**
+  String get jobErrStaleStatus;
+
   /// No description provided for @jobActionFailed.
   ///
   /// In en, this message translates to:

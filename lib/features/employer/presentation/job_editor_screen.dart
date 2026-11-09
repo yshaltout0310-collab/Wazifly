@@ -10,6 +10,7 @@ import '../../../shared/models/internship_details.dart';
 import '../../../shared/models/internship_details_l10n.dart';
 import '../../../shared/models/job_posting.dart';
 import '../../../shared/widgets/chip_input.dart';
+import '../application/employer_jobs_controller.dart';
 import '../application/job_editor_controller.dart';
 import '../domain/employment_type.dart';
 import '../domain/job_experience.dart';
@@ -19,8 +20,8 @@ import 'employer_jobs_l10n.dart';
 
 /// Create/Edit form for a job posting. Field edits flow into the
 /// [JobEditorController] (which debounce-auto-saves valid drafts); Publish
-/// validates for publish, saves the draft, then routes to the Preview screen for
-/// the final confirmation. A [PopScope] guards unsaved changes.
+/// validates for publish, saves the draft, then publishes behind a confirmation
+/// dialog. Preview is a separate action. A [PopScope] guards unsaved changes.
 class JobEditorScreen extends ConsumerStatefulWidget {
   const JobEditorScreen({this.jobId, super.key});
 
@@ -241,6 +242,13 @@ class _JobEditorScreenState extends ConsumerState<JobEditorScreen> {
     );
   }
 
+  /// Saves the current field values, then **publishes** behind an in-place
+  /// confirmation.
+  ///
+  /// This used to save a draft and navigate to Preview, so a button labelled
+  /// "Publish" left the posting in `draft` unless the employer went on to
+  /// confirm on the Preview screen — which is why published jobs never reached
+  /// My Jobs or seeker search. Preview is still reachable as its own action.
   Future<void> _onPublish() async {
     final l10n = AppLocalizations.of(context);
     if (!_controller.publishValidation.isValid) {
@@ -248,9 +256,52 @@ class _JobEditorScreenState extends ConsumerState<JobEditorScreen> {
       _snack(l10n.jobErrFixFields);
       return;
     }
+    // Persist first, so the status transition is applied to the document that
+    // carries the edits the employer just made.
     final saved = await _controller.saveDraft();
     if (!mounted || saved == null) return;
-    context.pushNamed(RouteNames.jobPreview, extra: saved);
+
+    // An already-published posting has no legal transition to `published`;
+    // saving the edits IS the publish, and they are live now.
+    if (!saved.isPublishable) {
+      _snack(l10n.jobPublished);
+      context.goNamed(RouteNames.employerJobs);
+      return;
+    }
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.jobPublishConfirmTitle),
+        content: Text(l10n.jobPublishConfirmBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.jobUnsavedCancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(l10n.jobPublishConfirmCta),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+
+    final jobs = ref.read(employerJobsControllerProvider.notifier);
+    await jobs.publish(saved);
+    if (!mounted) return;
+
+    // This screen has no `ref.listen` on the lifecycle controller, so report
+    // the failure here rather than letting it pass unseen.
+    final failure = ref.read(employerJobsControllerProvider).failure;
+    if (failure != null) {
+      _snack(jobsActionFailureMessage(l10n, failure));
+      jobs.clearFailure();
+      return;
+    }
+    _snack(l10n.jobPublished);
+    context.goNamed(RouteNames.employerJobs);
   }
 
   Future<void> _onSaveDraft() async {

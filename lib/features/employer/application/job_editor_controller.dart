@@ -80,8 +80,9 @@ class JobEditorState extends Equatable {
 
 /// Drives the Create/Edit form: field mutations, two-tier validation, **draft
 /// auto-save** (debounced), and dirty tracking for the unsaved-changes guard.
-/// Persistence is repository-driven; publishing is handled by the lifecycle
-/// controller after the preview confirmation.
+/// Persistence is repository-driven; the status transition itself belongs to the
+/// lifecycle `EmployerJobsController`, which the editor calls straight after
+/// saving when the employer confirms Publish.
 class JobEditorController extends StateNotifier<JobEditorState> {
   JobEditorController(this._ref, String? jobId, {DateTime Function()? clock})
       : _clock = clock ?? DateTime.now,

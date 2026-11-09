@@ -2038,6 +2038,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get jobErrNetwork => 'يبدو أنك غير متصل. يرجى المحاولة مجددًا.';
 
   @override
+  String get jobErrStaleStatus =>
+      'تغيّرت حالة هذه الوظيفة. يرجى التحديث والمحاولة مجددًا.';
+
+  @override
   String get jobActionFailed => 'حدث خطأ ما. يرجى المحاولة مجددًا.';
 
   @override

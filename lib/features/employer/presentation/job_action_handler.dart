@@ -6,9 +6,10 @@ import '../../../core/localization/generated/app_localizations.dart';
 import '../../../core/navigation/route_names.dart';
 import '../../../shared/models/job_posting.dart';
 import '../application/employer_jobs_controller.dart';
+import '../domain/job_validation.dart';
 import 'job_actions.dart';
 
-/// Runs a [JobAction] for [job] — navigation for edit/preview/publish,
+/// Runs a [JobAction] for [job] — navigation for edit/preview,
 /// confirmation dialogs for the destructive/lifecycle actions, then delegates to
 /// the optimistic [EmployerJobsController]. Shared by the My Jobs list tiles and
 /// the job detail screen so both behave identically. Lifecycle failures surface
@@ -27,9 +28,9 @@ Future<void> runJobAction(
     case JobAction.edit:
       context.pushNamed(RouteNames.editJob, pathParameters: {'id': job.id});
     case JobAction.preview:
-    case JobAction.publish:
-      // Publishing is confirmed on the preview screen (how seekers see it).
       context.pushNamed(RouteNames.jobPreview, extra: job);
+    case JobAction.publish:
+      await _publish(context, ref, job, controller, l10n);
     case JobAction.reopen:
       if (await _confirm(context, l10n.jobActionReopen,
           l10n.jobPublishConfirmBody, l10n.jobPublishConfirmCta)) {
@@ -62,6 +63,45 @@ Future<void> runJobAction(
         _reportSuccess(context, ref, l10n.jobDeletedMsg);
       }
   }
+}
+
+/// Publishes [job] in place, behind a confirmation.
+///
+/// This used to be folded into the Preview case — `JobAction.publish` fell
+/// through to `JobAction.preview` and merely navigated, so "Publish" never
+/// published and the posting stayed a `draft` unless the employer went on to
+/// confirm on the Preview screen. Preview is now its own action.
+///
+/// The full publish validation runs first. The list and detail menus reach this
+/// without passing through the editor, so without the check one tap could put a
+/// posting live with no description, skills, experience, employment type or
+/// location. An incomplete draft is sent to the editor instead, where the
+/// inline field errors explain what is missing.
+Future<void> _publish(
+  BuildContext context,
+  WidgetRef ref,
+  JobPosting job,
+  EmployerJobsController controller,
+  AppLocalizations l10n,
+) async {
+  if (!JobValidator.forPublish(job).isValid) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(
+        behavior: SnackBarBehavior.floating,
+        content: Text(l10n.jobErrFixFields),
+      ));
+    context.pushNamed(RouteNames.editJob, pathParameters: {'id': job.id});
+    return;
+  }
+
+  if (!await _confirm(context, l10n.jobPublishConfirmTitle,
+      l10n.jobPublishConfirmBody, l10n.jobPublishConfirmCta)) {
+    return;
+  }
+  await controller.publish(job);
+  if (!context.mounted) return;
+  _reportSuccess(context, ref, l10n.jobPublished);
 }
 
 /// Shows the success message only when the optimistic action did not roll back

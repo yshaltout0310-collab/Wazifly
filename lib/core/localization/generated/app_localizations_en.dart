@@ -2059,6 +2059,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get jobErrNetwork => 'You appear to be offline. Please try again.';
 
   @override
+  String get jobErrStaleStatus =>
+      'This job\'s status has changed. Refresh and try again.';
+
+  @override
   String get jobActionFailed => 'Something went wrong. Please try again.';
 
   @override

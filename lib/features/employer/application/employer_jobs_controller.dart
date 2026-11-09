@@ -10,7 +10,18 @@ import '../../auth/application/auth_providers.dart';
 import '../domain/job_status.dart';
 
 /// UI-facing failure categories for lifecycle actions.
-enum JobsActionFailure { permission, network, unknown }
+enum JobsActionFailure {
+  permission,
+  network,
+
+  /// The posting is no longer in a status that allows the requested transition
+  /// — it moved under the UI (another tab or device, or the stream updated
+  /// after the menu was opened). Previously this was a silent no-op, which read
+  /// to the user as a button that did nothing.
+  staleStatus,
+
+  unknown,
+}
 
 /// The optimistic overlay applied on top of the authoritative `employerJobsProvider`
 /// stream: status overrides, optimistically-removed (soft-deleted) ids, and
@@ -81,7 +92,14 @@ class EmployerJobsController extends StateNotifier<EmployerJobsActionState> {
       _transition(job, JobStatus.archived, reason: reason);
 
   Future<void> _transition(JobPosting job, JobStatus next, {String? reason}) async {
-    if (!job.status.canTransitionTo(next)) return;
+    if (!job.status.canTransitionTo(next)) {
+      // The UI only offers legal transitions, so arriving here means the
+      // posting's status changed since the action was offered. Report it rather
+      // than returning silently — a dead button with no feedback is how the
+      // "Publish does nothing" reports started.
+      state = state.copyWith(failure: JobsActionFailure.staleStatus);
+      return;
+    }
     final updated =
         job.withStatus(next, at: _clock(), by: _uid, reason: reason);
     await _optimistic(job.id,

@@ -10,12 +10,17 @@ import '../../../core/utils/responsive.dart';
 import '../../../shared/models/job_posting.dart';
 import '../../../shared/widgets/job_detail_view.dart';
 import '../application/employer_jobs_controller.dart';
+import '../domain/job_validation.dart';
 import 'employer_jobs_l10n.dart';
 
 /// Renders a posting exactly as a job seeker will see it (via the shared
 /// [JobDetailView] over [JobPosting.toJob]), with a "Preview" banner and — when
-/// the posting can be published — a Publish CTA behind a confirmation dialog.
-/// Reached from the editor's Publish flow and from Preview actions.
+/// the posting is both in a publishable status and complete enough to go live —
+/// a Publish CTA behind a confirmation dialog.
+///
+/// Reached from the Preview action. It is no longer a required step in
+/// publishing: the editor and the job menus publish directly, so this is a
+/// look-before-you-ship screen rather than a gate.
 class JobPreviewScreen extends ConsumerWidget {
   const JobPreviewScreen({required this.posting, super.key});
 
@@ -54,11 +59,15 @@ class JobPreviewScreen extends ConsumerWidget {
           ],
         ),
       ),
-      bottomNavigationBar: posting.isPublishable
-          ? _PublishBar(
-              onPublish: () => _confirmAndPublish(context, ref),
-            )
-          : null,
+      // The CTA needs BOTH a legal status transition and a posting complete
+      // enough to go live. `isPublishable` only checks the status, so on its own
+      // it offered one-tap publishing of an empty draft.
+      bottomNavigationBar:
+          posting.isPublishable && JobValidator.forPublish(posting).isValid
+              ? _PublishBar(
+                  onPublish: () => _confirmAndPublish(context, ref),
+                )
+              : null,
     );
   }
 
