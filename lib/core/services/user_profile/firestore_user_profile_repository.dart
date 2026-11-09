@@ -5,6 +5,7 @@ import '../../../features/user_type/domain/user_type.dart';
 import '../../../shared/models/app_user.dart';
 import '../../../shared/models/user_profile.dart';
 import '../firebase/firebase_service.dart';
+import '../firebase/firestore_stream.dart';
 import 'user_profile_repository.dart';
 
 /// Firestore-backed [UserProfileRepository] — the production path.
@@ -31,9 +32,7 @@ class FirestoreUserProfileRepository implements UserProfileRepository {
       final data = snap.data();
       if (data == null) return null;
       return UserProfile.fromJson({...data, 'uid': uid});
-    }).handleError((Object e) {
-      debugPrint('[UserProfileRepository] watchProfile failed: $e');
-    });
+    }).logAndForwardErrors('UserProfileRepository.watchProfile');
   }
 
   @override

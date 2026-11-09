@@ -896,6 +896,7 @@
 
   "commonLoading": "جارٍ التحميل…",
   "commonRetry": "إعادة المحاولة",
+  "commonLoadError": "تعذّر تحميل البيانات. يرجى المحاولة مرة أخرى.",
   "commonCopy": "نسخ",
   "commonCopiedToClipboard": "تم النسخ إلى الحافظة.",
   "commonShowPassword": "إظهار كلمة المرور",

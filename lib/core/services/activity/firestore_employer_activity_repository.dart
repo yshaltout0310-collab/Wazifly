@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 
 import '../../../shared/models/employer_activity.dart';
 import '../firebase/firebase_service.dart';
+import '../firebase/firestore_stream.dart';
 import 'employer_activity_repository.dart';
 
 /// Firestore-backed [EmployerActivityRepository] — the production path.
@@ -42,8 +42,6 @@ class FirestoreEmployerActivityRepository
           .toList();
       list.sort((a, b) => b.at.compareTo(a.at));
       return list;
-    }).handleError((Object e) {
-      debugPrint('[EmployerActivity] watch failed: $e');
-    });
+    }).logAndForwardErrors('EmployerActivity.watchActivity');
   }
 }

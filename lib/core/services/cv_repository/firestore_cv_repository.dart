@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 import '../firebase/firebase_service.dart';
+import '../firebase/firestore_stream.dart';
 import 'cv_document.dart';
 import 'cv_repository.dart';
 
@@ -38,9 +39,7 @@ class FirestoreCvRepository implements CvRepository {
           .toList();
       docs.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
       return docs;
-    }).handleError((Object e) {
-      debugPrint('[CvRepository] watchCvs failed: $e');
-    });
+    }).logAndForwardErrors('CvRepository.watchCvs');
   }
 
   @override

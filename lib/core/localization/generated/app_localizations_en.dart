@@ -2613,6 +2613,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonRetry => 'Try again';
 
   @override
+  String get commonLoadError => 'Couldn\'t load your data. Please try again.';
+
+  @override
   String get commonCopy => 'Copy';
 
   @override

@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 
 import '../../../shared/models/company.dart';
 import '../firebase/firebase_service.dart';
+import '../firebase/firestore_stream.dart';
 import 'company_repository.dart';
 
 /// Firestore-backed [CompanyRepository] — the production path.
@@ -30,9 +31,7 @@ class FirestoreCompanyRepository implements CompanyRepository {
       final data = snap.data();
       if (data == null) return null;
       return Company.fromJson({...data, 'companyId': companyId});
-    }).handleError((Object e) {
-      debugPrint('[CompanyRepository] watchCompany failed: $e');
-    });
+    }).logAndForwardErrors('CompanyRepository.watchCompany');
   }
 
   @override

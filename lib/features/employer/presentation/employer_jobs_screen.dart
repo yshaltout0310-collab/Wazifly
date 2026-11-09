@@ -48,6 +48,22 @@ class EmployerJobsScreen extends ConsumerWidget {
     final jobs = ref.watch(filteredEmployerJobsProvider);
     final anyJobs = ref.watch(visibleEmployerJobsProvider).isNotEmpty;
 
+    // Loading / error take over only while there is nothing to show yet, so an
+    // optimistic or already-streamed list is never replaced by a state screen.
+    // The error branch exists because the repository now FORWARDS stream errors
+    // instead of swallowing them — a denied or failed read used to leave this
+    // provider in AsyncLoading forever, showing an endless spinner.
+    final Widget? state = anyJobs
+        ? null
+        : async.hasError
+            ? StatusView.error(
+                message: l10n.commonLoadError,
+                onRetry: () => ref.invalidate(employerJobsProvider),
+              )
+            : async.isLoading
+                ? const StatusView.loading()
+                : null;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.employerJobsTitle),
@@ -74,9 +90,8 @@ class EmployerJobsScreen extends ConsumerWidget {
         top: false,
         child: ResponsiveCenter(
           maxWidth: 720,
-          child: async.isLoading && !anyJobs
-              ? const Center(child: CircularProgressIndicator())
-              : Column(
+          child: state ??
+              Column(
                   children: [
                     Padding(
                       padding: EdgeInsets.fromLTRB(context.horizontalGutter,

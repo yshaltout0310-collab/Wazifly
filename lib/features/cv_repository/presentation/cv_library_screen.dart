@@ -54,6 +54,18 @@ class _CvLibraryScreenState extends ConsumerState<CvLibraryScreen> {
       }
     });
 
+    // Loading / error for the CV stream. The error branch is reachable now that
+    // the repository forwards stream errors instead of swallowing them — a
+    // denied read previously left this provider loading forever.
+    final Widget? state = cvsAsync.hasError && !cvsAsync.hasValue
+        ? StatusView.error(
+            message: l10n.commonLoadError,
+            onRetry: () => ref.invalidate(cvDocumentsProvider),
+          )
+        : cvsAsync.isLoading
+            ? const StatusView.loading()
+            : null;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.cvLibraryTitle),
@@ -101,9 +113,8 @@ class _CvLibraryScreenState extends ConsumerState<CvLibraryScreen> {
               _FilterChips(current: libState.filter),
               const SizedBox(height: AppSpacing.sm),
               Expanded(
-                child: cvsAsync.isLoading
-                    ? const StatusView.loading()
-                    : visible.isEmpty
+                child: state ??
+                    (visible.isEmpty
                         ? _empty(context, l10n, libState.filter)
                         : ListView.separated(
                             padding: EdgeInsets.fromLTRB(
@@ -125,7 +136,7 @@ class _CvLibraryScreenState extends ConsumerState<CvLibraryScreen> {
                                 onMenu: () => _showActions(context, cv),
                               );
                             },
-                          ),
+                          )),
               ),
             ],
           ),

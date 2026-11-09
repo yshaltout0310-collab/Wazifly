@@ -2602,6 +2602,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get commonRetry => 'إعادة المحاولة';
 
   @override
+  String get commonLoadError => 'تعذّر تحميل البيانات. يرجى المحاولة مرة أخرى.';
+
+  @override
   String get commonCopy => 'نسخ';
 
   @override

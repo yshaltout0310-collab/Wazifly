@@ -949,6 +949,7 @@
 
   "commonLoading": "Loading…",
   "commonRetry": "Try again",
+  "commonLoadError": "Couldn't load your data. Please try again.",
   "commonCopy": "Copy",
   "commonCopiedToClipboard": "Copied to clipboard.",
   "commonShowPassword": "Show password",

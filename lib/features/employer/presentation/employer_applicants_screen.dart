@@ -79,6 +79,21 @@ class _EmployerApplicantsScreenState
         ? null
         : ref.watch(employerJobByIdProvider(widget.jobId!))?.title;
 
+    // Loading / error take over only while there is nothing to show yet. The
+    // error branch exists because the repository now FORWARDS stream errors
+    // instead of swallowing them — a denied or failed read used to leave this
+    // provider in AsyncLoading forever, showing an endless spinner.
+    final Widget? state = anyApplicants
+        ? null
+        : async.hasError
+            ? StatusView.error(
+                message: l10n.commonLoadError,
+                onRetry: () => ref.invalidate(employerApplicantsProvider),
+              )
+            : async.isLoading
+                ? const StatusView.loading()
+                : null;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.jobId == null
@@ -104,9 +119,8 @@ class _EmployerApplicantsScreenState
         top: false,
         child: ResponsiveCenter(
           maxWidth: 720,
-          child: async.isLoading && !anyApplicants
-              ? const Center(child: CircularProgressIndicator())
-              : Column(
+          child: state ??
+              Column(
                   children: [
                     if (anyApplicants) const _StatsStrip(),
                     Padding(

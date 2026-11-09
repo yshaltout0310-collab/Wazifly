@@ -5,6 +5,7 @@ import '../../../shared/models/applicant_snapshot.dart';
 import '../../../shared/models/application.dart';
 import '../../../shared/models/job.dart';
 import '../firebase/firebase_service.dart';
+import '../firebase/firestore_stream.dart';
 import '../security/security_audit_log.dart';
 import 'applications_repository.dart';
 
@@ -104,10 +105,8 @@ class FirestoreApplicationsRepository implements ApplicationsRepository {
           .toList();
       list.sort((a, b) => b.appliedAt.compareTo(a.appliedAt)); // newest first
       return list;
-    }).handleError((Object e) {
-      debugPrint('[Applications] watchApplications failed: $e');
-      _auditDenied(e, 'applications_read');
-    });
+    }).logAndForwardErrors('Applications.watchApplications',
+        onError: (e) => _auditDenied(e, 'applications_read'));
   }
 
   @override

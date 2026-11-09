@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 
 import '../../../shared/models/learning_profile.dart';
 import '../firebase/firebase_service.dart';
+import '../firebase/firestore_stream.dart';
 import 'learning_profile_repository.dart';
 
 /// Firestore-backed [LearningProfileRepository] — the production path.
@@ -36,9 +37,7 @@ class FirestoreLearningProfileRepository implements LearningProfileRepository {
       final data = snap.data();
       if (data == null) return LearningProfile.empty(uid);
       return LearningProfile.fromJson({...data, 'uid': uid}, uid: uid);
-    }).handleError((Object e) {
-      debugPrint('[LearningProfile] watchProfile failed: $e');
-    });
+    }).logAndForwardErrors('LearningProfile.watchProfile');
   }
 
   @override

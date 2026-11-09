@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 
 import '../../../shared/models/application.dart';
 import '../firebase/firebase_service.dart';
+import '../firebase/firestore_stream.dart';
 import '../security/security_audit_log.dart';
 import 'employer_applicants_repository.dart';
 
@@ -46,15 +47,8 @@ class FirestoreEmployerApplicantsRepository
           .toList();
       list.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
       return list;
-    }).handleError((Object e) {
-      debugPrint('[EmployerApplicants] watch failed: $e');
-      if (_audit != null &&
-          e is FirebaseException &&
-          e.code == 'permission-denied') {
-        _audit.record(SecurityEventType.permissionDenied,
-            detail: 'applications_read');
-      }
-    });
+    }).logAndForwardErrors('EmployerApplicants.watchApplicants',
+        onError: _auditDenied);
   }
 
   @override
@@ -79,5 +73,15 @@ class FirestoreEmployerApplicantsRepository
     // keeps applicantUid/ownerUid intact (the rule checks the existing ownerUid).
     final data = application.toJson()..remove('id');
     await _apps.doc(application.id).set(data, SetOptions(merge: true));
+  }
+
+  /// Records a permission-denied read to the security audit log (best-effort).
+  void _auditDenied(Object e) {
+    if (_audit != null &&
+        e is FirebaseException &&
+        e.code == 'permission-denied') {
+      _audit.record(SecurityEventType.permissionDenied,
+          detail: 'applications_read');
+    }
   }
 }

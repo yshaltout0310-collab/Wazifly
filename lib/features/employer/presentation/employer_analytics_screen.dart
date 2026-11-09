@@ -57,15 +57,31 @@ class EmployerAnalyticsScreen extends ConsumerWidget {
     final appsAsync = ref.watch(employerApplicantsProvider);
     final loading = (jobsAsync.isLoading && !jobsAsync.hasValue) ||
         (appsAsync.isLoading && !appsAsync.hasValue);
+    // Either source failing with nothing cached makes the whole dashboard
+    // meaningless, so surface it instead of rendering a misleading empty state.
+    // Reachable because the repositories now forward stream errors.
+    final failed = (jobsAsync.hasError && !jobsAsync.hasValue) ||
+        (appsAsync.hasError && !appsAsync.hasValue);
+
+    final Widget? state = failed
+        ? StatusView.error(
+            message: l10n.commonLoadError,
+            onRetry: () {
+              ref.invalidate(employerJobsProvider);
+              ref.invalidate(employerApplicantsProvider);
+            },
+          )
+        : loading
+            ? const StatusView.loading()
+            : null;
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.analyticsTitle)),
       body: SafeArea(
         child: ResponsiveCenter(
           maxWidth: 760,
-          child: loading
-              ? const StatusView.loading()
-              : (!analytics.hasApplicants && !analytics.hasJobs)
+          child: state ??
+              ((!analytics.hasApplicants && !analytics.hasJobs)
                   ? StatusView.empty(
                       icon: Icons.insights_rounded,
                       title: l10n.analyticsEmptyTitle,
@@ -77,7 +93,7 @@ class EmployerAnalyticsScreen extends ConsumerWidget {
                         onPressed: () => context.pushNamed(RouteNames.createJob),
                       ),
                     )
-                  : _Dashboard(analytics: analytics),
+                  : _Dashboard(analytics: analytics)),
         ),
       ),
     );

@@ -99,7 +99,7 @@ class _ApplicationsView extends ConsumerWidget {
     }
     if (async.hasError && total == 0) {
       return StatusView.error(
-        message: l10n.jobsLoadError,
+        message: l10n.commonLoadError,
         onRetry: () => ref.invalidate(applicationsProvider),
       );
     }

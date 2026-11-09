@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 
 import '../../../shared/models/application_note.dart';
 import '../firebase/firebase_service.dart';
+import '../firebase/firestore_stream.dart';
 import 'employer_notes_repository.dart';
 
 /// Firestore-backed [EmployerNotesRepository] — the production path.
@@ -38,9 +38,7 @@ class FirestoreEmployerNotesRepository implements EmployerNotesRepository {
           .toList();
       list.sort((a, b) => a.createdAt.compareTo(b.createdAt));
       return list;
-    }).handleError((Object e) {
-      debugPrint('[EmployerNotes] watch failed: $e');
-    });
+    }).logAndForwardErrors('EmployerNotes.watchNotes');
   }
 
   @override

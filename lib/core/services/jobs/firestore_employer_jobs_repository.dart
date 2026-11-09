@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 
 import '../../../shared/models/job_posting.dart';
 import '../firebase/firebase_service.dart';
+import '../firebase/firestore_stream.dart';
 import '../security/security_audit_log.dart';
 import 'employer_jobs_repository.dart';
 
@@ -51,10 +52,7 @@ class FirestoreEmployerJobsRepository implements EmployerJobsRepository {
           .toList();
       list.sort((a, b) => (b.updatedAt ?? _epoch).compareTo(a.updatedAt ?? _epoch));
       return list;
-    }).handleError((Object e) {
-      debugPrint('[EmployerJobs] watchJobs failed: $e');
-      _auditDenied(e);
-    });
+    }).logAndForwardErrors('EmployerJobs.watchJobs', onError: _auditDenied);
   }
 
   @override

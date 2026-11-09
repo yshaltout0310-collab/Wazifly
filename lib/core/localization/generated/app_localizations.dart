@@ -4856,6 +4856,12 @@ abstract class AppLocalizations {
   /// **'Try again'**
   String get commonRetry;
 
+  /// No description provided for @commonLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load your data. Please try again.'**
+  String get commonLoadError;
+
   /// No description provided for @commonCopy.
   ///
   /// In en, this message translates to:
