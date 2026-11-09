@@ -13,7 +13,7 @@
 | **1 — Make failure visible (RC-A)** | ✅ **DONE** | See below. |
 | **2 — Make publishing work (RC-B)** | ✅ **DONE** | Closes 6, 11. See below. |
 | **3 — Make published jobs findable (RC-C)** | ✅ **DONE** | Closes 9. See below. |
-| 4 — Auth correctness (RC-F/M/G) | ⬜ Not started | |
+| **4 — Auth correctness (RC-F/M/G)** | ✅ **DONE** | Closes 12, 13, 14. See below. |
 | 5 — Web load performance (RC-D) | ⬜ Not started | |
 | 6 — Registration & company profile (RC-E) | ⬜ Not started | |
 | 7 — Discoverability & dashboard (RC-K/J) | ⬜ Not started | |
@@ -139,6 +139,72 @@ unfiltered, that it ignores the persisted onboarding country, and that
 `clearFilters` clears the country. A fourth was added for the reported symptom
 directly: a job outside Qatar is findable by text search on first load, with no
 filter touched.
+
+**Not verified live:** no device or web run.
+
+### Phase 4 — what landed
+
+**Issue 12 — sign-in no longer applies a creation-time rule.** One validator
+served both modes in `email_auth_screen`, returning `passwordTooShort` for any
+password under six characters. Because `_submit` runs
+`_formKey.currentState!.validate()` before anything else, a *wrong* password
+shorter than six was rejected locally: the user was told it was too short and
+the credentials check never ran. Sign-in now only requires a non-empty value;
+the strength rule applies to sign-**up** only.
+
+**Issue 13 — the requirements are stated up front.** New
+`lib/core/utils/password_policy.dart` is the single definition of the rules
+(**minimum 8 characters, a letter, a number**), and a new
+`PasswordRequirements` widget renders a live checklist *from that same object*,
+so what the user is shown cannot drift from what is enforced. It appears on
+sign-up and on Change password, never on sign-in.
+
+> ⚠️ **This changes what passwords are accepted.** The previous rule was six
+> characters with no composition requirement, hard-coded separately in
+> `email_auth_screen` and `ChangePasswordController`. Eight-plus-letter-plus-digit
+> is a deliberate strengthening, not a like-for-like port: a platform holding
+> CVs and contact details should not accept a six-character password. It affects
+> **new sign-ups and voluntary password changes only** — existing users are
+> unaffected when signing in, since sign-in no longer checks composition at all.
+> It is a one-line change in `PasswordPolicy` if you want it looser.
+>
+> **The policy of record is: minimum 8 characters, at least one letter, at least
+> one number.** No Firebase Console setting was changed as part of this phase —
+> backend policy alignment (Authentication → Settings → Password policy) is
+> tracked separately by the owner. Until then the client is the stricter of the
+> two, which is safe: where the two disagree Firebase still has the last word,
+> rejecting with `weak-password`, which already maps to a localized message.
+>
+> The rules are **Unicode-aware** (`\p{L}` / `\p{Nd}`): an Arabic password
+> written in Arabic letters and Arabic-Indic digits satisfies "a letter" and "a
+> number", which `[A-Za-z]` / `\d` would have silently rejected in an app that
+> ships Arabic. Length counts code points, not UTF-16 units.
+
+Stale copy stating "6 characters" was corrected in EN and AR
+(`changePasswordTooShort`, `errWeakPassword`).
+
+**Issue 14 — sign-in costs one profile read instead of three.** `goAfterAuth`
+awaited `ensureProfile` (a `get`, then a `set`) and then
+`_resolveUserType(trustCache: false)`, whose `fetchProfile` issued a **third**
+round trip to re-read the document it had just written — all sequential, all
+before the first navigation. `ensureProfile` now returns the profile it already
+read (its contract documents that this is the pre-write state, which is exactly
+what the caller needs, since the role is never written there), and
+`goAfterAuth` takes the role from that. `_resolveUserType` had only one caller
+and one argument value left, so its `trustCache` parameter was removed rather
+than left as dead configuration.
+
+**Validation:** `flutter analyze` clean · **772 tests pass** (+13 new) · zero
+regressions, no existing test needed changing. New: `password_policy_test.dart`
+(rules, display order, Unicode, code-point length), `email_auth_validation_test.dart`
+(a short wrong password **reaches** the backend and reports bad credentials; no
+checklist on sign-in; sign-up states the rules before any typing and blocks a
+weak password without calling the backend; a compliant one goes through), and
+`auth_navigation_round_trips_test.dart` (seeker and employer sign-in each read
+the profile exactly once and `fetchProfile` is never called; a new account still
+reaches role selection; a stale cached role never overrides the stored one).
+The round-trip counts are asserted because the cost is invisible in behaviour —
+the old code navigated to the same place, just later.
 
 **Not verified live:** no device or web run.
 
