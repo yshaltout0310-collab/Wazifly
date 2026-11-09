@@ -324,6 +324,9 @@
 
   "fieldRequired": "This field is required",
   "invalidEmail": "Enter a valid email address",
+  "fullNameLabel": "Full name",
+  "invalidFullName": "Enter your full name",
+  "invalidPhoneNumber": "Enter a valid phone number",
   "passwordTooShort": "Password must be at least 6 characters",
   "passwordRequirementsTitle": "Your password needs:",
   "passwordRuleMinLength": "At least {count} characters",

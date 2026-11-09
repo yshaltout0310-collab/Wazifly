@@ -899,6 +899,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get invalidEmail => 'Enter a valid email address';
 
   @override
+  String get fullNameLabel => 'Full name';
+
+  @override
+  String get invalidFullName => 'Enter your full name';
+
+  @override
+  String get invalidPhoneNumber => 'Enter a valid phone number';
+
+  @override
   String get passwordTooShort => 'Password must be at least 6 characters';
 
   @override

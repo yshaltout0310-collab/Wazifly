@@ -60,16 +60,27 @@ class FirebaseAuthRepository implements AuthRepository {
   Future<AppUser> registerWithEmail({
     required String email,
     required String password,
+    String? displayName,
   }) =>
       _guard(() async {
         final cred = await _auth.createUserWithEmailAndPassword(
           email: email.trim(),
           password: password,
         );
+        final user = cred.user;
+        // Set the name BEFORE mapping, so the returned AppUser already carries
+        // it and `ensureProfile` / `ensureCompany` can seed from it. `reload()`
+        // refreshes the cached User, otherwise `user.displayName` would still
+        // read null in this same call.
+        final name = displayName?.trim();
+        if (user != null && name != null && name.isNotEmpty) {
+          await user.updateDisplayName(name);
+          await user.reload();
+        }
         // Automatically send the verification email on sign-up; the account is
         // created signed-in but stays gated until the address is verified.
-        await cred.user?.sendEmailVerification();
-        return _map(cred.user, method: AuthMethod.email)!;
+        await _auth.currentUser?.sendEmailVerification();
+        return _map(_auth.currentUser ?? user, method: AuthMethod.email)!;
       });
 
   @override

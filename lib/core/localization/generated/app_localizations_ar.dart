@@ -891,6 +891,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get invalidEmail => 'أدخل بريدًا إلكترونيًا صالحًا';
 
   @override
+  String get fullNameLabel => 'الاسم الكامل';
+
+  @override
+  String get invalidFullName => 'أدخل اسمك الكامل';
+
+  @override
+  String get invalidPhoneNumber => 'أدخل رقم هاتف صالح';
+
+  @override
   String get passwordTooShort => 'يجب أن تتكون كلمة المرور من 6 أحرف على الأقل';
 
   @override

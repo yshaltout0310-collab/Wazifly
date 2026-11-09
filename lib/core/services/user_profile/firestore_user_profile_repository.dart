@@ -117,4 +117,17 @@ class FirestoreUserProfileRepository implements UserProfileRepository {
       debugPrint('[UserProfileRepository] setPhotoUrl failed: $e');
     }
   }
+
+  @override
+  Future<void> setPhoneNumber(String uid, String phoneNumber) async {
+    if (!_ready) return;
+    try {
+      await _users.doc(uid).set(
+        {'phoneNumber': phoneNumber, 'updatedAt': FieldValue.serverTimestamp()},
+        SetOptions(merge: true),
+      );
+    } catch (e) {
+      debugPrint('[UserProfileRepository] setPhoneNumber failed: $e');
+    }
+  }
 }

@@ -27,9 +27,17 @@ abstract interface class AuthRepository {
     required String password,
   });
 
+  /// Creates the account and sends the verification email.
+  ///
+  /// [displayName], when given, is written to the Firebase Auth profile
+  /// **before** the returned [AppUser] is built, so every downstream consumer
+  /// sees it immediately — `ensureProfile` seeds `users/{uid}.displayName` from
+  /// it, and `ensureCompany` seeds the company name from it. Without that, the
+  /// name collected at sign-up would not reach either.
   Future<AppUser> registerWithEmail({
     required String email,
     required String password,
+    String? displayName,
   });
 
   Future<void> sendPasswordReset(String email);

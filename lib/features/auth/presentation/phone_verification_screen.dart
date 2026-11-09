@@ -14,6 +14,7 @@ import '../../country_selection/application/country_controller.dart';
 import '../application/phone_link_controller.dart';
 import 'widgets/auth_error.dart';
 import 'widgets/auth_text_field.dart';
+import 'widgets/dial_code_box.dart';
 
 /// Phone verification that **links** a number to the signed-in account
 /// (strengthening it — never a phone-only sign-in). Reached from Security
@@ -156,7 +157,7 @@ class _NumberEntry extends ConsumerWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            _DialCodeBox(flag: country?.flag ?? '🌐', dialCode: dialCode),
+            DialCodeBox(flag: country?.flag ?? '🌐', dialCode: dialCode),
             const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: AuthTextField(
@@ -295,37 +296,3 @@ class _CodeEntry extends StatelessWidget {
 }
 
 /// Selected country's flag + dial code beside the number field.
-class _DialCodeBox extends StatelessWidget {
-  const _DialCodeBox({required this.flag, required this.dialCode});
-
-  final String flag;
-  final String dialCode;
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return Container(
-      height: 58,
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-      decoration: BoxDecoration(
-        color: scheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(AppRadius.md),
-      ),
-      child: Row(
-        children: [
-          Text(flag, style: const TextStyle(fontSize: 22)),
-          const SizedBox(width: 6),
-          Text(
-            dialCode,
-            // Keep "+974" LTR so the leading "+" isn't reordered in Arabic/RTL.
-            textDirection: TextDirection.ltr,
-            style: Theme.of(context)
-                .textTheme
-                .titleMedium
-                ?.copyWith(fontWeight: FontWeight.w600),
-          ),
-        ],
-      ),
-    );
-  }
-}

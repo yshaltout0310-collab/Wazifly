@@ -29,6 +29,7 @@ class UserProfile extends Equatable {
   const UserProfile({
     required this.uid,
     this.displayName,
+    this.phoneNumber,
     this.photoUrl,
     this.headline,
     this.location,
@@ -46,6 +47,19 @@ class UserProfile extends Equatable {
 
   final String uid;
   final String? displayName;
+
+  /// Self-declared contact number in E.164 form, collected at sign-up.
+  ///
+  /// NOT the same thing as [AppUser.phoneNumber], which Firebase Auth only sets
+  /// for a number that has been **verified** by SMS and linked to the account.
+  /// This one is contact information the user typed; it is deliberately not
+  /// promoted to the auth identity.
+  ///
+  /// Not part of [missingFields]/[completion]: adding an eleventh tracked field
+  /// would move every existing user's completion percentage, which is a
+  /// separate decision from collecting the number.
+  final String? phoneNumber;
+
   final String? photoUrl;
   final String? headline;
   final String? location;
@@ -101,6 +115,7 @@ class UserProfile extends Equatable {
   UserProfile copyWith({
     String? uid,
     String? displayName,
+    String? phoneNumber,
     String? photoUrl,
     String? headline,
     String? location,
@@ -118,6 +133,7 @@ class UserProfile extends Equatable {
     return UserProfile(
       uid: uid ?? this.uid,
       displayName: displayName ?? this.displayName,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
       photoUrl: photoUrl ?? this.photoUrl,
       headline: headline ?? this.headline,
       location: location ?? this.location,
@@ -140,6 +156,7 @@ class UserProfile extends Equatable {
   Map<String, dynamic> toJson() => {
         'uid': uid,
         'displayName': displayName,
+        'phoneNumber': phoneNumber,
         'photoUrl': photoUrl,
         'headline': headline,
         'location': location,
@@ -166,6 +183,7 @@ class UserProfile extends Equatable {
     return UserProfile(
       uid: str('uid') ?? '',
       displayName: str('displayName', 'display_name'),
+      phoneNumber: str('phoneNumber', 'phone_number'),
       photoUrl: str('photoUrl', 'photo_url'),
       headline: str('headline'),
       location: str('location'),
@@ -226,6 +244,7 @@ class UserProfile extends Equatable {
   List<Object?> get props => [
         uid,
         displayName,
+        phoneNumber,
         photoUrl,
         headline,
         location,

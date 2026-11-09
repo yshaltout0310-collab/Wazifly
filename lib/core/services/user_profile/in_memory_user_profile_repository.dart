@@ -68,4 +68,11 @@ class InMemoryUserProfileRepository implements UserProfileRepository {
     _profiles[uid] = base.copyWith(photoUrl: url);
     _emit(uid);
   }
+
+  @override
+  Future<void> setPhoneNumber(String uid, String phoneNumber) async {
+    final base = _profiles[uid] ?? UserProfile.empty(uid);
+    _profiles[uid] = base.copyWith(phoneNumber: phoneNumber);
+    _emit(uid);
+  }
 }

@@ -67,6 +67,9 @@ class _CountingProfiles implements UserProfileRepository {
 
   @override
   Future<void> setPhotoUrl(String uid, String url) async {}
+
+  @override
+  Future<void> setPhoneNumber(String uid, String phoneNumber) async {}
 }
 
 /// Fires `goAfterAuth` from a real router context.

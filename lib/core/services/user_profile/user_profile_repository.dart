@@ -42,6 +42,14 @@ abstract interface class UserProfileRepository {
   /// Persists the chosen role.
   Future<void> setUserType(String uid, UserType type);
 
+  /// Persists the self-declared contact phone number (E.164).
+  ///
+  /// A focused setter like [setUserType] / [setPhotoUrl] rather than a widening
+  /// of [ensureProfile]: `ensureProfile` syncs the **auth identity**, and a
+  /// number the user typed is not that — Firebase Auth's own `phoneNumber` is
+  /// reserved for one verified by SMS and linked to the account.
+  Future<void> setPhoneNumber(String uid, String phoneNumber);
+
   /// Persists a new profile-photo download URL.
   Future<void> setPhotoUrl(String uid, String url);
 }

@@ -1,5 +1,9 @@
 import 'package:careerbridge/core/localization/generated/app_localizations.dart';
 import 'package:careerbridge/core/localization/locale_controller.dart';
+import 'package:careerbridge/core/providers/app_providers.dart';
+import 'package:careerbridge/core/services/storage/local_storage_service.dart';
+import 'package:careerbridge/core/services/user_profile/in_memory_user_profile_repository.dart';
+import 'package:careerbridge/core/services/user_profile/user_profile_repository.dart';
 import 'package:careerbridge/core/theme/app_theme.dart';
 import 'package:careerbridge/features/auth/application/auth_providers.dart';
 import 'package:careerbridge/features/auth/domain/auth_exception.dart';
@@ -9,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'support/fake_auth.dart';
 
@@ -44,14 +49,28 @@ class _RecordingAuth extends FakeAuthRepository {
   Future<AppUser> registerWithEmail({
     required String email,
     required String password,
+    String? displayName,
   }) async {
     registerCount++;
-    return super.registerWithEmail(email: email, password: password);
+    return super.registerWithEmail(
+      email: email,
+      password: password,
+      displayName: displayName,
+    );
   }
 }
 
+late LocalStorageService _storage;
+late InMemoryUserProfileRepository _profiles;
+
 Widget _host(_RecordingAuth auth) => ProviderScope(
-      overrides: [authRepositoryProvider.overrideWithValue(auth)],
+      overrides: [
+        authRepositoryProvider.overrideWithValue(auth),
+        // Sign-up reads the selected country for the dial code, and writes the
+        // collected details to the profile repository.
+        localStorageProvider.overrideWithValue(_storage),
+        userProfileRepositoryProvider.overrideWithValue(_profiles),
+      ],
       child: MaterialApp(
         locale: const Locale('en'),
         theme: AppTheme.light(const Locale('en')),
@@ -66,12 +85,33 @@ Widget _host(_RecordingAuth auth) => ProviderScope(
       ),
     );
 
+/// Sign-IN has two fields: email, password.
 Future<void> _fill(WidgetTester tester, String email, String password) async {
   await tester.enterText(find.byType(TextFormField).at(0), email);
   await tester.enterText(find.byType(TextFormField).at(1), password);
 }
 
+/// Sign-UP has four: full name, phone, email, password.
+Future<void> _fillSignUp(
+  WidgetTester tester, {
+  String name = 'Sarah Ahmed',
+  String phone = '50123456',
+  String email = 'a@b.co',
+  required String password,
+}) async {
+  await tester.enterText(find.byType(TextFormField).at(0), name);
+  await tester.enterText(find.byType(TextFormField).at(1), phone);
+  await tester.enterText(find.byType(TextFormField).at(2), email);
+  await tester.enterText(find.byType(TextFormField).at(3), password);
+}
+
 void main() {
+  setUp(() async {
+    SharedPreferences.setMockInitialValues({});
+    _storage = await LocalStorageService.create();
+    _profiles = InMemoryUserProfileRepository();
+  });
+
   testWidgets('sign-in sends a short wrong password and reports bad credentials',
       (tester) async {
     await tester.binding.setSurfaceSize(const Size(412, 1200));
@@ -131,7 +171,7 @@ void main() {
     expect(find.text(l10n.passwordRuleLetter), findsOne);
     expect(find.text(l10n.passwordRuleNumber), findsOne);
 
-    await _fill(tester, 'a@b.co', 'abc');
+    await _fillSignUp(tester, password: 'abc');
     await tester.tap(find.text(l10n.signUp).last);
     await tester.pumpAndSettle();
 
@@ -152,7 +192,7 @@ void main() {
     await tester.tap(find.text(l10n.signUp));
     await tester.pumpAndSettle();
 
-    await _fill(tester, 'a@b.co', 'passw0rdy');
+    await _fillSignUp(tester, password: 'passw0rdy');
     await tester.tap(find.text(l10n.signUp).last);
     await tester.pump();
 

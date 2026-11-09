@@ -57,12 +57,27 @@ class FakeAuthRepository implements AuthRepository {
   }) async =>
       _fakeUser;
 
+  /// The display name passed to [registerWithEmail], for assertions.
+  String? lastRegisteredDisplayName;
+
   @override
   Future<AppUser> registerWithEmail({
     required String email,
     required String password,
-  }) async =>
-      _fakeUser;
+    String? displayName,
+  }) async {
+    lastRegisteredDisplayName = displayName;
+    // Mirrors the real repository, which writes the name to the Firebase Auth
+    // profile before returning, so the returned user already carries it.
+    if (displayName == null || displayName.isEmpty) return _fakeUser;
+    return AppUser(
+      uid: _fakeUser.uid,
+      method: _fakeUser.method,
+      email: _fakeUser.email,
+      displayName: displayName,
+      emailVerified: _fakeUser.emailVerified,
+    );
+  }
 
   /// Number of times [sendEmailVerification] was called (for assertions).
   int sendVerificationCount = 0;

@@ -317,6 +317,9 @@
 
   "fieldRequired": "هذا الحقل مطلوب",
   "invalidEmail": "أدخل بريدًا إلكترونيًا صالحًا",
+  "fullNameLabel": "الاسم الكامل",
+  "invalidFullName": "أدخل اسمك الكامل",
+  "invalidPhoneNumber": "أدخل رقم هاتف صالح",
   "passwordTooShort": "يجب أن تتكون كلمة المرور من 6 أحرف على الأقل",
   "passwordRequirementsTitle": "يجب أن تحتوي كلمة المرور على:",
   "passwordRuleMinLength": "{count} أحرف على الأقل",

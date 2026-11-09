@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/localization/generated/app_localizations.dart';
 import '../../../core/navigation/route_names.dart';
+import '../../../core/services/user_profile/user_profile_repository.dart';
 import '../../../core/theme/app_dimensions.dart';
+import '../../../core/utils/contact_details.dart';
 import '../../../core/utils/password_policy.dart';
 import '../../../core/utils/responsive.dart';
+import '../../../shared/models/app_user.dart';
+import '../../country_selection/application/country_controller.dart';
 import '../../../shared/widgets/app_logo.dart';
 import '../../../shared/widgets/primary_button.dart';
 import '../../security/presentation/biometric_enrollment_sheet.dart';
@@ -15,6 +20,7 @@ import '../application/auth_providers.dart';
 import 'auth_navigation.dart';
 import 'widgets/auth_error.dart';
 import 'widgets/auth_text_field.dart';
+import 'widgets/dial_code_box.dart';
 import 'widgets/password_requirements.dart';
 
 /// Email + password sign-in / sign-up screen with a mode toggle.
@@ -29,6 +35,8 @@ class _EmailAuthScreenState extends ConsumerState<EmailAuthScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _phoneController = TextEditingController();
 
   bool _isSignUp = false;
   bool _obscure = true;
@@ -38,7 +46,21 @@ class _EmailAuthScreenState extends ConsumerState<EmailAuthScreen> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _nameController.dispose();
+    _phoneController.dispose();
     super.dispose();
+  }
+
+  String? _validateName(String? value, AppLocalizations l10n) {
+    final v = value ?? '';
+    if (v.trim().isEmpty) return l10n.fieldRequired;
+    return FullNamePolicy.isValid(v) ? null : l10n.invalidFullName;
+  }
+
+  String? _validatePhone(String? value, AppLocalizations l10n) {
+    final v = value ?? '';
+    if (PhonePolicy.digitsOnly(v).isEmpty) return l10n.fieldRequired;
+    return PhonePolicy.isValidNational(v) ? null : l10n.invalidPhoneNumber;
   }
 
   String? _validateEmail(String? value, AppLocalizations l10n) {
@@ -77,7 +99,12 @@ class _EmailAuthScreenState extends ConsumerState<EmailAuthScreen> {
       if (_isSignUp) {
         // Registration sends a verification email automatically. The account is
         // created but access is gated: route to the verify-email screen.
-        await repo.registerWithEmail(email: email, password: password);
+        final user = await repo.registerWithEmail(
+          email: email,
+          password: password,
+          displayName: FullNamePolicy.normalize(_nameController.text),
+        );
+        await _persistSignUpDetails(user);
         if (!mounted) return;
         context.goNamed(RouteNames.verifyEmail);
         return;
@@ -99,6 +126,30 @@ class _EmailAuthScreenState extends ConsumerState<EmailAuthScreen> {
       setState(() => _loading = false);
       showAuthError(context, e);
     }
+  }
+
+  /// Writes the details collected at sign-up to `users/{uid}`.
+  ///
+  /// Done here, at registration, rather than left to the first sign-in: the
+  /// sign-up path routes straight to the verify-email gate and never reaches
+  /// `goAfterAuth`, so the phone number would have nowhere to live until then —
+  /// and the user may well verify on a different device.
+  ///
+  /// `ensureProfile` creates the document and seeds the identity fields
+  /// (including the display name just written to Firebase Auth); the phone is a
+  /// separate setter because it is contact data the user typed, not auth
+  /// identity. Both swallow their own failures, so this can never block the
+  /// account the user has already created.
+  Future<void> _persistSignUpDetails(AppUser user) async {
+    final profiles = ref.read(userProfileRepositoryProvider);
+    await profiles.ensureProfile(user);
+
+    final country = ref.read(countryControllerProvider);
+    final phone = PhonePolicy.compose(
+      dialCode: country?.dialCode ?? '',
+      national: _phoneController.text,
+    );
+    if (phone != null) await profiles.setPhoneNumber(user.uid, phone);
   }
 
   Future<void> _forgotPassword() async {
@@ -123,6 +174,7 @@ class _EmailAuthScreenState extends ConsumerState<EmailAuthScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
+    final country = ref.watch(countryControllerProvider);
 
     return Scaffold(
       appBar: AppBar(),
@@ -156,6 +208,52 @@ class _EmailAuthScreenState extends ConsumerState<EmailAuthScreen> {
                         ?.copyWith(fontWeight: FontWeight.w800),
                   ).animate().fadeIn().moveY(begin: 10, end: 0),
                   const SizedBox(height: AppSpacing.xl),
+                  // Sign-up only: identity details the app needs but never
+                  // asked for, which is why the profile and the employer's
+                  // company name were empty for every account.
+                  if (_isSignUp) ...[
+                    AuthTextField(
+                      label: l10n.fullNameLabel,
+                      controller: _nameController,
+                      keyboardType: TextInputType.name,
+                      prefixIcon: Icons.person_outline_rounded,
+                      textInputAction: TextInputAction.next,
+                      autofillHints: const [AutofillHints.name],
+                      validator: (v) => _validateName(v, l10n),
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    // Dial code beside a digits-only national number — the same
+                    // shape as the phone-verification screen, so the two places
+                    // that take a number behave identically.
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        DialCodeBox(
+                          flag: country?.flag ?? '🌐',
+                          dialCode: country?.dialCode ?? '+',
+                        ),
+                        const SizedBox(width: AppSpacing.sm),
+                        Expanded(
+                          child: AuthTextField(
+                            label: l10n.phoneLabel,
+                            controller: _phoneController,
+                            keyboardType: TextInputType.phone,
+                            prefixIcon: Icons.phone_outlined,
+                            textInputAction: TextInputAction.next,
+                            autofillHints: const [
+                              AutofillHints.telephoneNumber
+                            ],
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'[0-9 ]')),
+                            ],
+                            validator: (v) => _validatePhone(v, l10n),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                  ],
                   AuthTextField(
                     label: l10n.emailLabel,
                     controller: _emailController,

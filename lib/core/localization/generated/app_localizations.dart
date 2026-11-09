@@ -1772,6 +1772,24 @@ abstract class AppLocalizations {
   /// **'Enter a valid email address'**
   String get invalidEmail;
 
+  /// No description provided for @fullNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name'**
+  String get fullNameLabel;
+
+  /// No description provided for @invalidFullName.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your full name'**
+  String get invalidFullName;
+
+  /// No description provided for @invalidPhoneNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid phone number'**
+  String get invalidPhoneNumber;
+
   /// No description provided for @passwordTooShort.
   ///
   /// In en, this message translates to:
