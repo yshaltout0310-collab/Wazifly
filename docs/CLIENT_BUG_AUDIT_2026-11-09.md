@@ -16,7 +16,7 @@
 | **4 — Auth correctness (RC-F/M/G)** | ✅ **DONE** | Closes 12, 13, 14. See below. |
 | **5 — Web load performance (RC-D)** | ✅ **DONE** | Closes 2; 1 improved, one decision open. See below. |
 | **6 — Registration & company profile (RC-E)** | ✅ **DONE** | Closes 3; 17 improved, remainder below. |
-| 7 — Discoverability & dashboard (RC-K/J) | ⬜ Not started | |
+| **7 — Discoverability & dashboard (RC-K/J)** | ✅ **DONE** | Closes 8, 15. See below. |
 | 8 — Multi-account hygiene (RC-H) | ⬜ Not started | |
 | 9 — Email deliverability (RC-I) | ⬜ Not started | Owner/Console-side; no code |
 
@@ -428,6 +428,64 @@ sign-in showing neither new field, `ensureCompany` seeding the company name, and
 the two policies directly. Four Phase 4 tests were updated — the screen now
 depends on `localStorageProvider` and the profile repository, and sign-up has
 four fields — asserting the same things through the new form.
+
+**Not verified live:** no device or web run.
+
+### Phase 7 — what landed
+
+**Issue 15 — the dashboard cards act.** `_StatTile` was a plain `Container`:
+no `InkWell`, no `onTap`, no gesture handling of any kind, sitting beside cards
+that *were* tappable — which is why they read as broken rather than as labels.
+Each now opens the list it counts, pre-filtered:
+
+| Card | Opens |
+|---|---|
+| Active jobs | My Jobs, filtered to `published` |
+| Applications | Applicants, no status filter |
+| Interviews | Applicants, filtered to the `interview` stage |
+| Hires | Applicants, filtered to `accepted` |
+
+Both filter controllers gained `showOnly(Set<…>)`. `clear()` + `toggleStatus()`
+would have worked but reads as a toggle and depends on current state; `showOnly`
+states the intended result, is idempotent, and also clears a stale search so a
+list opened from the dashboard is never silently narrowed by a previous query.
+
+> **Known, deliberate difference on Interviews.** The *count* is a funnel
+> metric — applicants who ever reached the interview stage, including those
+> since hired — while the *list* shows who is at that stage now, so the list can
+> be shorter than the number. The funnel count is the right dashboard metric
+> (otherwise Interviews could read lower than Hires), and "who is interviewing
+> now" is the right list to act on. The missing people appear under Hires.
+> Flagged rather than silently reconciled: changing either side is a product
+> decision.
+
+**Issue 8 — CV upload is discoverable.** Uploading already worked, via
+`file_selector` in three places, but every surface was named after the AI
+feature that used it ("Resume Analyzer", "CV Builder", "My CVs"), so the
+capability read as absent. Home now carries an **"Upload your CV"** action named
+for the task, and the CV library's empty state leads with **Import CV** (Create
+stays one tap away, and the FAB still offers both). No new picker code — the
+existing import path is reused.
+
+**Stat tiles are now keyed** (`employerStat_<id>`). Their labels are not unique
+on that screen — an AI tool card is also called "Interviews" — so the keys make
+the four individually addressable for tests and for any future deep link.
+
+**Validation:** `flutter analyze` clean · **799 tests pass** (+8) ·
+`test/dashboard_and_upload_test.dart` asserts each card's destination *and* the
+resulting filter, that all four are tappable, that `showOnly` replaces rather
+than toggles and drops a stale search, and that Home's upload entry exists and
+routes to the CV library.
+
+#### Incidental finding, ruled out
+
+A `RenderFlex overflowed by 4.7 pixels` appeared in the Home AI-toolkit grid
+while writing these tests. **Probed with and without this phase's change at the
+same surface size: zero overflows either way.** It was an artifact of the test
+harness (`MaterialApp.router` + `pumpAndSettle`), not a regression and not a
+live defect — the existing Home render test uses an 800-wide surface, which this
+test now matches. The separately-known overflow at font scale ≥ 1.8 is
+unaffected and still open.
 
 **Not verified live:** no device or web run.
 
