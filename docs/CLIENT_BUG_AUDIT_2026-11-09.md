@@ -14,7 +14,7 @@
 | **2 — Make publishing work (RC-B)** | ✅ **DONE** | Closes 6, 11. See below. |
 | **3 — Make published jobs findable (RC-C)** | ✅ **DONE** | Closes 9. See below. |
 | **4 — Auth correctness (RC-F/M/G)** | ✅ **DONE** | Closes 12, 13, 14. See below. |
-| 5 — Web load performance (RC-D) | ⬜ Not started | |
+| **5 — Web load performance (RC-D)** | ✅ **DONE** | Closes 2; 1 improved, one decision open. See below. |
 | 6 — Registration & company profile (RC-E) | ⬜ Not started | |
 | 7 — Discoverability & dashboard (RC-K/J) | ⬜ Not started | |
 | 8 — Multi-account hygiene (RC-H) | ⬜ Not started | |
@@ -207,6 +207,144 @@ The round-trip counts are asserted because the cost is invisible in behaviour �
 the old code navigated to the same place, just later.
 
 **Not verified live:** no device or web run.
+
+### Phase 5 — what landed
+
+**The first frame is no longer hostage to a browser prompt.** `main` awaits
+`FirebaseService.initialize()` before `runApp`, and that awaited
+`FirebaseNotificationService.initialize()`, which awaits `requestPermission()`.
+On web that is the browser's own notification prompt, and it **does not resolve
+until the visitor answers it** — so anyone who ignored the prompt never got a
+first frame at all, just a blank page, for as long as the tab stayed open.
+Messaging now starts after `runApp`, un-awaited, and
+`notificationServiceProvider` returns the no-op implementation on web (browser
+push needs a `firebase-messaging-sw.js` and a VAPID key, neither of which this
+app ships, so the real one could only fail). Mirrors `biometricServiceProvider`.
+
+**`web/index.html` paints something immediately.** It had an empty `<body>`, so
+until Flutter's first frame the page was blank white for the entire
+multi-megabyte download — indistinguishable from a broken site, and the single
+largest contributor to "takes too long to load". There is now an inline
+gradient placeholder (matching `SplashScreen`) with a spinner, removed on
+`flutter-first-frame`. Inline only — no extra request. Costs ~2 KB.
+
+**The splash no longer adds 2.4 s on web.** `AppDurations.splash` is 600 ms on
+web and unchanged at 2,400 ms on native, where the splash is the first thing
+that happens rather than an addition to a download already endured.
+
+**Issue 2 — the country list.** `country_selection_screen` staggered 71 rows by
+`25 * index`, so the last row only began appearing at **1,750 ms**, and because
+the list builds lazily, scrolling re-triggered ever-longer delays and rows
+showed up blank. The stagger is now capped at index 8 (200 ms). "Country
+selection is slow" was an animation schedule, not a slow load — there is no
+network call in that screen at all; `CountriesData.all` is a `const` list.
+
+#### Measured, from a real release build
+
+| | |
+|---|---|
+| Visitor-fetched payload | **~13.4 MB** — `main.dart.js` 6.17 MB + `canvaskit/chromium/canvaskit.wasm` 5.63 MB + Inter 856 KB + Cairo 586 KB |
+| Shipped to the host | **46 MB** |
+
+Phase 5 changes *time to usable*, not bytes: the payload is essentially
+unchanged. Two findings about the bytes:
+
+* **`--no-web-resources-cdn` was removed** — see "CanvasKit moved to gstatic"
+  below, including a correction to what this was first predicted to save.
+* **Both fonts are always fetched** (1.44 MB) even in English. `AppTypography`
+  already selects by locale; CanvasKit preloads everything in
+  `FontManifest.json` regardless. Avoiding it means removing Cairo from
+  `pubspec` and loading it at runtime via `FontLoader`. **Deliberately not
+  done**: 586 KB against the risk of breaking Arabic rendering is a bad trade.
+
+#### CanvasKit moved to gstatic (`--no-web-resources-cdn` removed)
+
+`tool/replit/build_web.sh` no longer passes the flag, so CanvasKit is fetched
+from `https://www.gstatic.com/flutter-canvaskit/<engineRevision>/chromium/`
+(Flutter's default) instead of from our own host.
+
+**Verified in a real browser** against a local release build:
+
+| | |
+|---|---|
+| CanvasKit source | `www.gstatic.com/flutter-canvaskit/a10d8ac…/chromium/canvaskit.{wasm,js}` |
+| Fetched from our origin | **none** — zero `canvaskit` requests to the app's host |
+| Bytes from our origin | **7,723 KB**, down from ~13,261 KB |
+| Console errors | **none** |
+| Rendering | English and Arabic both correct; RTL mirrored (title, back arrow, list rows, flags); Cairo glyphs correct |
+
+> ⚠️ **Correction — two earlier claims in this document were wrong.**
+>
+> 1. "**~28 MB of the 46 MB is downloaded by nobody** … dropping the flag would
+>    remove it." **Wrong.** Measured both ways, `build/web` is **45.7 MB in 44
+>    files either way**: Flutter 3.44 copies the CanvasKit artifacts into the
+>    build output regardless. The flag only sets `useLocalCanvasKit: true` in
+>    `flutter_bootstrap.js`'s `buildConfig`, which changes the **runtime URL**,
+>    not what is copied. **Deployment size is unchanged.**
+> 2. "**a ~42% cut**" to the visitor payload. **Overstated.** A cold visitor
+>    still downloads roughly the same total (~13.4 MB); 5.63 MB of it simply
+>    comes from gstatic rather than from the Replit static host.
+>
+> The real, measured benefit is narrower than first described: **our origin
+> serves 7.5 MB instead of 13.3 MB**, and the CanvasKit half comes from a CDN
+> that is faster than the static host and shared by every Flutter web app on
+> the same engine revision, so it is often already in the visitor's HTTP cache.
+>
+> The trade the original flag existed to avoid is now live: on a network that
+> blocks or throttles `gstatic.com`, the app will not render at all.
+> **Rollback is one line** — re-add `--no-web-resources-cdn \` to the
+> `flutter build web` invocation in `tool/replit/build_web.sh`, or revert that
+> commit. Nothing else depends on the choice.
+
+Two incidental findings from the same run, both pre-existing:
+
+* CanvasKit fetches fallback fonts from `fonts.gstatic.com` at runtime (Roboto
+  62 KB, Noto Sans Arabic 65 KB) regardless of
+  `GoogleFonts.config.allowRuntimeFetching = false`, which governs the
+  `google_fonts` package, not the engine.
+* `firebase_crashlytics` logs `MissingPluginException` on web (it has no web
+  implementation). Harmless — every call is best-effort and already caught.
+
+#### ⚠️ Correction to §1.4 of this audit
+
+§1.4 recorded "**Service workers registered: `[]` — none**" and §3 proposed
+re-enabling the Flutter service worker. The observation was right; the proposed
+fix is **not possible**. The deployed `flutter_service_worker.js` is 815 bytes
+and calls `self.registration.unregister()` on activate: Flutter 3.44 has
+deprecated and neutered its service worker, and the generated
+`flutter_bootstrap.js` says so in a comment. There is no app-level caching to
+re-enable.
+
+Repeat-visit caching therefore depends entirely on **HTTP cache headers from
+the static host**. That is an ops item on the Replit deployment, not a code
+change, and it is the single biggest remaining lever on repeat loads.
+
+**Validation:** `flutter analyze` clean · **778 tests pass** (+6) ·
+`flutter build web --release` succeeds and the placeholder is present in the
+built `index.html`. New `test/web_startup_test.dart` guards the parts a widget
+test cannot reach: tests run on the VM where `kIsWeb` is false, and "the first
+frame never arrives because a permission prompt is being awaited" only exists in
+a browser. It asserts `FirebaseService` no longer references messaging, the
+provider no-ops on web, the placeholder exists / is removed on first frame /
+needs no request of its own, and that the **native** splash duration is
+unchanged.
+
+#### Still unverified — must be checked on the deployment
+
+A local release build **cannot** exercise these, so they are explicitly open:
+
+| Item | Why it could not be verified here |
+|---|---|
+| App Check | Needs the real `RECAPTCHA_SITE_KEY`, which is a Replit secret and never committed. The local build used a placeholder, so the client is unattested by construction. |
+| AI features | Denied while unattested — App Check enforcement is required for Firebase AI Logic. Nothing about the AI path was changed in this phase. |
+| Firebase Auth, Firestore | Need real credentials. None are available here, and the assistant must not create accounts or enter passwords. |
+| First-paint timing | Needs the bundle on the real host; the built-in browser cannot open a server started locally, and localhost timings would not represent Replit static anyway. |
+
+What *was* verified in a real browser: CanvasKit's source and the absence of any
+local CanvasKit request, bytes served from our own origin, English and Arabic
+rendering with RTL, the capped country-list stagger (rows at index ~30–40 fully
+visible within 1 s of scrolling), removal of the first-paint placeholder once
+Flutter paints, and a clean console.
 
 ---
 
