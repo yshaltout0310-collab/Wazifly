@@ -17,7 +17,7 @@
 | **5 — Web load performance (RC-D)** | ✅ **DONE** | Closes 2; 1 improved, one decision open. See below. |
 | **6 — Registration & company profile (RC-E)** | ✅ **DONE** | Closes 3; 17 improved, remainder below. |
 | **7 — Discoverability & dashboard (RC-K/J)** | ✅ **DONE** | Closes 8, 15. See below. |
-| 8 — Multi-account hygiene (RC-H) | ⬜ Not started | |
+| **8 — Multi-account hygiene (RC-H)** | ✅ **DONE** | Closes 18; 16 as far as the platform allows. See below. |
 | 9 — Email deliverability (RC-I) | ⬜ Not started | Owner/Console-side; no code |
 
 ### Phase 1 — what landed
@@ -488,6 +488,75 @@ test now matches. The separately-known overflow at font scale ≥ 1.8 is
 unaffected and still open.
 
 **Not verified live:** no device or web run.
+
+### Phase 8 — what landed
+
+**The cached role now records whose it is.** `pref_user_type` is a single
+device-global slot; a new `pref_user_type_uid` is written beside it, and a
+cached role is used **only** when that uid matches the signed-in user.
+Previously a second account on the same device inherited the first account's
+role — a job seeker landing on the employer dashboard, or a new user skipping
+role selection because a stale cache answered for them.
+
+A cache with no recorded owner (written by an older build) is **ignored, not
+trusted**: one authoritative Firestore read then re-caches it correctly. No
+migration step, no data loss.
+
+**One sign-out seam instead of three divergent ones.** A user could be signed
+out from Settings, the verify-email gate's "use another account", or a failed
+biometric unlock. Settings cleared the role and the biometric preference, the
+app-lock screen cleared those two, and the verify-email gate **cleared nothing
+at all** — leaving the previous account's state for whoever signed in next.
+All three now call `signOutAndClearUserScopedState`, which clears:
+
+* the cached role (and its owner);
+* the biometric preference — credential-adjacent, must not survive into another
+  account; a normal sign-in re-enables it;
+* the remembered apply-with CV — it points at a CV the next account cannot read.
+
+Device preferences — theme, language, country, onboarding-completed — are
+deliberately **kept**: they belong to the device, not the account, and wiping
+them would restart onboarding for the next person. A test pins that.
+
+**A live account switch is handled.** Firebase Auth's web persistence is
+per-origin and shared by every tab, so signing in as someone else in a second
+tab makes *this* tab's auth stream emit the new user. The persisted cache is
+uid-guarded, but the in-memory copy was not. `main` now clears user-scoped
+in-memory state when the uid changes. Deliberately narrow — it fires on
+uid → *different* uid and on uid → null, never on null → uid, because that is
+an ordinary sign-in where `goAfterAuth` is already resolving the role and
+clearing there would race it onto role selection.
+
+**Issue 18 — "Switch account" exists.** Settings gains an entry that signs out,
+clears the previous account's state, and goes straight to the sign-in form
+rather than the welcome screen. The confirmation says plainly that one account
+can be signed in at a time in this browser.
+
+> **What this does not do, and cannot.** There is no simultaneous multi-account
+> support, and there will not be without a different auth architecture: Firebase
+> Auth's web persistence is per-origin, so one browser profile holds exactly one
+> session. Two tabs will always contend, and the last sign-in wins. Phase 8
+> makes that *coherent and stated* — no inherited role, no leaked CV pointer, no
+> silent switch — rather than pretending it is not so. Issue 16's remaining
+> part is therefore a documentation and expectation matter, not a bug to fix.
+
+**Validation:** `flutter analyze` clean · **811 tests pass** (+12). New
+`test/multi_account_test.dart` covers an owned cache being used, a cache owned
+by someone else being ignored, an ownerless legacy cache being ignored, writes
+recording the owner, nothing being cached with no signed-in user, `clear` and
+`sync(null)` removing both keys, device preferences surviving, and the apply-CV
+pointer clearing.
+
+One existing test in `role_selection_routing_test.dart` was updated rather than
+deleted. Its *precondition* asserted the stale cache loads before `goAfterAuth`
+reconciles it away; the leak is now closed a layer earlier, so the cache never
+loads. The property it guarded — Firestore overriding a cached role on a fresh
+sign-in — was **kept as a second test** with a cache that legitimately belongs
+to the signed-in user, so the reconciliation path is still covered.
+
+**Not verified live:** no device or web run. The two-tab behaviour in
+particular is reasoned from Firebase's documented persistence model and covered
+by unit tests, not exercised in a browser.
 
 ---
 
