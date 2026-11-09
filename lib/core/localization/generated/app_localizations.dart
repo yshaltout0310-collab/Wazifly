@@ -404,6 +404,30 @@ abstract class AppLocalizations {
   /// **'You\'ll need to sign in again to continue.'**
   String get logoutConfirmBody;
 
+  /// No description provided for @switchAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch account'**
+  String get switchAccount;
+
+  /// No description provided for @switchAccountSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out and sign in as someone else'**
+  String get switchAccountSubtitle;
+
+  /// No description provided for @switchAccountConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch account?'**
+  String get switchAccountConfirmTitle;
+
+  /// No description provided for @switchAccountConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This signs you out of the current account and takes you to the sign-in screen. One account can be signed in at a time in this browser.'**
+  String get switchAccountConfirmBody;
+
   /// No description provided for @cancel.
   ///
   /// In en, this message translates to:

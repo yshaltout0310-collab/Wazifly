@@ -18,6 +18,7 @@ import 'core/services/app_check/app_check_service.dart';
 import 'core/services/app_check/firebase_app_check_service.dart';
 import 'core/services/build_info/build_info.dart';
 import 'core/services/crashlytics/firebase_crash_reporter.dart';
+import 'core/services/cv_repository/last_selected_cv.dart';
 import 'core/services/firebase/firebase_service.dart';
 import 'core/services/messaging/firebase_notification_service.dart';
 import 'core/services/performance/firebase_performance_monitor.dart';
@@ -134,6 +135,7 @@ Future<void> _bootstrapTelemetry(ProviderContainer container) async {
   });
 
   _bindTelemetryUserContext(container);
+  _bindUserScopedStateToAuth(container);
 }
 
 /// Activates Firebase App Check (device attestation) so the backend can reject
@@ -253,4 +255,31 @@ void _bindTelemetryUserContext(ProviderContainer container) {
   container.listen(authStateProvider, (_, __) => apply(), fireImmediately: true);
   container.listen(userTypeControllerProvider, (_, __) => apply(),
       fireImmediately: true);
+}
+
+/// Drops user-scoped in-memory state when the signed-in account **changes**.
+///
+/// Firebase Auth's web persistence is per-origin and shared by every tab of the
+/// site, so signing in as somebody else in a second tab makes *this* tab's auth
+/// stream emit the new user. The persisted role cache is already scoped to its
+/// owning uid, but the copy held in memory is not: without this, the previous
+/// account's role survives the switch and the UI keeps rendering their
+/// dashboard.
+///
+/// Deliberately narrow. It fires on uid → *different* uid, and on uid → null
+/// (sign-out). A null → uid transition is an ordinary sign-in, where
+/// `goAfterAuth` is already resolving the role from Firestore — clearing there
+/// would race it and drop the user on role selection.
+void _bindUserScopedStateToAuth(ProviderContainer container) {
+  String? previousUid = container.read(authStateProvider).valueOrNull?.uid;
+
+  container.listen(authStateProvider, (_, next) {
+    final uid = next.valueOrNull?.uid;
+    final switched = previousUid != null && previousUid != uid;
+    previousUid = uid;
+    if (!switched) return;
+
+    unawaited(container.read(userTypeControllerProvider.notifier).clear());
+    unawaited(container.read(lastSelectedCvProvider.notifier).clear());
+  });
 }

@@ -13,6 +13,7 @@ import '../../../core/utils/responsive.dart';
 import '../../../shared/widgets/primary_button.dart';
 import '../../security/presentation/biometric_enrollment_sheet.dart';
 import '../application/auth_providers.dart';
+import '../application/session.dart';
 import 'auth_navigation.dart';
 import 'widgets/auth_error.dart';
 
@@ -94,7 +95,9 @@ class _EmailVerificationScreenState
   }
 
   Future<void> _useAnother() async {
-    await ref.read(authRepositoryProvider).signOut();
+    // Was a bare signOut(), leaving the previous account's role, biometric
+    // preference and remembered CV behind for whoever signed in next.
+    await signOutAndClearUserScopedState(ref);
     if (!mounted) return;
     context.goNamed(RouteNames.welcome);
   }

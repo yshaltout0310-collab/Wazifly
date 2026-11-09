@@ -9,10 +9,8 @@ import '../../../core/services/biometric/biometric_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../shared/widgets/app_logo.dart';
-import '../../auth/application/auth_providers.dart';
+import '../../auth/application/session.dart';
 import '../../auth/presentation/auth_navigation.dart';
-import '../../user_type/application/user_type_controller.dart';
-import '../application/biometric_settings_controller.dart';
 
 /// Biometric unlock gate shown at cold launch when a valid Firebase session
 /// exists AND biometric login is enabled. Success opens the app immediately;
@@ -63,9 +61,7 @@ class _AppLockScreenState extends ConsumerState<AppLockScreen> {
   Future<void> _signInAnother() async {
     // Sign out (which disables biometric for the next session) and return to the
     // normal login screen.
-    await ref.read(biometricSettingsControllerProvider.notifier).reset();
-    await ref.read(authRepositoryProvider).signOut();
-    await ref.read(userTypeControllerProvider.notifier).clear();
+    await signOutAndClearUserScopedState(ref);
     if (!mounted) return;
     context.goNamed(RouteNames.welcome);
   }

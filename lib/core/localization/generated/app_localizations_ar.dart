@@ -174,6 +174,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get logoutConfirmBody => 'ستحتاج إلى تسجيل الدخول مرة أخرى للمتابعة.';
 
   @override
+  String get switchAccount => 'تبديل الحساب';
+
+  @override
+  String get switchAccountSubtitle => 'سجّل الخروج ثم ادخل بحساب آخر';
+
+  @override
+  String get switchAccountConfirmTitle => 'تبديل الحساب؟';
+
+  @override
+  String get switchAccountConfirmBody =>
+      'سيتم تسجيل خروجك من الحساب الحالي والانتقال إلى شاشة تسجيل الدخول. يمكن تسجيل الدخول بحساب واحد فقط في هذا المتصفح.';
+
+  @override
   String get cancel => 'إلغاء';
 
   @override

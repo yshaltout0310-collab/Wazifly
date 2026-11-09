@@ -9,6 +9,15 @@ abstract final class StorageKeys {
 
   static const String userType = 'pref_user_type';
 
+  /// The uid [userType] was cached for.
+  ///
+  /// The role cache is one device-global slot, so without an owner recorded
+  /// beside it a second account on the same device inherits the first
+  /// account's role — an employer's cached role sending a job seeker to the
+  /// employer dashboard. A cached role is used only when this matches the
+  /// signed-in uid.
+  static const String userTypeOwnerUid = 'pref_user_type_uid';
+
   /// Master push-notifications opt-in (kept for backward compatibility).
   static const String notificationsEnabled = 'pref_notifications_enabled';
 

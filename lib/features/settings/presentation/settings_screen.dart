@@ -12,8 +12,8 @@ import '../../../core/theme/theme_controller.dart';
 import '../../../core/utils/responsive.dart';
 import '../../../shared/models/app_user.dart';
 import '../../auth/application/auth_providers.dart';
+import '../../auth/application/session.dart';
 import '../../onboarding/application/onboarding_controller.dart';
-import '../../security/application/biometric_settings_controller.dart';
 import '../../user_type/application/user_type_controller.dart';
 import '../../user_type/domain/user_type.dart';
 import '../application/notifications_controller.dart';
@@ -99,15 +99,46 @@ class SettingsScreen extends ConsumerWidget {
       ),
     );
     if (confirmed != true) return;
-    await ref.read(authRepositoryProvider).signOut();
-    // Clear the device-persisted role so the next account picks its own
-    // (job seekers and employers now land on different dashboards).
-    await ref.read(userTypeControllerProvider.notifier).clear();
-    // Logout disables biometric login for this session: a normal sign-in is
-    // required before it can be re-enabled.
-    await ref.read(biometricSettingsControllerProvider.notifier).reset();
+    await signOutAndClearUserScopedState(ref);
     if (!context.mounted) return;
     context.goNamed(RouteNames.welcome);
+  }
+
+  /// Signs out and goes straight to the sign-in form, rather than the welcome
+  /// screen.
+  ///
+  /// There is no true multi-account support — Firebase Auth's web persistence
+  /// is per-origin, so one browser profile holds exactly one session — but
+  /// "switch account" was reported as missing, and it was: the only way across
+  /// was Log out, which reads as ending your work rather than changing who you
+  /// are, and landed on a marketing screen. This names the capability and
+  /// clears the previous account's state on the way through.
+  Future<void> _confirmSwitchAccount(BuildContext context, WidgetRef ref) async {
+    final l10n = AppLocalizations.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+        ),
+        title: Text(l10n.switchAccountConfirmTitle),
+        content: Text(l10n.switchAccountConfirmBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: Text(l10n.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: Text(l10n.switchAccount),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    await signOutAndClearUserScopedState(ref);
+    if (!context.mounted) return;
+    context.goNamed(RouteNames.emailAuth);
   }
 
   /// Resets ONLY the onboarding-completion flag and returns to the splash, which
@@ -202,6 +233,14 @@ class SettingsScreen extends ConsumerWidget {
                       subtitle: l10n.securitySubtitle,
                       trailing: const Icon(Icons.chevron_right_rounded),
                       onTap: () => context.pushNamed(RouteNames.security),
+                    ),
+                  if (user != null)
+                    SettingsTile(
+                      icon: Icons.switch_account_rounded,
+                      title: l10n.switchAccount,
+                      subtitle: l10n.switchAccountSubtitle,
+                      trailing: const Icon(Icons.chevron_right_rounded),
+                      onTap: () => _confirmSwitchAccount(context, ref),
                     ),
                   SettingsTile(
                     icon: Icons.logout_rounded,

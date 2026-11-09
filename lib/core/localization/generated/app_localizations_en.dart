@@ -173,6 +173,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get logoutConfirmBody => 'You\'ll need to sign in again to continue.';
 
   @override
+  String get switchAccount => 'Switch account';
+
+  @override
+  String get switchAccountSubtitle => 'Sign out and sign in as someone else';
+
+  @override
+  String get switchAccountConfirmTitle => 'Switch account?';
+
+  @override
+  String get switchAccountConfirmBody =>
+      'This signs you out of the current account and takes you to the sign-in screen. One account can be signed in at a time in this browser.';
+
+  @override
   String get cancel => 'Cancel';
 
   @override

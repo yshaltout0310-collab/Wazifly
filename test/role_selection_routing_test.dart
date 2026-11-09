@@ -100,12 +100,17 @@ void main() {
     (tester) async {
       final c = await _container(
         // A prior user on this device had chosen Job Seeker.
-        seed: {StorageKeys.userType: UserType.jobSeeker.name},
+        seed: {
+          StorageKeys.userType: UserType.jobSeeker.name,
+          StorageKeys.userTypeOwnerUid: 'some-previous-uid',
+        },
         // The signed-in user is new: their Firestore profile has no role.
         profiles: InMemoryUserProfileRepository(),
       );
-      // The stale device-local role is present before we route.
-      expect(c.read(userTypeControllerProvider), UserType.jobSeeker);
+      // The cache now records whose role it is, so it is rejected before it is
+      // ever loaded — the leak is closed one layer earlier than it used to be.
+      // (It previously loaded here, and only `goAfterAuth` reconciled it away.)
+      expect(c.read(userTypeControllerProvider), isNull);
 
       await _pumpAndGo(tester, c);
 
@@ -113,6 +118,30 @@ void main() {
       expect(find.text('ROLE_SELECTION'), findsOneWidget);
       expect(find.text('SEEKER_HOME'), findsNothing);
       // The stale cache was reconciled away for this user.
+      expect(c.read(userTypeControllerProvider), isNull);
+    },
+  );
+
+  testWidgets(
+    'Firestore still overrides a cache that DOES belong to this user',
+    (tester) async {
+      // Defence in depth, and the property the test above used to cover before
+      // the owner guard existed: even when the cached role is legitimately this
+      // user's, Firestore is authoritative on a fresh sign-in. A role removed
+      // server-side must not keep routing them from a stale local copy.
+      final c = await _container(
+        seed: {
+          StorageKeys.userType: UserType.jobSeeker.name,
+          StorageKeys.userTypeOwnerUid: _user.uid,
+        },
+        profiles: InMemoryUserProfileRepository(),
+      );
+      expect(c.read(userTypeControllerProvider), UserType.jobSeeker);
+
+      await _pumpAndGo(tester, c);
+
+      expect(find.text('ROLE_SELECTION'), findsOneWidget);
+      expect(find.text('SEEKER_HOME'), findsNothing);
       expect(c.read(userTypeControllerProvider), isNull);
     },
   );
