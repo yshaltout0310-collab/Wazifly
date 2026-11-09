@@ -12,7 +12,7 @@
 |---|---|---|
 | **1 — Make failure visible (RC-A)** | ✅ **DONE** | See below. |
 | **2 — Make publishing work (RC-B)** | ✅ **DONE** | Closes 6, 11. See below. |
-| 3 — Make published jobs findable (RC-C) | ⬜ Not started | |
+| **3 — Make published jobs findable (RC-C)** | ✅ **DONE** | Closes 9. See below. |
 | 4 — Auth correctness (RC-F/M/G) | ⬜ Not started | |
 | 5 — Web load performance (RC-D) | ⬜ Not started | |
 | 6 — Registration & company profile (RC-E) | ⬜ Not started | |
@@ -95,6 +95,52 @@ Jobs / Applications / Interviews / Hires counts become real, but the four cards
 are still non-interactive (RC-J → Phase 7).
 
 **Not verified live:** no device or web run. Covered by the widget tests above.
+
+### Phase 3 — what landed
+
+**Browse now opens with no location filter** (`jobs_browse_controller._load`).
+It previously defaulted the filter to `CountriesData.defaultCountry` ("Qatar").
+
+The owner decided this after the following measurement, which is worth keeping:
+the Qatar default was **not** a harmless home-market convenience. Because the
+match is a case-insensitive *substring* test against the job's `location`
+string, and remote jobs bypass it, the default hid:
+
+* **5 of the 18 bundled demo jobs** — Android Developer (Riyadh), Junior Flutter
+  Developer (Amman), iOS Developer (Dubai), UX Design Intern (Dubai), Marketing
+  Intern (Riyadh); every non-remote role outside Qatar, two of them internships.
+* **Every real posting outside Qatar**, and also any posting whose location
+  simply omits the word — a job located `"Doha"` does not contain `"Qatar"`.
+
+Nothing in the UI indicated a filter was on, and `clearFilters` re-applied it,
+so a seeker could not have escaped it even deliberately.
+
+**`clearFilters()` now clears the country.** It used to re-apply the Qatar
+default, making the one filter the seeker never set also the one the "Clear
+filters" button could not clear.
+
+**The filter badge now counts the country.** `jobs_screen`'s
+`activeFilterCount` summed employment types, seniorities and remote-only but
+omitted `location`, so while the hidden default was active the badge read zero.
+
+**Dropped a redundant fetch.** `_load` called `fetchJobs()` and then
+`searchJobs()`, which is `applyJobQuery(await fetchJobs(), query)` — two full
+catalogue reads on every Browse open. It now filters the list it already has.
+
+**Deliberately unchanged:** the Qatar market context the AI features pass into
+their prompts (Career Coach, Interview Prep, Job Matching, job detail). That is
+prompt context, not a filter that hides data, and it is a separate concern from
+this issue.
+
+**Validation:** `flutter analyze` clean · **759 tests pass** · zero regressions.
+Three tests in `test/jobs_browse_controller_test.dart` asserted the old default
+and were **rewritten, not deleted** — they now assert that Browse opens
+unfiltered, that it ignores the persisted onboarding country, and that
+`clearFilters` clears the country. A fourth was added for the reported symptom
+directly: a job outside Qatar is findable by text search on first load, with no
+filter touched.
+
+**Not verified live:** no device or web run.
 
 ---
 
