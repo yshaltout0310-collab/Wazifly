@@ -7,6 +7,7 @@ import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/responsive.dart';
 import '../../../shared/widgets/primary_button.dart';
 import '../../auth/presentation/widgets/auth_error.dart';
+import '../../auth/presentation/widgets/password_requirements.dart';
 import '../application/change_password_controller.dart';
 
 /// Lets an email/password user set a new password (re-authentication is handled
@@ -127,6 +128,14 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                     onPressed: () => setState(() => _obscureNew = !_obscureNew),
                   ),
                 ),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              // Same checklist, same policy object as sign-up — this path used
+              // to state "at least 6 characters" only after a failed submit.
+              ValueListenableBuilder<TextEditingValue>(
+                valueListenable: _next,
+                builder: (_, value, __) =>
+                    PasswordRequirements(password: value.text),
               ),
               const SizedBox(height: AppSpacing.md),
               TextField(

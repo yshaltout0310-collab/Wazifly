@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/localization/generated/app_localizations.dart';
 import '../../../core/navigation/route_names.dart';
 import '../../../core/theme/app_dimensions.dart';
+import '../../../core/utils/password_policy.dart';
 import '../../../core/utils/responsive.dart';
 import '../../../shared/widgets/app_logo.dart';
 import '../../../shared/widgets/primary_button.dart';
@@ -14,6 +15,7 @@ import '../application/auth_providers.dart';
 import 'auth_navigation.dart';
 import 'widgets/auth_error.dart';
 import 'widgets/auth_text_field.dart';
+import 'widgets/password_requirements.dart';
 
 /// Email + password sign-in / sign-up screen with a mode toggle.
 class EmailAuthScreen extends ConsumerStatefulWidget {
@@ -47,11 +49,19 @@ class _EmailAuthScreenState extends ConsumerState<EmailAuthScreen> {
     return null;
   }
 
+  /// Sign-**in** checks only that something was typed; sign-**up** applies the
+  /// shared [PasswordPolicy].
+  ///
+  /// One validator used to serve both, so a wrong password shorter than six
+  /// characters was rejected locally as "Password must be at least 6
+  /// characters" — a creation-time rule pre-empting the credentials check. The
+  /// user was told the wrong thing and the request never left the device, which
+  /// is why an incorrect password reported a length problem.
   String? _validatePassword(String? value, AppLocalizations l10n) {
     final v = value ?? '';
     if (v.isEmpty) return l10n.fieldRequired;
-    if (v.length < 6) return l10n.passwordTooShort;
-    return null;
+    if (!_isSignUp) return null;
+    return PasswordPolicy.isValid(v) ? null : l10n.passwordRequirementsUnmet;
   }
 
   Future<void> _submit() async {
@@ -182,8 +192,17 @@ class _EmailAuthScreenState extends ConsumerState<EmailAuthScreen> {
                         child: Text(l10n.forgotPassword),
                       ),
                     )
-                  else
+                  else ...[
                     const SizedBox(height: AppSpacing.md),
+                    // Stated up front and ticked off live. Scoped to the
+                    // controller so typing rebuilds only this list, not the
+                    // whole form.
+                    ValueListenableBuilder<TextEditingValue>(
+                      valueListenable: _passwordController,
+                      builder: (_, value, __) =>
+                          PasswordRequirements(password: value.text),
+                    ),
+                  ],
                   const SizedBox(height: AppSpacing.sm),
                   PrimaryButton(
                     label: _isSignUp ? l10n.signUp : l10n.signIn,

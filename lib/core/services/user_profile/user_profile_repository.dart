@@ -25,7 +25,19 @@ abstract interface class UserProfileRepository {
 
   /// Creates the profile on first sign-in, or refreshes identity fields on
   /// subsequent sign-ins. Safe to call after every successful auth.
-  Future<void> ensureProfile(AppUser user);
+  ///
+  /// **Returns the stored profile** (null when there was none, or when the
+  /// backend is unavailable). It has to read the document anyway to decide
+  /// create-vs-refresh, so handing that result back spares every caller a
+  /// second, identical read: `goAfterAuth` used to call this and then
+  /// `fetchProfile` to re-read the very document it had just written, three
+  /// sequential round trips before the first navigation.
+  ///
+  /// The returned profile reflects state *before* this call's identity write.
+  /// That is deliberate and sufficient: the identity fields are the caller's
+  /// own [AppUser], and the field callers actually need from storage — the
+  /// role — is never written here.
+  Future<UserProfile?> ensureProfile(AppUser user);
 
   /// Persists the chosen role.
   Future<void> setUserType(String uid, UserType type);

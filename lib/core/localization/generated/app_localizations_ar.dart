@@ -348,7 +348,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get changePasswordTooShort =>
-      'يجب أن تكون كلمة المرور الجديدة 6 أحرف على الأقل.';
+      'كلمة المرور الجديدة لا تستوفي الشروط أعلاه.';
 
   @override
   String get changePasswordMismatch => 'كلمتا المرور غير متطابقتين.';
@@ -894,6 +894,23 @@ class AppLocalizationsAr extends AppLocalizations {
   String get passwordTooShort => 'يجب أن تتكون كلمة المرور من 6 أحرف على الأقل';
 
   @override
+  String get passwordRequirementsTitle => 'يجب أن تحتوي كلمة المرور على:';
+
+  @override
+  String passwordRuleMinLength(int count) {
+    return '$count أحرف على الأقل';
+  }
+
+  @override
+  String get passwordRuleLetter => 'حرف واحد على الأقل';
+
+  @override
+  String get passwordRuleNumber => 'رقم واحد على الأقل';
+
+  @override
+  String get passwordRequirementsUnmet => 'كلمة المرور لا تستوفي الشروط أعلاه.';
+
+  @override
   String get invalidOtp => 'أدخل الرمز المكون من 6 أرقام';
 
   @override
@@ -910,7 +927,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get errUserNotFound => 'لا يوجد حساب بهذا البريد الإلكتروني.';
 
   @override
-  String get errWeakPassword => 'يرجى اختيار كلمة مرور أقوى (6 أحرف فأكثر).';
+  String get errWeakPassword => 'يرجى اختيار كلمة مرور أقوى.';
 
   @override
   String get errNetwork => 'خطأ في الشبكة. تحقق من اتصالك وحاول مرة أخرى.';

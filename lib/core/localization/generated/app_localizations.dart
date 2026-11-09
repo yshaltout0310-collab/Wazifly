@@ -743,7 +743,7 @@ abstract class AppLocalizations {
   /// No description provided for @changePasswordTooShort.
   ///
   /// In en, this message translates to:
-  /// **'New password must be at least 6 characters.'**
+  /// **'New password doesn\'t meet the requirements above.'**
   String get changePasswordTooShort;
 
   /// No description provided for @changePasswordMismatch.
@@ -1778,6 +1778,36 @@ abstract class AppLocalizations {
   /// **'Password must be at least 6 characters'**
   String get passwordTooShort;
 
+  /// No description provided for @passwordRequirementsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your password needs:'**
+  String get passwordRequirementsTitle;
+
+  /// No description provided for @passwordRuleMinLength.
+  ///
+  /// In en, this message translates to:
+  /// **'At least {count} characters'**
+  String passwordRuleMinLength(int count);
+
+  /// No description provided for @passwordRuleLetter.
+  ///
+  /// In en, this message translates to:
+  /// **'A letter'**
+  String get passwordRuleLetter;
+
+  /// No description provided for @passwordRuleNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'A number'**
+  String get passwordRuleNumber;
+
+  /// No description provided for @passwordRequirementsUnmet.
+  ///
+  /// In en, this message translates to:
+  /// **'Password doesn\'t meet the requirements above.'**
+  String get passwordRequirementsUnmet;
+
   /// No description provided for @invalidOtp.
   ///
   /// In en, this message translates to:
@@ -1811,7 +1841,7 @@ abstract class AppLocalizations {
   /// No description provided for @errWeakPassword.
   ///
   /// In en, this message translates to:
-  /// **'Please choose a stronger password (6+ characters).'**
+  /// **'Please choose a stronger password.'**
   String get errWeakPassword;
 
   /// No description provided for @errNetwork.

@@ -43,13 +43,16 @@ class InMemoryUserProfileRepository implements UserProfileRepository {
   }
 
   @override
-  Future<void> ensureProfile(AppUser user) async {
+  Future<UserProfile?> ensureProfile(AppUser user) async {
     final existing = _profiles[user.uid];
     _profiles[user.uid] = (existing ?? UserProfile.empty(user.uid)).copyWith(
       displayName: user.displayName,
       photoUrl: user.photoUrl,
     );
     _emit(user.uid);
+    // Matches the Firestore contract: the state as stored before this call's
+    // identity write (null when there was no profile).
+    return existing;
   }
 
   @override

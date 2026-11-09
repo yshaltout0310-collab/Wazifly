@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/utils/password_policy.dart';
 import '../../auth/application/auth_providers.dart';
 import '../../security/application/biometric_settings_controller.dart';
 
@@ -38,8 +39,11 @@ class ChangePasswordController extends StateNotifier<ChangePasswordState> {
 
   final Ref _ref;
 
-  /// Firebase's minimum password length.
-  static const int minLength = 6;
+  /// Kept as an alias so existing callers/tests keep compiling, but the rules
+  /// themselves now live in [PasswordPolicy] — the same ones sign-up enforces
+  /// and the same ones the UI shows. This path used to hard-code its own `6`,
+  /// independently of sign-up's `6`, with neither surfaced to the user.
+  static int get minLength => PasswordPolicy.minLength;
 
   Future<bool> submit({
     required String currentPassword,
@@ -54,7 +58,7 @@ class ChangePasswordController extends StateNotifier<ChangePasswordState> {
           failure: ChangePasswordFailure.emptyFields);
       return false;
     }
-    if (newPassword.length < minLength) {
+    if (!PasswordPolicy.isValid(newPassword)) {
       state = const ChangePasswordState(
           status: ChangePasswordStatus.error,
           failure: ChangePasswordFailure.tooShort);

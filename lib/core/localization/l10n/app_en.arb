@@ -131,7 +131,7 @@
   "changePasswordSubmit": "Update password",
   "changePasswordSuccess": "Password updated",
   "changePasswordEmptyFields": "Please fill in all fields.",
-  "changePasswordTooShort": "New password must be at least 6 characters.",
+  "changePasswordTooShort": "New password doesn't meet the requirements above.",
   "changePasswordMismatch": "New passwords don't match.",
 
   "notifyJobAlerts": "Job alerts",
@@ -325,13 +325,21 @@
   "fieldRequired": "This field is required",
   "invalidEmail": "Enter a valid email address",
   "passwordTooShort": "Password must be at least 6 characters",
+  "passwordRequirementsTitle": "Your password needs:",
+  "passwordRuleMinLength": "At least {count} characters",
+  "@passwordRuleMinLength": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "passwordRuleLetter": "A letter",
+  "passwordRuleNumber": "A number",
+  "passwordRequirementsUnmet": "Password doesn't meet the requirements above.",
   "invalidOtp": "Enter the 6-digit code",
   "authFailed": "Something went wrong. Please try again.",
 
   "errInvalidCredentials": "Incorrect email or password.",
   "errEmailInUse": "An account already exists for this email.",
   "errUserNotFound": "No account found for this email.",
-  "errWeakPassword": "Please choose a stronger password (6+ characters).",
+  "errWeakPassword": "Please choose a stronger password.",
   "errNetwork": "Network error. Check your connection and try again.",
   "errTooManyRequests": "Too many attempts. Please try again later.",
   "errInvalidPhone": "Enter a valid phone number.",

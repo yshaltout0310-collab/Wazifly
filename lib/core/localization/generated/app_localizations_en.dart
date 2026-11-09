@@ -350,7 +350,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get changePasswordTooShort =>
-      'New password must be at least 6 characters.';
+      'New password doesn\'t meet the requirements above.';
 
   @override
   String get changePasswordMismatch => 'New passwords don\'t match.';
@@ -902,6 +902,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get passwordTooShort => 'Password must be at least 6 characters';
 
   @override
+  String get passwordRequirementsTitle => 'Your password needs:';
+
+  @override
+  String passwordRuleMinLength(int count) {
+    return 'At least $count characters';
+  }
+
+  @override
+  String get passwordRuleLetter => 'A letter';
+
+  @override
+  String get passwordRuleNumber => 'A number';
+
+  @override
+  String get passwordRequirementsUnmet =>
+      'Password doesn\'t meet the requirements above.';
+
+  @override
   String get invalidOtp => 'Enter the 6-digit code';
 
   @override
@@ -917,8 +935,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errUserNotFound => 'No account found for this email.';
 
   @override
-  String get errWeakPassword =>
-      'Please choose a stronger password (6+ characters).';
+  String get errWeakPassword => 'Please choose a stronger password.';
 
   @override
   String get errNetwork =>

@@ -63,8 +63,8 @@ class FirestoreUserProfileRepository implements UserProfileRepository {
   }
 
   @override
-  Future<void> ensureProfile(AppUser user) async {
-    if (!_ready) return;
+  Future<UserProfile?> ensureProfile(AppUser user) async {
+    if (!_ready) return null;
     try {
       final doc = _users.doc(user.uid);
       final snapshot = await doc.get();
@@ -81,8 +81,14 @@ class FirestoreUserProfileRepository implements UserProfileRepository {
         data['createdAt'] = FieldValue.serverTimestamp();
       }
       await doc.set(data, SetOptions(merge: true));
+      // Parsed from the read we already did, not from a fresh one. `data` is
+      // unusable here: it carries FieldValue.serverTimestamp() sentinels.
+      final stored = snapshot.data();
+      if (stored == null) return null;
+      return UserProfile.fromJson({...stored, 'uid': user.uid});
     } catch (e) {
       debugPrint('[UserProfileRepository] ensureProfile failed: $e');
+      return null;
     }
   }
 
