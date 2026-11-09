@@ -18,7 +18,7 @@
 | **6 — Registration & company profile (RC-E)** | ✅ **DONE** | Closes 3; 17 improved, remainder below. |
 | **7 — Discoverability & dashboard (RC-K/J)** | ✅ **DONE** | Closes 8, 15. See below. |
 | **8 — Multi-account hygiene (RC-H)** | ✅ **DONE** | Closes 18; 16 as far as the platform allows. See below. |
-| 9 — Email deliverability (RC-I) | ⬜ Not started | Owner/Console-side; no code |
+| 9 — Email deliverability (RC-I) | 📋 **Runbook ready** | Owner/Console-side; no code. See [PHASE9_EMAIL_DELIVERABILITY.md](PHASE9_EMAIL_DELIVERABILITY.md) |
 
 ### Phase 1 — what landed
 
