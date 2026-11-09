@@ -10,8 +10,12 @@ import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/responsive.dart';
 import '../../../shared/widgets/app_network_image.dart';
 import '../../../shared/widgets/completion_indicator.dart';
+import '../../../shared/models/application.dart';
 import '../application/company_providers.dart';
+import '../application/employer_applicants_providers.dart';
+import '../application/employer_jobs_providers.dart';
 import '../domain/company_stats.dart';
+import '../domain/job_status.dart';
 
 /// The employer's landing dashboard: company header, completion, quick recruiting
 /// stats (zero until later milestones), a Company Profile entry, and placeholder
@@ -225,31 +229,78 @@ class _Header extends StatelessWidget {
   }
 }
 
-class _StatsGrid extends StatelessWidget {
+/// The four headline metrics.
+///
+/// Each tile opens the list it counts, pre-filtered. They used to be inert
+/// `Container`s sitting beside tappable cards, which is why they read as broken
+/// rather than as labels.
+///
+/// Note on **Interviews**: the count is a funnel metric — applicants who ever
+/// reached the interview stage, including those since hired — while the list it
+/// opens shows who is at that stage *now*. So the list can be shorter than the
+/// number. That is deliberate: the funnel count is the right dashboard metric,
+/// and "who is interviewing now" is the right list to act on. The difference is
+/// visible in the Hires card.
+class _StatsGrid extends ConsumerWidget {
   const _StatsGrid({required this.stats});
   final CompanyStats stats;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final tiles = <({IconData icon, String label, int value})>[
-      (icon: Icons.work_outline_rounded, label: l10n.employerStatActiveJobs, value: stats.activeJobs),
-      (icon: Icons.description_outlined, label: l10n.employerStatApplications, value: stats.applications),
-      (icon: Icons.event_available_outlined, label: l10n.employerStatInterviews, value: stats.interviews),
-      (icon: Icons.emoji_events_outlined, label: l10n.employerStatHires, value: stats.hires),
+
+    void openJobs(Set<JobStatus> statuses) {
+      ref.read(employerJobsFilterProvider.notifier).showOnly(statuses);
+      context.pushNamed(RouteNames.employerJobs);
+    }
+
+    void openApplicants(Set<ApplicationStatus> statuses) {
+      ref.read(employerApplicantsFilterProvider.notifier).showOnly(statuses);
+      context.pushNamed(RouteNames.employerApplicants);
+    }
+
+    final tiles = <({String id, IconData icon, String label, int value, VoidCallback onTap})>[
+      (
+        id: 'activeJobs',
+        icon: Icons.work_outline_rounded,
+        label: l10n.employerStatActiveJobs,
+        value: stats.activeJobs,
+        onTap: () => openJobs(const {JobStatus.published}),
+      ),
+      (
+        id: 'applications',
+        icon: Icons.description_outlined,
+        label: l10n.employerStatApplications,
+        value: stats.applications,
+        onTap: () => openApplicants(const {}),
+      ),
+      (
+        id: 'interviews',
+        icon: Icons.event_available_outlined,
+        label: l10n.employerStatInterviews,
+        value: stats.interviews,
+        onTap: () => openApplicants(const {ApplicationStatus.interview}),
+      ),
+      (
+        id: 'hires',
+        icon: Icons.emoji_events_outlined,
+        label: l10n.employerStatHires,
+        value: stats.hires,
+        onTap: () => openApplicants(const {ApplicationStatus.accepted}),
+      ),
     ];
     return Column(
       children: [
         Row(children: [
-          Expanded(child: _StatTile(tile: tiles[0])),
+          Expanded(child: _StatTile(key: ValueKey('employerStat_${tiles[0].id}'), tile: tiles[0])),
           const SizedBox(width: AppSpacing.md),
-          Expanded(child: _StatTile(tile: tiles[1])),
+          Expanded(child: _StatTile(key: ValueKey('employerStat_${tiles[1].id}'), tile: tiles[1])),
         ]),
         const SizedBox(height: AppSpacing.md),
         Row(children: [
-          Expanded(child: _StatTile(tile: tiles[2])),
+          Expanded(child: _StatTile(key: ValueKey('employerStat_${tiles[2].id}'), tile: tiles[2])),
           const SizedBox(width: AppSpacing.md),
-          Expanded(child: _StatTile(tile: tiles[3])),
+          Expanded(child: _StatTile(key: ValueKey('employerStat_${tiles[3].id}'), tile: tiles[3])),
         ]),
       ],
     );
@@ -257,18 +308,28 @@ class _StatsGrid extends StatelessWidget {
 }
 
 class _StatTile extends StatelessWidget {
-  const _StatTile({required this.tile});
-  final ({IconData icon, String label, int value}) tile;
+  const _StatTile({required this.tile, super.key});
+  final ({String id, IconData icon, String label, int value, VoidCallback onTap}) tile;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final dark = theme.brightness == Brightness.dark;
-    return Container(
+    final radius = BorderRadius.circular(AppRadius.lg);
+    return Material(
+      // Material + InkWell rather than a GestureDetector, so the tile gets the
+      // ripple and focus/hover affordances the other dashboard cards have —
+      // the point is that it now *looks* tappable, not only that it responds.
+      color: theme.colorScheme.surface,
+      borderRadius: radius,
+      child: InkWell(
+        borderRadius: radius,
+        onTap: tile.onTap,
+        child: Ink(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(AppRadius.lg),
+        borderRadius: radius,
         border:
             Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.5)),
         boxShadow: AppShadows.card(dark: dark),
@@ -298,6 +359,8 @@ class _StatTile extends StatelessWidget {
             ),
           ),
         ],
+      ),
+        ),
       ),
     );
   }

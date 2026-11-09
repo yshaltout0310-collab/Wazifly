@@ -1217,6 +1217,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get coachErrUnknown => 'حدث خطأ ما. يرجى المحاولة مرة أخرى.';
 
   @override
+  String get homeUploadCv => 'ارفع سيرتك الذاتية';
+
+  @override
+  String get homeUploadCvSubtitle =>
+      'استورد ملف PDF لتحليله ومطابقته والتقديم به';
+
+  @override
   String get homeBrowseJobs => 'تصفّح الوظائف';
 
   @override

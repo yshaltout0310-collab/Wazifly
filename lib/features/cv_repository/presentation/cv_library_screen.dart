@@ -161,10 +161,25 @@ class _CvLibraryScreenState extends ConsumerState<CvLibraryScreen> {
       icon: Icons.description_outlined,
       title: l10n.cvEmptyTitle,
       message: l10n.cvEmptyBody,
-      action: PrimaryButton(
-        label: l10n.cvCreate,
-        icon: Icons.add_rounded,
-        onPressed: () => _create(context),
+      // Import leads, because this is where someone who already has a CV lands
+      // and "no clear CV upload option" was a reported complaint: the capability
+      // existed but every surface was named after an AI feature. Creating one
+      // from scratch stays a tap away, and the FAB still offers both.
+      action: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          PrimaryButton(
+            label: l10n.cvImport,
+            icon: Icons.upload_file_rounded,
+            onPressed: () => _import(context),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          TextButton.icon(
+            onPressed: () => _create(context),
+            icon: const Icon(Icons.note_add_outlined, size: 18),
+            label: Text(l10n.cvCreate),
+          ),
+        ],
       ),
     );
   }

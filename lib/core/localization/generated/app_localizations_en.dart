@@ -1228,6 +1228,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get coachErrUnknown => 'Something went wrong. Please try again.';
 
   @override
+  String get homeUploadCv => 'Upload your CV';
+
+  @override
+  String get homeUploadCvSubtitle =>
+      'Import a PDF to analyze, match and apply with';
+
+  @override
   String get homeBrowseJobs => 'Browse Jobs';
 
   @override

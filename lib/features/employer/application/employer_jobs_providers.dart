@@ -51,6 +51,15 @@ class EmployerJobsFilterController extends StateNotifier<EmployerJobsFilter> {
 
   void setSort(JobSort sort) => state = state.copyWith(sort: sort);
 
+  /// Replaces the status filter with exactly [statuses], clearing the search.
+  ///
+  /// Used when another screen opens this list already scoped — the dashboard's
+  /// "Active jobs" card, for instance. `clear()` + `toggleStatus()` would also
+  /// work but reads as a toggle and depends on the current state; this states
+  /// the intended result.
+  void showOnly(Set<JobStatus> statuses) =>
+      state = EmployerJobsFilter(statuses: statuses, sort: state.sort);
+
   void clear() => state = const EmployerJobsFilter();
 }
 

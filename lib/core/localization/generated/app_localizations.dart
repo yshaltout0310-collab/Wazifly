@@ -2366,6 +2366,18 @@ abstract class AppLocalizations {
   /// **'Something went wrong. Please try again.'**
   String get coachErrUnknown;
 
+  /// No description provided for @homeUploadCv.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload your CV'**
+  String get homeUploadCv;
+
+  /// No description provided for @homeUploadCvSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Import a PDF to analyze, match and apply with'**
+  String get homeUploadCvSubtitle;
+
   /// No description provided for @homeBrowseJobs.
   ///
   /// In en, this message translates to:

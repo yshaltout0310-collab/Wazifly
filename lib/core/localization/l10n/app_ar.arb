@@ -425,6 +425,8 @@
   "coachErrEmpty": "لم يستجب المدرب. يرجى المحاولة مرة أخرى.",
   "coachErrUnknown": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
 
+  "homeUploadCv": "ارفع سيرتك الذاتية",
+  "homeUploadCvSubtitle": "استورد ملف PDF لتحليله ومطابقته والتقديم به",
   "homeBrowseJobs": "تصفّح الوظائف",
   "homeBrowseJobsSubtitle": "ابحث عن الوظائف، وشاهد تطابقك، واحفظ المفضّلة",
 

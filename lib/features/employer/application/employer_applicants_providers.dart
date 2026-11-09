@@ -58,6 +58,15 @@ class ApplicantsFilterController extends StateNotifier<ApplicantsFilter> {
 
   void setSort(ApplicantSort sort) => state = state.copyWith(sort: sort);
 
+  /// Replaces the status filter with exactly [statuses], clearing the search
+  /// and job scope.
+  ///
+  /// Used when another screen opens this list already scoped — the dashboard's
+  /// Interviews and Hires cards. States the intended result rather than
+  /// depending on the current state the way `clear()` + `toggleStatus()` would.
+  void showOnly(Set<ApplicationStatus> statuses) =>
+      state = ApplicantsFilter(statuses: statuses, sort: state.sort);
+
   /// Restrict to a single job (or clear with null).
   void setJob(String? jobId) => state = state.copyWith(jobId: jobId);
 

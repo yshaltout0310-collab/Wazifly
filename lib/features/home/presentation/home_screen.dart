@@ -144,6 +144,17 @@ class HomeScreen extends ConsumerWidget {
                         onTap: () => context.pushNamed(RouteNames.jobs),
                       ).animate(delay: 160.ms).fadeIn().moveY(begin: 10, end: 0),
                       const SizedBox(height: AppSpacing.sm),
+                      // Named for what the user wants to do, not for the
+                      // feature that does it. Uploading a CV was already
+                      // possible, but only behind "Resume Analyzer", "CV
+                      // Builder" and "My CVs" — so it read as absent.
+                      _PlatformCta(
+                        icon: Icons.upload_file_rounded,
+                        title: l10n.homeUploadCv,
+                        subtitle: l10n.homeUploadCvSubtitle,
+                        onTap: () => context.pushNamed(RouteNames.cvLibrary),
+                      ).animate(delay: 185.ms).fadeIn().moveY(begin: 10, end: 0),
+                      const SizedBox(height: AppSpacing.sm),
                       _PlatformCta(
                         icon: Icons.assignment_turned_in_outlined,
                         title: l10n.homeMyApplications,

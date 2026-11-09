@@ -435,6 +435,8 @@
   "coachErrEmpty": "The coach didn't respond. Please try again.",
   "coachErrUnknown": "Something went wrong. Please try again.",
 
+  "homeUploadCv": "Upload your CV",
+  "homeUploadCvSubtitle": "Import a PDF to analyze, match and apply with",
   "homeBrowseJobs": "Browse Jobs",
   "homeBrowseJobsSubtitle": "Search roles, see your matches, save favorites",
 
