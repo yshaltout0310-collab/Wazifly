@@ -15,7 +15,7 @@
 | **3 — Make published jobs findable (RC-C)** | ✅ **DONE** | Closes 9. See below. |
 | **4 — Auth correctness (RC-F/M/G)** | ✅ **DONE** | Closes 12, 13, 14. See below. |
 | **5 — Web load performance (RC-D)** | ✅ **DONE** | Closes 2; 1 improved, one decision open. See below. |
-| 6 — Registration & company profile (RC-E) | ⬜ Not started | |
+| **6 — Registration & company profile (RC-E)** | ✅ **DONE** | Closes 3; 17 improved, remainder below. |
 | 7 — Discoverability & dashboard (RC-K/J) | ⬜ Not started | |
 | 8 — Multi-account hygiene (RC-H) | ⬜ Not started | |
 | 9 — Email deliverability (RC-I) | ⬜ Not started | Owner/Console-side; no code |
@@ -329,7 +329,7 @@ provider no-ops on web, the placeholder exists / is removed on first frame /
 needs no request of its own, and that the **native** splash duration is
 unchanged.
 
-#### Still unverified — must be checked on the deployment
+#### Phase 5 — still unverified, must be checked on the deployment
 
 A local release build **cannot** exercise these, so they are explicitly open:
 
@@ -345,6 +345,91 @@ local CanvasKit request, bytes served from our own origin, English and Arabic
 rendering with RTL, the capped country-list stagger (rows at index ~30–40 fully
 visible within 1 s of scrolling), removal of the first-paint placeholder once
 Flutter paints, and a clean console.
+
+### Phase 6 — what landed
+
+**Sign-up collects a full name and a phone number.** It asked for email and
+password only, which is issue 3 — and the cause of most of issue 17.
+
+Two things found while tracing shaped the design:
+
+* **Sign-up never created a profile at all.** `_submit` calls
+  `registerWithEmail` and routes straight to the verify-email gate; it never
+  reaches `goAfterAuth`, so `ensureProfile` only ran on the first *sign-in
+  after verification*. The collected details would have had nowhere to live in
+  between — and the user may verify on a different device. They are therefore
+  persisted at registration.
+* **`UserProfile` had no phone field**, yet `ensureProfile` has been writing
+  `phoneNumber` to Firestore all along (from Auth). It was write-only: stored,
+  never parsed back. The field now exists, so an existing user with a linked
+  phone gains it with no migration.
+
+**Where each value goes, and why.**
+
+| Value | Destination |
+|---|---|
+| Full name | Firebase Auth `displayName`, set **before** the returned `AppUser` is built, then `users/{uid}.displayName` via `ensureProfile` |
+| Phone | `users/{uid}.phoneNumber` only, via a new focused `setPhoneNumber` setter |
+
+Setting the Auth display name at creation is what makes the Company Profile fix
+work: both `ensureProfile` and `ensureCompany` seed from `user.displayName`, so
+populating it once fixes the downstream emptiness rather than patching each
+consumer. The phone is deliberately **not** promoted to Auth's own
+`phoneNumber`, which Firebase reserves for a number verified by SMS and linked
+to the account — conflating the two would make an unverified number look
+verified. The setter mirrors the existing `setUserType` / `setPhotoUrl` seams.
+
+**The 120-character name cap matches `firestore.rules`.** The `users/{uid}` rule
+asserts `capped('displayName', 120)`, and `saveProfile`/`ensureProfile` swallow
+write failures — so a longer name would be rejected by the backend and lost
+silently. The validator now agrees with the rule. **The rule itself was not
+touched.**
+
+**`DialCodeBox` extracted** from `phone_verification_screen` into
+`features/auth/presentation/widgets/` rather than duplicated, so sign-up and
+phone verification share one control — including its RTL handling (`+974` is
+forced LTR so the leading `+` is not reordered in Arabic), which is exactly what
+a copy loses.
+
+**New rules live in `core/utils/contact_details.dart`** (`FullNamePolicy`,
+`PhonePolicy`), pure and unit-tested, for the same reason as `PasswordPolicy`:
+the rules are enforced in a form and must not drift from what is validated.
+Phone validation is deliberately lenient — 6–14 national digits, stored as
+E.164 with the selected country's dial code. A stricter per-country rule would
+reject legitimate foreign numbers, a worse failure than accepting an unusual
+one, and nothing here proves ownership.
+
+**Existing users are unaffected.** Sign-in still shows two fields and applies no
+new rules (asserted by a test). Completion percentages are unchanged:
+`phoneNumber` is deliberately **excluded** from `missingFields`/`completion`,
+because adding an eleventh tracked field would move every existing user's
+percentage — a separate decision from collecting the number.
+
+**Google sign-in:** there is none to break. It was removed in an earlier
+milestone — `AuthMethod` is `{email, phone}` and `lib/features/auth/` contains
+no Google references. Verified, not assumed.
+
+**Open decision:** phone is **required**. Making it optional is a two-line
+change (`_validatePhone` returns null when empty; `PhonePolicy.compose` already
+returns null for unusable input, so persistence needs no change).
+
+**Issue 17 — improved, not fully closed.** The company name now populates,
+because `ensureCompany` finally has a `displayName` to seed from. Still
+outstanding from the original proposal: an explicit "complete your company
+profile" empty state with a CTA to Edit Company, and letting `ensureCompany`
+surface its failures instead of swallowing them.
+
+**Validation:** `flutter analyze` clean · **791 tests pass** (+13) · rules, App
+Check, AI configuration and `.replit` untouched. New
+`test/registration_profile_test.dart` covers successful registration (name to
+Auth *and* profile, phone stored as `+97450123456`), name normalization, missing
+name, a name with no letters, missing phone, too-short and too-long phone,
+sign-in showing neither new field, `ensureCompany` seeding the company name, and
+the two policies directly. Four Phase 4 tests were updated — the screen now
+depends on `localStorageProvider` and the profile repository, and sign-up has
+four fields — asserting the same things through the new form.
+
+**Not verified live:** no device or web run.
 
 ---
 
