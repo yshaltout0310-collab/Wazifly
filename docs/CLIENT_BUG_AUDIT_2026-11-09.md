@@ -11,7 +11,7 @@
 | Phase | State | Notes |
 |---|---|---|
 | **1 — Make failure visible (RC-A)** | ✅ **DONE** | See below. |
-| 2 — Make publishing work (RC-B) | ⬜ Not started | Closes 6, 11; unblocks 9, 15 |
+| **2 — Make publishing work (RC-B)** | ✅ **DONE** | Closes 6, 11. See below. |
 | 3 — Make published jobs findable (RC-C) | ⬜ Not started | |
 | 4 — Auth correctness (RC-F/M/G) | ⬜ Not started | |
 | 5 — Web load performance (RC-D) | ⬜ Not started | |
@@ -56,6 +56,45 @@ tests above, which assert the same contract deterministically.
 **Expected side effect:** pre-existing backend failures that used to hang
 silently will now surface as visible errors. That is the intent, but it may
 produce a second, smaller round of findings.
+
+### Phase 2 — what landed
+
+**The editor's Publish now publishes.** `job_editor_screen._onPublish` validates,
+saves the edits, confirms in place, then calls `EmployerJobsController.publish`.
+It previously saved a *draft* and navigated to Preview. An already-published
+posting has no legal transition to `published`, so for that case saving the
+edits *is* the publish and it says so.
+
+**`JobAction.publish` is separated from `JobAction.preview`.** The two shared one
+`switch` case that only navigated. Publish now confirms and transitions in
+place; Preview remains its own action and only previews.
+
+**Publishing is gated on `JobValidator.forPublish`.** The list and detail menus
+reach the publish action without passing through the editor, so making it work
+directly would otherwise have allowed one-tap publishing of a posting with no
+description, skills, experience, employment type or location. An incomplete
+draft now gets `jobErrFixFields` and is routed to the editor. The Preview
+screen's CTA is gated the same way — `JobPosting.isPublishable` only checks
+status, so on its own it offered to publish empty drafts.
+
+**`_transition` no longer fails silently.** `if (!canTransitionTo) return;` is
+replaced by a new `JobsActionFailure.staleStatus` ("This job's status has
+changed. Refresh and try again."), so a posting that moved under the UI reports
+instead of presenting a dead button. New l10n key `jobErrStaleStatus` (EN + AR).
+
+**Validation:** `flutter analyze` clean · **758 tests pass** (+5 new) · zero
+regressions. `test/job_publish_action_test.dart` asserts: the editor's Publish
+leaves the posting `published` and never routes through Preview; the menu action
+publishes directly; an incomplete draft stays a draft and lands in the editor;
+Preview still only previews; and an illegal transition sets `staleStatus`.
+
+**Scope note — what Phase 2 does *not* finish.** Issue 9 is only half-closed:
+postings now reach `status: "published"`, but Browse still hides them behind the
+default Qatar location filter (RC-C → Phase 3). Issue 15 likewise: the Active
+Jobs / Applications / Interviews / Hires counts become real, but the four cards
+are still non-interactive (RC-J → Phase 7).
+
+**Not verified live:** no device or web run. Covered by the widget tests above.
 
 ---
 
