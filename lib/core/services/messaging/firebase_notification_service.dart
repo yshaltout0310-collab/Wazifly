@@ -123,8 +123,16 @@ class FirebaseNotificationService implements NotificationService {
 /// The app-wide notification service: the Firebase implementation when Firebase
 /// is ready, else an inert no-op (so tests and unconfigured runs never touch the
 /// plugin). Swap this binding to change providers.
-final notificationServiceProvider = Provider<NotificationService>(
-  (ref) => FirebaseService.instance.isReady
+final notificationServiceProvider = Provider<NotificationService>((ref) {
+  // Web gets the inert implementation. Browser push needs a
+  // `firebase-messaging-sw.js` service worker and a VAPID key, neither of which
+  // this app ships, so `getToken()` can only fail — and asking for the
+  // notification permission at startup (which is what `initialize()` did,
+  // before the first frame) stalled the whole boot behind a browser prompt.
+  // Mirrors `biometricServiceProvider`, which no-ops on web for the same
+  // reason: the capability genuinely is not there.
+  if (kIsWeb) return const NoopNotificationService();
+  return FirebaseService.instance.isReady
       ? FirebaseNotificationService.instance
-      : const NoopNotificationService(),
-);
+      : const NoopNotificationService();
+});

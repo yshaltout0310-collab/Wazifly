@@ -1,4 +1,5 @@
 import 'package:flutter/animation.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/painting.dart';
 
 import 'app_colors.dart';
@@ -33,7 +34,17 @@ abstract final class AppDurations {
   static const Duration fast = Duration(milliseconds: 200);
   static const Duration medium = Duration(milliseconds: 400);
   static const Duration slow = Duration(milliseconds: 700);
-  static const Duration splash = Duration(milliseconds: 2400);
+
+  /// How long the branded splash holds before routing onward.
+  ///
+  /// Shorter on web, where it is **added to** a multi-megabyte download the
+  /// visitor has already waited through: by the time Flutter paints, a 2.4 s
+  /// brand moment reads as the page still being stuck. On a native build the
+  /// app is already installed and the splash is the first thing that happens,
+  /// so it keeps the full duration.
+  static Duration get splash => kIsWeb
+      ? const Duration(milliseconds: 600)
+      : const Duration(milliseconds: 2400);
 }
 
 /// Signature easing curves for a consistent, premium motion language.

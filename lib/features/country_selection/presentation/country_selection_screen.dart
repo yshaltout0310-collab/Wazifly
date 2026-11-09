@@ -124,7 +124,15 @@ class _CountrySelectionScreenState
                             return tile
                                 .animate()
                                 .fadeIn(
-                                  delay: (25 * index).ms,
+                                  // Capped stagger. Uncapped, `25 * index`
+                                  // over 71 countries meant the last row only
+                                  // began appearing at 1,750 ms — and because
+                                  // the list builds lazily, scrolling kept
+                                  // re-triggering ever-longer delays, so rows
+                                  // showed up blank. That is what "country
+                                  // selection is slow" was: an animation
+                                  // schedule, not a slow load.
+                                  delay: (25 * (index.clamp(0, 8))).ms,
                                   duration: 220.ms,
                                 )
                                 .moveY(begin: 8, end: 0);

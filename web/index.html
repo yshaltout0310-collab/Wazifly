@@ -31,8 +31,69 @@
 
   <title>Wazifly</title>
   <link rel="manifest" href="manifest.json">
+
+  <!--
+    First-paint placeholder.
+
+    A release web bundle is a large download (CanvasKit + the compiled Dart
+    app), and until Flutter paints its first frame the page is whatever this
+    document says it is. With an empty <body> that was a blank white page for
+    the whole download — indistinguishable from a broken site, and the single
+    biggest reason the app "takes too long to load": nothing acknowledged the
+    visitor at all.
+
+    Everything here is inline: no extra request, nothing to wait on. It paints
+    on the first byte of HTML and is removed on `flutter-first-frame`.
+    The gradient matches SplashScreen's so the handover is seamless.
+  -->
+  <style>
+    html, body { margin: 0; padding: 0; height: 100%; background: #0B1D3A; }
+    #wazifly-loader {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      background: linear-gradient(180deg, #0B1D3A 0%, #0B54C4 55%, #1677FF 100%);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #FFFFFF;
+      /* Above the Flutter canvas until removed. */
+      z-index: 9999;
+    }
+    #wazifly-loader .ring {
+      width: 44px;
+      height: 44px;
+      border: 3px solid rgba(255, 255, 255, 0.25);
+      border-top-color: #FFFFFF;
+      border-radius: 50%;
+      animation: wazifly-spin 900ms linear infinite;
+    }
+    #wazifly-loader .name {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    @keyframes wazifly-spin { to { transform: rotate(360deg); } }
+    /* Respect a reduced-motion preference: keep the indicator, drop the spin. */
+    @media (prefers-reduced-motion: reduce) {
+      #wazifly-loader .ring { animation: none; }
+    }
+  </style>
 </head>
 <body>
+  <div id="wazifly-loader" role="status" aria-live="polite" aria-label="Loading Wazifly">
+    <div class="ring"></div>
+    <div class="name">Wazifly</div>
+  </div>
+  <script>
+    // Flutter dispatches this on the window once it has painted.
+    window.addEventListener('flutter-first-frame', function () {
+      var el = document.getElementById('wazifly-loader');
+      if (el && el.parentNode) el.parentNode.removeChild(el);
+    });
+  </script>
   <!--
     You can customize the "flutter_bootstrap.js" script.
     This is useful to provide a custom configuration to the Flutter loader

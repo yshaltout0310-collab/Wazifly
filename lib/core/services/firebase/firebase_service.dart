@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 
-import '../messaging/firebase_notification_service.dart';
 import 'firebase_options.dart';
 
 /// Owns Firebase app initialization for the whole app.
@@ -36,8 +35,15 @@ class FirebaseService {
       // first). Must run before the first Firestore access. Best-effort.
       _configureFirestore();
 
-      // Prepare Cloud Messaging (permissions + token). Best-effort.
-      await FirebaseNotificationService.instance.initialize();
+      // Cloud Messaging is deliberately NOT bootstrapped here.
+      //
+      // This method is awaited before `runApp`, and messaging's own
+      // `initialize()` awaits `requestPermission()`. On web that shows the
+      // browser's native notification prompt and does not resolve until the
+      // user answers it — so a visitor who ignored the prompt never reached the
+      // first frame at all, staring at a blank page. `getToken()` then needs a
+      // service worker the app does not ship. Messaging now starts after
+      // `runApp`, un-awaited, from `main` (see `_bootstrapNotifications`).
     } catch (e) {
       debugPrint('[FirebaseService] Init failed: $e');
     }

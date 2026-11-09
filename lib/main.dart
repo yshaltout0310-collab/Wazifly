@@ -19,6 +19,7 @@ import 'core/services/app_check/firebase_app_check_service.dart';
 import 'core/services/build_info/build_info.dart';
 import 'core/services/crashlytics/firebase_crash_reporter.dart';
 import 'core/services/firebase/firebase_service.dart';
+import 'core/services/messaging/firebase_notification_service.dart';
 import 'core/services/performance/firebase_performance_monitor.dart';
 import 'core/services/security/security_audit_log.dart';
 import 'core/services/storage/local_storage_service.dart';
@@ -71,6 +72,28 @@ Future<void> main() async {
   // backend read tolerates the brief unattested window (and, with enforcement
   // off, a placeholder token). A failure records + continues, app stays usable.
   unawaited(_bootstrapAppCheck(container));
+
+  // Push notifications — after the first frame and never awaited, for the same
+  // reason as App Check.
+  //
+  // This used to run inside `FirebaseService.initialize()`, which `main`
+  // awaits BEFORE `runApp`. Messaging's `initialize()` awaits
+  // `requestPermission()`, and on web that is the browser's own notification
+  // prompt: it does not resolve until the visitor answers, so ignoring the
+  // prompt meant never getting a first frame — a blank page for as long as the
+  // tab stayed open. On web the provider now hands back the no-op service
+  // anyway (browser push needs a service worker this app does not ship).
+  unawaited(_bootstrapNotifications(container));
+}
+
+/// Starts Cloud Messaging (permission, token, listeners). Best-effort and
+/// non-blocking: a messaging failure must never affect startup.
+Future<void> _bootstrapNotifications(ProviderContainer container) async {
+  try {
+    await container.read(notificationServiceProvider).initialize();
+  } catch (e) {
+    debugPrint('[Notifications] bootstrap failed: $e');
+  }
 }
 
 /// Wires Crashlytics error handlers, applies analytics consent, enables
