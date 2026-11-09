@@ -95,9 +95,13 @@ class _AllView extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final state = ref.watch(jobsBrowseControllerProvider);
     final controller = ref.read(jobsBrowseControllerProvider.notifier);
+    // The country counts as a filter. It was omitted, so while Browse applied
+    // its hidden Qatar default the badge read zero — the seeker had no way to
+    // tell that a location filter was narrowing their results at all.
     final activeFilterCount = state.query.employmentTypes.length +
         state.query.seniorities.length +
-        (state.query.remoteOnly ? 1 : 0);
+        (state.query.remoteOnly ? 1 : 0) +
+        ((state.query.location?.trim().isNotEmpty ?? false) ? 1 : 0);
 
     return Column(
       children: [

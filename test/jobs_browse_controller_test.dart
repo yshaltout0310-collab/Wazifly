@@ -17,8 +17,9 @@ class _FakeBundle extends CachingAssetBundle {
       ByteData.view(Uint8List.fromList(utf8.encode(json)).buffer);
 }
 
-// Job "a" is in Qatar, "b" is remote, "c" is in Egypt — so the default Qatar
-// country filter keeps a + b (remote is location-agnostic) and drops c.
+// Job "a" is in Qatar, "b" is remote, "c" is in Egypt. Browse opens with no
+// location filter, so all three are visible; "c" is the one a Qatar filter
+// would drop (it is neither remote nor in Qatar).
 const _json = '''
 [
   {"id":"a","title":"Flutter Engineer","company":"Acme","location":"Doha, Qatar","employmentType":"Full-time","seniority":"Mid","remote":false,"requiredSkills":["Flutter"],"description":"x"},
@@ -56,21 +57,38 @@ void main() {
     expect(state.seniorityOptions, containsAll(['Mid', 'Senior']));
   });
 
-  test('defaults the location filter to the user country (Qatar)', () async {
+  test('opens with NO location filter, so every job is visible', () async {
     final c = _container();
     addTearDown(c.dispose);
     c.read(jobsBrowseControllerProvider);
     await pumpEventQueue();
 
-    // Qatar (default) + remote pass; the Egypt job is filtered out.
-    expect(_ids(c.read(jobsBrowseControllerProvider)), ['a', 'b']);
-    expect(c.read(jobsBrowseControllerProvider).query.location, 'Qatar');
+    // Browse used to default this filter to Qatar, which silently dropped every
+    // non-remote job outside Qatar — including anything an employer published
+    // elsewhere. A job located "Doha" does not even contain "Qatar", so real
+    // postings could not be found at all.
+    expect(c.read(jobsBrowseControllerProvider).query.location, isNull);
+    expect(_ids(c.read(jobsBrowseControllerProvider)), ['a', 'b', 'c']);
   });
 
-  test('Browse defaults to Qatar even when the profile country is not Qatar',
+  test('a job outside Qatar is findable by text search on first load',
       () async {
-    // The user's device had a non-Qatar profile country persisted from
-    // onboarding; Browse must still open on the Qatar market by default.
+    // The reported symptom, at the controller level: no filter is touched, the
+    // seeker just searches.
+    final c = _container();
+    addTearDown(c.dispose);
+    final controller = c.read(jobsBrowseControllerProvider.notifier);
+    await pumpEventQueue();
+
+    controller.updateText('data');
+    await pumpEventQueue();
+
+    expect(_ids(c.read(jobsBrowseControllerProvider)), ['c']);
+  });
+
+  test('ignores the persisted profile country', () async {
+    // Browse must not inherit the onboarding country either: the filter is the
+    // seeker's explicit choice in the filter sheet, nothing else.
     SharedPreferences.setMockInitialValues({
       'pref_selected_country': jsonEncode({
         'isoCode': 'EG',
@@ -86,8 +104,8 @@ void main() {
     c.read(jobsBrowseControllerProvider);
     await pumpEventQueue();
 
-    expect(c.read(jobsBrowseControllerProvider).query.location, 'Qatar');
-    expect(_ids(c.read(jobsBrowseControllerProvider)), ['a', 'b']);
+    expect(c.read(jobsBrowseControllerProvider).query.location, isNull);
+    expect(_ids(c.read(jobsBrowseControllerProvider)), ['a', 'b', 'c']);
   });
 
   test('setCountry widens/changes the country filter', () async {
@@ -112,27 +130,30 @@ void main() {
     final controller = c.read(jobsBrowseControllerProvider.notifier);
     await pumpEventQueue();
 
-    controller.setCountry(null); // search across all countries
     controller.updateText('backend');
     await pumpEventQueue();
     expect(_ids(c.read(jobsBrowseControllerProvider)), ['b']);
   });
 
-  test('remote filter, then clearFilters restores the default country', () async {
+  test('clearFilters clears the country too', () async {
     final c = _container();
     addTearDown(c.dispose);
     final controller = c.read(jobsBrowseControllerProvider.notifier);
     await pumpEventQueue();
 
+    controller.setCountry('Qatar');
     controller.toggleRemote();
     await pumpEventQueue();
     expect(_ids(c.read(jobsBrowseControllerProvider)), ['b']);
 
     controller.clearFilters();
     await pumpEventQueue();
-    // Clear drops remote-only but restores the Qatar default (a + remote b).
-    expect(_ids(c.read(jobsBrowseControllerProvider)), ['a', 'b']);
+
+    // "Clear filters" used to re-apply the Qatar default, so the one filter the
+    // seeker had not set was also the one it could not clear.
+    expect(_ids(c.read(jobsBrowseControllerProvider)), ['a', 'b', 'c']);
     expect(c.read(jobsBrowseControllerProvider).query.remoteOnly, isFalse);
-    expect(c.read(jobsBrowseControllerProvider).query.location, 'Qatar');
+    expect(c.read(jobsBrowseControllerProvider).query.location, isNull);
+    expect(c.read(jobsBrowseControllerProvider).query.hasFilters, isFalse);
   });
 }

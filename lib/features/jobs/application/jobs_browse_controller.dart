@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/constants/countries_data.dart';
+import '../../../core/services/jobs/job_query_filter.dart';
 import '../../../core/services/jobs/jobs_repository.dart';
 import '../../../core/services/jobs/seed_jobs_repository.dart';
 import '../../../shared/models/job.dart';
@@ -76,18 +76,29 @@ class JobsBrowseController extends StateNotifier<JobsBrowseState> {
   Future<void> _load() async {
     try {
       final all = await _repo.fetchJobs();
-      // Default the location filter to Qatar (the app's home market) so Browse
-      // opens on the Qatar market for everyone; users can change or clear it in
-      // the filter sheet. Deliberately NOT the persisted profile country — a
-      // seeker whose profile country is elsewhere should still land on Qatar by
-      // default (remote roles are always included regardless of country).
-      final query = _withLocation(state.query, CountriesData.defaultCountry.name);
-      final results = await _repo.searchJobs(query);
+      // Browse opens with NO location filter.
+      //
+      // It used to default the filter to Qatar, which silently removed every
+      // non-remote job outside Qatar: 5 of the 18 bundled demo jobs (Riyadh,
+      // Amman, Dubai) and *every* posting an employer published anywhere else,
+      // since the match is a substring test and a job located "Doha" does not
+      // contain "Qatar". The seeker never set that filter and no UI showed it
+      // was on, so published jobs simply could not be found — the reported
+      // "published jobs cannot be found through search". Country is now an
+      // explicit choice in the filter sheet.
+      //
+      // This concerns the browse FILTER only. The Qatar market context the AI
+      // features pass to their prompts (Coach, Interview Prep, Job Matching,
+      // job detail) is a different thing and is unchanged.
+      //
+      // Filtering the already-fetched list rather than calling `searchJobs`
+      // also drops a second, redundant full fetch on every Browse open
+      // (`searchJobs` is `applyJobQuery(await fetchJobs(), query)`).
+      final results = applyJobQuery(all, state.query);
       state = state.copyWith(
         status: JobsStatus.ready,
         allJobs: all,
         results: results,
-        query: query,
         typeOptions: _distinct(all.map((j) => j.employmentType)),
         seniorityOptions: _distinct(all.map((j) => j.seniority)),
       );
@@ -112,11 +123,11 @@ class JobsBrowseController extends StateNotifier<JobsBrowseState> {
   void setCountry(String? country) =>
       _apply(_withLocation(state.query, country));
 
-  void clearFilters() {
-    // Keep the text; drop the other filters but restore the Qatar default.
-    _apply(_withLocation(
-        JobQuery(text: state.query.text), CountriesData.defaultCountry.name));
-  }
+  /// Clears every filter, keeping the search text.
+  ///
+  /// This used to re-apply the Qatar location default, so the one filter the
+  /// seeker had never set was also the one "Clear filters" could not clear.
+  void clearFilters() => _apply(JobQuery(text: state.query.text));
 
   /// Returns [q] with its location set to [country] (or cleared when blank).
   /// Constructed directly because `copyWith` can't set location back to null.
